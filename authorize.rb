@@ -9,45 +9,23 @@ def usage
   exit 1
 end
 
-require 'google_calendar'
-require 'json'
-require 'yaml'
-
-CLIENT_ID_FILE = "client_id.json"
-CALENDAR_TOKENS_FILE = "calendar_tokens.yml"
+require_relative 'calendar-assistant'
 
 usage unless ARGV[0]
 CALENDAR_ID = ARGV[0]
 
-CLIENT_ID = JSON.parse(File.read(CLIENT_ID_FILE))
+refresh_token = CalendarAssistant.token_for CALENDAR_ID
 
-cal = Google::Calendar.new(:client_id     => CLIENT_ID["installed"]["client_id"],
-                           :client_secret => CLIENT_ID["installed"]["client_secret"],
-                           :calendar      => CALENDAR_ID,
-                           :redirect_url  => "urn:ietf:wg:oauth:2.0:oob")
-
-calendar_tokens = File.exists?(CALENDAR_TOKENS_FILE) ?
-                    YAML.load(File.read(CALENDAR_TOKENS_FILE)) :
-                    Hash.new
-
-refresh_token = calendar_tokens[CALENDAR_ID]
-
-if refresh_token
-
-  puts "NOTE: logging in ..."
-  cal.login_with_refresh_token(refresh_token)
-
-else
+cal = CalendarAssistant.calendar_for CALENDAR_ID, refresh_token
+        
+if ! refresh_token
 
   puts "Visit the following web page in your browser and approve access."
   puts cal.authorize_url
   puts "\nCopy the code that Google returned and paste it here:"
 
   refresh_token = cal.login_with_auth_code( $stdin.gets.chomp )
-
-  calendar_tokens[CALENDAR_ID] = refresh_token
-  File.open(CALENDAR_TOKENS_FILE, "w") { |f| f.write calendar_tokens.to_yaml }
-
+  CalendarAssistant.save_token_for CALENDAR_ID, refresh_token
 end
 
 puts "NOTE: retrieving calendar ..."
