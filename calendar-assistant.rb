@@ -26,8 +26,8 @@ module CalendarAssistant
       :client_secret => client_id["installed"]["client_secret"],
       :calendar      => CALENDAR_ID,
       :redirect_url  => "urn:ietf:wg:oauth:2.0:oob",
+      :refresh_token => CalendarAssistant.token_for(CALENDAR_ID),
     }
-    params[:refresh_token] = refresh_token if refresh_token
 
     Google::Calendar.new params
   end

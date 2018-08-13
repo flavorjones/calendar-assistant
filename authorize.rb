@@ -14,11 +14,10 @@ require_relative 'calendar-assistant'
 usage unless ARGV[0]
 CALENDAR_ID = ARGV[0]
 
-refresh_token = CalendarAssistant.token_for CALENDAR_ID
-
-cal = CalendarAssistant.calendar_for CALENDAR_ID, refresh_token
+puts "NOTE: creating calendar ..."
+cal = CalendarAssistant.calendar_for CALENDAR_ID
         
-if ! refresh_token
+if ! cal.refresh_token
 
   puts "Visit the following web page in your browser and approve access."
   puts cal.authorize_url
