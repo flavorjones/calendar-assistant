@@ -2,6 +2,7 @@
 
 A project to help me book (and re-book) one-on-ones and other meetings automatically.
 
+
 ## Features
 
 Practing Readme-Driven-Development (RDD), some features I'd like to build are:
@@ -16,3 +17,19 @@ Practing Readme-Driven-Development (RDD), some features I'd like to build are:
   - pool of people with repeating time slot (e.g. all CF Eng managers)
 - block off time when a day approaches full
   - optimize for big blocks of time
+
+
+## References
+
+Google Calendar Concepts: https://developers.google.com/calendar/concepts/
+
+Northworld's `google_calendar` gem: https://github.com/northworld/google_calendar
+
+
+## Usage
+
+Generate a GCal OAuth client id and secret. See Northworld's google_calendar gem README for the steps. The file should be named `client_id.json`.
+
+In GCal, go to your calendar's Settings and grab the "Secret address in iCal format". Pass that to the authorize script.
+
+Copy the refresh token ... somewhere.
