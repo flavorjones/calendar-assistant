@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'google_calendar'
 require 'json'
 require 'yaml'
@@ -6,6 +7,11 @@ module CalendarAssistant
   CLIENT_ID_FILE = "client_id.json"
   CALENDAR_TOKENS_FILE = "calendar_tokens.yml"
   
+  EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
+  EMOJI_PUSHPIN   = "📍" # U+1F4CD ROUND PUSHPIN
+  EMOJI_FLAG      = "🚩" # U+1F6A9 TRIANGULAR FLAG ON POST
+  EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
+
   def self.token_for calendar_id
     calendar_tokens = File.exists?(CALENDAR_TOKENS_FILE) ?
                         YAML.load(File.read(CALENDAR_TOKENS_FILE)) :
