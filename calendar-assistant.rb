@@ -14,6 +14,9 @@ module CalendarAssistant
   end
 
   def self.save_token_for calendar_id, refresh_token
+    calendar_tokens = File.exists?(CALENDAR_TOKENS_FILE) ?
+                        YAML.load(File.read(CALENDAR_TOKENS_FILE)) :
+                        Hash.new
     calendar_tokens[calendar_id] = refresh_token
     File.open(CALENDAR_TOKENS_FILE, "w") { |f| f.write calendar_tokens.to_yaml }
   end
