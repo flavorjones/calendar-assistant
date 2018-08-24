@@ -17,6 +17,8 @@ Practing Readme-Driven-Development (RDD), some features I'd like to build are:
   - pool of people with repeating time slot (e.g. all CF Eng managers)
 - block off time when a day approaches full
   - optimize for big blocks of time
+- mirror any flights I have from my Tripit calendar to my primary calendar
+  - with 90 minute blocks before and after for travel to the airport, etc.
 
 
 ## References
