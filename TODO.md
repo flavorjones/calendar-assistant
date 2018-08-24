@@ -10,7 +10,12 @@
 
 ## Notes
 
-If an event is only visible via free/busy status, it will be `visibility: private`
+If an event is only visible via free/busy status, it will be `visibility: private` and the person is assumed to be busy
 
-It looks like events we can see are only those that are `status: confirmed`
+If an event is only for the person, attendees will be nil and the person is assumed to be busy.
+
+If there are attendees, then the person's response will be one of:
+- accepted, and the person is assumed to be busy
+- needsAction or tentative, and the person might be busy
+- declined, and the person is assumed to be not attending that meeting
 
