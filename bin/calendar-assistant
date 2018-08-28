@@ -1,0 +1,5 @@
+#! /usr/bin/env ruby
+
+require "calendar_assistant"
+
+CalendarAssistant::CLI.start ARGV

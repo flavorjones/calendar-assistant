@@ -5,6 +5,15 @@ A project to help me book (and re-book) one-on-ones and other meetings automatic
 
 ## Features
 
+All date and datetimes are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times.
+
+Declare your geographic location as an all-day non-busy event:
+
+``` bash
+    calendar-assistant where <date> <location-name> --id=<calendar-id>
+```
+
+
 Practing Readme-Driven-Development (RDD), some features I'd like to build are:
 
 - create all-day (non-busy) events indicating where in the world I am
