@@ -22,11 +22,13 @@ module CalendarAssistant
         end_date = (Chronic.parse(chronic_end_date) + 1.day).beginning_of_day
       end
 
-      cal.create_event do |event|
+      e = cal.create_event do |event|
         event.title = "#{EMOJI_WORLDMAP} #{location_name}"
         event.all_day = start_date
         event.end_time = end_date if end_date
       end
+
+      pp e.raw if e.respond_to?(:raw)
     end
   end
 end
