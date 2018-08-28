@@ -11,6 +11,7 @@ module CalendarAssistant
   EMOJI_PUSHPIN   = "📍" # U+1F4CD ROUND PUSHPIN
   EMOJI_FLAG      = "🚩" # U+1F6A9 TRIANGULAR FLAG ON POST
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
+  EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
 
   def self.token_for calendar_id
     calendar_tokens = File.exists?(CALENDAR_TOKENS_FILE) ?
