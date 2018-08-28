@@ -29,7 +29,6 @@ calendar-assistant where "2018-09-24...2018-09-27" "Spring One" -c me@example.co
 
 Practing Readme-Driven-Development (RDD), some features I'd like to build are:
 
-- create all-day (non-busy) events indicating where in the world I am
 - create variations on 1:1s
   - every N weeks for 30 minutes
   - every N weeks alternating 30 and 60 minutes
