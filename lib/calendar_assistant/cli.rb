@@ -3,11 +3,11 @@ require "chronic"
 
 module CalendarAssistant
   class CLI < Thor
-    option :id, required: true
+    class_option :calendar, banner: "<google-calendar-id>", required: true, aliases: ["-c"]
 
-    desc "where DATESPEC LOCATION", "create an all-day event to declare your geographic location"
+    desc "where <datespec> <location>", "create an all-day event to declare your geographic location"
     def where chronic_date, location_name
-      cal = CalendarAssistant.calendar_for options[:id]
+      cal = CalendarAssistant.calendar_for options[:calendar]
       date = Chronic.parse chronic_date
 
       cal.create_event do |event|

@@ -10,7 +10,7 @@ All date and datetimes are interpreted by [Chronic](https://github.com/mojombo/c
 Declare your geographic location as an all-day non-busy event:
 
 ``` bash
-    calendar-assistant where <date> <location-name> --id=<calendar-id>
+    calendar-assistant where <date> <location-name> -c <google-calendar-id>
 ```
 
 

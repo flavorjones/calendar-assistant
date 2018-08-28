@@ -18,7 +18,7 @@ describe CalendarAssistant::CLI do
         expect(cal_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP} Palo Alto")
         expect(cal_event).to receive(:all_day=).with(Chronic.parse("tomorrow"))
 
-        CalendarAssistant::CLI.start ["where", "--id", "foo@example", "tomorrow", "Palo Alto"]
+        CalendarAssistant::CLI.start ["where", "-c", "foo@example", "tomorrow", "Palo Alto"]
       end
 
       it "clears the current one before creating a new one"
