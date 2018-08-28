@@ -33,9 +33,9 @@ module CalendarAssistant
     {
       :client_id     => client_id["installed"]["client_id"],
       :client_secret => client_id["installed"]["client_secret"],
-      :calendar      => CALENDAR_ID,
+      :calendar      => calendar_id,
       :redirect_url  => "urn:ietf:wg:oauth:2.0:oob",
-      :refresh_token => CalendarAssistant.token_for(CALENDAR_ID),
+      :refresh_token => CalendarAssistant.token_for(calendar_id),
     }
   end
 
@@ -47,3 +47,5 @@ module CalendarAssistant
     Google::CalendarList.new params_for(calendar_id)
   end
 end
+
+require "calendar_assistant/cli"
