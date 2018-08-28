@@ -34,4 +34,4 @@ Generate a GCal OAuth client id and secret. See Northworld's google_calendar gem
 
 In GCal, go to your calendar's Settings and grab the "Secret address in iCal format". Pass that to the authorize script.
 
-Copy the refresh token ... somewhere.
+The refresh token will be written to `calendar_tokens.yml`, which you should be careful not to share or make public.
