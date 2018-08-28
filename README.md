@@ -14,6 +14,8 @@ Declare your geographic location as an all-day non-busy event:
 ```
 
 
+### Future
+
 Practing Readme-Driven-Development (RDD), some features I'd like to build are:
 
 - create all-day (non-busy) events indicating where in the world I am
@@ -28,6 +30,8 @@ Practing Readme-Driven-Development (RDD), some features I'd like to build are:
   - optimize for big blocks of time
 - mirror any flights I have from my Tripit calendar to my primary calendar
   - with 90 minute blocks before and after for travel to the airport, etc.
+
+Also, I need to make this a real Ruby Gem so people can install it. :-\
 
 
 ## References
