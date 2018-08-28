@@ -5,12 +5,23 @@ A project to help me book (and re-book) one-on-ones and other meetings automatic
 
 ## Features
 
-All date and datetimes are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times.
+All datespecs and datetimespecs are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times. For a date range or a datetime range, split the start and end with `...`.
+
+
+### Tell people where you are at in the world
 
 Declare your geographic location as an all-day non-busy event:
 
 ``` bash
-    calendar-assistant where <date> <location-name> -c <google-calendar-id>
+calendar-assistant where <datespec> <location-name> -c <google-calendar-id>
+```
+
+Some examples:
+
+``` bash
+calendar-assistant where tomorrow WFH -c me@example.com # creates an event titled `🗺 WFH` tomorrow
+calendar-assistant where 2019-01-01 OOO -c me@example.com # creates an event titled `🗺 OOO` on New Year's Day
+calendar-assistant where "2018-09-24 ... 2018-09-27 "Spring One" -c me@example.com # creates an event titled `🗺 Spring One` on the days of the conference
 ```
 
 
