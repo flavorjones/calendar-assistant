@@ -13,22 +13,41 @@ All datespecs and datetimespecs are interpreted by [Chronic](https://github.com/
 Declare your geographic location as an all-day non-busy event:
 
 ``` bash
-calendar-assistant where <datespec> <location-name> -c <google-calendar-id>
+calendar-assistant location set <calendar-id> <datespec> <location-name>
 ```
 
 Some examples:
 
 ``` bash
 # create an event titled `🗺 WFH` tomorrow
-calendar-assistant where tomorrow WFH -c me@example.com
+calendar-assistant location set me@example.com tomorrow WFH
 
 # create an event titled `🗺 OOO` on New Year's Day
-calendar-assistant where 2019-01-01 OOO -c me@example.com
+calendar-assistant location set me@example.com 2019-01-01 OOO
 
 # create an event titled `🗺 Spring One` on the days of the conference
-calendar-assistant where "2018-09-24...2018-09-27" "Spring One" -c me@example.com
+calendar-assistant location set me@example.com "2018-09-24...2018-09-27" "Spring One"
+
+# create a vacation event for next week
+calendar-assistant location set me@example.com "next monday ... next week friday" "Vacation!"
 ```
 
+### Look up where you're going to be
+
+``` bash
+calendar-assistant location get <calendar-id> <datespec>
+```
+
+Some examples:
+
+``` bash
+calendar-assistant location get me@example.com tomorrow
+# => 2018-08-29 Wed          |                         | 🗺  WFH
+
+calendar-assistant location get me@example.com "next week"
+# => 2018-08-03 Mon          |                         | 🗺  WFH
+     2018-09-04 Tue          | 2018-09-07 Fri          | 🗺  Vacation!
+```
 
 ### Future
 

@@ -13,23 +13,28 @@ module Google
     def to_assistant_s
       if assistant_geographic_event?
         if Event.parse_time(end_time) - Event.parse_time(start_time) <= 1.day
-          sprintf "%-23.23s |                         | %-40.40s", Event.assistant_date(start_time), title
+          sprintf "%-23.23s |                         | %-40.40s",
+                  Event.assistant_date(start_time), title
         else
-          sprintf "%-23.23s | %-23.23s | %-40.40s", Event.assistant_date(start_time), Event.assistant_date(end_time), title
+          sprintf "%-23.23s | %-23.23s | %-40.40s",
+                  Event.assistant_date(Event.parse_time(start_time)),
+                  Event.assistant_date(Event.parse_time(end_time) - 1.day), title
         end
       else
-        sprintf "%23.23s | %23.23s | %-40.40s", Event.assistant_time(start_time), Event.assistant_time(end_time), title
+        sprintf "%23.23s | %23.23s | %-40.40s",
+                Event.assistant_time(Event.parse_time(start_time)),
+                Event.assistant_time(Event.parse_time(end_time)), title
       end
     end
 
     private
 
     def self.assistant_time t
-      Event.parse_time(t).getlocal.strftime("%Y-%m-%d %H:%M:%S %Z")      
+      t.getlocal.strftime("%Y-%m-%d %H:%M:%S %Z")      
     end
 
     def self.assistant_date t
-      Event.parse_time(t).getlocal.strftime("%Y-%m-%d %a")
+      t.getlocal.strftime("%Y-%m-%d %a")
     end
   end
 end
