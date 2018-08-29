@@ -19,9 +19,14 @@ calendar-assistant where <datespec> <location-name> -c <google-calendar-id>
 Some examples:
 
 ``` bash
-calendar-assistant where tomorrow WFH -c me@example.com # creates an event titled `🗺 WFH` tomorrow
-calendar-assistant where 2019-01-01 OOO -c me@example.com # creates an event titled `🗺 OOO` on New Year's Day
-calendar-assistant where "2018-09-24...2018-09-27" "Spring One" -c me@example.com # creates an event titled `🗺 Spring One` on the days of the conference
+# create an event titled `🗺 WFH` tomorrow
+calendar-assistant where tomorrow WFH -c me@example.com
+
+# create an event titled `🗺 OOO` on New Year's Day
+calendar-assistant where 2019-01-01 OOO -c me@example.com
+
+# create an event titled `🗺 Spring One` on the days of the conference
+calendar-assistant where "2018-09-24...2018-09-27" "Spring One" -c me@example.com
 ```
 
 
