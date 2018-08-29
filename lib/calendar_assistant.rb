@@ -1,9 +1,12 @@
 # coding: utf-8
-require 'google_calendar'
-require 'json'
-require 'yaml'
+require "google_calendar"
+require "json"
+require "yaml"
+require "business_time"
 
-module CalendarAssistant
+class CalendarAssistant
+  attr_reader :calendar
+
   CLIENT_ID_FILE = "client_id.json"
   CALENDAR_TOKENS_FILE = "calendar_tokens.yml"
   
@@ -45,6 +48,30 @@ module CalendarAssistant
 
   def self.calendar_list_for calendar_id
     Google::CalendarList.new params_for(calendar_id)
+  end
+
+  def initialize calendar_id
+    @calendar = CalendarAssistant.calendar_for calendar_id
+  end
+
+  def create_geographic_event time_or_range, location_name
+    start_time = time_or_range
+    end_time = nil
+
+    if time_or_range.is_a?(Range)
+      start_time = time_or_range.first
+      end_time = (time_or_range.last + 1.day).beginning_of_day
+    end
+
+    new_event = calendar.create_event do |event|
+      event.title = "#{EMOJI_WORLDMAP} #{location_name}"
+      event.all_day = start_time
+      event.end_time = end_time if end_time
+    end
+
+    pp new_event.raw if new_event.respond_to?(:raw)
+
+    return new_event
   end
 end
 
