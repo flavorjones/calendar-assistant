@@ -6,23 +6,30 @@ describe CalendarAssistant::CLI do
   end
 
   describe "declare my geographic location for a day" do
-    it "creates an all-day event appropriately titled" do
-      mock_ca = instance_double("CalendarAssistant")
-      expect(CalendarAssistant).to receive(:new).with("foo@example").and_return(mock_ca)
-      expect(mock_ca).to receive("create_geographic_event").with(Chronic.parse("tomorrow"), "Palo Alto")
+    let(:mock_ca) { instance_double("CalendarAssistant") }
 
-      CalendarAssistant::CLI.start ["where", "foo@example", "tomorrow", "Palo Alto"]
+    before do
+      expect(CalendarAssistant).to receive(:new).with("foo@example").and_return(mock_ca)
     end
 
-    # it "creates a multi-day all-day event appropriately titled" do
-    #   expect(cal_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP} Palo Alto")
-    #   expect(cal_event).to receive(:all_day=).with(Chronic.parse("tomorrow"))
-    #   expect(cal_event).to receive(:end_time=).with((Chronic.parse("three days from now") + 1.day).beginning_of_day)
+    it "creates an all-day event appropriately titled" do
+      expect(mock_ca).to receive("create_geographic_event").with(Chronic.parse("tomorrow"), "Palo Alto")
 
-    #   CalendarAssistant::CLI.start ["where", "foo@example", "tomorrow ... three days from now", "Palo Alto"]
-    # end
-  end
+      CalendarAssistant::CLI.start ["location", "set", "foo@example", "tomorrow", "Palo Alto"]
+    end
 
-  describe "declare my geographic location for multiple days" do
+    context "creates a multi-day all-day event appropriately titled" do
+      it "with spaces" do
+        expect(mock_ca).to receive("create_geographic_event").with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day, "Palo Alto")
+
+        CalendarAssistant::CLI.start ["location", "set", "foo@example", "tomorrow ... three days from now", "Palo Alto"]
+      end
+
+      it "without spaces" do
+        expect(mock_ca).to receive("create_geographic_event").with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day, "Palo Alto")
+
+        CalendarAssistant::CLI.start ["location", "set", "foo@example", "tomorrow...three days from now", "Palo Alto"]
+      end
+    end
   end
 end
