@@ -15,7 +15,7 @@ describe CalendarAssistant do
         let(:event_time) { Chronic.parse("tomorrow") }
 
         it "creates an appropriately-titled all-day event" do
-          expect(calendar_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP} #{event_title}")
+          expect(calendar_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP}  #{event_title}")
           expect(calendar_event).to receive(:all_day=).with(event_time)
 
           ca.create_geographic_event(event_time, event_title)
@@ -48,7 +48,7 @@ describe CalendarAssistant do
         let(:event_end_time) { Chronic.parse("one week from now") }
 
         it "creates an appropriately-titled multi-day event" do
-          expect(calendar_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP} #{event_title}")
+          expect(calendar_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP}  #{event_title}")
           expect(calendar_event).to receive(:all_day=).with(event_start_time)
           expect(calendar_event).to receive(:end_time=).with((event_end_time + 1.day).beginning_of_day)
 

@@ -50,6 +50,16 @@ class CalendarAssistant
     Google::CalendarList.new params_for(calendar_id)
   end
 
+  def self.time_or_time_range userspec
+    if userspec =~ /\.\.\./
+      start_userspec, end_userspec = userspec.split("...")
+      start_time = Chronic.parse start_userspec.strip
+      end_time   = Chronic.parse end_userspec.strip
+      return start_time..end_time
+    end
+    Chronic.parse userspec
+  end
+
   def initialize calendar_id
     @calendar = CalendarAssistant.calendar_for calendar_id
   end
@@ -64,7 +74,7 @@ class CalendarAssistant
     end
 
     new_event = calendar.create_event do |event|
-      event.title = "#{EMOJI_WORLDMAP} #{location_name}"
+      event.title = "#{EMOJI_WORLDMAP}  #{location_name}"
       event.all_day = start_time
       event.end_time = end_time if end_time
     end
@@ -73,6 +83,17 @@ class CalendarAssistant
 
     return new_event
   end
+
+  def find_geographic_events time_or_range
+    events = if time_or_range.is_a?(Range)
+               calendar.find_events_in_range time_or_range.first, time_or_range.last, max_results: 2000
+             else
+               end_time = (time_or_range + 1.day).beginning_of_day
+               calendar.find_events_in_range time_or_range, end_time, max_results: 2000
+             end
+    events.find_all(&:assistant_geographic_event?)
+  end
 end
 
 require "calendar_assistant/cli"
+require "calendar_assistant/event_extensions"
