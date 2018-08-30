@@ -16,6 +16,13 @@ class CalendarAssistant
         end
       end
 
+      if response[:modified]
+        puts "Modified:"
+        response[:modified].each do |event|
+          puts event.to_assistant_s
+        end
+      end
+
       if response[:created]
         puts "Created:"
         response[:created].each do |event|

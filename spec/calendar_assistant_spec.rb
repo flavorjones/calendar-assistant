@@ -45,13 +45,23 @@ describe CalendarAssistant do
         context "when there's a pre-existing location event" do
           let(:existing_event) { instance_double("Google::Event") }
 
+          before do
+            expect(ca).to receive(:find_location_events).and_return([existing_event])
+            allow(new_event).to receive(:title=)
+            allow(new_event).to receive(:all_day=)
+            allow(new_event).to receive(:start_time).and_return(event_time.beginning_of_day)
+            allow(new_event).to receive(:end_time).and_return((event_time + 1.day).beginning_of_day)
+          end
+
           context "that lasts a single day" do
+            before do
+              # strings formatted like "2018-09-28T04:00:00Z"
+              allow(existing_event).to receive(:start_time).and_return(event_time.beginning_of_day.utc.xmlschema)
+              allow(existing_event).to receive(:end_time).and_return((event_time + 1.day).beginning_of_day.utc.xmlschema)
+            end
 
             it "removes the pre-existing event" do
-              expect(ca).to receive(:find_location_events).and_return([existing_event])
               expect(calendar).to receive(:delete_event).with(existing_event)
-              allow(new_event).to receive(:title=)
-              allow(new_event).to receive(:all_day=)
 
               ret = ca.create_location_event(event_time, event_title)
 
@@ -64,7 +74,26 @@ describe CalendarAssistant do
 
           context "that lasts multiple days" do
             context "when the new event overlaps the start of the pre-existing event" do
-              it "shrinks the pre-existing event"
+              # strings formatted like "2018-09-28T04:00:00Z"
+              let(:existing_start) { event_time.beginning_of_day.utc.xmlschema }
+              let(:existing_end) { (event_time + 5.days).beginning_of_day.utc.xmlschema }
+
+              before do
+                allow(existing_event).to receive(:start_time).and_return(existing_start)
+                allow(existing_event).to receive(:end_time).and_return(existing_end)
+              end
+
+              it "shrinks the pre-existing event" do
+                expect(calendar).to receive(:save_event).with(existing_event)
+                expect(existing_event).to receive(:start_time=).with(event_time.beginning_of_day + 1.day)
+
+                ret = ca.create_location_event(event_time, event_title)
+
+                expect(ret).to eq({
+                                    created: [new_event],
+                                    modified: [existing_event]
+                                  })
+              end
             end
 
             context "when the new event overlaps the end of the pre-existing event" do
