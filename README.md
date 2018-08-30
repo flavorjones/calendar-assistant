@@ -10,7 +10,7 @@ All datespecs and datetimespecs are interpreted by [Chronic](https://github.com/
 
 ### Tell people where you are at in the world
 
-Declare your geographic location as an all-day non-busy event:
+Declare your location as an all-day non-busy event:
 
 ``` bash
 calendar-assistant location set <calendar-id> <datespec> <location-name>

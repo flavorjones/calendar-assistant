@@ -14,24 +14,29 @@ describe CalendarAssistant::CLI do
 
   describe "set location" do
     context "for a date" do
-      it "calls create_geographic_event with the right arguments" do
-        expect(mock_ca).to receive("create_geographic_event").with(Chronic.parse("tomorrow"), "Palo Alto")
+      it "calls create_location_event with the right arguments" do
+        expect(mock_ca).to receive("create_location_event").
+                             with(Chronic.parse("tomorrow"), "Palo Alto")
 
         CalendarAssistant::CLI.start ["location", "set", calendar_id, "tomorrow", "Palo Alto"]
       end
     end
 
     context "for a date range with spaces" do
-      it "calls create_geographic_event with the right arguments" do
-        expect(mock_ca).to receive("create_geographic_event").with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day, "Palo Alto")
+      it "calls create_location_event with the right arguments" do
+        expect(mock_ca).to receive("create_location_event").
+                             with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day,
+                                   "Palo Alto")
 
         CalendarAssistant::CLI.start ["location", "set", calendar_id, "tomorrow ... three days from now", "Palo Alto"]
       end
     end
 
     context "for a date range without spaces" do
-      it "calls create_geographic_event with the right arguments" do
-        expect(mock_ca).to receive("create_geographic_event").with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day, "Palo Alto")
+      it "calls create_location_event with the right arguments" do
+        expect(mock_ca).to receive("create_location_event").
+                             with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day,
+                                   "Palo Alto")
 
         CalendarAssistant::CLI.start ["location", "set", calendar_id, "tomorrow...three days from now", "Palo Alto"]
       end
@@ -42,8 +47,8 @@ describe CalendarAssistant::CLI do
     let(:mock_events) { [instance_double("Google::Event"), instance_double("Google::Event")] }
 
     context "for a date" do
-      it "calls find_geographic_events with the right arguments" do
-        expect(mock_ca).to receive("find_geographic_events").
+      it "calls find_location_events with the right arguments" do
+        expect(mock_ca).to receive("find_location_events").
                              with(Chronic.parse("tomorrow")).
                              and_return(mock_events)
         mock_events.each { |mock_event| expect(mock_event).to receive(:to_assistant_s) }
@@ -53,8 +58,8 @@ describe CalendarAssistant::CLI do
     end
 
     context "for a date range" do
-      it "calls find_geographic_events with the right arguments" do
-        expect(mock_ca).to receive("find_geographic_events").
+      it "calls find_location_events with the right arguments" do
+        expect(mock_ca).to receive("find_location_events").
                              with(Chronic.parse("tomorrow")..Chronic.parse("one week from now")).
                              and_return(mock_events)
         mock_events.each { |mock_event| expect(mock_event).to receive(:to_assistant_s) }

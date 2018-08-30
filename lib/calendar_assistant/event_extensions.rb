@@ -6,12 +6,12 @@ require "google_calendar"
 
 module Google
   class Event
-    def assistant_geographic_event?
+    def assistant_location_event?
       title =~ /^#{CalendarAssistant::EMOJI_WORLDMAP}/
     end
 
     def to_assistant_s
-      if assistant_geographic_event?
+      if assistant_location_event?
         if Event.parse_time(end_time) - Event.parse_time(start_time) <= 1.day
           sprintf "%-23.23s |                         | %-40.40s",
                   Event.assistant_date(start_time), title

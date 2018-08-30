@@ -64,7 +64,7 @@ class CalendarAssistant
     @calendar = CalendarAssistant.calendar_for calendar_id
   end
 
-  def create_geographic_event time_or_range, location_name
+  def create_location_event time_or_range, location_name
     start_time = time_or_range
     end_time = nil
 
@@ -84,14 +84,14 @@ class CalendarAssistant
     return new_event
   end
 
-  def find_geographic_events time_or_range
+  def find_location_events time_or_range
     events = if time_or_range.is_a?(Range)
                calendar.find_events_in_range time_or_range.first, time_or_range.last, max_results: 2000
              else
                end_time = (time_or_range + 1.day).beginning_of_day
                calendar.find_events_in_range time_or_range, end_time, max_results: 2000
              end
-    events.find_all(&:assistant_geographic_event?)
+    events.find_all(&:assistant_location_event?)
   end
 end
 
