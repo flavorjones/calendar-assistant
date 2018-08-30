@@ -24,7 +24,11 @@ describe CalendarAssistant do
     before { allow(ca).to receive(:calendar).and_return(calendar) }
 
     describe "#create_location_event" do
-      before { expect(calendar).to receive(:create_event).and_yield(new_event) }
+      before do
+        expect(calendar).to receive(:create_event).
+                              and_yield(new_event).
+                              and_return(new_event)
+      end
 
       context "called with a Time" do
         let(:event_title) { "Palo Alto" }
@@ -33,13 +37,29 @@ describe CalendarAssistant do
         it "creates an appropriately-titled all-day event" do
           expect(new_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP}  #{event_title}")
           expect(new_event).to receive(:all_day=).with(event_time)
+          allow(ca).to receive(:find_location_events).and_return([])
 
           ca.create_location_event(event_time, event_title)
         end
 
         context "when there's a pre-existing location event" do
+          let(:existing_event) { instance_double("Google::Event") }
+
           context "that lasts a single day" do
-            it "removes the pre-existing event"
+
+            it "removes the pre-existing event" do
+              expect(ca).to receive(:find_location_events).and_return([existing_event])
+              expect(calendar).to receive(:delete_event).with(existing_event)
+              allow(new_event).to receive(:title=)
+              allow(new_event).to receive(:all_day=)
+
+              ret = ca.create_location_event(event_time, event_title)
+
+              expect(ret).to eq({
+                                  created: [new_event],
+                                  deleted: [existing_event]
+                                })
+            end
           end
 
           context "that lasts multiple days" do
@@ -67,6 +87,8 @@ describe CalendarAssistant do
           expect(new_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP}  #{event_title}")
           expect(new_event).to receive(:all_day=).with(event_start_time)
           expect(new_event).to receive(:end_time=).with((event_end_time + 1.day).beginning_of_day)
+
+          allow(ca).to receive(:find_location_events).and_return([])
 
           ca.create_location_event(event_start_time..event_end_time, event_title)
         end

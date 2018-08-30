@@ -73,15 +73,22 @@ class CalendarAssistant
       end_time = (time_or_range.last + 1.day).beginning_of_day
     end
 
+    overlapping_events = if time_or_range.is_a?(Range)
+                           find_location_events start_time..end_time
+                         else
+                           find_location_events start_time
+                         end
+    overlapping_events.each do |oe|
+      calendar.delete_event oe
+    end
+
     new_event = calendar.create_event do |event|
       event.title = "#{EMOJI_WORLDMAP}  #{location_name}"
       event.all_day = start_time
       event.end_time = end_time if end_time
     end
 
-    pp new_event.raw if new_event.respond_to?(:raw)
-
-    return new_event
+    return { created: [new_event], deleted: overlapping_events }
   end
 
   def find_location_events time_or_range

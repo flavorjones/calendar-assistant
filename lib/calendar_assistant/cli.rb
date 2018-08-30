@@ -7,7 +7,21 @@ class CalendarAssistant
     def set calendar_id, datespec, location
       ca = CalendarAssistant.new calendar_id
 
-      ca.create_location_event CalendarAssistant.time_or_time_range(datespec), location
+      response = ca.create_location_event CalendarAssistant.time_or_time_range(datespec), location
+
+      if response[:deleted]
+        puts "Deleted:"
+        response[:deleted].each do |event|
+          puts event.to_assistant_s
+        end
+      end
+
+      if response[:created]
+        puts "Created:"
+        response[:created].each do |event|
+          puts event.to_assistant_s
+        end
+      end
     end
 
     desc "get <calendar-id> <datespec>", "display your location for a date or range of dates"
