@@ -14,7 +14,7 @@ module Google
       if assistant_location_event?
         if Event.parse_time(end_time) - Event.parse_time(start_time) <= 1.day
           sprintf "%-23.23s |                         | %-40.40s",
-                  Event.assistant_date(start_time), title
+                  Event.assistant_date(Event.parse_time(start_time)), title
         else
           sprintf "%-23.23s | %-23.23s | %-40.40s",
                   Event.assistant_date(Event.parse_time(start_time)),

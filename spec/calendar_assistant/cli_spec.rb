@@ -26,7 +26,7 @@ describe CalendarAssistant::CLI do
       it "calls create_location_event with the right arguments" do
         expect(mock_ca).to receive("create_location_event").
                              with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day,
-                                   "Palo Alto")
+                                  "Palo Alto")
 
         CalendarAssistant::CLI.start ["location", "set", calendar_id, "tomorrow ... three days from now", "Palo Alto"]
       end
@@ -36,7 +36,7 @@ describe CalendarAssistant::CLI do
       it "calls create_location_event with the right arguments" do
         expect(mock_ca).to receive("create_location_event").
                              with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day,
-                                   "Palo Alto")
+                                  "Palo Alto")
 
         CalendarAssistant::CLI.start ["location", "set", calendar_id, "tomorrow...three days from now", "Palo Alto"]
       end

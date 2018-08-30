@@ -85,13 +85,16 @@ class CalendarAssistant
   end
 
   def find_location_events time_or_range
-    events = if time_or_range.is_a?(Range)
-               calendar.find_events_in_range time_or_range.first, time_or_range.last, max_results: 2000
-             else
-               end_time = (time_or_range + 1.day).beginning_of_day
-               calendar.find_events_in_range time_or_range, end_time, max_results: 2000
-             end
-    events.find_all(&:assistant_location_event?)
+    start_time, end_time = if time_or_range.is_a?(Range)
+                             [time_or_range.first.beginning_of_day,
+                              (time_or_range.last + 1.day).beginning_of_day]
+                           else
+                             [time_or_range.beginning_of_day,
+                              (time_or_range + 1.day).beginning_of_day]
+                           end
+
+    calendar.find_events_in_range(start_time, end_time, max_results: 2000).
+      find_all(&:assistant_location_event?)
   end
 end
 
