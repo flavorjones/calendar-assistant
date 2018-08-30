@@ -8,4 +8,8 @@ gem "business_time"
 group :test do
   gem "rspec"
   gem "timecop"
+
+  gem "autotest"
+  gem "rspec-autotest"
+  gem "test_notifier"
 end
