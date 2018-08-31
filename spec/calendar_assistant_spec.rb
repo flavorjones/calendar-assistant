@@ -51,14 +51,15 @@ describe CalendarAssistant do
             allow(new_event).to receive(:all_day=)
             allow(new_event).to receive(:start_time).and_return(event_time.beginning_of_day)
             allow(new_event).to receive(:end_time).and_return((event_time + 1.day).beginning_of_day)
+
+            # strings formatted like "2018-09-28T04:00:00Z" because of wonky Google::Event behavior
+            allow(existing_event).to receive(:start_time).and_return(existing_start.utc.xmlschema)
+            allow(existing_event).to receive(:end_time).and_return(existing_end.utc.xmlschema)
           end
 
           context "that lasts a single day" do
-            before do
-              # strings formatted like "2018-09-28T04:00:00Z"
-              allow(existing_event).to receive(:start_time).and_return(event_time.beginning_of_day.utc.xmlschema)
-              allow(existing_event).to receive(:end_time).and_return((event_time + 1.day).beginning_of_day.utc.xmlschema)
-            end
+            let(:existing_start) { event_time.beginning_of_day }
+            let(:existing_end) { (event_time + 1.day).beginning_of_day }
 
             it "removes the pre-existing event" do
               expect(calendar).to receive(:delete_event).with(existing_event)
@@ -77,12 +78,6 @@ describe CalendarAssistant do
               let(:existing_start) { event_time.beginning_of_day }
               let(:existing_end) { (event_time + 5.days).beginning_of_day }
 
-              before do
-                # strings formatted like "2018-09-28T04:00:00Z"
-                allow(existing_event).to receive(:start_time).and_return(existing_start.utc.xmlschema)
-                allow(existing_event).to receive(:end_time).and_return(existing_end.utc.xmlschema)
-              end
-
               it "shrinks the pre-existing event" do
                 expect(calendar).to receive(:save_event).with(existing_event)
                 expect(existing_event).to receive(:start_time=).with(event_time.beginning_of_day + 1.day)
@@ -98,14 +93,8 @@ describe CalendarAssistant do
             end
 
             context "when the new event overlaps the end of the pre-existing event" do
-              # strings formatted like "2018-09-28T04:00:00Z"
-              let(:existing_start) { (event_time - 5.days).beginning_of_day.utc.xmlschema }
-              let(:existing_end) { (event_time + 1.day).beginning_of_day.utc.xmlschema }
-
-              before do
-                allow(existing_event).to receive(:start_time).and_return(existing_start)
-                allow(existing_event).to receive(:end_time).and_return(existing_end)
-              end
+              let(:existing_start) { (event_time - 5.days).beginning_of_day }
+              let(:existing_end) { (event_time + 1.day).beginning_of_day }
 
               it "shrinks the pre-existing event" do
                 expect(calendar).to receive(:save_event).with(existing_event)
@@ -121,14 +110,8 @@ describe CalendarAssistant do
             end
 
             context "when the new event is in the middle of the pre-existing event" do
-              # strings formatted like "2018-09-28T04:00:00Z"
-              let(:existing_start) { (event_time - 5.days).beginning_of_day.utc.xmlschema }
-              let(:existing_end) { (event_time + 5.days).beginning_of_day.utc.xmlschema }
-
-              before do
-                allow(existing_event).to receive(:start_time).and_return(existing_start)
-                allow(existing_event).to receive(:end_time).and_return(existing_end)
-              end
+              let(:existing_start) { (event_time - 5.days).beginning_of_day }
+              let(:existing_end) { (event_time + 5.days).beginning_of_day }
 
               it "shrinks the pre-existing event" do
                 expect(calendar).to receive(:save_event).with(existing_event)
@@ -172,7 +155,7 @@ describe CalendarAssistant do
             allow(new_event).to receive(:start_time).and_return(event_start_time.beginning_of_day)
             allow(new_event).to receive(:end_time).and_return((event_end_time + 1.day).beginning_of_day)
 
-            # strings formatted like "2018-09-28T04:00:00Z"
+            # strings formatted like "2018-09-28T04:00:00Z" because of wonky Google::Event behavior
             allow(existing_event).to receive(:start_time).and_return(existing_start.utc.xmlschema)
             allow(existing_event).to receive(:end_time).and_return(existing_end.utc.xmlschema)
           end
