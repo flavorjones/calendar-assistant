@@ -120,7 +120,26 @@ describe CalendarAssistant do
             end
 
             context "when the new event is in the middle of the pre-existing event" do
-              it "splits the pre-existing event"
+              # strings formatted like "2018-09-28T04:00:00Z"
+              let(:existing_start) { (event_time - 5.days).beginning_of_day.utc.xmlschema }
+              let(:existing_end) { (event_time + 5.days).beginning_of_day.utc.xmlschema }
+
+              before do
+                allow(existing_event).to receive(:start_time).and_return(existing_start)
+                allow(existing_event).to receive(:end_time).and_return(existing_end)
+              end
+
+              it "shrinks the pre-existing event" do
+                expect(calendar).to receive(:save_event).with(existing_event)
+                expect(existing_event).to receive(:end_time=).with(event_time.beginning_of_day)
+
+                ret = ca.create_location_event(event_time, event_title)
+
+                expect(ret).to eq({
+                                    created: [new_event],
+                                    modified: [existing_event]
+                                  })
+              end
             end
           end
         end
@@ -250,5 +269,5 @@ describe CalendarAssistant do
         end
       end
     end
-end
+  end
 end

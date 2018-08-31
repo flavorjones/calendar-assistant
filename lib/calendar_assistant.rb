@@ -101,7 +101,7 @@ class CalendarAssistant
         if oe_start >= ne_start && oe_end > ne_end
           overlapping_event.start_time = ne_end
           calendar.save_event overlapping_event
-        elsif oe_start < ne_start && oe_end <= ne_end
+        elsif oe_start < ne_start
           overlapping_event.end_time = ne_start
           calendar.save_event overlapping_event
         else
