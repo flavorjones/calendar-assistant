@@ -13,6 +13,7 @@ class CalendarAssistant
         puts "Deleted:"
         response[:deleted].each do |event|
           puts event.to_assistant_s
+          puts event.raw if options[:verbose]
         end
       end
 
@@ -20,6 +21,7 @@ class CalendarAssistant
         puts "Modified:"
         response[:modified].each do |event|
           puts event.to_assistant_s
+          puts event.raw if options[:verbose]
         end
       end
 
@@ -27,6 +29,7 @@ class CalendarAssistant
         puts "Created:"
         response[:created].each do |event|
           puts event.to_assistant_s
+          puts event.raw if options[:verbose]
         end
       end
     end
