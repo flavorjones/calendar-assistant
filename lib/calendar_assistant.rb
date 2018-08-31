@@ -94,12 +94,13 @@ class CalendarAssistant
       ne_start = Time.parse new_event.start_time.to_s
       ne_end = Time.parse new_event.end_time.to_s
 
-      if oe_end - oe_start <= 1.day
+      if oe_start >= ne_start && oe_end <= ne_end
         calendar.delete_event overlapping_event
         deleted_events << overlapping_event
       else
         if oe_start >= ne_start && oe_end > ne_end
           overlapping_event.start_time = ne_end
+          overlapping_event.end_time = oe_end
           calendar.save_event overlapping_event
         elsif oe_start < ne_start
           overlapping_event.end_time = ne_start
