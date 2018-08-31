@@ -1,21 +1,27 @@
 # TODO
 
-## Experiments
+## User onboarding experience
 
-- [x] how do I authenticate without writing creds to disk
-- [x] can I determine people's native timezones
-- [-] can I resolve email address to a person's name
-- [x] can I see other people's busy/free status
+use https://github.com/gsuitedevs/ruby-samples/blob/master/calendar/quickstart/quickstart.rb
+
+store tokens in a file in the home directory, set permissions appropriately
 
 
-## Notes
+## then
 
-If an event is only visible via free/busy status, it will be `visibility: private` and the person is assumed to be busy
+- convert location events to use google's API, removing northworld's gem
+- explore 1:1s
+  - can we view 1:1s
+  - use https://github.com/seejohnrun/ice_cube to print the human description of recurrence
+- change recurrence of an event
+  - set end on current
+  - create a new one
+  - find an empty slot (in that user's time zone!)
+- make a gem
+  - ruby 2.3 and later (e.g., squiggly heredoc)
+  - APL2 license (e.g., google)
 
-If an event is only for the person, attendees will be nil and the person is assumed to be busy.
+## later?
 
-If there are attendees, then the person's response will be one of:
-- accepted, and the person is assumed to be busy
-- needsAction or tentative, and the person might be busy
-- declined, and the person is assumed to be not attending that meeting
-
+- integrate with the zoom API to generate some zoom rooms
+- how does the OOO feature work with free/busy?
