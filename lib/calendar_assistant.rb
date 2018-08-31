@@ -98,17 +98,14 @@ class CalendarAssistant
         calendar.delete_event overlapping_event
         deleted_events << overlapping_event
       else
-        puts "MIKE: compare oe #{oe_start}-#{oe_end} to new #{new_event.start_time}-#{new_event.end_time}"
         if oe_start >= ne_start && oe_end > ne_end
-          puts "MIKE: CASE 1"
           overlapping_event.start_time = ne_end
           calendar.save_event overlapping_event
         elsif oe_start < ne_start && oe_end <= ne_end
-          puts "MIKE: CASE 2"
           overlapping_event.end_time = ne_start
           calendar.save_event overlapping_event
         else
-          raise "hell"
+          raise "unknown date range overlap"
         end
         modified_events << overlapping_event
       end
