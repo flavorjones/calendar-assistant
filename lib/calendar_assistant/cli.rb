@@ -2,6 +2,48 @@ require "thor"
 require "chronic"
 
 class CalendarAssistant
+  class CLI < Thor
+    desc 'authorize PROFILE_NAME', 'create (or validate) a named profile with calendar access'
+    long_desc <<~EOD
+
+      Create and authorize a named profile (e.g., "work", "home",
+      "flastname@company.tld") to access your calendar.
+
+      When setting up a profile, you'll be asked to visit a URL to
+      authenticate, grant authorization, and generate and persist an
+      access token.
+
+      In order for this to work, you'll need to follow the
+      instructions at this URL first:
+
+      > https://developers.google.com/calendar/quickstart/ruby
+
+      Namely, the prerequisites are:
+
+      (1) Turn on the Google API for your account
+      \x5(2) Create a new Google API Project
+      \x5(3) Download the configuration file for the Project, and name it as `credentials.json`
+    EOD
+    def authorize profile_name
+      service = CalendarAssistant.authorize profile_name
+      puts "\nYou're authorized!\n\n"
+
+      puts 'Upcoming events:'
+      response = service.list_events('primary', max_results: 10, single_events: true, order_by: 'startTime', time_min: Time.now.iso8601)
+      if response.items.empty?
+        puts '(No upcoming events found)'
+      else
+        response.items.each do |event|
+          start = event.start.date || event.start.date_time
+          puts "- #{event.summary} (#{start})"
+        end
+      end
+    end
+  end
+end
+
+
+class OldCalendarAssistant
   class Location < Thor
     desc "set <calendar-id> <datespec> <location>", "create an all-day event to declare your location"
     def set calendar_id, datespec, location

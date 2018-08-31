@@ -3,18 +3,23 @@ require "google_calendar"
 require "json"
 require "yaml"
 require "business_time"
+require "google/apis/calendar_v3"
 
 class CalendarAssistant
+  EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
+  EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
+  EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
+
+  def self.authorize profile_name
+    Authorizer.authorize profile_name
+  end
+end
+
+class OldCalendarAssistant
   attr_reader :calendar
 
   CLIENT_ID_FILE = "client_id.json"
   CALENDAR_TOKENS_FILE = "calendar_tokens.yml"
-
-  EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
-  EMOJI_PUSHPIN   = "📍" # U+1F4CD ROUND PUSHPIN
-  EMOJI_FLAG      = "🚩" # U+1F6A9 TRIANGULAR FLAG ON POST
-  EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
-  EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
 
   def self.token_for calendar_id
     calendar_tokens = File.exists?(CALENDAR_TOKENS_FILE) ?
@@ -136,5 +141,5 @@ class CalendarAssistant
   end
 end
 
+require "calendar_assistant/authorizer"
 require "calendar_assistant/cli"
-require "calendar_assistant/event_extensions"

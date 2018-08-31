@@ -5,6 +5,8 @@ gem "chronic"
 gem "thor"
 gem "business_time"
 
+gem "google-api-client"
+
 group :test do
   gem "rspec"
   gem "timecop"
