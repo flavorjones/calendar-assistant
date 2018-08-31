@@ -9,7 +9,7 @@ class CalendarAssistant
 
   CLIENT_ID_FILE = "client_id.json"
   CALENDAR_TOKENS_FILE = "calendar_tokens.yml"
-  
+
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
   EMOJI_PUSHPIN   = "📍" # U+1F4CD ROUND PUSHPIN
   EMOJI_FLAG      = "🚩" # U+1F6A9 TRIANGULAR FLAG ON POST
@@ -119,6 +119,10 @@ class CalendarAssistant
   end
 
   def find_location_events time_or_range
+    find_events(time_or_range).find_all(&:assistant_location_event?)
+  end
+
+  def find_events time_or_range
     start_time, end_time = if time_or_range.is_a?(Range)
                              [time_or_range.first.beginning_of_day,
                               (time_or_range.last + 1.day).beginning_of_day]
@@ -127,8 +131,7 @@ class CalendarAssistant
                               (time_or_range + 1.day).beginning_of_day]
                            end
 
-    calendar.find_events_in_range(start_time, end_time, max_results: 2000).
-      find_all(&:assistant_location_event?)
+    calendar.find_events_in_range(start_time, end_time, max_results: 2000)
   end
 end
 

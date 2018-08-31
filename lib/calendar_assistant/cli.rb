@@ -38,11 +38,25 @@ class CalendarAssistant
       events = ca.find_location_events CalendarAssistant.time_or_time_range(datespec)
       events.each do |event|
         puts event.to_assistant_s
+        pp event.raw if options[:verbose]
       end
     end
   end
 
   class CLI < Thor
+    class_option :verbose, type: :boolean, aliases: [:v]
+
+    desc "get <calendar-id> <datespec>", "display events for a date or range of dates"
+    def get calendar_id, datespec
+      ca = CalendarAssistant.new calendar_id
+
+      events = ca.find_events CalendarAssistant.time_or_time_range(datespec)
+      events.each do |event|
+        puts event.to_assistant_s
+        pp event.raw if options[:verbose]
+      end
+    end
+
     desc "location <subcommand> ...args", "manage your location via all-day calendar events"
     subcommand "location", Location
   end

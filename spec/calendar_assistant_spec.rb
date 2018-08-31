@@ -163,6 +163,50 @@ describe CalendarAssistant do
       end
     end
 
+    describe "#find_events" do
+      let(:existing_event) { instance_double("Google::Event") }
+      let(:existing_location_event) { instance_double("Google::Event") }
+      let(:event_time) { Chronic.parse("tomorrow") }
+
+      before do
+        allow(existing_event).to receive(:assistant_location_event?) { false }
+        allow(existing_location_event).to receive(:assistant_location_event?) { true }
+      end
+
+      context "passed a Time" do
+        it "fetches events for that day" do
+          search_start_time = event_time.beginning_of_day
+          search_end_time = (event_time + 1.day).beginning_of_day
+
+          expect(calendar).to receive(:find_events_in_range).
+                                with(search_start_time, search_end_time, hash_including(max_results: anything)).
+                                and_return([existing_event, existing_location_event])
+
+          events = ca.find_events(event_time)
+
+          expect(events).to eq([existing_event, existing_location_event])
+        end
+      end
+
+      context "passed a Range of Times" do
+        it "fetches events for that date range" do
+          query_start = event_time - 1.day
+          query_end = event_time + 1.day
+
+          search_start_time = query_start.beginning_of_day
+          search_end_time = (query_end + 1.day).beginning_of_day
+
+          expect(calendar).to receive(:find_events_in_range).
+                                with(search_start_time, search_end_time, hash_including(max_results: anything)).
+                                and_return([existing_event, existing_location_event])
+
+          events = ca.find_events(query_start..query_end)
+
+          expect(events).to eq([existing_event, existing_location_event])
+        end
+      end
+    end
+
     describe "#find_location_events" do
       let(:existing_event) { instance_double("Google::Event") }
       let(:existing_location_event) { instance_double("Google::Event") }
@@ -206,5 +250,5 @@ describe CalendarAssistant do
         end
       end
     end
-  end
+end
 end
