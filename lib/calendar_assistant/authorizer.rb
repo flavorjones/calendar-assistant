@@ -22,6 +22,8 @@ require 'googleauth/stores/file_token_store'
 
 class CalendarAssistant
   module Authorizer
+    class UnauthorizedError < RuntimeError ; end
+
     OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
     APPLICATION_NAME = "Flavorjones Calendar Assistant".freeze
     CREDENTIALS_PATH = 'credentials.json'.freeze
@@ -48,7 +50,7 @@ class CalendarAssistant
       credentials = authorizer.get_credentials profile_name
 
       if credentials.nil?
-        raise "Not authorized. Please run `calendar-assistant authorize #{profile_name}`" unless create_profile_p
+        raise UnauthorizedError, "Not authorized. Please run `calendar-assistant authorize #{profile_name}`" unless create_profile_p
 
         url = authorizer.get_authorization_url(base_url: OOB_URI)
         puts "Open the following URL in the browser and enter the resulting code after authorization:"

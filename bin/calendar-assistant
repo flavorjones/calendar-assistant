@@ -2,4 +2,9 @@
 
 require "calendar_assistant"
 
-CalendarAssistant::CLI.start ARGV
+begin
+  CalendarAssistant::CLI.start ARGV
+rescue CalendarAssistant::Authorizer::UnauthorizedError => e
+  printf "ERROR: %s\n", e
+  exit 1
+end
