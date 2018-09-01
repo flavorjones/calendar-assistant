@@ -9,7 +9,7 @@ def usage
   exit 1
 end
 
-require_relative 'calendar-assistant'
+require 'calendar_assistant'
 
 usage unless ARGV[0]
 CALENDAR_ID = ARGV[0]
