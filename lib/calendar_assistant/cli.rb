@@ -2,6 +2,34 @@ require "thor"
 require "chronic"
 
 class CalendarAssistant
+  class Helpers
+    def self.time_or_time_range userspec
+      if userspec =~ /\.\.\./
+        start_userspec, end_userspec = userspec.split("...")
+        start_time = Chronic.parse start_userspec.strip
+        end_time   = Chronic.parse end_userspec.strip
+        return start_time..end_time
+      end
+      Chronic.parse userspec
+    end
+
+    def self.print_events ca, events
+      puts "#{ITALIC_ON}(All times are in #{ca.calendar.time_zone})#{ITALIC_OFF}"
+      events.each do |event|
+        puts ca.event_description event
+      end if events
+    end
+  end
+
+  class Location < Thor
+    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your location for a date or range of dates"
+    def show calendar_id, datespec="today"
+      ca = CalendarAssistant.new calendar_id
+      events = ca.find_location_events Helpers.time_or_time_range(datespec)
+      Helpers.print_events ca, events
+    end
+  end
+
   class CLI < Thor
     desc 'authorize PROFILE_NAME', 'create (or validate) a named profile with calendar access'
     long_desc <<~EOD
@@ -25,19 +53,18 @@ class CalendarAssistant
       \x5(3) Download the configuration file for the Project, and name it as `credentials.json`
     EOD
     def authorize profile_name
-      service = CalendarAssistant.authorize profile_name
+      CalendarAssistant.authorize profile_name
       puts "\nYou're authorized!\n\n"
+    end
 
-      puts 'Upcoming events:'
-      response = service.list_events('primary', max_results: 10, single_events: true, order_by: 'startTime', time_min: Time.now.iso8601)
-      if response.items.empty?
-        puts '(No upcoming events found)'
-      else
-        response.items.each do |event|
-          start = event.start.date || event.start.date_time
-          puts "- #{event.summary} (#{start})"
-        end
-      end
+    desc "location SUBCOMMAND ...ARGS", "manage your location via all-day calendar events"
+    subcommand "location", Location
+
+    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your events for a date or range of dates"
+    def show calendar_id, datespec="today"
+      ca = CalendarAssistant.new calendar_id
+      events = ca.find_events Helpers.time_or_time_range(datespec)
+      Helpers.print_events ca, events
     end
   end
 end
@@ -75,17 +102,6 @@ class OldCalendarAssistant
         end
       end
     end
-
-    desc "get <calendar-id> <datespec>", "display your location for a date or range of dates"
-    def get calendar_id, datespec
-      ca = CalendarAssistant.new calendar_id
-
-      events = ca.find_location_events CalendarAssistant.time_or_time_range(datespec)
-      events.each do |event|
-        puts event.to_assistant_s
-        pp event.raw if options[:verbose]
-      end
-    end
   end
 
   class CLI < Thor
@@ -101,8 +117,5 @@ class OldCalendarAssistant
         pp event.raw if options[:verbose]
       end
     end
-
-    desc "location <subcommand> ...args", "manage your location via all-day calendar events"
-    subcommand "location", Location
   end
 end
