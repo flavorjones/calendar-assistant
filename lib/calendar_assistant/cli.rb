@@ -26,7 +26,7 @@ class CalendarAssistant
   end
 
   class Location < Thor
-    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your location for a date or range of dates"
+    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your location for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_location_events Helpers.time_or_time_range(datespec)
@@ -66,7 +66,7 @@ class CalendarAssistant
     desc "location SUBCOMMAND ...ARGS", "manage your location via all-day calendar events"
     subcommand "location", Location
 
-    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your events for a date or range of dates"
+    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your events for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_events Helpers.time_or_time_range(datespec)

@@ -81,13 +81,13 @@ $ calendar-assistant location set me@example.com "next monday ... next week frid
 ### Look up where you're going to be
 
 ``` bash
-calendar-assistant location get <calendar-id> [<datespec>]
+calendar-assistant location show <calendar-id> [<datespec>]
 ```
 
 For example:
 
 ``` bash
-$ calendar-assistant location get me@example.com "today...next month"
+$ calendar-assistant location show me@example.com "today...next month"
 
 (All times are in America/New_York)
 2018-09-04 - 2018-09-08 | 🗺  NYC (not-busy, self)
