@@ -3,6 +3,13 @@
 A project to help me book (and re-book) one-on-ones and other meetings automatically.
 
 
+## Usage
+
+Head to https://developers.google.com/calendar/quickstart/ruby to enable the Calendar API for your account and create a new project. Save the project info in `credentials.json`.
+
+Then run `calendar-assistant authorize <profile-name>` (see below for details).
+
+
 ## Features
 
 All datespecs and datetimespecs are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times. For a date range or a datetime range, split the start and end with `...` like "tomorrow ... three days from now" or "2018-09-24...2018-09-27".
@@ -142,15 +149,6 @@ Google Calendar Concepts: https://developers.google.com/calendar/concepts/
 Google's API docs: https://www.rubydoc.info/github/google/google-api-ruby-client/Google/Apis/CalendarV3
 
 Recurrence: https://github.com/seejohnrun/ice_cube
-
-
-## Usage
-
-Generate a GCal OAuth client id and secret. See Northworld's google_calendar gem README for the steps. The file should be named `client_id.json`.
-
-In GCal, go to your calendar's Settings and grab the "Secret address in iCal format". Pass that to the authorize script.
-
-The refresh token will be written to `calendar_tokens.yml`, which you should be careful not to share or make public.
 
 
 ## License
