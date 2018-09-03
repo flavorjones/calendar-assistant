@@ -10,18 +10,28 @@ All datespecs and datetimespecs are interpreted by [Chronic](https://github.com/
 Events are nicely formatted, with strikeouts for events you've declined, and some additional attributes listed when present (e.g., "needsAction", "self", "not-busy", ....)
 
 
+### Authorize access to your Google Calendar
+
+``` bash
+calendar-assistant authorize <profile-name>
+```
+
+This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`. The refresh token will be written to `calendar_tokens.yml`, which you should be careful not to share or make public.
+
+
 ### Display your calendar events
 
 ``` bash
-calendar-assistant show <calendar-id> [<datespec>]
+calendar-assistant show [-v] <profile-name> [<datespec>]
 ```
 
 For example:
 
 ``` bash
 # show me my day
-$ calendar-assistant show me@example.com
+$ calendar-assistant show work
 
+2018-11-01                | 🗺  NYC (not-busy, self)
 2019-11-01  08:00 - 09:00 | Commuting/Email (self)
 2019-11-01  11:00 - 12:00 | Jimbo/Mike 1:1
 2019-11-01  11:00 - 11:00 | CF NYC Planning: Allocations & Interviews
@@ -35,11 +45,11 @@ $ calendar-assistant show me@example.com
 2019-11-01  16:00 - 17:00 | Mike/Julie T. 1:1
 2019-11-01  18:00 - 19:00 | OOO  (self)
 
-(All times are in America/New_York)
 
 # show me my day, with recurrence information for each event
-$ calendar-assistant show me@example.com tuesday -v
+$ calendar-assistant show work tuesday -v
 
+2018-11-01                | 🗺  NYC (not-busy, self)
 2019-11-01  08:00 - 09:00 | Commuting/Email (self) [Weekly on Weekdays]
 2019-11-01  11:00 - 12:00 | Jimbo/Mike 1:1 [Every 2 weeks on Fridays]
 2019-11-01  11:00 - 11:00 | CF NYC Planning: Allocations & Interviews [Weekly on Fridays]
@@ -59,46 +69,57 @@ $ calendar-assistant show me@example.com tuesday -v
 Declare your location as an all-day non-busy event:
 
 ``` bash
-calendar-assistant location set <calendar-id> <datespec> <location-name>
+calendar-assistant location set <profile-name> <location-name> [<datespec>]
 ```
+
+**Note** that you can only be in one place at a time, so existing location events may be modified or deleted when new overlapping events are created.
 
 Some examples:
 
 ``` bash
-# create an event titled `🗺 WFH` tomorrow
-$ calendar-assistant location set me@example.com tomorrow WFH
+# create an event titled `🗺 WFH` for today
+$ calendar-assistant location set work WFH
+Created:
+2018-09-03                | 🗺  WFH (not-busy, self)
 
-# create an event titled `🗺 OOO` on New Year's Day
-$ calendar-assistant location set me@example.com 2019-01-01 OOO
+# create an event titled `🗺 OOO` for tomorrow
+$ calendar-assistant location set work OOO tomorrow
+Created:
+2018-09-04                | 🗺  OOO (not-busy, self)
 
 # create an event titled `🗺 Spring One` on the days of that conference
-$ calendar-assistant location set me@example.com "2018-09-24...2018-09-27" "Spring One"
+$ calendar-assistant location set work "Spring One" 2018-09-24...2018-09-27
+Created:
+2018-09-24 - 2018-09-27   | 🗺  Spring One (not-busy, self)
 
 # create a vacation event for next week
-$ calendar-assistant location set me@example.com "next monday ... next week friday" "Vacation!"
+$ calendar-assistant location set work "Vacation!" "next monday ... next week friday"
+Created:
+2018-09-10 - 2018-09-14   | 🗺  Vacation! (not-busy, self)
 ```
 
 ### Look up where you're going to be
 
 ``` bash
-calendar-assistant location show <calendar-id> [<datespec>]
+calendar-assistant location show [-v] <profile-name> [<datespec>]
 ```
 
 For example:
 
 ``` bash
-$ calendar-assistant location show me@example.com "today...next month"
+$ calendar-assistant location show work "today...next month"
 
-(All times are in America/New_York)
-2018-09-04 - 2018-09-08 | 🗺  NYC (not-busy, self)
-2018-09-24 - 2018-09-28 | 🗺  Spring One @DC (not-busy, self)
-2018-09-28 - 2018-09-29 | 🗺  WFH (not-busy, self)
+2018-09-04 - 2018-09-07 | 🗺  NYC (not-busy, self)
+2018-09-24 - 2018-09-27 | 🗺  Spring One @DC (not-busy, self)
+2018-09-28              | 🗺  WFH (not-busy, self)
 ```
 
 ### Future
 
 Practing Readme-Driven-Development (RDD), some features I'd like to build are:
 
+- ability to be busy for location events (e.g. vacation)
+  - I'd like to test interaction between this and the OOO feature
 - create variations on 1:1s
   - every N weeks for 30 minutes
   - every N weeks alternating 30 and 60 minutes
