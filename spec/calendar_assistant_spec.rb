@@ -214,39 +214,5 @@ describe CalendarAssistant do
         end
       end
     end
-
-    context "called with a Date Range" do
-      it "creates an appropriately-titled multi-day event" do
-      end
-
-      context "when there's a pre-existing location event" do
-        context "that lasts a single day" do
-          it "removes the pre-existing event" do
-          end
-        end
-
-        context "that lasts multiple days" do
-          context "when the new event entirely overlaps the pre-existing event" do
-            it "removes the pre-existing event" do
-            end
-          end
-
-          context "when the new event overlaps the start of the pre-existing event" do
-            it "shrinks the pre-existing event" do
-            end
-          end
-
-          context "when the new event overlaps the end of the pre-existing event" do
-            it "shrinks the pre-existing event" do
-            end
-          end
-
-          context "when the new event is in the middle of the pre-existing event" do
-            it "shrinks the pre-existing event" do
-            end
-          end
-        end
-      end
-    end
   end
 end
