@@ -103,3 +103,11 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+RSpec::Matchers.define :event_date_time do |options|
+  if options[:date]
+    match { |actual| actual.to_s == options[:date].iso8601 }
+  else
+    raise "only supports dates right now"
+  end
+end

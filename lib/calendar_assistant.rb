@@ -7,6 +7,8 @@ require "google/apis/calendar_v3"
 require "ice_cube"
 
 class CalendarAssistant
+  GCal = Google::Apis::CalendarV3
+
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
   EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
@@ -26,9 +28,14 @@ class CalendarAssistant
     Authorizer.authorize profile_name
   end
 
-  def self.range_cast time_or_time_range
-    return time_or_time_range if time_or_time_range.is_a?(Range)
+  def self.time_range_cast time_or_time_range
+    return time_or_time_range.first.to_time..time_or_time_range.last.to_time if time_or_time_range.is_a?(Range)
     time_or_time_range.beginning_of_day..time_or_time_range.end_of_day
+  end
+
+  def self.date_range_cast date_or_date_range
+    return date_or_date_range.first.to_date..date_or_date_range.last.to_date if date_or_date_range.is_a?(Range)
+    date_or_date_range.to_date..date_or_date_range.to_date
   end
 
   def initialize profile_name
@@ -37,7 +44,7 @@ class CalendarAssistant
   end
 
   def find_events time_or_range
-    range = CalendarAssistant.range_cast time_or_range
+    range = CalendarAssistant.time_range_cast time_or_range
     events = service.list_events(DEFAULT_CALENDAR_ID,
                                  time_min: range.first.iso8601,
                                  time_max: range.last.iso8601,
@@ -52,10 +59,19 @@ class CalendarAssistant
     find_events(time_or_range).select { |e| e.location_event? }
   end
 
+  def create_location_event time_or_range, location
+    range = CalendarAssistant.date_range_cast time_or_range
+    event = GCal::Event.new start: GCal::EventDateTime.new(date: range.first.iso8601),
+                            end: GCal::EventDateTime.new(date: range.last.iso8601),
+                            summary: "#{EMOJI_WORLDMAP}  #{location}"
+    event = service.insert_event DEFAULT_CALENDAR_ID, event
+    return {created: [event]}
+  end
+
   def event_description event, options={}
     attributes = event_attributes(event)
-    declined = attributes.delete Google::Apis::CalendarV3::Event::RESPONSE_DECLINED
-    attributes.delete Google::Apis::CalendarV3::Event::RESPONSE_ACCEPTED
+    declined = attributes.delete GCal::Event::RESPONSE_DECLINED
+    attributes.delete GCal::Event::RESPONSE_ACCEPTED
     recurring = attributes.delete "recurring"
 
     s = sprintf "%-25.25s | #{BOLD_ON}%s#{BOLD_OFF}", event_date_description(event), event.summary

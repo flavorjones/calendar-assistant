@@ -91,36 +91,46 @@ describe CalendarAssistant::CLI do
         end
       end
 
-      xdescribe "set" do
+      describe "set" do
+        context "with no datespec" do
+          it "calls find_events for today" do
+            expect(ca).to receive("create_location_event").
+                            with(Chronic.parse("today"), "Palo Alto").
+                            and_return({})
+
+            CalendarAssistant::CLI.start ["location", "set", profile_name, "Palo Alto"]
+          end
+        end
+
         context "for a date" do
           it "calls create_location_event with the right arguments" do
-            expect(mock_ca).to receive("create_location_event").
-                                 with(Chronic.parse("tomorrow"), "Palo Alto").
-                                 and_return({})
+            expect(ca).to receive("create_location_event").
+                            with(Chronic.parse("tomorrow"), "Palo Alto").
+                            and_return({})
 
-            CalendarAssistant::CLI.start ["location", "set", calendar_id, "tomorrow", "Palo Alto"]
+            CalendarAssistant::CLI.start ["location", "set", profile_name, "Palo Alto", "tomorrow"]
           end
         end
 
         context "for a date range with spaces" do
           it "calls create_location_event with the right arguments" do
-            expect(mock_ca).to receive("create_location_event").
-                                 with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day,
-                                      "Palo Alto").
-                                 and_return({})
+            expect(ca).to receive("create_location_event").
+                            with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day,
+                                 "Palo Alto").
+                            and_return({})
 
-            CalendarAssistant::CLI.start ["location", "set", calendar_id, "tomorrow ... three days from now", "Palo Alto"]
+            CalendarAssistant::CLI.start ["location", "set", profile_name, "Palo Alto", "tomorrow ... three days from now"]
           end
         end
 
         context "for a date range without spaces" do
           it "calls create_location_event with the right arguments" do
-            expect(mock_ca).to receive("create_location_event").
-                                 with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day,
-                                      "Palo Alto").
-                                 and_return({})
+            expect(ca).to receive("create_location_event").
+                            with(Chronic.parse("tomorrow")..(Chronic.parse("three days from now") + 1.day).beginning_of_day,
+                                 "Palo Alto").
+                            and_return({})
 
-            CalendarAssistant::CLI.start ["location", "set", calendar_id, "tomorrow...three days from now", "Palo Alto"]
+            CalendarAssistant::CLI.start ["location", "set", profile_name, "Palo Alto", "tomorrow...three days from now"]
           end
         end
       end

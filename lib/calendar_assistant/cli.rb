@@ -32,6 +32,16 @@ class CalendarAssistant
       events = ca.find_location_events Helpers.time_or_time_range(datespec)
       Helpers.print_events ca, events, verbose: options[:verbose]
     end
+
+    desc "set PROFILE_NAME LOCATION [DATE | DATERANGE]", "show your location for a date or range of dates (default today)"
+    def set calendar_id, location, datespec="today"
+      ca = CalendarAssistant.new calendar_id
+      events = ca.create_location_event Helpers.time_or_time_range(datespec), location
+      events.keys.each do |key|
+        puts "#{BOLD_ON}#{key.capitalize}:#{BOLD_OFF}"
+        Helpers.print_events ca, events[key], verbose: options[:verbose]
+      end
+    end
   end
 
   class CLI < Thor

@@ -28,7 +28,7 @@ class CalendarAssistant
     APPLICATION_NAME = "Flavorjones Calendar Assistant".freeze
     CREDENTIALS_PATH = 'credentials.json'.freeze
     TOKEN_PATH = 'token.yaml'.freeze
-    SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY
+    SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR
 
     def self.authorize profile_name
       auth_impl profile_name, true

@@ -1,11 +1,13 @@
 describe CalendarAssistant do
+  GCal = Google::Apis::CalendarV3
+
   describe "event visitors" do
     it "tests event_date_description"
     it "tests event_description"
     it "tests event_attributes"
   end
 
-  describe "event finders" do
+  describe "events" do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
     let(:ca) { CalendarAssistant.new "profilename" }
@@ -34,7 +36,7 @@ describe CalendarAssistant do
           expect(service).to receive(:list_events).with(CalendarAssistant::DEFAULT_CALENDAR_ID,
                                                         hash_including(time_min: time.beginning_of_day.iso8601,
                                                                        time_max: time.end_of_day.iso8601)).
-                             and_return(events)
+                               and_return(events)
           result = ca.find_events time
           expect(result).to eq(event_array)
         end
@@ -46,7 +48,7 @@ describe CalendarAssistant do
           expect(service).to receive(:list_events).with(CalendarAssistant::DEFAULT_CALENDAR_ID,
                                                         hash_including(time_min: time.first.iso8601,
                                                                        time_max: time.last.iso8601)).
-                             and_return(events)
+                               and_return(events)
           result = ca.find_events time
           expect(result).to eq(event_array)
         end
@@ -75,6 +77,23 @@ describe CalendarAssistant do
 
         result = ca.find_location_events time
         expect(result).to eq([location_event])
+      end
+    end
+
+    describe "#create_location_event" do
+      let(:new_event) { instance_double("GCal::Event") }
+
+      context "called with a date" do
+        it "creates an appropriately-titled all-day event" do
+          expect(GCal::Event).to(receive(:new).
+                                   with(start: event_date_time(date: Date.today),
+                                        end: event_date_time(date: Date.today),
+                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH").
+                                   and_return(new_event))
+          expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event)
+
+          ca.create_location_event Time.now, "WFH"
+        end
       end
     end
   end
