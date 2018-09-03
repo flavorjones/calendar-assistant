@@ -2,65 +2,85 @@ require "thor"
 require "chronic"
 
 class CalendarAssistant
-  class Location < Thor
-    desc "set <calendar-id> <datespec> <location>", "create an all-day event to declare your location"
-    def set calendar_id, datespec, location
-      ca = CalendarAssistant.new calendar_id
-
-      response = ca.create_location_event CalendarAssistant.time_or_time_range(datespec), location
-
-      if response[:deleted]
-        puts "Deleted:"
-        response[:deleted].each do |event|
-          puts event.to_assistant_s
-          puts event.raw if options[:verbose]
-        end
+  class Helpers
+    def self.time_or_time_range userspec
+      if userspec =~ /\.\.\./
+        start_userspec, end_userspec = userspec.split("...")
+        start_time = Chronic.parse(start_userspec.strip) || raise("could not parse #{start_userspec.strip}")
+        end_time   = Chronic.parse(end_userspec.strip) || raise("could not parse #{end_userspec.strip}")
+        return start_time..end_time
       end
-
-      if response[:modified]
-        puts "Modified:"
-        response[:modified].each do |event|
-          puts event.to_assistant_s
-          puts event.raw if options[:verbose]
-        end
-      end
-
-      if response[:created]
-        puts "Created:"
-        response[:created].each do |event|
-          puts event.to_assistant_s
-          puts event.raw if options[:verbose]
-        end
-      end
+      Chronic.parse(userspec) || raise("could not parse #{userspec}")
     end
 
-    desc "get <calendar-id> <datespec>", "display your location for a date or range of dates"
-    def get calendar_id, datespec
-      ca = CalendarAssistant.new calendar_id
+    def self.print_events ca, events, options={}
+      if events
+        events.each do |event|
+          puts ca.event_description event, verbose: options[:verbose]
+          pp event if ENV['DEBUG']
+        end
+      else
+        puts "No events in this time range."
+      end
+    end
+  end
 
-      events = ca.find_location_events CalendarAssistant.time_or_time_range(datespec)
-      events.each do |event|
-        puts event.to_assistant_s
-        pp event.raw if options[:verbose]
+  class Location < Thor
+    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your location for a date or range of dates (default today)"
+    def show calendar_id, datespec="today"
+      ca = CalendarAssistant.new calendar_id
+      events = ca.find_location_events Helpers.time_or_time_range(datespec)
+      Helpers.print_events ca, events, verbose: options[:verbose]
+    end
+
+    desc "set PROFILE_NAME LOCATION [DATE | DATERANGE]", "show your location for a date or range of dates (default today)"
+    def set calendar_id, location, datespec="today"
+      ca = CalendarAssistant.new calendar_id
+      events = ca.create_location_event Helpers.time_or_time_range(datespec), location
+      events.keys.each do |key|
+        puts "#{BOLD_ON}#{key.capitalize}:#{BOLD_OFF}"
+        Helpers.print_events ca, events[key], verbose: options[:verbose]
       end
     end
   end
 
   class CLI < Thor
-    class_option :verbose, type: :boolean, aliases: [:v]
+    class_option :verbose, type: :boolean, desc: "print more information", aliases: ["-v"]
 
-    desc "get <calendar-id> <datespec>", "display events for a date or range of dates"
-    def get calendar_id, datespec
-      ca = CalendarAssistant.new calendar_id
+    desc 'authorize PROFILE_NAME', 'create (or validate) a named profile with calendar access'
+    long_desc <<~EOD
 
-      events = ca.find_events CalendarAssistant.time_or_time_range(datespec)
-      events.each do |event|
-        puts event.to_assistant_s
-        pp event.raw if options[:verbose]
-      end
+      Create and authorize a named profile (e.g., "work", "home",
+      "flastname@company.tld") to access your calendar.
+
+      When setting up a profile, you'll be asked to visit a URL to
+      authenticate, grant authorization, and generate and persist an
+      access token.
+
+      In order for this to work, you'll need to follow the
+      instructions at this URL first:
+
+      > https://developers.google.com/calendar/quickstart/ruby
+
+      Namely, the prerequisites are:
+
+      (1) Turn on the Google API for your account
+      \x5(2) Create a new Google API Project
+      \x5(3) Download the configuration file for the Project, and name it as `credentials.json`
+    EOD
+    def authorize profile_name
+      CalendarAssistant.authorize profile_name
+      puts "\nYou're authorized!\n\n"
     end
 
-    desc "location <subcommand> ...args", "manage your location via all-day calendar events"
+    desc "location SUBCOMMAND ...ARGS", "manage your location via all-day calendar events"
     subcommand "location", Location
+
+    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your events for a date or range of dates (default today)"
+    def show calendar_id, datespec="today"
+      ca = CalendarAssistant.new calendar_id
+      events = ca.find_events Helpers.time_or_time_range(datespec)
+      Helpers.print_events ca, events, verbose: options[:verbose]
+    end
   end
 end

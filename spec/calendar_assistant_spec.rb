@@ -1,338 +1,250 @@
 describe CalendarAssistant do
-  describe ".token_for" do
-    it "tests .token_for"
-  end
-  describe ".save_token_for" do
-    it "tests .save_token_for"
-  end
-  describe ".params_for" do
-    it "tests .params_for"
-  end
-  describe ".calendar_for" do
-    it "tests .calendar_for"
-  end
-  describe ".calendar_list_for" do
-    it "tests .calendar_list_for"
+  GCal = Google::Apis::CalendarV3
+
+  describe "event visitors" do
+    it "tests event_date_description"
+    it "tests event_description"
+    it "tests event_attributes"
   end
 
+  describe "events" do
+    let(:service) { instance_double("CalendarService") }
+    let(:calendar) { instance_double("Calendar") }
+    let(:ca) { CalendarAssistant.new "profilename" }
+    let(:event_array) { [instance_double("Event"), instance_double("Event")] }
+    let(:events) { instance_double("Events", :items => event_array ) }
 
-  describe "location events" do
-    let(:ca) { CalendarAssistant.new("foo@example") }
-    let(:calendar) { instance_double("Google::Calendar") }
-    let(:new_event) { instance_double("Google::Event") }
-
-    before { allow(ca).to receive(:calendar).and_return(calendar) }
-
-    describe "#create_location_event" do
-      before do
-        expect(calendar).to receive(:create_event).
-                              and_yield(new_event).
-                              and_return(new_event)
-      end
-
-      context "called with a Time" do
-        let(:event_title) { "Palo Alto" }
-        let(:event_time) { Chronic.parse("tomorrow") }
-
-        it "creates an appropriately-titled all-day event" do
-          expect(new_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP}  #{event_title}")
-          expect(new_event).to receive(:all_day=).with(event_time)
-          allow(ca).to receive(:find_location_events).and_return([])
-
-          ca.create_location_event(event_time, event_title)
-        end
-
-        context "when there's a pre-existing location event" do
-          let(:existing_event) { instance_double("Google::Event") }
-
-          before do
-            expect(ca).to receive(:find_location_events).and_return([existing_event])
-            allow(new_event).to receive(:title=)
-            allow(new_event).to receive(:all_day=)
-            allow(new_event).to receive(:start_time).and_return(event_time.beginning_of_day)
-            allow(new_event).to receive(:end_time).and_return((event_time + 1.day).beginning_of_day)
-
-            # strings formatted like "2018-09-28T04:00:00Z" because of wonky Google::Event behavior
-            allow(existing_event).to receive(:start_time).and_return(existing_start.utc.xmlschema)
-            allow(existing_event).to receive(:end_time).and_return(existing_end.utc.xmlschema)
-          end
-
-          context "that lasts a single day" do
-            let(:existing_start) { event_time.beginning_of_day }
-            let(:existing_end) { (event_time + 1.day).beginning_of_day }
-
-            it "removes the pre-existing event" do
-              expect(calendar).to receive(:delete_event).with(existing_event)
-
-              ret = ca.create_location_event(event_time, event_title)
-
-              expect(ret).to eq({
-                                  created: [new_event],
-                                  deleted: [existing_event]
-                                })
-            end
-          end
-
-          context "that lasts multiple days" do
-            context "when the new event overlaps the start of the pre-existing event" do
-              let(:existing_start) { event_time.beginning_of_day }
-              let(:existing_end) { (event_time + 5.days).beginning_of_day }
-
-              it "shrinks the pre-existing event" do
-                expect(calendar).to receive(:save_event).with(existing_event)
-                expect(existing_event).to receive(:start_time=).with(event_time.beginning_of_day + 1.day)
-                expect(existing_event).to receive(:end_time=).with(existing_end)
-
-                ret = ca.create_location_event(event_time, event_title)
-
-                expect(ret).to eq({
-                                    created: [new_event],
-                                    modified: [existing_event]
-                                  })
-              end
-            end
-
-            context "when the new event overlaps the end of the pre-existing event" do
-              let(:existing_start) { (event_time - 5.days).beginning_of_day }
-              let(:existing_end) { (event_time + 1.day).beginning_of_day }
-
-              it "shrinks the pre-existing event" do
-                expect(calendar).to receive(:save_event).with(existing_event)
-                expect(existing_event).to receive(:end_time=).with(event_time.beginning_of_day)
-
-                ret = ca.create_location_event(event_time, event_title)
-
-                expect(ret).to eq({
-                                    created: [new_event],
-                                    modified: [existing_event]
-                                  })
-              end
-            end
-
-            context "when the new event is in the middle of the pre-existing event" do
-              let(:existing_start) { (event_time - 5.days).beginning_of_day }
-              let(:existing_end) { (event_time + 5.days).beginning_of_day }
-
-              it "shrinks the pre-existing event" do
-                expect(calendar).to receive(:save_event).with(existing_event)
-                expect(existing_event).to receive(:end_time=).with(event_time.beginning_of_day)
-
-                ret = ca.create_location_event(event_time, event_title)
-
-                expect(ret).to eq({
-                                    created: [new_event],
-                                    modified: [existing_event]
-                                  })
-              end
-            end
-          end
-        end
-      end
-
-      context "called with a Range of Times" do
-        let(:event_title) { "Palo Alto" }
-        let(:event_start_time) { Chronic.parse("tomorrow") }
-        let(:event_end_time) { event_start_time + 7.days }
-
-        it "creates an appropriately-titled multi-day event" do
-          expect(new_event).to receive(:title=).with("#{CalendarAssistant::EMOJI_WORLDMAP}  #{event_title}")
-          expect(new_event).to receive(:all_day=).with(event_start_time)
-          expect(new_event).to receive(:end_time=).with((event_end_time + 1.day).beginning_of_day)
-
-          allow(ca).to receive(:find_location_events).and_return([])
-
-          ca.create_location_event(event_start_time..event_end_time, event_title)
-        end
-
-        context "when there's a pre-existing location event" do
-          let(:existing_event) { instance_double("Google::Event") }
-
-          before do
-            expect(ca).to receive(:find_location_events).and_return([existing_event])
-            allow(new_event).to receive(:title=)
-            allow(new_event).to receive(:all_day=)
-            allow(new_event).to receive(:end_time=).with((event_end_time + 1.day).beginning_of_day)
-            allow(new_event).to receive(:start_time).and_return(event_start_time.beginning_of_day)
-            allow(new_event).to receive(:end_time).and_return((event_end_time + 1.day).beginning_of_day)
-
-            # strings formatted like "2018-09-28T04:00:00Z" because of wonky Google::Event behavior
-            allow(existing_event).to receive(:start_time).and_return(existing_start.utc.xmlschema)
-            allow(existing_event).to receive(:end_time).and_return(existing_end.utc.xmlschema)
-          end
-
-          context "that lasts a single day" do
-            let(:existing_start) { (event_start_time + 2.days).beginning_of_day }
-            let(:existing_end) { (existing_start + 1.day).beginning_of_day }
-
-            it "removes the pre-existing event" do
-              expect(calendar).to receive(:delete_event).with(existing_event)
-
-              ret = ca.create_location_event(event_start_time..event_end_time, event_title)
-
-              expect(ret).to eq({
-                                  created: [new_event],
-                                  deleted: [existing_event]
-                                })
-            end
-          end
-
-          context "that lasts multiple days" do
-            context "when the new event entirely overlaps the pre-existing event" do
-              let(:existing_start) { (event_start_time + 1.day).beginning_of_day }
-              let(:existing_end) { (event_end_time - 1.day).beginning_of_day }
-
-              it "removes the pre-existing event" do
-                expect(calendar).to receive(:delete_event).with(existing_event)
-
-                ret = ca.create_location_event(event_start_time..event_end_time, event_title)
-
-                expect(ret).to eq({
-                                    created: [new_event],
-                                    deleted: [existing_event]
-                                  })
-              end
-            end
-
-            context "when the new event overlaps the start of the pre-existing event" do
-              let(:existing_start) { (event_end_time - 2.days).beginning_of_day }
-              let(:existing_end) { (event_end_time + 2.days).beginning_of_day }
-
-              it "shrinks the pre-existing event" do
-                expect(calendar).to receive(:save_event).with(existing_event)
-                expect(existing_event).to receive(:start_time=).with(event_end_time.beginning_of_day + 1.day)
-                expect(existing_event).to receive(:end_time=).with(existing_end)
-
-                ret = ca.create_location_event(event_start_time..event_end_time, event_title)
-
-                expect(ret).to eq({
-                                    created: [new_event],
-                                    modified: [existing_event]
-                                  })
-              end
-            end
-
-            context "when the new event overlaps the end of the pre-existing event" do
-              let(:existing_start) { (event_start_time - 2.days).beginning_of_day }
-              let(:existing_end) { (event_start_time + 2.days).beginning_of_day }
-
-              it "shrinks the pre-existing event" do
-                expect(calendar).to receive(:save_event).with(existing_event)
-                expect(existing_event).to receive(:end_time=).with(event_start_time.beginning_of_day)
-
-                ret = ca.create_location_event(event_start_time..event_end_time, event_title)
-
-                expect(ret).to eq({
-                                    created: [new_event],
-                                    modified: [existing_event]
-                                  })
-              end
-            end
-
-            context "when the new event is in the middle of the pre-existing event" do
-              let(:existing_start) { (event_start_time - 2.days).beginning_of_day }
-              let(:existing_end) { (event_end_time + 2.days).beginning_of_day }
-
-              it "shrinks the pre-existing event" do
-                expect(calendar).to receive(:save_event).with(existing_event)
-                expect(existing_event).to receive(:end_time=).with(event_start_time.beginning_of_day)
-
-                ret = ca.create_location_event(event_start_time..event_end_time, event_title)
-
-                expect(ret).to eq({
-                                    created: [new_event],
-                                    modified: [existing_event]
-                                  })
-              end
-            end
-          end
-        end
-      end
+    before do
+      allow(CalendarAssistant::Authorizer).to receive(:service).and_return(service)
+      allow(service).to receive(:get_calendar).and_return(calendar)
     end
 
     describe "#find_events" do
-      let(:existing_event) { instance_double("Google::Event") }
-      let(:existing_location_event) { instance_double("Google::Event") }
-      let(:event_time) { Chronic.parse("tomorrow") }
-
-      before do
-        allow(existing_event).to receive(:assistant_location_event?) { false }
-        allow(existing_location_event).to receive(:assistant_location_event?) { true }
+      it "sets some basic query options" do
+        expect(service).to receive(:list_events).with(CalendarAssistant::DEFAULT_CALENDAR_ID,
+                                                      hash_including(order_by: "startTime",
+                                                                     single_events: true,
+                                                                     max_results: anything)).
+                             and_return(events)
+        result = ca.find_events Time.now
+        expect(result).to eq(event_array)
       end
 
-      context "passed a Time" do
-        it "fetches events for that day" do
-          search_start_time = event_time.beginning_of_day
-          search_end_time = (event_time + 1.day).beginning_of_day
-
-          expect(calendar).to receive(:find_events_in_range).
-                                with(search_start_time, search_end_time, hash_including(max_results: anything)).
-                                and_return([existing_event, existing_location_event])
-
-          events = ca.find_events(event_time)
-
-          expect(events).to eq([existing_event, existing_location_event])
+      context "given a time" do
+        it "calls CalendarService#list_events with appropriate range" do
+          time = Time.now
+          expect(service).to receive(:list_events).with(CalendarAssistant::DEFAULT_CALENDAR_ID,
+                                                        hash_including(time_min: time.beginning_of_day.iso8601,
+                                                                       time_max: time.end_of_day.iso8601)).
+                               and_return(events)
+          result = ca.find_events time
+          expect(result).to eq(event_array)
         end
       end
 
-      context "passed a Range of Times" do
-        it "fetches events for that date range" do
-          query_start = event_time - 1.day
-          query_end = event_time + 1.day
+      context "given a time range" do
+        it "calls CalendarService#list_events with appropriate range" do
+          time = Time.now..(Time.now + 1.day)
+          expect(service).to receive(:list_events).with(CalendarAssistant::DEFAULT_CALENDAR_ID,
+                                                        hash_including(time_min: time.first.beginning_of_day.iso8601,
+                                                                       time_max: time.last.end_of_day.iso8601)).
+                               and_return(events)
+          result = ca.find_events time
+          expect(result).to eq(event_array)
+        end
+      end
 
-          search_start_time = query_start.beginning_of_day
-          search_end_time = (query_end + 1.day).beginning_of_day
+      context "when no items are found" do
+        let(:events) { instance_double("Events", :items => nil) }
 
-          expect(calendar).to receive(:find_events_in_range).
-                                with(search_start_time, search_end_time, hash_including(max_results: anything)).
-                                and_return([existing_event, existing_location_event])
-
-          events = ca.find_events(query_start..query_end)
-
-          expect(events).to eq([existing_event, existing_location_event])
+        it "returns an empty array" do
+          expect(service).to receive(:list_events).and_return(events)
+          result = ca.find_events Time.now
+          expect(result).to eq([])
         end
       end
     end
 
     describe "#find_location_events" do
-      let(:existing_event) { instance_double("Google::Event") }
-      let(:existing_location_event) { instance_double("Google::Event") }
-      let(:event_time) { Chronic.parse("tomorrow") }
+      let(:location_event) { instance_double("Event", :location_event? => true) }
+      let(:other_event) { instance_double("Event", :location_event? => false) }
+      let(:events) { [location_event, other_event].shuffle }
 
-      before do
-        allow(existing_event).to receive(:assistant_location_event?) { false }
-        allow(existing_location_event).to receive(:assistant_location_event?) { true }
+      it "selects location events from results of #find_events" do
+        time = Time.now
+
+        expect(ca).to receive(:find_events).with(time).and_return(events)
+
+        result = ca.find_location_events time
+        expect(result).to eq([location_event])
+      end
+    end
+
+    describe "#create_location_event" do
+      let(:new_event) do
+        instance_double("GCal::Event", {
+                          id: SecureRandom.uuid,
+                          start: new_event_start,
+                          end: new_event_end
+                        })
       end
 
-      context "passed a Time" do
-        it "fetches only location events for that day" do
-          search_start_time = event_time.beginning_of_day
-          search_end_time = (event_time + 1.day).beginning_of_day
+      before do
+        allow(service).to receive(:list_events).and_return(nil)
+      end
 
-          expect(calendar).to receive(:find_events_in_range).
-                                with(search_start_time, search_end_time, hash_including(max_results: anything)).
-                                and_return([existing_event, existing_location_event])
+      let(:new_event_start) { GCal::EventDateTime.new date: new_event_start_date }
+      let(:new_event_end) { GCal::EventDateTime.new date: (new_event_end_date + 1.day) } # always one day later than actual end
 
-          events = ca.find_location_events(event_time)
+      context "called with a Date" do
+        let(:new_event_start_date) { Date.today }
+        let(:new_event_end_date) { new_event_start_date }
 
-          expect(events).to eq([existing_location_event])
+        it "creates an appropriately-titled transparent all-day event" do
+          expect(GCal::Event).to(receive(:new).
+                                   with(start: event_date_time(date: new_event_start.date),
+                                        end: event_date_time(date: new_event_end.date),
+                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+                                        transparency: GCal::Event::TRANSPARENCY_NOT_BUSY).
+                                   and_return(new_event))
+          expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
+
+          response = ca.create_location_event Time.now, "WFH"
+          expect(response[:created]).to eq([new_event])
         end
       end
 
-      context "passed a Range of Times" do
-        it "fetches events for that date range" do
-          query_start = event_time - 1.day
-          query_end = event_time + 1.day
+      context "called with a Date Range" do
+        let(:new_event_start_date) { Date.parse("2019-09-03") }
+        let(:new_event_end_date) { Date.parse("2019-09-05") }
 
-          search_start_time = query_start.beginning_of_day
-          search_end_time = (query_end + 1.day).beginning_of_day
+        it "creates an appropriately-titled transparent all-day event" do
+          expect(GCal::Event).to(receive(:new).
+                                   with(start: event_date_time(date: new_event_start.date),
+                                        end: event_date_time(date: new_event_end.date),
+                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+                                        transparency: GCal::Event::TRANSPARENCY_NOT_BUSY).
+                                   and_return(new_event))
+          expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
 
-          expect(calendar).to receive(:find_events_in_range).
-                                with(search_start_time, search_end_time, hash_including(max_results: anything)).
-                                and_return([existing_event, existing_location_event])
+          response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
+          expect(response[:created]).to eq([new_event])
+        end
+      end
 
-          events = ca.find_location_events(query_start..query_end)
+      context "when there's a pre-existing location event" do
+        let(:existing_event_start) { GCal::EventDateTime.new date: existing_event_start_date }
+        let(:existing_event_end) { GCal::EventDateTime.new date: (existing_event_end_date + 1.day) } # always one day later than actual end
 
-          expect(events).to eq([existing_location_event])
+        let(:new_event_start_date) { Date.parse("2019-09-03") }
+        let(:new_event_end_date) { Date.parse("2019-09-05") }
+
+        let(:existing_event) do
+          instance_double("GCal::Event", {
+                            id: SecureRandom.uuid,
+                            start: existing_event_start,
+                            end: existing_event_end
+                          })
+        end
+
+        before do
+          expect(GCal::Event).to(receive(:new).
+                                   with(start: event_date_time(date: new_event_start.date),
+                                        end: event_date_time(date: new_event_end.date),
+                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+                                        transparency: GCal::Event::TRANSPARENCY_NOT_BUSY).
+                                   and_return(new_event))
+          expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
+          expect(ca).to receive(:find_location_events).and_return([existing_event])
+        end
+
+        context "when the new event is entirely within the range of the pre-existing event" do
+          let(:existing_event_start_date) { new_event_start_date }
+          let(:existing_event_end_date) { new_event_end_date }
+
+          it "removes the pre-existing event" do
+            expect(service).to receive(:delete_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, existing_event.id)
+
+            response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
+            expect(response[:created]).to eq([new_event])
+            expect(response[:deleted]).to eq([existing_event])
+          end
+        end
+
+        context "when the new event overlaps the start of the pre-existing event" do
+          let(:existing_event_start_date) { Date.parse("2019-09-04") }
+          let(:existing_event_end_date) { Date.parse("2019-09-06") }
+
+          it "shrinks the pre-existing event" do
+            expect(existing_event).to receive(:update!).with(start: event_date_time(date: "2019-09-06"))
+            expect(service).to receive(:update_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, existing_event.id, existing_event)
+
+            response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
+            expect(response[:created]).to eq([new_event])
+            expect(response[:modified]).to eq([existing_event])
+          end
+        end
+
+        context "when the new event overlaps the end of the pre-existing event" do
+          let(:existing_event_start_date) { Date.parse("2019-09-02") }
+          let(:existing_event_end_date) { Date.parse("2019-09-04") }
+
+          it "shrinks the pre-existing event" do
+            expect(existing_event).to receive(:update!).with(end: event_date_time(date: "2019-09-03"))
+            expect(service).to receive(:update_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, existing_event.id, existing_event)
+
+            response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
+            expect(response[:created]).to eq([new_event])
+            expect(response[:modified]).to eq([existing_event])
+          end
+        end
+
+        context "when the new event is completely overlapped by the pre-existing event" do
+          let(:existing_event_start_date) { Date.parse("2019-09-02") }
+          let(:existing_event_end_date) { Date.parse("2019-09-06") }
+
+          it "shrinks the pre-existing event" do
+            expect(existing_event).to receive(:update!).with(start: event_date_time(date: "2019-09-06"))
+            expect(service).to receive(:update_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, existing_event.id, existing_event)
+
+            response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
+            expect(response[:created]).to eq([new_event])
+            expect(response[:modified]).to eq([existing_event])
+          end
+        end
+      end
+    end
+
+    context "called with a Date Range" do
+      it "creates an appropriately-titled multi-day event" do
+      end
+
+      context "when there's a pre-existing location event" do
+        context "that lasts a single day" do
+          it "removes the pre-existing event" do
+          end
+        end
+
+        context "that lasts multiple days" do
+          context "when the new event entirely overlaps the pre-existing event" do
+            it "removes the pre-existing event" do
+            end
+          end
+
+          context "when the new event overlaps the start of the pre-existing event" do
+            it "shrinks the pre-existing event" do
+            end
+          end
+
+          context "when the new event overlaps the end of the pre-existing event" do
+            it "shrinks the pre-existing event" do
+            end
+          end
+
+          context "when the new event is in the middle of the pre-existing event" do
+            it "shrinks the pre-existing event" do
+            end
+          end
         end
       end
     end

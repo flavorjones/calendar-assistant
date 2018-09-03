@@ -1,5 +1,6 @@
 require_relative "../lib/calendar_assistant"
 require "timecop"
+require "securerandom"
 
 ENV["THOR_DEBUG"] = "1" # UGH THOR
 
@@ -102,4 +103,16 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+end
+
+RSpec::Matchers.define :event_date_time do |options|
+  if options[:date]
+    if options[:date].is_a?(String)
+      match { |actual| actual.to_s == options[:date] }
+    else
+      match { |actual| actual.to_s == options[:date].iso8601 }
+    end
+  else
+    raise "only supports dates right now"
+  end
 end

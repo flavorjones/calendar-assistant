@@ -1,3 +1,4 @@
-client_id.json
+credentials.json
 Gemfile.lock
-calendar_tokens.yml
+token.yaml
+
