@@ -1,5 +1,6 @@
 require_relative "../lib/calendar_assistant"
 require "timecop"
+require "securerandom"
 
 ENV["THOR_DEBUG"] = "1" # UGH THOR
 
@@ -106,7 +107,11 @@ end
 
 RSpec::Matchers.define :event_date_time do |options|
   if options[:date]
-    match { |actual| actual.to_s == options[:date].iso8601 }
+    if options[:date].is_a?(String)
+      match { |actual| actual.to_s == options[:date] }
+    else
+      match { |actual| actual.to_s == options[:date].iso8601 }
+    end
   else
     raise "only supports dates right now"
   end

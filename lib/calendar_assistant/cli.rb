@@ -6,19 +6,19 @@ class CalendarAssistant
     def self.time_or_time_range userspec
       if userspec =~ /\.\.\./
         start_userspec, end_userspec = userspec.split("...")
-        start_time = Chronic.parse start_userspec.strip
-        end_time   = Chronic.parse end_userspec.strip
+        start_time = Chronic.parse(start_userspec.strip) || raise("could not parse #{start_userspec.strip}")
+        end_time   = Chronic.parse(end_userspec.strip) || raise("could not parse #{end_userspec.strip}")
         return start_time..end_time
       end
-      Chronic.parse userspec
+      Chronic.parse(userspec) || raise("could not parse #{userspec}")
     end
 
     def self.print_events ca, events, options={}
       if events
         events.each do |event|
           puts ca.event_description event, verbose: options[:verbose]
+          pp event if ENV['DEBUG']
         end
-        puts "\n#{ITALIC_ON}(All times are in #{ca.calendar.time_zone})#{ITALIC_OFF}"
       else
         puts "No events in this time range."
       end

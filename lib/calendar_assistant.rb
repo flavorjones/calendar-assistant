@@ -29,13 +29,19 @@ class CalendarAssistant
   end
 
   def self.time_range_cast time_or_time_range
-    return time_or_time_range.first.to_time..time_or_time_range.last.to_time if time_or_time_range.is_a?(Range)
-    time_or_time_range.beginning_of_day..time_or_time_range.end_of_day
+    if time_or_time_range.is_a?(Range)
+      time_or_time_range.first.beginning_of_day..time_or_time_range.last.end_of_day
+    else
+      time_or_time_range.beginning_of_day..time_or_time_range.end_of_day
+    end
   end
 
   def self.date_range_cast date_or_date_range
-    return date_or_date_range.first.to_date..date_or_date_range.last.to_date if date_or_date_range.is_a?(Range)
-    date_or_date_range.to_date..date_or_date_range.to_date
+    if date_or_date_range.is_a?(Range)
+      date_or_date_range.first.to_date..(date_or_date_range.last + 1.day).to_date
+    else
+      date_or_date_range.to_date..(date_or_date_range + 1.day).to_date
+    end
   end
 
   def initialize profile_name
@@ -60,12 +66,39 @@ class CalendarAssistant
   end
 
   def create_location_event time_or_range, location
+    # find pre-existing events that overlap
+    existing_events = find_location_events time_or_range
+
+    # augment event end date appropriately
     range = CalendarAssistant.date_range_cast time_or_range
+
+    deleted_events = []
+    modified_events = []
+
     event = GCal::Event.new start: GCal::EventDateTime.new(date: range.first.iso8601),
                             end: GCal::EventDateTime.new(date: range.last.iso8601),
                             summary: "#{EMOJI_WORLDMAP}  #{location}"
     event = service.insert_event DEFAULT_CALENDAR_ID, event
-    return {created: [event]}
+
+    existing_events.each do |existing_event|
+      if existing_event.start.date >= event.start.date && existing_event.end.date <= event.end.date
+        service.delete_event DEFAULT_CALENDAR_ID, existing_event.id
+        deleted_events << existing_event
+      elsif existing_event.start.date <= event.end.date && existing_event.end.date > event.end.date
+        existing_event.update! start: GCal::EventDateTime.new(date: range.last)
+        service.update_event DEFAULT_CALENDAR_ID, existing_event.id, existing_event
+        modified_events << existing_event
+      elsif existing_event.start.date < event.start.date && existing_event.end.date >= event.start.date
+        existing_event.update! end: GCal::EventDateTime.new(date: range.first)
+        service.update_event DEFAULT_CALENDAR_ID, existing_event.id, existing_event
+        modified_events << existing_event
+      end
+    end
+
+    response = {created: [event]}
+    response[:deleted] = deleted_events unless deleted_events.empty?
+    response[:modified] = modified_events unless modified_events.empty?
+    response
   end
 
   def event_description event, options={}
@@ -90,10 +123,12 @@ class CalendarAssistant
 
   def event_date_description event
     if event.all_day?
-      if event.start.date == event.end.date
+      start_date = event.start.date.is_a?(Date) ? event.start.date : Date.parse(event.start.date)
+      end_date = event.end.date.is_a?(Date) ? event.end.date : Date.parse(event.end.date)
+      if (end_date - start_date) <= 1
         event.start.to_s
       else
-        sprintf("%s - %s", event.start, event.end)
+        sprintf("%s - %s", start_date, end_date - 1.day)
       end
     else
       if event.start.date_time.to_date == event.end.date_time.to_date
@@ -116,63 +151,6 @@ class CalendarAssistant
       end
       attr << "recurring" if event.recurring_event_id
     end
-  end
-end
-
-class OldCalendarAssistant
-  def create_location_event time_or_range, location_name
-    start_time = time_or_range
-    end_time = nil
-
-    if time_or_range.is_a?(Range)
-      start_time = time_or_range.first
-      end_time = (time_or_range.last + 1.day).beginning_of_day
-    end
-
-    overlapping_events = if time_or_range.is_a?(Range)
-                           find_location_events start_time..end_time
-                         else
-                           find_location_events start_time
-                         end
-
-    new_event = calendar.create_event do |event|
-      event.title = "#{EMOJI_WORLDMAP}  #{location_name}"
-      event.all_day = start_time
-      event.end_time = end_time if end_time
-    end
-
-    deleted_events = []
-    modified_events = []
-
-    overlapping_events.each do |overlapping_event|
-      oe_start = Time.parse overlapping_event.start_time
-      oe_end = Time.parse overlapping_event.end_time
-      ne_start = Time.parse new_event.start_time.to_s
-      ne_end = Time.parse new_event.end_time.to_s
-
-      if oe_start >= ne_start && oe_end <= ne_end
-        calendar.delete_event overlapping_event
-        deleted_events << overlapping_event
-      else
-        if oe_start >= ne_start && oe_end > ne_end
-          overlapping_event.start_time = ne_end
-          overlapping_event.end_time = oe_end
-          calendar.save_event overlapping_event
-        elsif oe_start < ne_start
-          overlapping_event.end_time = ne_start
-          calendar.save_event overlapping_event
-        else
-          raise "unknown date range overlap"
-        end
-        modified_events << overlapping_event
-      end
-    end
-
-    retval = {created: [new_event]}
-    retval[:deleted] = deleted_events if deleted_events.length > 0
-    retval[:modified] = modified_events if modified_events.length > 0
-
-    return retval
   end
 end
 
