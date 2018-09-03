@@ -100,11 +100,12 @@ describe CalendarAssistant do
         let(:new_event_start_date) { Date.today }
         let(:new_event_end_date) { new_event_start_date }
 
-        it "creates an appropriately-titled all-day event" do
+        it "creates an appropriately-titled transparent all-day event" do
           expect(GCal::Event).to(receive(:new).
                                    with(start: event_date_time(date: new_event_start.date),
                                         end: event_date_time(date: new_event_end.date),
-                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH").
+                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+                                        transparency: GCal::Event::TRANSPARENCY_NOT_BUSY).
                                    and_return(new_event))
           expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
 
@@ -117,11 +118,12 @@ describe CalendarAssistant do
         let(:new_event_start_date) { Date.parse("2019-09-03") }
         let(:new_event_end_date) { Date.parse("2019-09-05") }
 
-        it "creates an appropriately-titled all-day event" do
+        it "creates an appropriately-titled transparent all-day event" do
           expect(GCal::Event).to(receive(:new).
                                    with(start: event_date_time(date: new_event_start.date),
                                         end: event_date_time(date: new_event_end.date),
-                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH").
+                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+                                        transparency: GCal::Event::TRANSPARENCY_NOT_BUSY).
                                    and_return(new_event))
           expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
 
@@ -149,7 +151,8 @@ describe CalendarAssistant do
           expect(GCal::Event).to(receive(:new).
                                    with(start: event_date_time(date: new_event_start.date),
                                         end: event_date_time(date: new_event_end.date),
-                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH").
+                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+                                        transparency: GCal::Event::TRANSPARENCY_NOT_BUSY).
                                    and_return(new_event))
           expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
           expect(ca).to receive(:find_location_events).and_return([existing_event])

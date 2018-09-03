@@ -77,7 +77,9 @@ class CalendarAssistant
 
     event = GCal::Event.new start: GCal::EventDateTime.new(date: range.first.iso8601),
                             end: GCal::EventDateTime.new(date: range.last.iso8601),
-                            summary: "#{EMOJI_WORLDMAP}  #{location}"
+                            summary: "#{EMOJI_WORLDMAP}  #{location}",
+                            transparency: GCal::Event::TRANSPARENCY_NOT_BUSY
+
     event = service.insert_event DEFAULT_CALENDAR_ID, event
 
     existing_events.each do |existing_event|

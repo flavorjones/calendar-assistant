@@ -10,6 +10,9 @@ class Google::Apis::CalendarV3::Event
   RESPONSE_ACCEPTED = "accepted"
   RESPONSE_NEEDS_ACTION = "needsAction"
 
+  TRANSPARENCY_NOT_BUSY = "transparent"
+  TRANSPARENCY_BUSY = "opaque"
+
   def location_event?
     summary =~ /^#{CalendarAssistant::EMOJI_WORLDMAP}/
   end
