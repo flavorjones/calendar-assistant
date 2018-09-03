@@ -19,21 +19,39 @@ calendar-assistant show <calendar-id> [<datespec>]
 For example:
 
 ``` bash
-$ calendar-assistant get me@example.com tuesday
+# show me my day
+$ calendar-assistant show me@example.com
 
-(All times are in America/New_York)
 2019-11-01  08:00 - 09:00 | Commuting/Email (self)
-2019-11-01  11:00 - 12:00 | Onsi/Mike 1:1
+2019-11-01  11:00 - 12:00 | Jimbo/Mike 1:1
 2019-11-01  11:00 - 11:00 | CF NYC Planning: Allocations & Interviews
 2019-11-01  11:00 - 11:00 | Security KPL Checkin
 2019-11-01  12:00 - 13:00 | VP Weekly Sync
-2019-11-01  12:00 - 13:00 | Consulting Lunch (formerly Anchor Lunch) (needsAction)
+2019-11-01  12:00 - 13:00 | Consulting Lunch (needsAction)
 2019-11-01  13:00 - 14:00 | R&D Key Priorities Check-In (needsAction)
-2019-11-01  14:00 - 15:00 | Mike/Kocher 1:1
-2019-11-01  15:00 - 15:00 | SF Office Status Meeting
-2019-11-01  16:00 - 17:00 | Mike/Rupa 1:1
-2019-11-01  16:00 - 17:00 | Mike/Ryan T. 1:1
+2019-11-01  14:00 - 15:00 | Mike/Jones 1:1
+2019-11-01  15:00 - 15:00 | SF Office Status Meeting (declined)
+2019-11-01  16:00 - 17:00 | Mike/Jane 1:1
+2019-11-01  16:00 - 17:00 | Mike/Julie T. 1:1
 2019-11-01  18:00 - 19:00 | OOO  (self)
+
+(All times are in America/New_York)
+
+# show me my day, with recurrence information for each event
+$ calendar-assistant show me@example.com tuesday -v
+
+2019-11-01  08:00 - 09:00 | Commuting/Email (self) [Weekly on Weekdays]
+2019-11-01  11:00 - 12:00 | Jimbo/Mike 1:1 [Every 2 weeks on Fridays]
+2019-11-01  11:00 - 11:00 | CF NYC Planning: Allocations & Interviews [Weekly on Fridays]
+2019-11-01  11:00 - 11:00 | Security KPL Checkin [Weekly on Fridays]
+2019-11-01  12:00 - 13:00 | VP Weekly Sync [Weekly on Fridays]
+2019-11-01  12:00 - 13:00 | Consulting Lunch (needsAction) [Monthly on the 1st Friday]
+2019-11-01  13:00 - 14:00 | R&D Key Priorities Check-In (needsAction) [Every 2 weeks on Fridays]
+2019-11-01  14:00 - 15:00 | Mike/Jones 1:1 [Every 2 weeks on Fridays]
+2019-11-01  15:00 - 15:00 | SF Office Status Meeting (declined) [Every 2 weeks on Fridays]
+2019-11-01  16:00 - 17:00 | Mike/Jane 1:1 [Every 3 weeks on Fridays]
+2019-11-01  16:00 - 17:00 | Mike/Julie T. 1:1 [Every 2 weeks on Fridays]
+2019-11-01  18:00 - 19:00 | OOO  (self) [Weekly on Weekdays]
 ```
 
 ### Tell people where you are at in the world

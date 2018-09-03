@@ -4,6 +4,7 @@ require "json"
 require "yaml"
 require "business_time"
 require "google/apis/calendar_v3"
+require "ice_cube"
 
 class CalendarAssistant
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
@@ -51,6 +52,26 @@ class CalendarAssistant
     find_events(time_or_range).select { |e| e.location_event? }
   end
 
+  def event_description event, options={}
+    attributes = event_attributes(event)
+    declined = attributes.delete Google::Apis::CalendarV3::Event::RESPONSE_DECLINED
+    attributes.delete Google::Apis::CalendarV3::Event::RESPONSE_ACCEPTED
+    recurring = attributes.delete "recurring"
+
+    s = sprintf "%-25.25s | #{BOLD_ON}%s#{BOLD_OFF}", event_date_description(event), event.summary
+    s += sprintf(" #{ITALIC_ON}(%s)#{ITALIC_OFF}", attributes.join(", ")) unless attributes.empty?
+
+    if options[:verbose]
+      if recurring
+        recurrence = IceCube::Schedule.from_ical(event.recurrence_rules(service))
+        s += sprintf(" [%s]", recurrence) if recurring
+      end
+    end
+
+    s = CROSS_OUT_ON + s + CROSS_OUT_OFF if declined
+    s
+  end
+
   def event_date_description event
     if event.all_day?
       if event.start.date == event.end.date
@@ -67,17 +88,6 @@ class CalendarAssistant
     end   
   end
 
-  def event_description event
-    attributes = event_attributes(event)
-    declined = attributes.delete Google::Apis::CalendarV3::Event::RESPONSE_DECLINED
-    attributes.delete Google::Apis::CalendarV3::Event::RESPONSE_ACCEPTED
-
-    s = sprintf "%s | #{BOLD_ON}%s#{BOLD_OFF}", event_date_description(event), event.summary
-    s += sprintf(" #{ITALIC_ON}(%s)#{ITALIC_OFF}", attributes.join(", ")) unless attributes.empty?
-    s = CROSS_OUT_ON + s + CROSS_OUT_OFF if declined
-    s
-  end
-
   def event_attributes event
     [].tap do |attr|
       attr << "not-busy" if event.transparency
@@ -88,6 +98,7 @@ class CalendarAssistant
           attr << attendee.response_status if attendee&.response_status
         end
       end
+      attr << "recurring" if event.recurring_event_id
     end
   end
 end

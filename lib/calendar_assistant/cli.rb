@@ -13,11 +13,15 @@ class CalendarAssistant
       Chronic.parse userspec
     end
 
-    def self.print_events ca, events
-      puts "#{ITALIC_ON}(All times are in #{ca.calendar.time_zone})#{ITALIC_OFF}"
-      events.each do |event|
-        puts ca.event_description event
-      end if events
+    def self.print_events ca, events, options={}
+      if events
+        events.each do |event|
+          puts ca.event_description event, verbose: options[:verbose]
+        end
+        puts "\n#{ITALIC_ON}(All times are in #{ca.calendar.time_zone})#{ITALIC_OFF}"
+      else
+        puts "No events in this time range."
+      end
     end
   end
 
@@ -26,11 +30,13 @@ class CalendarAssistant
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_location_events Helpers.time_or_time_range(datespec)
-      Helpers.print_events ca, events
+      Helpers.print_events ca, events, verbose: options[:verbose]
     end
   end
 
   class CLI < Thor
+    class_option :verbose, type: :boolean, desc: "print more information", aliases: ["-v"]
+
     desc 'authorize PROFILE_NAME', 'create (or validate) a named profile with calendar access'
     long_desc <<~EOD
 
@@ -64,7 +70,7 @@ class CalendarAssistant
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_events Helpers.time_or_time_range(datespec)
-      Helpers.print_events ca, events
+      Helpers.print_events ca, events, verbose: options[:verbose]
     end
   end
 end

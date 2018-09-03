@@ -6,6 +6,7 @@ gem "thor"
 gem "business_time"
 
 gem "google-api-client"
+gem "ice_cube"
 
 group :test do
   gem "rspec"
