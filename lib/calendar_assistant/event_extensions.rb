@@ -9,6 +9,17 @@ class Google::Apis::CalendarV3::Event
   RESPONSE_DECLINED = "declined"
   RESPONSE_ACCEPTED = "accepted"
   RESPONSE_NEEDS_ACTION = "needsAction"
+  RESPONSE_TENTATIVE = "tentative"
+
+  module Attributes
+    DECLINED = RESPONSE_DECLINED
+    ACCEPTED = RESPONSE_ACCEPTED
+    NEEDS_ACTION = RESPONSE_NEEDS_ACTION
+    TENTATIVE = RESPONSE_TENTATIVE
+    RECURRING = "recurring"
+    SELF = "self"
+    COMMITMENT = "commitment"
+  end
 
   TRANSPARENCY_NOT_BUSY = "transparent"
   TRANSPARENCY_BUSY = "opaque"

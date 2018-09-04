@@ -16,7 +16,10 @@ class CalendarAssistant
     def self.print_events ca, events, options={}
       if events
         events.each do |event|
-          puts ca.event_description event, verbose: options[:verbose]
+          attributes = ca.event_attributes(event)
+          if ! options[:commitments] || attributes.include?(GCal::Event::Attributes::COMMITMENT)
+            puts ca.event_description event, options
+          end
           pp event if ENV['DEBUG']
         end
       else
@@ -46,6 +49,7 @@ class CalendarAssistant
 
   class CLI < Thor
     class_option :verbose, type: :boolean, desc: "print more information", aliases: ["-v"]
+    class_option :commitments, type: :boolean, desc: "only show events that you've accepted with another person", aliases: ["-c"]
 
     desc 'authorize PROFILE_NAME', 'create (or validate) a named profile with calendar access'
     long_desc <<~EOD

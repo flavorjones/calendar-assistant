@@ -5,6 +5,7 @@ require "yaml"
 require "business_time"
 require "google/apis/calendar_v3"
 require "ice_cube"
+require "set"
 
 class CalendarAssistant
   GCal = Google::Apis::CalendarV3
@@ -105,18 +106,17 @@ class CalendarAssistant
 
   def event_description event, options={}
     attributes = event_attributes(event)
-    declined = attributes.delete GCal::Event::RESPONSE_DECLINED
-    attributes.delete GCal::Event::RESPONSE_ACCEPTED
-    recurring = attributes.delete "recurring"
+    attributes.delete GCal::Event::Attributes::ACCEPTED # no news is good news
+    attributes.delete GCal::Event::Attributes::COMMITMENT # this is meta
+    declined = attributes.delete? GCal::Event::Attributes::DECLINED # we'll strike it out in this case
+    recurring = attributes.include? GCal::Event::Attributes::RECURRING
 
     s = sprintf "%-25.25s | #{BOLD_ON}%s#{BOLD_OFF}", event_date_description(event), event.summary
-    s += sprintf(" #{ITALIC_ON}(%s)#{ITALIC_OFF}", attributes.join(", ")) unless attributes.empty?
+    s += sprintf(" #{ITALIC_ON}(%s)#{ITALIC_OFF}", attributes.to_a.sort.join(", ")) unless attributes.empty?
 
-    if options[:verbose]
-      if recurring
-        recurrence = IceCube::Schedule.from_ical(event.recurrence_rules(service))
-        s += sprintf(" [%s]", recurrence) if recurring
-      end
+    if options[:verbose] && recurring
+      recurrence = IceCube::Schedule.from_ical(event.recurrence_rules(service))
+      s += sprintf(" [%s]", recurrence) if recurring
     end
 
     s = CROSS_OUT_ON + s + CROSS_OUT_OFF if declined
@@ -141,8 +141,11 @@ class CalendarAssistant
     end   
   end
 
+  #
+  #  TODO: make these atributes into methods on Event (possibly taking CalendarAssistant as an arg when necessary)
+  #
   def event_attributes event
-    [].tap do |attr|
+    Set.new.tap do |attr|
       attr << "not-busy" if event.transparency
       if event.attendees.nil?
         attr << "self"
@@ -151,7 +154,10 @@ class CalendarAssistant
           attr << attendee.response_status if attendee&.response_status
         end
       end
-      attr << "recurring" if event.recurring_event_id
+      attr << GCal::Event::Attributes::RECURRING if event.recurring_event_id
+      if event.attendees && attr.intersect?(Set.new([GCal::Event::Attributes::ACCEPTED, GCal::Event::Attributes::TENTATIVE, GCal::Event::Attributes::NEEDS_ACTION]))
+        attr << GCal::Event::Attributes::COMMITMENT
+      end
     end
   end
 end
