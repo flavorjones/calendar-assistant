@@ -93,7 +93,7 @@ $ calendar-assistant location show work "today...next month"
 
 ### Future
 
-Practing Readme-Driven-Development (RDD), some features I'd like to build are:
+Practicing Readme-Driven-Development (RDD), some features I'd like to build are:
 
 - ability to be busy for location events (e.g. vacation)
   - I'd like to test interaction between this and the OOO feature
