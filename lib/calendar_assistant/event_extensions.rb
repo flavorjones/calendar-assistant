@@ -32,10 +32,20 @@ class Google::Apis::CalendarV3::Event
     @start.date
   end
 
+  def past?
+    if all_day?
+      self.end.date < Date.today
+    else
+      self.end.date_time < Time.now
+    end
+  end
+
   def current?
-    return false if all_day?
-    now = Time.now
-    self.start.date_time <= now && now <= self.end.date_time
+    if all_day?
+      Date.parse(self.start.date) <= Date.today && Date.today <= Date.parse(self.end.date)
+    else
+      self.start.date_time <= Time.now && Time.now <= self.end.date_time
+    end
   end
 
   def attendee id

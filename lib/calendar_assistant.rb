@@ -13,7 +13,6 @@ class CalendarAssistant
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
   EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
-  EMOJI_ARROW     = "🡆" # U+1F846 RIGHWARDS HEAVY ARROW
 
   # see https://en.wikipedia.org/wiki/ANSI_escape_code
   CROSS_OUT_ON = "\e[9m"
@@ -115,8 +114,7 @@ class CalendarAssistant
     declined = attributes.delete? GCal::Event::Attributes::DECLINED # we'll strike it out in this case
     recurring = attributes.include? GCal::Event::Attributes::RECURRING
 
-    s = sprintf "%s %-25s | #{BOLD_ON}%s#{BOLD_OFF}",
-                event.current? ? EMOJI_ARROW : " ",
+    s = sprintf "%-25s | #{BOLD_ON}%s#{BOLD_OFF}",
                 event_date_description(event),
                 event.summary
     s += sprintf(" #{ITALIC_ON}(%s)#{ITALIC_OFF}", attributes.to_a.sort.join(", ")) unless attributes.empty?
@@ -146,9 +144,11 @@ class CalendarAssistant
                sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%S"), event.end.date_time.strftime("%Y-%m-%d %H:%S"))
              end
            end
-    if event.start&.date_time&.<(Time.now)
+    if event.current?
+      sprintf "%s%s%s", BOLD_ON, desc, BOLD_OFF
+    elsif event.past?
       sprintf "%s%s%s", FAINT_ON, desc, FAINT_OFF
-    else
+    else # future
       desc
     end
   end
