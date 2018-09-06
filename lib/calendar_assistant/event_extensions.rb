@@ -32,6 +32,12 @@ class Google::Apis::CalendarV3::Event
     @start.date
   end
 
+  def current?
+    return false if all_day?
+    now = Time.now
+    self.start.date_time <= now && now <= self.end.date_time
+  end
+
   def attendee id
     attendees&.find do |attendee|
       attendee.email == id

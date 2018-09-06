@@ -19,12 +19,9 @@ class CalendarAssistant
         return
       end
 
-      events_to_display = events.select do |event|
-        attributes = ca.event_attributes(event)
-        ! options[:commitments] || attributes.include?(GCal::Event::Attributes::COMMITMENT)
-      end
-
-      events_to_display.each do |event|
+      events.select do |event|
+        ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attributes::COMMITMENT)
+      end.each do |event|
         puts ca.event_description(event, options)
         pp event if ENV['DEBUG']
       end

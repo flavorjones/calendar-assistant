@@ -13,13 +13,17 @@ class CalendarAssistant
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
   EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
+  EMOJI_ARROW     = "🡆" # U+1F846 RIGHWARDS HEAVY ARROW
 
+  # see https://en.wikipedia.org/wiki/ANSI_escape_code
   CROSS_OUT_ON = "\e[9m"
   CROSS_OUT_OFF = "\e[29m"
   BOLD_ON = "\e[1m"
   BOLD_OFF = "\e[22m"
   ITALIC_ON = "\e[3m"
   ITALIC_OFF = "\e[23m"
+  FAINT_ON = "\e[2m"
+  FAINT_OFF = BOLD_OFF
 
   DEFAULT_CALENDAR_ID = "primary"
 
@@ -111,7 +115,10 @@ class CalendarAssistant
     declined = attributes.delete? GCal::Event::Attributes::DECLINED # we'll strike it out in this case
     recurring = attributes.include? GCal::Event::Attributes::RECURRING
 
-    s = sprintf "%-25.25s | #{BOLD_ON}%s#{BOLD_OFF}", event_date_description(event), event.summary
+    s = sprintf "%s %-25s | #{BOLD_ON}%s#{BOLD_OFF}",
+                event.current? ? EMOJI_ARROW : " ",
+                event_date_description(event),
+                event.summary
     s += sprintf(" #{ITALIC_ON}(%s)#{ITALIC_OFF}", attributes.to_a.sort.join(", ")) unless attributes.empty?
 
     if options[:verbose] && recurring
@@ -124,21 +131,26 @@ class CalendarAssistant
   end
 
   def event_date_description event
-    if event.all_day?
-      start_date = event.start.date.is_a?(Date) ? event.start.date : Date.parse(event.start.date)
-      end_date = event.end.date.is_a?(Date) ? event.end.date : Date.parse(event.end.date)
-      if (end_date - start_date) <= 1
-        event.start.to_s
-      else
-        sprintf("%s - %s", start_date, end_date - 1.day)
-      end
+    desc = if event.all_day?
+             start_date = event.start.date.is_a?(Date) ? event.start.date : Date.parse(event.start.date)
+             end_date = event.end.date.is_a?(Date) ? event.end.date : Date.parse(event.end.date)
+             if (end_date - start_date) <= 1
+               event.start.to_s
+             else
+               sprintf("%s - %s", start_date, end_date - 1.day)
+             end
+           else
+             if event.start.date_time.to_date == event.end.date_time.to_date
+               sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%S"), event.end.date_time.strftime("%H:%S"))
+             else
+               sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%S"), event.end.date_time.strftime("%Y-%m-%d %H:%S"))
+             end
+           end
+    if event.start&.date_time&.<(Time.now)
+      sprintf "%s%s%s", FAINT_ON, desc, FAINT_OFF
     else
-      if event.start.date_time.to_date == event.end.date_time.to_date
-        sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%S"), event.end.date_time.strftime("%H:%S"))
-      else
-        sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%S"), event.end.date_time.strftime("%Y-%m-%d %H:%S"))
-      end
-    end   
+      desc
+    end
   end
 
   #
