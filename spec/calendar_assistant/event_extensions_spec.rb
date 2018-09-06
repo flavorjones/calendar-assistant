@@ -10,5 +10,7 @@ describe Google::Apis::CalendarV3::Event do
 end
 
 describe Google::Apis::CalendarV3::EventDateTime do
+  describe "#ensure_date" do it end
+  describe "#to_s" do it end
 end
 
