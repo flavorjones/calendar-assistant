@@ -1,6 +1,6 @@
 # calendar assistant
 
-A project to help me book (and re-book) one-on-ones and other meetings automatically.
+A command-line tool to help me book (and re-book) one-on-ones and other meetings automatically.
 
 
 ## Usage
@@ -12,12 +12,23 @@ Then run `calendar-assistant authorize <profile-name>` (see below for details).
 
 ## Features
 
-All datespecs and datetimespecs are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times. For a date range or a datetime range, split the start and end with `...` like "tomorrow ... three days from now" or "2018-09-24...2018-09-27".
+### Pretty Display
 
 Events are nicely formatted, with strikeouts for events you've declined, and some additional attributes listed when present (e.g., "needsAction", "self", "not-busy", ....)
 
+Event "recurrence rules" are expressed in plain english like "Every 2 weeks on Tuesdays", thanks to [Ice Cube](https://github.com/seejohnrun/ice_cube).
 
-### Authorize access to your Google Calendar
+
+### Date and Time Specification
+
+All dates and times are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times.
+
+For a date range or a datetime range, split the start and end with `...` like "tomorrow ... three days from now" or "2018-09-24...2018-09-27".
+
+
+### Commands
+
+#### Authorize access to your Google Calendar
 
 ``` bash
 calendar-assistant authorize <profile-name>
@@ -26,22 +37,32 @@ calendar-assistant authorize <profile-name>
 This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`. The refresh token will be written to `calendar_tokens.yml`, which you should be careful not to share or make public.
 
 
-### Display your calendar events
+#### Display your calendar events
 
 ``` bash
 calendar-assistant show [-v] [-c] <profile-name> [<datespec>]
 ```
 
+The `-v` ("--verbose") option will display additional event information, including recurrence rules.
+
+The `-c` ("--commitments") option will omit events that you haven't accepted (either "yes" or "maybe") and that are with at least one other person.
+
 For example:
+
+_calendar-assistant show work_
 
 ![show-me-my-day](./assets/show-me-my-day.png)
 
+_calendar-assistant show work -v_
+
 ![show-me-my-day](./assets/show-me-my-day-v.png)
+
+_calendar-assistant show work -c_
 
 ![show-me-my-day](./assets/show-me-my-day-c.png)
 
 
-### Tell people where you are at in the world
+#### Tell people where you are at in the world
 
 Declare your location as an all-day non-busy event:
 
@@ -75,7 +96,7 @@ Created:
 2018-09-10 - 2018-09-14   | 🗺  Vacation! (not-busy, self)
 ```
 
-### Look up where you're going to be
+#### Look up where you're going to be
 
 ``` bash
 calendar-assistant location show [-v] <profile-name> [<datespec>]
@@ -91,19 +112,24 @@ $ calendar-assistant location show work "today...next month"
 2018-09-28              | 🗺  WFH (not-busy, self)
 ```
 
-### Future
+## The Future
 
 Practing Readme-Driven-Development (RDD), some features I'd like to build are:
 
 - ability to be busy for location events (e.g. vacation)
   - I'd like to test interaction between this and the OOO feature
+- calendar "linter"
+  - automatically decline 1:1s that were declined by the other person
+  - prompt for action on upcoming unreplied-to events ("needsAction")
+  - highlight events that are explicitly public, versus "calendar default"
+  - indicate conflicts and prompt for resolution
 - create variations on 1:1s
   - every N weeks for 30 minutes
   - every N weeks alternating 30 and 60 minutes
   - alternating 2:1 with 1:1s between two people
   - preference for start-of-day (breakfast) or end-of-day (pub)
   - one-time 1:1 within a time period
-  - pool of people with repeating time slot (e.g. all CF Eng managers)
+  - pool of people with repeating time slot(s) (e.g. all CF Eng managers)
 - block off time when a day approaches full
   - optimize for big blocks of time
 - mirror any flights I have from my Tripit calendar to my primary calendar
