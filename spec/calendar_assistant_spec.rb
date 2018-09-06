@@ -1,10 +1,16 @@
 describe CalendarAssistant do
   GCal = Google::Apis::CalendarV3
 
+  describe "class methods" do
+    describe ".authorize" do it end
+    describe ".time_range_cast" do it end
+    describe ".date_range_case" do it end
+  end
+
   describe "event visitors" do
-    it "tests event_date_description"
-    it "tests event_description"
-    it "tests event_attributes"
+    describe "#event_date_description" do it end
+    describe "tests event_description" do it end
+    describe "tests event_attributes" do it end
   end
 
   describe "events" do
@@ -214,5 +220,11 @@ describe CalendarAssistant do
         end
       end
     end
+  end
+
+  describe "event formatting" do
+    describe "#event_description" do it end
+    describe "#event_date_description" do it end
+    describe "#event_attributes" do it end
   end
 end

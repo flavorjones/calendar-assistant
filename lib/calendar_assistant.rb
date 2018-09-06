@@ -114,9 +114,17 @@ class CalendarAssistant
     declined = attributes.delete? GCal::Event::Attributes::DECLINED # we'll strike it out in this case
     recurring = attributes.include? GCal::Event::Attributes::RECURRING
 
-    s = sprintf "%-25s | #{BOLD_ON}%s#{BOLD_OFF}",
-                event_date_description(event),
-                event.summary
+    date_wrapper = if event.current?
+                     [BOLD_ON, BOLD_OFF]
+                   elsif event.past?
+                     [FAINT_ON, FAINT_OFF]
+                   else # future
+                     ["", ""]
+                   end
+
+    s = sprintf "%s%-25.25s%s | %s%s%s",
+                date_wrapper.first, event_date_description(event), date_wrapper.last,
+                BOLD_ON, event.summary, BOLD_OFF
     s += sprintf(" #{ITALIC_ON}(%s)#{ITALIC_OFF}", attributes.to_a.sort.join(", ")) unless attributes.empty?
 
     if options[:verbose] && recurring
@@ -129,27 +137,20 @@ class CalendarAssistant
   end
 
   def event_date_description event
-    desc = if event.all_day?
-             start_date = event.start.date.is_a?(Date) ? event.start.date : Date.parse(event.start.date)
-             end_date = event.end.date.is_a?(Date) ? event.end.date : Date.parse(event.end.date)
-             if (end_date - start_date) <= 1
-               event.start.to_s
-             else
-               sprintf("%s - %s", start_date, end_date - 1.day)
-             end
-           else
-             if event.start.date_time.to_date == event.end.date_time.to_date
-               sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%M"), event.end.date_time.strftime("%H:%M"))
-             else
-               sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))
-             end
-           end
-    if event.current?
-      sprintf "%s%s%s", BOLD_ON, desc, BOLD_OFF
-    elsif event.past?
-      sprintf "%s%s%s", FAINT_ON, desc, FAINT_OFF
-    else # future
-      desc
+    if event.all_day?
+      start_date = event.start.ensure_date
+      end_date = event.end.ensure_date
+      if (end_date - start_date) <= 1
+        event.start.to_s
+      else
+        sprintf("%s - %s", start_date, end_date - 1.day)
+      end
+    else
+      if event.start.date_time.to_date == event.end.date_time.to_date
+        sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%M"), event.end.date_time.strftime("%H:%M"))
+      else
+        sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))
+      end
     end
   end
 
