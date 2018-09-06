@@ -139,9 +139,9 @@ class CalendarAssistant
              end
            else
              if event.start.date_time.to_date == event.end.date_time.to_date
-               sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%S"), event.end.date_time.strftime("%H:%S"))
+               sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%M"), event.end.date_time.strftime("%H:%M"))
              else
-               sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%S"), event.end.date_time.strftime("%Y-%m-%d %H:%S"))
+               sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))
              end
            end
     if event.current?
