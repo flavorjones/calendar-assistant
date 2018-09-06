@@ -14,16 +14,19 @@ class CalendarAssistant
     end
 
     def self.print_events ca, events, options={}
-      if events
-        events.each do |event|
-          attributes = ca.event_attributes(event)
-          if ! options[:commitments] || attributes.include?(GCal::Event::Attributes::COMMITMENT)
-            puts ca.event_description event, options
-          end
-          pp event if ENV['DEBUG']
-        end
-      else
+      if events.nil? || events.empty?
         puts "No events in this time range."
+        return
+      end
+
+      events_to_display = events.select do |event|
+        attributes = ca.event_attributes(event)
+        ! options[:commitments] || attributes.include?(GCal::Event::Attributes::COMMITMENT)
+      end
+
+      events_to_display.each do |event|
+        puts ca.event_description(event, options)
+        pp event if ENV['DEBUG']
       end
     end
   end
@@ -48,8 +51,13 @@ class CalendarAssistant
   end
 
   class CLI < Thor
+    #
+    # options
+    # note that these options are passed straight through to Helpers.print_events
+    #
     class_option :verbose, type: :boolean, desc: "print more information", aliases: ["-v"]
     class_option :commitments, type: :boolean, desc: "only show events that you've accepted with another person", aliases: ["-c"]
+
 
     desc 'authorize PROFILE_NAME', 'create (or validate) a named profile with calendar access'
     long_desc <<~EOD
@@ -77,8 +85,6 @@ class CalendarAssistant
       puts "\nYou're authorized!\n\n"
     end
 
-    desc "location SUBCOMMAND ...ARGS", "manage your location via all-day calendar events"
-    subcommand "location", Location
 
     desc "show PROFILE_NAME [DATE | DATERANGE]", "show your events for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
@@ -86,5 +92,9 @@ class CalendarAssistant
       events = ca.find_events Helpers.time_or_time_range(datespec)
       Helpers.print_events ca, events, options
     end
+
+
+    desc "location SUBCOMMAND ...ARGS", "manage your location via all-day calendar events"
+    subcommand "location", Location
   end
 end
