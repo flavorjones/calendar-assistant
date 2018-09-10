@@ -19,6 +19,7 @@ class Google::Apis::CalendarV3::Event
     RECURRING = "recurring"
     SELF = "self"
     COMMITMENT = "commitment"
+    ONE_ON_ONE = "1:1"
   end
 
   TRANSPARENCY_NOT_BUSY = "transparent"
