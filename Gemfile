@@ -1,11 +1,9 @@
 source "https://rubygems.org"
 
-gem "google_calendar"
+gem "google-api-client"
 gem "chronic"
 gem "thor"
 gem "business_time"
-
-gem "google-api-client"
 gem "ice_cube"
 
 group :test do

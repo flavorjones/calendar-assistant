@@ -1,9 +1,8 @@
 # coding: utf-8
-require "google_calendar"
+require "google/apis/calendar_v3"
 require "json"
 require "yaml"
 require "business_time"
-require "google/apis/calendar_v3"
 require "ice_cube"
 require "set"
 
