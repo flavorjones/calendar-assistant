@@ -112,32 +112,6 @@ $ calendar-assistant location show work "today...next month"
 2018-09-28              | 🗺  WFH (not-busy, self)
 ```
 
-## The Future
-
-Practicing Readme-Driven-Development (RDD), some features I'd like to build are:
-
-- ability to be busy for location events (e.g. vacation)
-  - I'd like to test interaction between this and the OOO feature
-- calendar "linter"
-  - automatically decline 1:1s that were declined by the other person
-  - prompt for action on upcoming unreplied-to events ("needsAction")
-  - highlight events that are explicitly public, versus "calendar default"
-  - indicate conflicts and prompt for resolution
-- create variations on 1:1s
-  - every N weeks for 30 minutes
-  - every N weeks alternating 30 and 60 minutes
-  - alternating 2:1 with 1:1s between two people
-  - preference for start-of-day (breakfast) or end-of-day (pub)
-  - one-time 1:1 within a time period
-  - pool of people with repeating time slot(s) (e.g. all CF Eng managers)
-- block off time when a day approaches full
-  - optimize for big blocks of time
-- mirror any flights I have from my Tripit calendar to my primary calendar
-  - with 90 minute blocks before and after for travel to the airport, etc.
-
-Also, I need to make this a real Ruby Gem so people can install it. :-\
-
-
 ## References
 
 Google Calendar Concepts: https://developers.google.com/calendar/concepts/
