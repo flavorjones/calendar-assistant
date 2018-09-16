@@ -5,6 +5,7 @@ gem "chronic"
 gem "thor"
 gem "business_time"
 gem "ice_cube"
+gem "rainbow"
 
 group :test do
   gem "rspec"

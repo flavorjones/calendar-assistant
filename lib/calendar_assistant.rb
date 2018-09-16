@@ -4,6 +4,7 @@ require "json"
 require "yaml"
 require "business_time"
 require "ice_cube"
+require "rainbow"
 require "set"
 
 class CalendarAssistant
@@ -12,16 +13,6 @@ class CalendarAssistant
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
   EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
-
-  # see https://en.wikipedia.org/wiki/ANSI_escape_code
-  CROSS_OUT_ON = "\e[9m"
-  CROSS_OUT_OFF = "\e[29m"
-  BOLD_ON = "\e[1m"
-  BOLD_OFF = "\e[22m"
-  ITALIC_ON = "\e[3m"
-  ITALIC_OFF = "\e[23m"
-  FAINT_ON = "\e[2m"
-  FAINT_OFF = BOLD_OFF
 
   DEFAULT_CALENDAR_ID = "primary"
 
@@ -114,24 +105,26 @@ class CalendarAssistant
     recurring = attributes.include? GCal::Event::Attributes::RECURRING
 
     date_wrapper = if event.current?
-                     [BOLD_ON, BOLD_OFF]
+                     [:bright]
                    elsif event.past?
-                     [FAINT_ON, FAINT_OFF]
+                     [:faint]
                    else # future
-                     ["", ""]
+                     []
                    end
 
-    s = sprintf "%s%-25.25s%s | %s%s%s",
-                date_wrapper.first, event_date_description(event), date_wrapper.last,
-                BOLD_ON, event.summary, BOLD_OFF
-    s += sprintf(" #{ITALIC_ON}(%s)#{ITALIC_OFF}", attributes.to_a.sort.join(", ")) unless attributes.empty?
+    s = sprintf("%-25.25s", event_date_description(event))
+    s = date_wrapper.inject(Rainbow(s)) { |text, ansi| text.send ansi }
+
+    s += Rainbow(sprintf(" | %s", event.summary)).bold
+
+    s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
 
     if options[:verbose] && recurring
       recurrence = IceCube::Schedule.from_ical(event.recurrence_rules(service))
       s += sprintf(" [%s]", recurrence) if recurring
     end
 
-    s = CROSS_OUT_ON + s + CROSS_OUT_OFF if declined
+    s = Rainbow(s).strike if declined
     s
   end
 
@@ -178,3 +171,4 @@ end
 require "calendar_assistant/authorizer"
 require "calendar_assistant/cli"
 require "calendar_assistant/event_extensions"
+require "calendar_assistant/rainbow_extensions"

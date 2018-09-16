@@ -41,7 +41,7 @@ class CalendarAssistant
       ca = CalendarAssistant.new calendar_id
       events = ca.create_location_event Helpers.time_or_time_range(datespec), location
       events.keys.each do |key|
-        puts "#{BOLD_ON}#{key.capitalize}:#{BOLD_OFF}"
+        puts Rainbow(key.capitalize).bold
         Helpers.print_events ca, events[key], options
       end
     end
