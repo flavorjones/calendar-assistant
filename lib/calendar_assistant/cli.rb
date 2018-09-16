@@ -13,15 +13,38 @@ class CalendarAssistant
       Chronic.parse(userspec) || raise("could not parse #{userspec}")
     end
 
+    def self.now
+      GCal::Event.new start: GCal::EventDateTime.new(date_time: Time.now),
+                      end: GCal::EventDateTime.new(date_time: Time.now),
+                      summary: Rainbow("          now          ").inverse.faint
+    end
+
+    def self.print_now! event, ca, options, printed_now
+      return true if printed_now
+      return false if event.all_day?
+      return false if event.start_date != Date.today
+
+      if event.start.date_time > Time.now
+        puts ca.event_description(now, options)
+        return true
+      end
+
+      false
+    end
+
     def self.print_events ca, events, options={}
       if events.nil? || events.empty?
         puts "No events in this time range."
         return
       end
 
-      events.select do |event|
+      display_events = events.select do |event|
         ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attributes::COMMITMENT)
-      end.each do |event|
+      end
+
+      printed_now = false
+      display_events.each do |event|
+        printed_now = print_now! event, ca, options, printed_now
         puts ca.event_description(event, options)
         pp event if ENV['DEBUG']
       end

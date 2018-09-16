@@ -35,7 +35,7 @@ class Google::Apis::CalendarV3::Event
 
   def past?
     if all_day?
-      self.end.ensure_date < Date.today
+      Date.today >= self.end.ensure_date
     else
       self.end.date_time < Time.now
     end
@@ -43,9 +43,21 @@ class Google::Apis::CalendarV3::Event
 
   def current?
     if all_day?
-      self.start.ensure_date <= Date.today && Date.today <= self.end.ensure_date
+      self.start.ensure_date <= Date.today && Date.today < self.end.ensure_date
     else
       self.start.date_time <= Time.now && Time.now <= self.end.date_time
+    end
+  end
+
+  def future?
+    !past? && !current?
+  end
+
+  def start_date
+    if all_day?
+      self.start.ensure_date
+    else
+      self.start.date_time.to_date
     end
   end
 
