@@ -124,7 +124,7 @@ class CalendarAssistant
       s += sprintf(" [%s]", recurrence) if recurring
     end
 
-    s = Rainbow(s).strike if declined
+    s = Rainbow(Rainbow.uncolor(s)).faint.strike if declined
     s
   end
 
