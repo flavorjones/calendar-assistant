@@ -19,34 +19,41 @@ class CalendarAssistant
                       summary: Rainbow("          now          ").inverse.faint
     end
 
-    def self.print_now! event, ca, options, printed_now
-      return true if printed_now
-      return false if event.all_day?
-      return false if event.start_date != Date.today
+    class Out
+      attr_reader :io
 
-      if event.start.date_time > Time.now
-        puts ca.event_description(now, options)
-        return true
+      def initialize io=STDOUT
+        @io = io
       end
 
-      false
-    end
+      def print_now! event, ca, options, printed_now
+        return true if printed_now
+        return false if event.all_day?
+        return false if event.start_date != Date.today
 
-    def self.print_events ca, events, options={}
-      if events.nil? || events.empty?
-        puts "No events in this time range."
-        return
+        if event.start.date_time > Time.now
+          io.puts ca.event_description(CLIHelpers.now, options)
+          return true
+        end
+
+        false
       end
 
-      display_events = events.select do |event|
-        ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attributes::COMMITMENT)
-      end
+      def print_events ca, events, options={}
+        if events.nil? || events.empty?
+          io.puts "No events in this time range."
+          return
+        end
 
-      printed_now = false
-      display_events.each do |event|
-        printed_now = print_now! event, ca, options, printed_now
-        puts ca.event_description(event, options)
-        pp event if ENV['DEBUG']
+        display_events = events.select do |event|
+          ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attributes::COMMITMENT)
+        end
+
+        printed_now = false
+        display_events.each do |event|
+          printed_now = print_now! event, ca, options, printed_now
+          io.puts ca.event_description(event, options)
+        end
       end
     end
   end
@@ -57,7 +64,7 @@ class CalendarAssistant
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_location_events CLIHelpers.time_or_time_range(datespec)
-      CLIHelpers.print_events ca, events, options
+      CLIHelpers::Out.new.print_events ca, events, options
     end
 
     desc "set PROFILE_NAME LOCATION [DATE | DATERANGE]",
@@ -67,7 +74,7 @@ class CalendarAssistant
       events = ca.create_location_event CLIHelpers.time_or_time_range(datespec), location
       events.keys.each do |key|
         puts Rainbow(key.capitalize).bold
-        CLIHelpers.print_events ca, events[key], options
+        CLIHelpers::Out.new.print_events ca, events[key], options
       end
     end
   end
@@ -119,7 +126,7 @@ class CalendarAssistant
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_events CLIHelpers.time_or_time_range(datespec)
-      CLIHelpers.print_events ca, events, options
+      CLIHelpers::Out.new.print_events ca, events, options
     end
 
 

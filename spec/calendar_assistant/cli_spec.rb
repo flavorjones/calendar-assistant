@@ -1,7 +1,12 @@
 describe CalendarAssistant::CLI do
   describe CalendarAssistant::CLIHelpers do
     it "test time_or_time_range"
-    it "test print_events"
+    it "test now"
+
+    describe CalendarAssistant::CLIHelpers::Out do
+      it "test print_now!"
+      it "test print_events"
+    end
   end
 
   describe "commands" do
@@ -15,9 +20,11 @@ describe CalendarAssistant::CLI do
     let(:profile_name) { "work" }
     let(:ca) { instance_double("CalendarAssistant") }
     let(:events) { [instance_double("Event")] }
+    let(:out) { double("STDOUT") }
 
     before do
       expect(CalendarAssistant).to receive(:new).with(profile_name).and_return(ca)
+      allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
     end
           
     describe "show" do
@@ -26,7 +33,7 @@ describe CalendarAssistant::CLI do
           expect(ca).to receive(:find_events).
                           with(Chronic.parse("today")).
                           and_return(events)
-          expect(CalendarAssistant::CLIHelpers).to receive(:print_events).with(ca, events, anything)
+          expect(out).to receive(:print_events).with(ca, events, anything)
 
           CalendarAssistant::CLI.start ["show", profile_name]
         end
@@ -37,7 +44,7 @@ describe CalendarAssistant::CLI do
           expect(ca).to receive(:find_events).
                           with(Chronic.parse("tomorrow")).
                           and_return(events)
-          expect(CalendarAssistant::CLIHelpers).to receive(:print_events).with(ca, events, anything)
+          expect(out).to receive(:print_events).with(ca, events, anything)
 
           CalendarAssistant::CLI.start ["show", profile_name, "tomorrow"]
         end
@@ -48,7 +55,7 @@ describe CalendarAssistant::CLI do
           expect(ca).to receive(:find_events).
                           with(Chronic.parse("tomorrow")..Chronic.parse("two days from now")).
                           and_return(events)
-          expect(CalendarAssistant::CLIHelpers).to receive(:print_events).with(ca, events, anything)
+          expect(out).to receive(:print_events).with(ca, events, anything)
 
           CalendarAssistant::CLI.start ["show", profile_name, "tomorrow...two days from now"]
         end
@@ -62,7 +69,7 @@ describe CalendarAssistant::CLI do
             expect(ca).to receive(:find_location_events).
                             with(Chronic.parse("today")).
                             and_return(events)
-            expect(CalendarAssistant::CLIHelpers).to receive(:print_events).with(ca, events, anything)
+            expect(out).to receive(:print_events).with(ca, events, anything)
 
             CalendarAssistant::CLI.start ["location", "show", profile_name]
           end
@@ -73,7 +80,7 @@ describe CalendarAssistant::CLI do
             expect(ca).to receive(:find_location_events).
                             with(Chronic.parse("tomorrow")).
                             and_return(events)
-            expect(CalendarAssistant::CLIHelpers).to receive(:print_events).with(ca, events, anything)
+            expect(out).to receive(:print_events).with(ca, events, anything)
 
             CalendarAssistant::CLI.start ["location", "show", profile_name, "tomorrow"]
           end
@@ -84,7 +91,7 @@ describe CalendarAssistant::CLI do
             expect(ca).to receive(:find_location_events).
                             with(Chronic.parse("tomorrow")..Chronic.parse("two days from now")).
                             and_return(events)
-            expect(CalendarAssistant::CLIHelpers).to receive(:print_events).with(ca, events, anything)
+            expect(out).to receive(:print_events).with(ca, events, anything)
 
             CalendarAssistant::CLI.start ["location", "show", profile_name, "tomorrow...two days from now"]
           end
