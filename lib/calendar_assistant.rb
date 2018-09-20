@@ -150,6 +150,7 @@ class CalendarAssistant
   #  TODO: make these atributes into methods on Event (possibly taking CalendarAssistant as an arg when necessary)
   #
   def event_attributes event
+    return Set.new unless event.id
     Set.new.tap do |attr|
       attr << "not-busy" if event.transparency
       if event.attendees.nil?
