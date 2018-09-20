@@ -167,6 +167,9 @@ class CalendarAssistant
       attr << GCal::Event::Attributes::ONE_ON_ONE if event.attendees&.length == 2
     end
   end
+
+  def find_current_av_url
+  end
 end
 
 require "calendar_assistant/authorizer"

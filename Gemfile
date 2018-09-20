@@ -6,6 +6,7 @@ gem "thor"
 gem "business_time"
 gem "ice_cube"
 gem "rainbow"
+gem "launchy"
 
 group :test do
   gem "rspec"

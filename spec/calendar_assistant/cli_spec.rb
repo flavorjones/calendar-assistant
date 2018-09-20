@@ -6,6 +6,8 @@ describe CalendarAssistant::CLI do
     describe CalendarAssistant::CLIHelpers::Out do
       it "test print_now!"
       it "test print_events"
+      it "test puts"
+      it "test launch"
     end
   end
 
@@ -138,6 +140,43 @@ describe CalendarAssistant::CLI do
                             and_return({})
 
             CalendarAssistant::CLI.start ["location", "set", profile_name, "Palo Alto", "tomorrow...three days from now"]
+          end
+        end
+      end
+    end
+
+    describe "join" do
+      before do
+        allow(out).to receive(:puts)
+      end
+
+      it "calls #find_current_av_url" do
+        expect(ca).to receive(:find_current_av_url)
+
+        CalendarAssistant::CLI.start ["join", profile_name]
+      end
+
+      context "when there is a URL" do
+        let(:url) { "https://pivotal.zoom.us/j/123456789" }
+
+        before do
+          expect(ca).to receive(:find_current_av_url).
+                          and_return(url)
+        end
+
+        context "with --print option" do
+          it "prints the meeting URL" do
+            expect(out).to receive(:puts).with(url)
+
+            CalendarAssistant::CLI.start ["join", profile_name, "--print"]
+          end
+        end
+
+        context "by default" do
+          it "launches the meeting URL in your browser" do
+            expect(out).to receive(:launch).with(url)
+
+            CalendarAssistant::CLI.start ["join", profile_name]
           end
         end
       end

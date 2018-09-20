@@ -1,5 +1,6 @@
 require "thor"
 require "chronic"
+require "launchy"
 
 class CalendarAssistant
   class CLIHelpers
@@ -54,6 +55,14 @@ class CalendarAssistant
           printed_now = print_now! event, ca, options, printed_now
           io.puts ca.event_description(event, options)
         end
+      end
+
+      def launch url
+        Launchy.open url
+      end
+
+      def puts *args
+        io.puts(*args)
       end
     end
   end
@@ -129,6 +138,26 @@ class CalendarAssistant
       CLIHelpers::Out.new.print_events ca, events, options
     end
 
+
+    desc "join PROFILE_NAME",
+         "join whatever video call is attached to your current meeting"
+    option :print,
+           type: :boolean,
+           desc: "print the video call URL instead of launching it",
+           aliases: ["-p"]
+    def join calendar_id
+      ca = CalendarAssistant.new calendar_id
+      url = ca.find_current_av_url
+      if url
+        if options[:print]
+          CLIHelpers::Out.new.puts url
+        else
+          CLIHelpers::Out.new.launch url
+        end
+      else
+        CLIHelpers::Out.new.puts "Could not find a current meeting with a video call to join."
+      end
+    end
 
     desc "location SUBCOMMAND ...ARGS",
          "manage your location via all-day calendar events"
