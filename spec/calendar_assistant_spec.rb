@@ -1,7 +1,12 @@
 describe CalendarAssistant do
   describe "class methods" do
-    describe ".authorize" do it end
     describe ".date_range_cast" do it end
+    describe ".authorize" do
+      it "calls through to the Authorize class" do
+        expect(CalendarAssistant::Authorizer).to receive(:authorize).with("profile")
+        CalendarAssistant.authorize("profile")
+      end
+    end
   end
 
   describe "event visitors" do
