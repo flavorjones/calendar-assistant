@@ -52,14 +52,16 @@ class CalendarAssistant
   end
 
   class Location < Thor
-    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your location for a date or range of dates (default today)"
+    desc "show PROFILE_NAME [DATE | DATERANGE]",
+         "show your location for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_location_events Helpers.time_or_time_range(datespec)
       Helpers.print_events ca, events, options
     end
 
-    desc "set PROFILE_NAME LOCATION [DATE | DATERANGE]", "show your location for a date or range of dates (default today)"
+    desc "set PROFILE_NAME LOCATION [DATE | DATERANGE]",
+         "show your location for a date or range of dates (default today)"
     def set calendar_id, location, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.create_location_event Helpers.time_or_time_range(datespec), location
@@ -75,8 +77,14 @@ class CalendarAssistant
     # options
     # note that these options are passed straight through to Helpers.print_events
     #
-    class_option :verbose, type: :boolean, desc: "print more information", aliases: ["-v"]
-    class_option :commitments, type: :boolean, desc: "only show events that you've accepted with another person", aliases: ["-c"]
+    class_option :verbose,
+                 type: :boolean,
+                 desc: "print more information",
+                 aliases: ["-v"]
+    class_option :commitments,
+                 type: :boolean,
+                 desc: "only show events that you've accepted with another person",
+                 aliases: ["-c"]
 
 
     desc 'authorize PROFILE_NAME', 'create (or validate) a named profile with calendar access'
@@ -106,7 +114,8 @@ class CalendarAssistant
     end
 
 
-    desc "show PROFILE_NAME [DATE | DATERANGE]", "show your events for a date or range of dates (default today)"
+    desc "show PROFILE_NAME [DATE | DATERANGE]",
+         "show your events for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_events Helpers.time_or_time_range(datespec)
@@ -114,7 +123,8 @@ class CalendarAssistant
     end
 
 
-    desc "location SUBCOMMAND ...ARGS", "manage your location via all-day calendar events"
+    desc "location SUBCOMMAND ...ARGS",
+         "manage your location via all-day calendar events"
     subcommand "location", Location
   end
 end
