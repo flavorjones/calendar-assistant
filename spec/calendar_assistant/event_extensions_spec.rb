@@ -9,6 +9,8 @@ describe Google::Apis::CalendarV3::Event do
   describe "#recurrence_rules?" do it end
   describe "#recurrence" do it end
   describe "#recurrence_parent" do it end
+  describe "#response_status" do it end
+  describe "#declined?" do it end
 end
 
 describe Google::Apis::CalendarV3::EventDateTime do
