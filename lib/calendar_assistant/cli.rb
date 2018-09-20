@@ -2,7 +2,7 @@ require "thor"
 require "chronic"
 
 class CalendarAssistant
-  class Helpers
+  class CLIHelpers
     def self.time_or_time_range userspec
       if userspec =~ /\.\.\./
         start_userspec, end_userspec = userspec.split("...")
@@ -56,18 +56,18 @@ class CalendarAssistant
          "show your location for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
-      events = ca.find_location_events Helpers.time_or_time_range(datespec)
-      Helpers.print_events ca, events, options
+      events = ca.find_location_events CLIHelpers.time_or_time_range(datespec)
+      CLIHelpers.print_events ca, events, options
     end
 
     desc "set PROFILE_NAME LOCATION [DATE | DATERANGE]",
          "show your location for a date or range of dates (default today)"
     def set calendar_id, location, datespec="today"
       ca = CalendarAssistant.new calendar_id
-      events = ca.create_location_event Helpers.time_or_time_range(datespec), location
+      events = ca.create_location_event CLIHelpers.time_or_time_range(datespec), location
       events.keys.each do |key|
         puts Rainbow(key.capitalize).bold
-        Helpers.print_events ca, events[key], options
+        CLIHelpers.print_events ca, events[key], options
       end
     end
   end
@@ -75,7 +75,7 @@ class CalendarAssistant
   class CLI < Thor
     #
     # options
-    # note that these options are passed straight through to Helpers.print_events
+    # note that these options are passed straight through to CLIHelpers.print_events
     #
     class_option :verbose,
                  type: :boolean,
@@ -118,8 +118,8 @@ class CalendarAssistant
          "show your events for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
-      events = ca.find_events Helpers.time_or_time_range(datespec)
-      Helpers.print_events ca, events, options
+      events = ca.find_events CLIHelpers.time_or_time_range(datespec)
+      CLIHelpers.print_events ca, events, options
     end
 
 
