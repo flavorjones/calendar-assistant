@@ -1,13 +1,21 @@
 class CalendarAssistant
-  class CLIHelpers
-    def self.time_or_time_range userspec
-      if userspec =~ /\.\.\./
-        start_userspec, end_userspec = userspec.split("...")
-        start_time = Chronic.parse(start_userspec.strip) || raise("could not parse #{start_userspec.strip}")
-        end_time   = Chronic.parse(end_userspec.strip) || raise("could not parse #{end_userspec.strip}")
-        return start_time..end_time
+  module CLIHelpers
+    def self.parse_datespec userspec
+      start_userspec, end_userspec = userspec.split(/ ?\.\.\.? ?/)
+
+      if end_userspec.nil?
+        time = Chronic.parse(userspec) || raise("could not parse #{userspec}")
+        return time.beginning_of_day..time.end_of_day
       end
-      Chronic.parse(userspec) || raise("could not parse #{userspec}")
+
+      start_time = Chronic.parse(start_userspec) || raise("could not parse #{start_userspec}")
+      end_time = Chronic.parse(end_userspec) || raise("could not parse #{end_userspec}")
+
+      if start_time.to_date == end_time.to_date
+        start_time..end_time
+      else
+        start_time.beginning_of_day..end_time.end_of_day
+      end
     end
 
     def self.now

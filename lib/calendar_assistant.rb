@@ -22,19 +22,11 @@ class CalendarAssistant
     Authorizer.authorize profile_name
   end
 
-  def self.time_range_cast time_or_time_range
-    if time_or_time_range.is_a?(Range)
-      time_or_time_range.first.beginning_of_day..time_or_time_range.last.end_of_day
+  def self.date_range_cast time_range
+    if time_range.is_a?(Range)
+      time_range.first.to_date..(time_range.last + 1.day).to_date
     else
-      time_or_time_range.beginning_of_day..time_or_time_range.end_of_day
-    end
-  end
-
-  def self.date_range_cast date_or_date_range
-    if date_or_date_range.is_a?(Range)
-      date_or_date_range.first.to_date..(date_or_date_range.last + 1.day).to_date
-    else
-      date_or_date_range.to_date..(date_or_date_range + 1.day).to_date
+      time_range.to_date..(time_range + 1.day).to_date
     end
   end
 
@@ -43,11 +35,10 @@ class CalendarAssistant
     @calendar = service.get_calendar DEFAULT_CALENDAR_ID
   end
 
-  def find_events time_or_range
-    range = CalendarAssistant.time_range_cast time_or_range
+  def find_events time_range
     events = service.list_events(DEFAULT_CALENDAR_ID,
-                                 time_min: range.first.iso8601,
-                                 time_max: range.last.iso8601,
+                                 time_min: time_range.first.iso8601,
+                                 time_max: time_range.last.iso8601,
                                  order_by: "startTime",
                                  single_events: true,
                                  max_results: 2000,
@@ -55,16 +46,16 @@ class CalendarAssistant
     events&.items || []
   end
 
-  def find_location_events time_or_range
-    find_events(time_or_range).select { |e| e.location_event? }
+  def find_location_events time_range
+    find_events(time_range).select { |e| e.location_event? }
   end
 
-  def create_location_event time_or_range, location
+  def create_location_event time_range, location
     # find pre-existing events that overlap
-    existing_events = find_location_events time_or_range
+    existing_events = find_location_events time_range
 
     # augment event end date appropriately
-    range = CalendarAssistant.date_range_cast time_or_range
+    range = CalendarAssistant.date_range_cast time_range
 
     deleted_events = []
     modified_events = []

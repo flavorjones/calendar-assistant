@@ -10,7 +10,7 @@ class CalendarAssistant
          "show your location for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
-      events = ca.find_location_events CLIHelpers.time_or_time_range(datespec)
+      events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
       CLIHelpers::Out.new.print_events ca, events, options
     end
 
@@ -18,7 +18,7 @@ class CalendarAssistant
          "show your location for a date or range of dates (default today)"
     def set calendar_id, location, datespec="today"
       ca = CalendarAssistant.new calendar_id
-      events = ca.create_location_event CLIHelpers.time_or_time_range(datespec), location
+      events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
       events.keys.each do |key|
         puts Rainbow(key.capitalize).bold
         CLIHelpers::Out.new.print_events ca, events[key], options
@@ -76,7 +76,7 @@ class CalendarAssistant
          "show your events for a date or range of dates (default today)"
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
-      events = ca.find_events CLIHelpers.time_or_time_range(datespec)
+      events = ca.find_events CLIHelpers.parse_datespec(datespec)
       CLIHelpers::Out.new.print_events ca, events, options
     end
 
