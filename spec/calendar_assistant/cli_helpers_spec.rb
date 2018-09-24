@@ -70,7 +70,7 @@ describe CalendarAssistant::CLIHelpers do
       end
 
       it "searches in a narrow range around the specified time" do
-        range = Time.now..(Time.now+1.minute)
+        range = Time.now..(Time.now+5.minutes)
         expect(ca).to receive(:find_events).with(range).and_return([])
 
         subject.find_av_uri(ca, "now")

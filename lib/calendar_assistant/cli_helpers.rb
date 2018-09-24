@@ -26,7 +26,7 @@ class CalendarAssistant
 
     def self.find_av_uri ca, timespec
       time = Chronic.parse timespec
-      range = time..(time+1.minute)
+      range = time..(time+5.minutes)
       events = ca.find_events range
 
       [Google::Apis::CalendarV3::Event::RESPONSE_ACCEPTED,
