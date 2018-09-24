@@ -6,8 +6,25 @@ require "calendar_assistant/cli_helpers"
 
 class CalendarAssistant
   class Location < Thor
+    #
+    # options
+    # note that these options are passed straight through to CLIHelpers.print_events
+    #
+    class_option :verbose,
+                 type: :boolean,
+                 desc: "print more information",
+                 aliases: ["-v"]
+    class_option :debug,
+                 type: :boolean,
+                 desc: "how dare you suggest there are bugs",
+                 aliases: ["-d"]
+
     desc "show PROFILE_NAME [DATE | DATERANGE]",
          "show your location for a date or range of dates (default today)"
+    option :commitments,
+           type: :boolean,
+           desc: "only show events that you've accepted with another person",
+           aliases: ["-c"]
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
@@ -35,10 +52,6 @@ class CalendarAssistant
                  type: :boolean,
                  desc: "print more information",
                  aliases: ["-v"]
-    class_option :commitments,
-                 type: :boolean,
-                 desc: "only show events that you've accepted with another person",
-                 aliases: ["-c"]
     class_option :debug,
                  type: :boolean,
                  desc: "how dare you suggest there are bugs",
@@ -74,6 +87,10 @@ class CalendarAssistant
 
     desc "show PROFILE_NAME [DATE | DATERANGE]",
          "show your events for a date or range of dates (default today)"
+    option :commitments,
+           type: :boolean,
+           desc: "only show events that you've accepted with another person",
+           aliases: ["-c"]
     def show calendar_id, datespec="today"
       ca = CalendarAssistant.new calendar_id
       events = ca.find_events CLIHelpers.parse_datespec(datespec)
