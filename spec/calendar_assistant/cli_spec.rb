@@ -80,6 +80,7 @@ describe CalendarAssistant::CLI do
     describe "join" do
       before do
         allow(out).to receive(:puts)
+        allow(out).to receive(:print_events)
       end
 
       context "default behavior" do
@@ -100,7 +101,17 @@ describe CalendarAssistant::CLI do
 
       context "when a videoconference URI is found" do
         let(:url) { "https://pivotal.zoom.us/j/123456789" }
-        before { expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).and_return(url) }
+        let(:event) { instance_double("Event") }
+
+        before do
+          allow(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).and_return([event, url])
+        end
+
+        it "prints the event" do
+          expect(out).to receive(:print_events).with(ca, [event], anything)
+
+          CalendarAssistant::CLI.start ["join", profile_name, "--print"]
+        end
 
         context "with --print option" do
           it "prints the meeting URL" do

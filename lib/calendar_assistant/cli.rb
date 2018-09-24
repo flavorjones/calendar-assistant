@@ -106,15 +106,16 @@ class CalendarAssistant
            aliases: ["-p"]
     def join calendar_id, timespec="now"
       ca = CalendarAssistant.new calendar_id
-      url = CLIHelpers.find_av_uri ca, timespec
-      if url
+      event, url = CLIHelpers.find_av_uri ca, timespec
+      if event
+        CLIHelpers::Out.new.print_events ca, [event], options
         if options[:print]
           CLIHelpers::Out.new.puts url
         else
           CLIHelpers::Out.new.launch url
         end
       else
-        CLIHelpers::Out.new.puts "Could not find a current meeting with a video call to join."
+        CLIHelpers::Out.new.puts "Could not find a meeting '#{timespec}' with a video call to join."
       end
     end
 

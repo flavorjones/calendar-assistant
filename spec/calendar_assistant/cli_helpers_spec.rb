@@ -88,25 +88,25 @@ describe CalendarAssistant::CLIHelpers do
         # reminder that #find_events returns in order of start time
         allow(ca).to receive(:find_events).and_return([accepted_event, accepted2_event])
 
-        expect(subject.find_av_uri(ca, "now")).to eq("accepted2")
+        expect(subject.find_av_uri(ca, "now")).to eq([accepted2_event, "accepted2"])
       end
 
       it "prefers accepted meetings to all other responses" do
         allow(ca).to receive(:find_events).and_return([accepted_event, tentative_event, needs_action_event, declined_event])
 
-        expect(subject.find_av_uri(ca, "now")).to eq("accepted")
+        expect(subject.find_av_uri(ca, "now")).to eq([accepted_event, "accepted"])
       end
 
       it "prefers tentative meetings to needsAction and declined" do
         allow(ca).to receive(:find_events).and_return([tentative_event, needs_action_event, declined_event])
 
-        expect(subject.find_av_uri(ca, "now")).to eq("tentative")
+        expect(subject.find_av_uri(ca, "now")).to eq([tentative_event, "tentative"])
       end
 
       it "prefers needsAction meetings to declined" do
         allow(ca).to receive(:find_events).and_return([needs_action_event, declined_event])
 
-        expect(subject.find_av_uri(ca, "now")).to eq("needs_action")
+        expect(subject.find_av_uri(ca, "now")).to eq([needs_action_event, "needs_action"])
       end
 
       it "never chooses declined meetings" do
