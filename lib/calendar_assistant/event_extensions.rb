@@ -86,6 +86,27 @@ class Google::Apis::CalendarV3::Event
                              nil
                            end
   end
+
+  def response_status ca
+    return Attributes::SELF if attendees.nil?
+    attendee(ca.calendar.id).tap do |attendee|
+      return attendee.response_status if attendee&.response_status
+    end
+  end
+
+  def declined? ca
+    response_status(ca) == Attributes::DECLINED
+  end
+
+  def av_uri
+    @av_uri ||= begin
+                  zoom = CalendarAssistant::StringHelpers.find_uri_for_domain(description, "zoom.us")
+                  return zoom if zoom
+
+                  return hangout_link if hangout_link
+                  nil
+                end
+  end
 end
 
 class Google::Apis::CalendarV3::EventDateTime

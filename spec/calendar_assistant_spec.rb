@@ -1,10 +1,7 @@
 describe CalendarAssistant do
-  GCal = Google::Apis::CalendarV3
-
   describe "class methods" do
     describe ".authorize" do it end
-    describe ".time_range_cast" do it end
-    describe ".date_range_case" do it end
+    describe ".date_range_cast" do it end
   end
 
   describe "event visitors" do
@@ -26,36 +23,25 @@ describe CalendarAssistant do
     end
 
     describe "#find_events" do
+      let(:time_range) { Time.now..(Time.now + 1.day) }
+
       it "sets some basic query options" do
         expect(service).to receive(:list_events).with(CalendarAssistant::DEFAULT_CALENDAR_ID,
                                                       hash_including(order_by: "startTime",
                                                                      single_events: true,
                                                                      max_results: anything)).
                              and_return(events)
-        result = ca.find_events Time.now
+        result = ca.find_events time_range
         expect(result).to eq(event_array)
       end
 
-      context "given a time" do
-        it "calls CalendarService#list_events with appropriate range" do
-          time = Time.now
-          expect(service).to receive(:list_events).with(CalendarAssistant::DEFAULT_CALENDAR_ID,
-                                                        hash_including(time_min: time.beginning_of_day.iso8601,
-                                                                       time_max: time.end_of_day.iso8601)).
-                               and_return(events)
-          result = ca.find_events time
-          expect(result).to eq(event_array)
-        end
-      end
-
       context "given a time range" do
-        it "calls CalendarService#list_events with appropriate range" do
-          time = Time.now..(Time.now + 1.day)
+        it "calls CalendarService#list_events with the range" do
           expect(service).to receive(:list_events).with(CalendarAssistant::DEFAULT_CALENDAR_ID,
-                                                        hash_including(time_min: time.first.beginning_of_day.iso8601,
-                                                                       time_max: time.last.end_of_day.iso8601)).
+                                                        hash_including(time_min: time_range.first.iso8601,
+                                                                       time_max: time_range.last.iso8601)).
                                and_return(events)
-          result = ca.find_events time
+          result = ca.find_events time_range
           expect(result).to eq(event_array)
         end
       end
@@ -65,7 +51,7 @@ describe CalendarAssistant do
 
         it "returns an empty array" do
           expect(service).to receive(:list_events).and_return(events)
-          result = ca.find_events Time.now
+          result = ca.find_events time_range
           expect(result).to eq([])
         end
       end
@@ -77,7 +63,7 @@ describe CalendarAssistant do
       let(:events) { [location_event, other_event].shuffle }
 
       it "selects location events from results of #find_events" do
-        time = Time.now
+        time = Time.now.beginning_of_day..(Time.now + 1.day).end_of_day
 
         expect(ca).to receive(:find_events).with(time).and_return(events)
 
@@ -115,7 +101,7 @@ describe CalendarAssistant do
                                    and_return(new_event))
           expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
 
-          response = ca.create_location_event Time.now, "WFH"
+          response = ca.create_location_event CalendarAssistant::CLIHelpers.parse_datespec("today"), "WFH"
           expect(response[:created]).to eq([new_event])
         end
       end
