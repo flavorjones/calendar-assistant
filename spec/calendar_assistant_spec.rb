@@ -1,6 +1,4 @@
 describe CalendarAssistant do
-  GCal = Google::Apis::CalendarV3
-
   describe "class methods" do
     describe ".authorize" do it end
     describe ".date_range_cast" do it end

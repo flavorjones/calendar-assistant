@@ -25,6 +25,22 @@ class CalendarAssistant
     end
 
     def self.find_av_uri ca, timespec
+      time = Chronic.parse timespec
+      range = time..(time+1.minute)
+      events = ca.find_events range
+
+      [Google::Apis::CalendarV3::Event::RESPONSE_ACCEPTED,
+       Google::Apis::CalendarV3::Event::RESPONSE_TENTATIVE,
+       Google::Apis::CalendarV3::Event::RESPONSE_NEEDS_ACTION,
+      ].each do |response|
+        events.reverse.select do |event|
+          event.response_status == response
+        end.each do |event|
+          return event.av_uri if event.av_uri
+        end
+      end
+
+      nil
     end
 
     class Out
