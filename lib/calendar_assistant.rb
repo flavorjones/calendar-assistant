@@ -156,5 +156,6 @@ end
 
 require "calendar_assistant/authorizer"
 require "calendar_assistant/cli"
+require "calendar_assistant/string_helpers"
 require "calendar_assistant/event_extensions"
 require "calendar_assistant/rainbow_extensions"
