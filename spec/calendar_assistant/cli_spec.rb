@@ -10,7 +10,7 @@ describe CalendarAssistant::CLI do
       expect(CalendarAssistant).to receive(:new).with(profile_name).and_return(ca)
       allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
     end
-          
+
     describe "show" do
       it "calls find_events by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
@@ -82,19 +82,25 @@ describe CalendarAssistant::CLI do
         allow(out).to receive(:puts)
       end
 
-      it "calls #find_current_av_url" do
-        expect(ca).to receive(:find_current_av_url)
+      context "default behavior" do
+        it "calls #find_events with a small time range around now" do
+          expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "now")
 
-        CalendarAssistant::CLI.start ["join", profile_name]
+          CalendarAssistant::CLI.start ["join", profile_name]
+        end
       end
 
-      context "when there is a URL" do
-        let(:url) { "https://pivotal.zoom.us/j/123456789" }
+      context "given a time" do
+        it "calls #find_events with a small time range around that time" do
+          expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "five minutes from now")
 
-        before do
-          expect(ca).to receive(:find_current_av_url).
-                          and_return(url)
+          CalendarAssistant::CLI.start ["join", profile_name, "five minutes from now"]
         end
+      end
+
+      context "when a videoconference URI is found" do
+        let(:url) { "https://pivotal.zoom.us/j/123456789" }
+        before { expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).and_return(url) }
 
         context "with --print option" do
           it "prints the meeting URL" do

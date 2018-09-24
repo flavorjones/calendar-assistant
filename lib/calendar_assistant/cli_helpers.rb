@@ -24,6 +24,9 @@ class CalendarAssistant
                       summary: Rainbow("          now          ").inverse.faint
     end
 
+    def self.find_av_uri ca, timespec
+    end
+
     class Out
       attr_reader :io
 

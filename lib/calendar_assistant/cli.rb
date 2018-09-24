@@ -81,15 +81,15 @@ class CalendarAssistant
     end
 
 
-    desc "join PROFILE_NAME",
-         "join whatever video call is attached to your current meeting"
+    desc "join PROFILE_NAME [TIME]",
+         "join whatever video call is attached to meeting (default to 'now' for current meetings)"
     option :print,
            type: :boolean,
            desc: "print the video call URL instead of launching it",
            aliases: ["-p"]
-    def join calendar_id
+    def join calendar_id, timespec="now"
       ca = CalendarAssistant.new calendar_id
-      url = ca.find_current_av_url
+      url = CLIHelpers.find_av_uri ca, timespec
       if url
         if options[:print]
           CLIHelpers::Out.new.puts url
