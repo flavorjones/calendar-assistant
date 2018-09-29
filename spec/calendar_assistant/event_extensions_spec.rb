@@ -296,5 +296,24 @@ describe Google::Apis::CalendarV3::EventDateTime do
     end
   end
 
-  describe "#to_s" do it end
+  describe "#to_s" do
+    context "date" do
+      context "storing a Date" do
+        subject { described_class.new date: Date.parse("2019-09-01") }
+        it { expect(subject.to_s).to eq("2019-09-01") }
+      end
+
+      context "storing a string" do
+        subject { described_class.new date: "2019-09-01" }
+        it { expect(subject.to_s).to eq("2019-09-01") }
+      end
+    end
+
+    context "time" do
+      let(:time) { Time.parse "2019-09-01 13:14:15" }
+
+      subject { described_class.new date_time: time }
+      it { expect(subject.to_s).to eq("2019-09-01 13:14") }
+    end
+  end
 end
