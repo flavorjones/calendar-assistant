@@ -169,6 +169,10 @@ describe Google::Apis::CalendarV3::Event do
       end
     end
   end
+
+  describe "#recurrence_rules?" do it end
+  describe "#recurrence" do it end
+  describe "#recurrence_parent" do it end
 end
 
 describe Google::Apis::CalendarV3::EventDateTime do
