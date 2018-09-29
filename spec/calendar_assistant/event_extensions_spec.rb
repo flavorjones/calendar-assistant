@@ -38,12 +38,12 @@ describe Google::Apis::CalendarV3::Event do
     freeze_time
 
     context "all day event" do
-      subject { described_class.new start: GCal::EventDateTime.new(date: Date.today-7) }
+      subject { described_class.new start: GCal::EventDateTime.new(date: Date.today - 7) }
 
       it "returns true if the event ends today or later" do
-        expect(subject.update(end: GCal::EventDateTime.new(date: Date.today-1)).past?).to be_truthy
+        expect(subject.update(end: GCal::EventDateTime.new(date: Date.today - 1)).past?).to be_truthy
         expect(subject.update(end: GCal::EventDateTime.new(date: Date.today)).past?).to be_truthy
-        expect(subject.update(end: GCal::EventDateTime.new(date: Date.today+1)).past?).to be_falsey
+        expect(subject.update(end: GCal::EventDateTime.new(date: Date.today + 1)).past?).to be_falsey
       end
     end
 
@@ -51,15 +51,60 @@ describe Google::Apis::CalendarV3::Event do
       subject { described_class.new start: GCal::EventDateTime.new(date_time: Time.now - 30.minutes) }
 
       it "returns true if the event ends now or later" do
-        expect(subject.update(end: GCal::EventDateTime.new(date_time: Time.now - 1.minute)).past?).to be_truthy
+        expect(subject.update(end: GCal::EventDateTime.new(date_time: Time.now - 1)).past?).to be_truthy
         expect(subject.update(end: GCal::EventDateTime.new(date_time: Time.now)).past?).to be_truthy
-        expect(subject.update(end: GCal::EventDateTime.new(date_time: Time.now + 1.minute)).past?).to be_falsey
+        expect(subject.update(end: GCal::EventDateTime.new(date_time: Time.now + 1)).past?).to be_falsey
       end
     end
   end
 
-  describe "#current?" do it end
-  describe "#future?" do it end
+  describe "#future?" do
+    freeze_time
+
+    context "all day event" do
+      subject { described_class.new end: GCal::EventDateTime.new(date: Date.today + 7) }
+
+      it "return true if the events starts later than today" do
+        expect(subject.update(start: GCal::EventDateTime.new(date: Date.today - 1)).future?).to be_falsey
+        expect(subject.update(start: GCal::EventDateTime.new(date: Date.today)).future?).to be_falsey
+        expect(subject.update(start: GCal::EventDateTime.new(date: Date.today + 1)).future?).to be_truthy
+      end
+    end
+
+    context "intraday event" do
+      subject { described_class.new end: GCal::EventDateTime.new(date_time: Time.now + 30.minutes) }
+
+      it "returns true if the event starts later than now" do
+        expect(subject.update(start: GCal::EventDateTime.new(date_time: Time.now - 1)).future?).to be_falsey
+        expect(subject.update(start: GCal::EventDateTime.new(date_time: Time.now)).future?).to be_falsey
+        expect(subject.update(start: GCal::EventDateTime.new(date_time: Time.now + 1)).future?).to be_truthy
+      end
+    end
+  end
+
+  describe "#current?" do
+    it "is the past" do
+      allow(subject).to receive(:past?).and_return(true)
+      allow(subject).to receive(:future?).and_return(false)
+
+      expect(subject.current?).to be_falsey
+    end
+
+    it "isn't the past or the future" do
+      allow(subject).to receive(:past?).and_return(false)
+      allow(subject).to receive(:future?).and_return(false)
+
+      expect(subject.current?).to be_truthy
+    end
+
+    it "is the future" do
+      allow(subject).to receive(:past?).and_return(false)
+      allow(subject).to receive(:future?).and_return(true)
+
+      expect(subject.current?).to be_falsey
+    end
+  end
+
   describe "#start_date" do it end
   describe "#attendee" do it end
   describe "#recurrence_rules?" do it end
