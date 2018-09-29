@@ -82,6 +82,21 @@ describe Google::Apis::CalendarV3::Event do
 end
 
 describe Google::Apis::CalendarV3::EventDateTime do
-  describe "#ensure_date" do it end
+  describe "#to_date" do
+    context "all day event" do
+      context "storing a Date" do
+        it { expect(described_class.new(date: Date.today).to_date).to be_a(Date) }
+      end
+
+      context "storing a string" do
+        it { expect(described_class.new(date: "2018-09-01").to_date).to be_a(Date) }
+      end
+    end
+
+    context "intraday event" do
+      it { expect(described_class.new(date_time: Time.now).to_date).to be_nil }
+    end
+  end
+
   describe "#to_s" do it end
 end

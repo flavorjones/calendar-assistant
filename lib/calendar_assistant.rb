@@ -121,8 +121,8 @@ class CalendarAssistant
 
   def event_date_description event
     if event.all_day?
-      start_date = event.start.ensure_date
-      end_date = event.end.ensure_date
+      start_date = event.start.to_date
+      end_date = event.end.to_date
       if (end_date - start_date) <= 1
         event.start.to_s
       else
