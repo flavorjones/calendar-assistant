@@ -26,12 +26,7 @@ describe CalendarAssistant::CLIHelpers do
     end
 
     describe "returned range" do
-      around do |example|
-        # freeze time so we can mock with Chronic strings
-        Timecop.freeze(Time.local(2018, 7, 13, 12, 1, 1)) do
-          example.run
-        end
-      end
+      freeze_time
 
       context "passed a single date or time" do
         it "returns a range for all of the date" do
@@ -62,12 +57,7 @@ describe CalendarAssistant::CLIHelpers do
     let(:ca) { instance_double("CalendarAssistant") }
 
     describe "search range" do
-      around do |example|
-        # freeze time so we can mock with Chronic strings
-        Timecop.freeze(Time.local(2018, 7, 13, 12, 1, 1)) do
-          example.run
-        end
-      end
+      freeze_time
 
       it "searches in a narrow range around the specified time" do
         range = Time.now..(Time.now+5.minutes)

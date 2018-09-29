@@ -105,6 +105,16 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  config.extend(Module.new do
+                  def freeze_time
+                    around do |example|
+                      Timecop.freeze(Time.local(2018, 7, 13, 12, 1, 1)) do
+                        example.run
+                      end
+                    end
+                  end
+                end)
 end
 
 RSpec::Matchers.define :event_date_time do |options|
