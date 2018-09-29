@@ -190,7 +190,7 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "one_on_one?" do
+  describe "#one_on_one?" do
     context "event with no attendees" do
       it { is_expected.not_to be_one_on_one }
     end
