@@ -48,8 +48,8 @@ describe Google::Apis::CalendarV3::Event do
   describe "av_uri" do
     context "description has a zoom link" do
       let(:event) do
-        GCal::Event.new description: "zoom at https://company.zoom.us/j/123412341 please",
-                        hangout_link: nil
+        described_class.new description: "zoom at https://company.zoom.us/j/123412341 please",
+                            hangout_link: nil
       end
 
       it "returns the URI" do
@@ -59,8 +59,8 @@ describe Google::Apis::CalendarV3::Event do
 
     context "has a hangout link" do
       let(:event) do
-        GCal::Event.new description: "see you in the hangout",
-                        hangout_link: "https://plus.google.com/hangouts/_/company.com/yerp?param=random"
+        described_class.new description: "see you in the hangout",
+                            hangout_link: "https://plus.google.com/hangouts/_/company.com/yerp?param=random"
       end
 
       it "returns the URI" do
@@ -70,8 +70,8 @@ describe Google::Apis::CalendarV3::Event do
 
     context "has no known av links" do
       let(:event) do
-        GCal::Event.new description: "we'll meet in person",
-                        hangout_link: nil
+        described_class.new description: "we'll meet in person",
+                            hangout_link: nil
       end
 
       it "returns nil" do
