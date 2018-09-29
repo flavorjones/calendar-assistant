@@ -1,7 +1,16 @@
 describe CalendarAssistant do
   describe "class methods" do
-    describe ".authorize" do it end
-    describe ".date_range_cast" do it end
+    describe ".date_range_cast" do
+      context "given a Range of Times" do
+        let(:start_time) { Chronic.parse "72 hours ago" }
+        let(:end_time) { Chronic.parse "30 hours from now" }
+
+        it "returns a Date range with the end date augmented for an all-day-event" do
+          result = CalendarAssistant.date_range_cast(start_time..end_time)
+          expect(result).to eq(start_time.to_date..(end_time.to_date + 1))
+        end
+      end
+    end
   end
 
   describe "event visitors" do

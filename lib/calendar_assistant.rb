@@ -23,11 +23,7 @@ class CalendarAssistant
   end
 
   def self.date_range_cast time_range
-    if time_range.is_a?(Range)
-      time_range.first.to_date..(time_range.last + 1.day).to_date
-    else
-      time_range.to_date..(time_range + 1.day).to_date
-    end
+    time_range.first.to_date..(time_range.last + 1.day).to_date
   end
 
   def initialize profile_name
