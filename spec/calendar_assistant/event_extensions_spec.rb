@@ -48,6 +48,9 @@ describe Google::Apis::CalendarV3::Event do
   end
 
 
+  #
+  #  predicates
+  #
   describe "#location_event?" do
     context "event summary does not begin with a worldmap emoji" do
       it "returns false" do
@@ -153,6 +156,73 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
+  describe "#declined?" do
+    context "event with no attendees" do
+      it { is_expected.not_to be_declined }
+    end
+
+    context "event with attendees including me" do
+      subject { described_class.new attendees: attendees }
+
+      [
+        GCal::Event::Response::ACCEPTED,
+        GCal::Event::Response::NEEDS_ACTION,
+        GCal::Event::Response::TENTATIVE,
+      ].each do |response_status|
+        context "response status #{response_status}" do
+          before { allow(attendee_self).to receive(:response_status).and_return(response_status) }
+
+          it { expect(subject.declined?).to be_falsey }
+        end
+      end
+
+      context "response status DECLINED" do
+        before { allow(attendee_self).to receive(:response_status).and_return(GCal::Event::Response::DECLINED) }
+
+        it { expect(subject.declined?).to be_truthy }
+      end
+    end
+
+    context "event with attendees but not me" do
+      subject { described_class.new attendees: attendees - [attendee_self] }
+
+      it { expect(subject.declined?).to be_falsey }
+    end
+  end
+
+  describe "one_on_one?" do
+    context "event with no attendees" do
+      it { is_expected.not_to be_one_on_one }
+    end
+
+    context "event with two attendees" do
+      context "neither is me" do
+        subject { described_class.new attendees: [attendee_required, attendee_organizer] }
+
+        it { is_expected.not_to be_one_on_one }
+      end
+
+      context "one is me" do
+        subject { described_class.new attendees: [attendee_self, attendee_required] }
+
+        it { is_expected.to be_one_on_one }
+      end
+    end
+
+    context "event with three attendees, one of which is me" do
+      subject { described_class.new attendees: [attendee_self, attendee_organizer, attendee_required] }
+      it { is_expected.not_to be_one_on_one }
+
+      context "one is a room" do
+        subject { described_class.new attendees: [attendee_self, attendee_organizer, attendee_room_resource] }
+        it { is_expected.to be_one_on_one }
+      end
+    end
+  end
+
+  #
+  #  other methods
+  #
   describe "#start_date" do
     context "all day event" do
       let(:start_date) { Date.today }
@@ -205,40 +275,6 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "#declined?" do
-    context "event with no attendees" do
-      it { is_expected.not_to be_declined }
-    end
-
-    context "event with attendees including me" do
-      subject { described_class.new attendees: attendees }
-
-      [
-        GCal::Event::Response::ACCEPTED,
-        GCal::Event::Response::NEEDS_ACTION,
-        GCal::Event::Response::TENTATIVE,
-      ].each do |response_status|
-        context "response status #{response_status}" do
-          before { allow(attendee_self).to receive(:response_status).and_return(response_status) }
-
-          it { expect(subject.declined?).to be_falsey }
-        end
-      end
-
-      context "response status DECLINED" do
-        before { allow(attendee_self).to receive(:response_status).and_return(GCal::Event::Response::DECLINED) }
-
-        it { expect(subject.declined?).to be_truthy }
-      end
-    end
-
-    context "event with attendees but not me" do
-      subject { described_class.new attendees: attendees - [attendee_self] }
-
-      it { expect(subject.declined?).to be_falsey }
-    end
-  end
-
   describe "av_uri" do
     context "description has a zoom link" do
       let(:event) do
@@ -274,6 +310,9 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
+  #
+  #  recurrence-related methods that we're not really using yet
+  #
   describe "#recurrence_rules?" do it end
   describe "#recurrence" do it end
   describe "#recurrence_parent" do it end

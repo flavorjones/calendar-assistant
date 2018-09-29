@@ -145,7 +145,7 @@ class CalendarAssistant
       if event.attendees && attr.intersect?(Set.new([GCal::Event::Attribute::ACCEPTED, GCal::Event::Attribute::TENTATIVE, GCal::Event::Attribute::NEEDS_ACTION]))
         attr << GCal::Event::Attribute::COMMITMENT
       end
-      attr << GCal::Event::Attribute::ONE_ON_ONE if event.attendees&.length == 2
+      attr << GCal::Event::Attribute::ONE_ON_ONE if event.one_on_one?
     end
   end
 end

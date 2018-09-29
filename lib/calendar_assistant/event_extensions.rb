@@ -64,6 +64,20 @@ class Google::Apis::CalendarV3::Event
     end
   end
 
+  def declined?
+    response_status == Attribute::DECLINED
+  end
+
+  def one_on_one?
+    return false if attendees.nil?
+    return false unless attendees.any? { |a| a.self }
+
+    human_attendees = attendees.select { |a| ! a.resource }
+    return false if human_attendees.length != 2
+
+    true
+  end
+
   def start_date
     if all_day?
       self.start.to_date
@@ -84,10 +98,6 @@ class Google::Apis::CalendarV3::Event
       return attendee.response_status if attendee.self
     end
     nil
-  end
-
-  def declined?
-    response_status == Attribute::DECLINED
   end
 
   def av_uri
