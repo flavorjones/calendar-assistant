@@ -29,9 +29,9 @@ class CalendarAssistant
       range = time..(time+5.minutes)
       events = ca.find_events range
 
-      [Google::Apis::CalendarV3::Event::RESPONSE_ACCEPTED,
-       Google::Apis::CalendarV3::Event::RESPONSE_TENTATIVE,
-       Google::Apis::CalendarV3::Event::RESPONSE_NEEDS_ACTION,
+      [Google::Apis::CalendarV3::Event::Response::ACCEPTED,
+       Google::Apis::CalendarV3::Event::Response::TENTATIVE,
+       Google::Apis::CalendarV3::Event::Response::NEEDS_ACTION,
       ].each do |response|
         events.reverse.select do |event|
           event.response_status(ca) == response
@@ -70,7 +70,7 @@ class CalendarAssistant
         end
 
         display_events = events.select do |event|
-          ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attributes::COMMITMENT)
+          ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attribute::COMMITMENT)
         end
 
         printed_now = false

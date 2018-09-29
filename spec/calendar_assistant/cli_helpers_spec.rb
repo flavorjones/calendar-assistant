@@ -68,11 +68,35 @@ describe CalendarAssistant::CLIHelpers do
     end
 
     describe "meeting preference" do
-      let(:accepted_event) { instance_double("accepted event", av_uri: "accepted", response_status: GCal::Event::RESPONSE_ACCEPTED) }
-      let(:accepted2_event) { instance_double("accepted2 event", av_uri: "accepted2", response_status: GCal::Event::RESPONSE_ACCEPTED) }
-      let(:tentative_event) { instance_double("tentative event", av_uri: "tentative", response_status: GCal::Event::RESPONSE_TENTATIVE) }
-      let(:needs_action_event) { instance_double("needs_action event", av_uri: "needs_action", response_status: GCal::Event::RESPONSE_NEEDS_ACTION) }
-      let(:declined_event) { instance_double("declined event", av_uri: "declined", response_status: GCal::Event::RESPONSE_DECLINED) }
+      let(:accepted_event) do
+        instance_double "accepted event",
+                        av_uri: "accepted",
+                        response_status: GCal::Event::Response::ACCEPTED
+      end
+
+      let(:accepted2_event) do
+        instance_double "accepted2 event",
+                        av_uri: "accepted2",
+                        response_status: GCal::Event::Response::ACCEPTED
+      end
+
+      let(:tentative_event) do
+        instance_double "tentative event",
+                        av_uri: "tentative",
+                        response_status: GCal::Event::Response::TENTATIVE
+      end
+
+      let(:needs_action_event) do
+        instance_double "needs_action event",
+                        av_uri: "needs_action",
+                        response_status: GCal::Event::Response::NEEDS_ACTION
+      end
+
+      let(:declined_event) do
+        instance_double "declined event",
+                        av_uri: "declined",
+                        response_status: GCal::Event::Response::DECLINED
+      end
 
       it "prefers later meetings to earlier meetings" do
         # reminder that #find_events returns in order of start time

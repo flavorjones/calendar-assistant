@@ -6,16 +6,18 @@ require "google/apis/calendar_v3"
 require "time"
 
 class Google::Apis::CalendarV3::Event
-  RESPONSE_DECLINED = "declined"
-  RESPONSE_ACCEPTED = "accepted"
-  RESPONSE_NEEDS_ACTION = "needsAction"
-  RESPONSE_TENTATIVE = "tentative"
+  module Response
+    DECLINED = "declined"
+    ACCEPTED = "accepted"
+    NEEDS_ACTION = "needsAction"
+    TENTATIVE = "tentative"
+  end
 
-  module Attributes
-    DECLINED = RESPONSE_DECLINED
-    ACCEPTED = RESPONSE_ACCEPTED
-    NEEDS_ACTION = RESPONSE_NEEDS_ACTION
-    TENTATIVE = RESPONSE_TENTATIVE
+  module Attribute
+    DECLINED = Response::DECLINED
+    ACCEPTED = Response::ACCEPTED
+    NEEDS_ACTION = Response::NEEDS_ACTION
+    TENTATIVE = Response::TENTATIVE
     RECURRING = "recurring"
     SELF = "self"
     COMMITMENT = "commitment"
@@ -76,14 +78,14 @@ class Google::Apis::CalendarV3::Event
   end
 
   def response_status ca
-    return Attributes::SELF if attendees.nil?
+    return Attribute::SELF if attendees.nil?
     attendee(ca.calendar.id).tap do |attendee|
       return attendee.response_status if attendee&.response_status
     end
   end
 
   def declined? ca
-    response_status(ca) == Attributes::DECLINED
+    response_status(ca) == Attribute::DECLINED
   end
 
   def av_uri
