@@ -14,7 +14,26 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "#all_day?" do it end
+  describe "#all_day?" do
+    context "event has start and end dates" do
+      subject do
+        described_class.new start: GCal::EventDateTime.new(date: Date.today),
+                            end: GCal::EventDateTime.new(date: Date.today + 1)
+      end
+
+      it { expect(subject.all_day?).to be_truthy }
+    end
+
+    context "event has start and end times" do
+      subject do
+        described_class.new start: GCal::EventDateTime.new(date_time: Time.now),
+                            end: GCal::EventDateTime.new(date_time: Time.now + 30.minutes)
+      end
+
+      it { expect(subject.all_day?).to be_falsey }
+    end
+  end
+
   describe "#past?" do it end
   describe "#current?" do it end
   describe "#future?" do it end

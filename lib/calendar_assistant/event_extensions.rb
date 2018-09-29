@@ -32,7 +32,7 @@ class Google::Apis::CalendarV3::Event
   end
 
   def all_day?
-    @start.date
+    ! @start.date.nil?
   end
 
   def past?
