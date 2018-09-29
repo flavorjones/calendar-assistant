@@ -136,19 +136,13 @@ class CalendarAssistant
     end
   end
 
-  #
-  #  TODO: make these atributes into methods on Event (possibly taking CalendarAssistant as an arg when necessary)
-  #
   def event_attributes event
     return Set.new unless event.id
     Set.new.tap do |attr|
       attr << "not-busy" if ! event.busy?
-
       attr << event.response_status
       attr << GCal::Event::Attribute::RECURRING if event.recurring_event_id
-
       attr << GCal::Event::Attribute::COMMITMENT if event.commitment?
-
       attr << GCal::Event::Attribute::ONE_ON_ONE if event.one_on_one?
     end
   end
