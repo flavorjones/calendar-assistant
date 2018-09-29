@@ -23,11 +23,7 @@ class CalendarAssistant
   end
 
   def self.date_range_cast time_range
-    if time_range.is_a?(Range)
-      time_range.first.to_date..(time_range.last + 1.day).to_date
-    else
-      time_range.to_date..(time_range + 1.day).to_date
-    end
+    time_range.first.to_date..(time_range.last + 1.day).to_date
   end
 
   def initialize profile_name
@@ -90,10 +86,10 @@ class CalendarAssistant
 
   def event_description event, options={}
     attributes = event_attributes(event)
-    attributes.delete GCal::Event::Attributes::ACCEPTED # no news is good news
-    attributes.delete GCal::Event::Attributes::COMMITMENT # this is meta
-    declined = attributes.delete? GCal::Event::Attributes::DECLINED # we'll strike it out in this case
-    recurring = attributes.include? GCal::Event::Attributes::RECURRING
+    attributes.delete GCal::Event::Attribute::ACCEPTED # no news is good news
+    attributes.delete GCal::Event::Attribute::COMMITMENT # this is meta
+    declined = attributes.delete? GCal::Event::Attribute::DECLINED # we'll strike it out in this case
+    recurring = attributes.include? GCal::Event::Attribute::RECURRING
 
     date_wrapper = if event.current?
                      [:bright]
@@ -121,8 +117,8 @@ class CalendarAssistant
 
   def event_date_description event
     if event.all_day?
-      start_date = event.start.ensure_date
-      end_date = event.end.ensure_date
+      start_date = event.start.to_date
+      end_date = event.end.to_date
       if (end_date - start_date) <= 1
         event.start.to_s
       else
@@ -144,12 +140,12 @@ class CalendarAssistant
     return Set.new unless event.id
     Set.new.tap do |attr|
       attr << "not-busy" if event.transparency
-      attr << event.response_status(self)
-      attr << GCal::Event::Attributes::RECURRING if event.recurring_event_id
-      if event.attendees && attr.intersect?(Set.new([GCal::Event::Attributes::ACCEPTED, GCal::Event::Attributes::TENTATIVE, GCal::Event::Attributes::NEEDS_ACTION]))
-        attr << GCal::Event::Attributes::COMMITMENT
+      attr << event.response_status
+      attr << GCal::Event::Attribute::RECURRING if event.recurring_event_id
+      if event.attendees && attr.intersect?(Set.new([GCal::Event::Attribute::ACCEPTED, GCal::Event::Attribute::TENTATIVE, GCal::Event::Attribute::NEEDS_ACTION]))
+        attr << GCal::Event::Attribute::COMMITMENT
       end
-      attr << GCal::Event::Attributes::ONE_ON_ONE if event.attendees&.length == 2
+      attr << GCal::Event::Attribute::ONE_ON_ONE if event.one_on_one?
     end
   end
 end

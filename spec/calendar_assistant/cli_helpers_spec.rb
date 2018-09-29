@@ -26,12 +26,7 @@ describe CalendarAssistant::CLIHelpers do
     end
 
     describe "returned range" do
-      around do |example|
-        # freeze time so we can mock with Chronic strings
-        Timecop.freeze(Time.local(2018, 7, 13, 12, 1, 1)) do
-          example.run
-        end
-      end
+      freeze_time
 
       context "passed a single date or time" do
         it "returns a range for all of the date" do
@@ -62,12 +57,7 @@ describe CalendarAssistant::CLIHelpers do
     let(:ca) { instance_double("CalendarAssistant") }
 
     describe "search range" do
-      around do |example|
-        # freeze time so we can mock with Chronic strings
-        Timecop.freeze(Time.local(2018, 7, 13, 12, 1, 1)) do
-          example.run
-        end
-      end
+      freeze_time
 
       it "searches in a narrow range around the specified time" do
         range = Time.now..(Time.now+5.minutes)
@@ -78,11 +68,35 @@ describe CalendarAssistant::CLIHelpers do
     end
 
     describe "meeting preference" do
-      let(:accepted_event) { instance_double("accepted event", av_uri: "accepted", response_status: GCal::Event::RESPONSE_ACCEPTED) }
-      let(:accepted2_event) { instance_double("accepted2 event", av_uri: "accepted2", response_status: GCal::Event::RESPONSE_ACCEPTED) }
-      let(:tentative_event) { instance_double("tentative event", av_uri: "tentative", response_status: GCal::Event::RESPONSE_TENTATIVE) }
-      let(:needs_action_event) { instance_double("needs_action event", av_uri: "needs_action", response_status: GCal::Event::RESPONSE_NEEDS_ACTION) }
-      let(:declined_event) { instance_double("declined event", av_uri: "declined", response_status: GCal::Event::RESPONSE_DECLINED) }
+      let(:accepted_event) do
+        instance_double "accepted event",
+                        av_uri: "accepted",
+                        response_status: GCal::Event::Response::ACCEPTED
+      end
+
+      let(:accepted2_event) do
+        instance_double "accepted2 event",
+                        av_uri: "accepted2",
+                        response_status: GCal::Event::Response::ACCEPTED
+      end
+
+      let(:tentative_event) do
+        instance_double "tentative event",
+                        av_uri: "tentative",
+                        response_status: GCal::Event::Response::TENTATIVE
+      end
+
+      let(:needs_action_event) do
+        instance_double "needs_action event",
+                        av_uri: "needs_action",
+                        response_status: GCal::Event::Response::NEEDS_ACTION
+      end
+
+      let(:declined_event) do
+        instance_double "declined event",
+                        av_uri: "declined",
+                        response_status: GCal::Event::Response::DECLINED
+      end
 
       it "prefers later meetings to earlier meetings" do
         # reminder that #find_events returns in order of start time

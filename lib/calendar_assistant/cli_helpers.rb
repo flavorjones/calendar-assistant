@@ -29,12 +29,12 @@ class CalendarAssistant
       range = time..(time+5.minutes)
       events = ca.find_events range
 
-      [Google::Apis::CalendarV3::Event::RESPONSE_ACCEPTED,
-       Google::Apis::CalendarV3::Event::RESPONSE_TENTATIVE,
-       Google::Apis::CalendarV3::Event::RESPONSE_NEEDS_ACTION,
+      [Google::Apis::CalendarV3::Event::Response::ACCEPTED,
+       Google::Apis::CalendarV3::Event::Response::TENTATIVE,
+       Google::Apis::CalendarV3::Event::Response::NEEDS_ACTION,
       ].each do |response|
         events.reverse.select do |event|
-          event.response_status(ca) == response
+          event.response_status == response
         end.each do |event|
           return [event, event.av_uri] if event.av_uri
         end
@@ -64,13 +64,16 @@ class CalendarAssistant
       end
 
       def print_events ca, events, options={}
+        saved_enabled = Rainbow.enabled
+        Rainbow.enabled = true
+
         if events.nil? || events.empty?
           io.puts "No events in this time range."
           return
         end
 
         display_events = events.select do |event|
-          ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attributes::COMMITMENT)
+          ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attribute::COMMITMENT)
         end
 
         printed_now = false
@@ -79,6 +82,8 @@ class CalendarAssistant
           io.puts ca.event_description(event, options)
           pp event if options[:debug]
         end
+      ensure
+        Rainbow.enabled = saved_enabled
       end
 
       def launch url
