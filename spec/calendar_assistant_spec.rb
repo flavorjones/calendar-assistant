@@ -11,6 +11,13 @@ describe CalendarAssistant do
         end
       end
     end
+
+    describe ".authorize" do
+      it "calls through to the Authorize class" do
+        expect(CalendarAssistant::Authorizer).to receive(:authorize).with("profile")
+        CalendarAssistant.authorize("profile")
+      end
+    end
   end
 
   describe "event visitors" do
