@@ -1,5 +1,53 @@
 # coding: utf-8
 describe Google::Apis::CalendarV3::Event do
+  #
+  #  factory bit
+  #
+  let(:attendee_self) do
+    GCal::EventAttendee.new display_name: Faker::Name.name,
+                            email: Faker::Internet.email,
+                            response_status: GCal::Event::Response::ACCEPTED,
+                            self: true
+  end
+
+  let(:attendee_room_resource) do
+    GCal::EventAttendee.new display_name: Faker::Name.name,
+                            email: Faker::Internet.email,
+                            response_status: GCal::Event::Response::ACCEPTED,
+                            resource: true
+  end
+
+  let(:attendee_optional) do
+    GCal::EventAttendee.new display_name: Faker::Name.name,
+                            email: Faker::Internet.email,
+                            response_status: GCal::Event::Response::ACCEPTED,
+                            optional: true
+  end
+
+  let(:attendee_required) do
+    GCal::EventAttendee.new display_name: Faker::Name.name,
+                            email: Faker::Internet.email,
+                            response_status: GCal::Event::Response::ACCEPTED
+  end
+
+  let(:attendee_organizer) do
+    GCal::EventAttendee.new display_name: Faker::Name.name,
+                            email: Faker::Internet.email,
+                            response_status: GCal::Event::Response::ACCEPTED,
+                            organizer: true
+  end
+
+  let(:attendee_group) do
+    GCal::EventAttendee.new display_name: Faker::Company.name,
+                            email: Faker::Internet.email,
+                            response_status: GCal::Event::Response::NEEDS_ACTION
+  end
+
+  let(:attendees) do
+    [attendee_self, attendee_room_resource, attendee_optional, attendee_required, attendee_organizer, attendee_group]
+  end
+
+
   describe "#location_event?" do
     context "event summary does not begin with a worldmap emoji" do
       it "returns false" do
@@ -128,11 +176,18 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "#attendee" do it end
-  describe "#recurrence_rules?" do it end
-  describe "#recurrence" do it end
-  describe "#recurrence_parent" do it end
+  describe "#attendee" do
+    subject { described_class.new(attendees: attendees) }
+
+    it "looks up an EventAttendee by email, or returns nil" do
+      expect(subject.attendee(attendee_self.email)).to eq(attendee_self)
+      expect(subject.attendee(attendee_organizer.email)).to eq(attendee_organizer)
+      expect(subject.attendee(Faker::Internet.email)).to eq(nil)
+    end
+  end
+
   describe "#response_status" do it end
+
   describe "#declined?" do it end
 
   describe "av_uri" do

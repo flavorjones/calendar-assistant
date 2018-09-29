@@ -11,6 +11,7 @@ gem "launchy"
 group :test do
   gem "rspec"
   gem "timecop"
+  gem "faker"
 
   gem "autotest"
   gem "rspec-autotest"
