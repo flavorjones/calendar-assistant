@@ -64,6 +64,9 @@ class CalendarAssistant
       end
 
       def print_events ca, events, options={}
+        saved_enabled = Rainbow.enabled
+        Rainbow.enabled = true
+
         if events.nil? || events.empty?
           io.puts "No events in this time range."
           return
@@ -79,6 +82,8 @@ class CalendarAssistant
           io.puts ca.event_description(event, options)
           pp event if options[:debug]
         end
+      ensure
+        Rainbow.enabled = saved_enabled
       end
 
       def launch url
