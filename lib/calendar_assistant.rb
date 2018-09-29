@@ -39,7 +39,10 @@ class CalendarAssistant
                                  single_events: true,
                                  max_results: 2000,
                                 )
-    events&.items || []
+    if events.nil? || events.items.nil?
+      return []
+    end
+    events.items
   end
 
   def find_location_events time_range
