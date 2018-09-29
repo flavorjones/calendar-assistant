@@ -73,7 +73,7 @@ class CalendarAssistant
         end
 
         display_events = events.select do |event|
-          ! options[:commitments] || ca.event_attributes(event).include?(GCal::Event::Attribute::COMMITMENT)
+          ! options[:commitments] || event.commitment?
         end
 
         printed_now = false
