@@ -25,8 +25,10 @@ class Google::Apis::CalendarV3::Event
   TRANSPARENCY_NOT_BUSY = "transparent"
   TRANSPARENCY_BUSY = "opaque"
 
+  LOCATION_EVENT_REGEX = /^#{CalendarAssistant::EMOJI_WORLDMAP}/
+
   def location_event?
-    summary =~ /^#{CalendarAssistant::EMOJI_WORLDMAP}/
+    !! (summary =~ LOCATION_EVENT_REGEX)
   end
 
   def all_day?
