@@ -112,6 +112,27 @@ $ calendar-assistant location show work "today...next month"
 2018-09-28              | 🗺  WFH (not-busy, self)
 ```
 
+#### Join a video call attached to meeting 
+
+``` bash
+calendar-assistant join [-p] <profile-name> [<datespec>]
+```
+
+The `-p` ("--print") option will display the video URL instead of joining.
+
+Some examples:
+
+``` bash
+$ calendar-assistant join work
+
+[opens URL associated with an event happening now]
+
+$ calendar-assistant join work -p 11:30
+
+2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
+https://pivotal.zoom.us/j/ABC90210
+```
+
 ## References
 
 Google Calendar Concepts: https://developers.google.com/calendar/concepts/
