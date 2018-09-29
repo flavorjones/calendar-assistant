@@ -4,42 +4,42 @@ describe Google::Apis::CalendarV3::Event do
   #  factory bit
   #
   let(:attendee_self) do
-    GCal::EventAttendee.new display_name: Faker::Name.name,
-                            email: Faker::Internet.email,
+    GCal::EventAttendee.new display_name: "Attendee Self",
+                            email: "attendee-self@example.com",
                             response_status: GCal::Event::Response::ACCEPTED,
                             self: true
   end
 
   let(:attendee_room_resource) do
-    GCal::EventAttendee.new display_name: Faker::Name.name,
-                            email: Faker::Internet.email,
+    GCal::EventAttendee.new display_name: "Attendee Room",
+                            email: "attendee-room@example.com",
                             response_status: GCal::Event::Response::ACCEPTED,
                             resource: true
   end
 
   let(:attendee_optional) do
-    GCal::EventAttendee.new display_name: Faker::Name.name,
-                            email: Faker::Internet.email,
+    GCal::EventAttendee.new display_name: "Attendee Optional",
+                            email: "attendee-optional@example.com",
                             response_status: GCal::Event::Response::ACCEPTED,
                             optional: true
   end
 
   let(:attendee_required) do
-    GCal::EventAttendee.new display_name: Faker::Name.name,
-                            email: Faker::Internet.email,
+    GCal::EventAttendee.new display_name: "Attendee Required",
+                            email: "attendee-required@example.com",
                             response_status: GCal::Event::Response::ACCEPTED
   end
 
   let(:attendee_organizer) do
-    GCal::EventAttendee.new display_name: Faker::Name.name,
-                            email: Faker::Internet.email,
+    GCal::EventAttendee.new display_name: "Attendee Organizer",
+                            email: "attendee-organizer@example.com",
                             response_status: GCal::Event::Response::ACCEPTED,
                             organizer: true
   end
 
   let(:attendee_group) do
-    GCal::EventAttendee.new display_name: Faker::Company.name,
-                            email: Faker::Internet.email,
+    GCal::EventAttendee.new display_name: "Attendee Group",
+                            email: "attendee-group@example.com",
                             response_status: GCal::Event::Response::NEEDS_ACTION
   end
 
@@ -252,7 +252,7 @@ describe Google::Apis::CalendarV3::Event do
     it "looks up an EventAttendee by email, or returns nil" do
       expect(subject.attendee(attendee_self.email)).to eq(attendee_self)
       expect(subject.attendee(attendee_organizer.email)).to eq(attendee_organizer)
-      expect(subject.attendee(Faker::Internet.email)).to eq(nil)
+      expect(subject.attendee("no-such-attendee@example.com")).to eq(nil)
     end
   end
 

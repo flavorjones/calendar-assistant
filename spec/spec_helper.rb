@@ -1,7 +1,6 @@
 require_relative "../lib/calendar_assistant"
 require "timecop"
 require "securerandom"
-require "faker"
 
 ENV["THOR_DEBUG"] = "1" # UGH THOR
 
