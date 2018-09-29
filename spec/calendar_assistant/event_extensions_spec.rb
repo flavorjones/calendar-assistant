@@ -265,13 +265,37 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "#attendee" do
-    subject { described_class.new(attendees: attendees) }
+  describe "#human_attendees" do
+    context "there are no attendees" do
+      it { expect(subject.human_attendees).to be_nil }
+    end
 
-    it "looks up an EventAttendee by email, or returns nil" do
-      expect(subject.attendee(attendee_self.email)).to eq(attendee_self)
-      expect(subject.attendee(attendee_organizer.email)).to eq(attendee_organizer)
-      expect(subject.attendee("no-such-attendee@example.com")).to eq(nil)
+    context "there are attendees including people and rooms"  do
+      subject { described_class.new(attendees: attendees) }
+
+      it "removes room resources from the list of attendees" do
+        expect(subject.human_attendees).to eq(attendees - [attendee_room_resource])
+      end
+    end
+  end
+
+  describe "#attendee" do
+    context "there are no attendees" do
+      it "returns nil" do
+        expect(subject.attendee(attendee_self.email)).to eq(nil)
+        expect(subject.attendee(attendee_organizer.email)).to eq(nil)
+        expect(subject.attendee("no-such-attendee@example.com")).to eq(nil)
+      end
+    end
+
+    context "there are attendees"  do
+      subject { described_class.new(attendees: attendees) }
+
+      it "looks up an EventAttendee by email, or returns nil" do
+        expect(subject.attendee(attendee_self.email)).to eq(attendee_self)
+        expect(subject.attendee(attendee_organizer.email)).to eq(attendee_organizer)
+        expect(subject.attendee("no-such-attendee@example.com")).to eq(nil)
+      end
     end
   end
 

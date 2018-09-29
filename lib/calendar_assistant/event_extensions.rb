@@ -73,10 +73,7 @@ class Google::Apis::CalendarV3::Event
   def one_on_one?
     return false if attendees.nil?
     return false unless attendees.any? { |a| a.self }
-
-    human_attendees = attendees.select { |a| ! a.resource }
     return false if human_attendees.length != 2
-
     true
   end
 
@@ -92,8 +89,14 @@ class Google::Apis::CalendarV3::Event
     end
   end
 
+  def human_attendees
+    return nil if attendees.nil?
+    attendees.select { |a| ! a.resource }
+  end
+
   def attendee id
-    attendees&.find do |attendee|
+    return nil if attendees.nil?
+    attendees.find do |attendee|
       attendee.email == id
     end
   end
