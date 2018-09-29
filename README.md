@@ -5,16 +5,16 @@ A command-line tool to help me book (and re-book) one-on-ones and other meetings
 
 ## Usage
 
-Head to https://developers.google.com/calendar/quickstart/ruby to enable the Calendar API for your account and create a new project. Save the project info in `credentials.json`.
+Head to https://developers.google.com/calendar/quickstart/ruby to enable the Calendar API for your Google account and create a new "project". Save the project info in `credentials.json`.
 
-Then run `calendar-assistant authorize <profile-name>` (see below for details).
+Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
 
 
 ## Features
 
 ### Pretty Display
 
-Events are nicely formatted, with strikeouts for events you've declined, and some additional attributes listed when present (e.g., "needsAction", "self", "not-busy", ....)
+Events are nicely formatted, with faint strikeouts for events you've declined, and some additional attributes listed when present (e.g., "needsAction", "self", "not-busy", "1:1" ...)
 
 Event "recurrence rules" are expressed in plain english like "Every 2 weeks on Tuesdays", thanks to [Ice Cube](https://github.com/seejohnrun/ice_cube).
 
@@ -23,7 +23,10 @@ Event "recurrence rules" are expressed in plain english like "Every 2 weeks on T
 
 All dates and times are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times.
 
-For a date range or a datetime range, split the start and end with `...` like "tomorrow ... three days from now" or "2018-09-24...2018-09-27".
+For a date range or a datetime range, split the start and end with `..` or `...` like:
+
+* "tomorrow ... three days from now"
+* "2018-09-24..2018-09-27".
 
 
 ### Commands
@@ -31,16 +34,16 @@ For a date range or a datetime range, split the start and end with `...` like "t
 #### Authorize access to your Google Calendar
 
 ``` bash
-calendar-assistant authorize <profile-name>
+calendar-assistant authorize PROFILE_NAME
 ```
 
-This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`. The refresh token will be written to `calendar_tokens.yml`, which you should be careful not to share or make public.
+This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`. The refresh token will be written to `token.yml`, which you should be careful not to share or make public.
 
 
 #### Display your calendar events
 
 ``` bash
-calendar-assistant show [-v] [-c] <profile-name> [<datespec>]
+calendar-assistant show [-v] [-c] PROFILE_NAME [DATE | DATERANGE | TIMERANGE]
 ```
 
 The `-v` ("--verbose") option will display additional event information, including recurrence rules.
@@ -67,7 +70,7 @@ _calendar-assistant show work -c_
 Declare your location as an all-day non-busy event:
 
 ``` bash
-calendar-assistant location set <profile-name> <location-name> [<datespec>]
+calendar-assistant location-set PROFILE_NAME LOCATION [DATE | DATERANGE]
 ```
 
 **Note** that you can only be in one place at a time, so existing location events may be modified or deleted when new overlapping events are created.
@@ -99,7 +102,7 @@ Created:
 #### Look up where you're going to be
 
 ``` bash
-calendar-assistant location show [-v] <profile-name> [<datespec>]
+calendar-assistant location [-v] PROFILE_NAME [DATE | DATERANGE]
 ```
 
 For example:
@@ -115,7 +118,7 @@ $ calendar-assistant location show work "today...next month"
 #### Join a video call attached to meeting 
 
 ``` bash
-calendar-assistant join [-p] <profile-name> [<datespec>]
+calendar-assistant join [-p] PROFILE_NAME [TIME]
 ```
 
 The `-p` ("--print") option will display the video URL instead of joining.

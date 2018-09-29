@@ -34,46 +34,44 @@ describe CalendarAssistant::CLI do
     end
 
     describe "location" do
-      describe "show" do
-        it "calls find_location_events by default for today" do
-          expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
-          expect(ca).to receive(:find_location_events).
-                          with(time_range).
-                          and_return(events)
-          expect(out).to receive(:print_events).with(ca, events, anything)
+      it "calls find_location_events by default for today" do
+        expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
+        expect(ca).to receive(:find_location_events).
+                        with(time_range).
+                        and_return(events)
+        expect(out).to receive(:print_events).with(ca, events, anything)
 
-          CalendarAssistant::CLI.start ["location", "show", profile_name]
-        end
-
-        it "calls find_location_events with the range returned from parse_datespec" do
-          expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
-          expect(ca).to receive(:find_location_events).
-                          with(time_range).
-                          and_return(events)
-          expect(out).to receive(:print_events).with(ca, events, anything)
-
-          CalendarAssistant::CLI.start ["location", "show", profile_name, "user-datespec"]
-        end
+        CalendarAssistant::CLI.start ["location", profile_name]
       end
 
-      describe "set" do
-        it "calls create_location_event by default for today" do
-          expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
-          expect(ca).to receive("create_location_event").
-                          with(time_range, "Palo Alto").
-                          and_return({})
+      it "calls find_location_events with the range returned from parse_datespec" do
+        expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
+        expect(ca).to receive(:find_location_events).
+                        with(time_range).
+                        and_return(events)
+        expect(out).to receive(:print_events).with(ca, events, anything)
 
-          CalendarAssistant::CLI.start ["location", "set", profile_name, "Palo Alto"]
-        end
+        CalendarAssistant::CLI.start ["location", profile_name, "user-datespec"]
+      end
+    end
 
-        it "calls create_location_event with the range returned from parse_datespec" do
-          expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
-          expect(ca).to receive("create_location_event").
-                          with(time_range, "Palo Alto").
-                          and_return({})
+    describe "location-set" do
+      it "calls create_location_event by default for today" do
+        expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
+        expect(ca).to receive("create_location_event").
+                        with(time_range, "Palo Alto").
+                        and_return({})
 
-          CalendarAssistant::CLI.start ["location", "set", profile_name, "Palo Alto", "user-datespec"]
-        end
+        CalendarAssistant::CLI.start ["location-set", profile_name, "Palo Alto"]
+      end
+
+      it "calls create_location_event with the range returned from parse_datespec" do
+        expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
+        expect(ca).to receive("create_location_event").
+                        with(time_range, "Palo Alto").
+                        and_return({})
+
+        CalendarAssistant::CLI.start ["location-set", profile_name, "Palo Alto", "user-datespec"]
       end
     end
 
