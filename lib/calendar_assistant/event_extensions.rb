@@ -18,17 +18,6 @@ class Google::Apis::CalendarV3::Event
     SELF = "self" # not part of Google's API, but useful to represent meetings-for-myself
   end
 
-  module Attribute
-    DECLINED = Response::DECLINED
-    ACCEPTED = Response::ACCEPTED
-    NEEDS_ACTION = Response::NEEDS_ACTION
-    TENTATIVE = Response::TENTATIVE
-    SELF = Response::SELF
-    RECURRING = "recurring"
-    COMMITMENT = "commitment"
-    ONE_ON_ONE = "1:1"
-  end
-
   module Transparency
     TRANSPARENT = "transparent"
     OPAQUE = "opaque"

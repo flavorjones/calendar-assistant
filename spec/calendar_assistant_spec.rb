@@ -20,12 +20,6 @@ describe CalendarAssistant do
     end
   end
 
-  describe "event visitors" do
-    describe "#event_date_description" do it end
-    describe "tests event_description" do it end
-    describe "tests event_attributes" do it end
-  end
-
   describe "events" do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
@@ -227,6 +221,5 @@ describe CalendarAssistant do
   describe "event formatting" do
     describe "#event_description" do it end
     describe "#event_date_description" do it end
-    describe "#event_attributes" do it end
   end
 end

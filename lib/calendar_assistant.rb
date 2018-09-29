@@ -88,33 +88,29 @@ class CalendarAssistant
   end
 
   def event_description event, options={}
-    attributes = event_attributes(event)
-    attributes.delete GCal::Event::Attribute::ACCEPTED # no news is good news
-    attributes.delete GCal::Event::Attribute::COMMITMENT # this is meta
-    declined = attributes.delete? GCal::Event::Attribute::DECLINED # we'll strike it out in this case
-    recurring = attributes.include? GCal::Event::Attribute::RECURRING
-
-    date_wrapper = if event.current?
-                     [:bright]
-                   elsif event.past?
-                     [:faint]
-                   else # future
-                     []
-                   end
-
     s = sprintf("%-25.25s", event_date_description(event))
-    s = date_wrapper.inject(Rainbow(s)) { |text, ansi| text.send ansi }
+
+    date_ansi_codes = []
+    date_ansi_codes << :bright if event.current?
+    date_ansi_codes << :faint if event.past?
+    s = date_ansi_codes.inject(Rainbow(s)) { |text, ansi| text.send ansi }
 
     s += Rainbow(sprintf(" | %s", event.summary)).bold
 
+    attributes = []
+    attributes << "recurring" if event.recurring_event_id
+    attributes << "not-busy" unless event.busy?
+    attributes << "self" if event.human_attendees.nil?
+    attributes << "1:1" if event.one_on_one?
     s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
 
-    if options[:verbose] && recurring
+    if options[:verbose] && event.recurring_event_id
       recurrence = IceCube::Schedule.from_ical(event.recurrence_rules(service))
-      s += sprintf(" [%s]", recurrence) if recurring
+      s += sprintf(" [%s]", recurrence)
     end
 
-    s = Rainbow(Rainbow.uncolor(s)).faint.strike if declined
+    s = Rainbow(Rainbow.uncolor(s)).faint.strike if event.declined?
+
     s
   end
 
@@ -133,17 +129,6 @@ class CalendarAssistant
       else
         sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))
       end
-    end
-  end
-
-  def event_attributes event
-    return Set.new unless event.id
-    Set.new.tap do |attr|
-      attr << "not-busy" if ! event.busy?
-      attr << event.response_status
-      attr << GCal::Event::Attribute::RECURRING if event.recurring_event_id
-      attr << GCal::Event::Attribute::COMMITMENT if event.commitment?
-      attr << GCal::Event::Attribute::ONE_ON_ONE if event.one_on_one?
     end
   end
 end
