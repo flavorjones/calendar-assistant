@@ -67,7 +67,7 @@ class Google::Apis::CalendarV3::Event
   end
 
   def declined?
-    response_status == Attribute::DECLINED
+    response_status == Response::DECLINED
   end
 
   def one_on_one?
