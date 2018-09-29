@@ -205,7 +205,39 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "#declined?" do it end
+  describe "#declined?" do
+    context "event with no attendees" do
+      it { is_expected.not_to be_declined }
+    end
+
+    context "event with attendees including me" do
+      subject { described_class.new attendees: attendees }
+
+      [
+        GCal::Event::Response::ACCEPTED,
+        GCal::Event::Response::NEEDS_ACTION,
+        GCal::Event::Response::TENTATIVE,
+      ].each do |response_status|
+        context "response status #{response_status}" do
+          before { allow(attendee_self).to receive(:response_status).and_return(response_status) }
+
+          it { expect(subject.declined?).to be_falsey }
+        end
+      end
+
+      context "response status DECLINED" do
+        before { allow(attendee_self).to receive(:response_status).and_return(GCal::Event::Response::DECLINED) }
+
+        it { expect(subject.declined?).to be_truthy }
+      end
+    end
+
+    context "event with attendees but not me" do
+      subject { described_class.new attendees: attendees - [attendee_self] }
+
+      it { expect(subject.declined?).to be_falsey }
+    end
+  end
 
   describe "av_uri" do
     context "description has a zoom link" do
