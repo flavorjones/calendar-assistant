@@ -6,11 +6,15 @@ require "google/apis/calendar_v3"
 require "time"
 
 class Google::Apis::CalendarV3::Event
-  module Response
+  module RealResponse
     DECLINED = "declined"
     ACCEPTED = "accepted"
     NEEDS_ACTION = "needsAction"
     TENTATIVE = "tentative"
+  end
+
+  module Response
+    include RealResponse
     SELF = "self" # not part of Google's API, but useful to represent meetings-for-myself
   end
 
@@ -79,6 +83,12 @@ class Google::Apis::CalendarV3::Event
 
   def busy?
     transparency != Transparency::TRANSPARENT
+  end
+
+  def commitment?
+    return false if human_attendees.nil? || human_attendees.length < 2
+    return false if declined?
+    true
   end
 
   def start_date

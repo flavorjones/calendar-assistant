@@ -164,20 +164,22 @@ describe Google::Apis::CalendarV3::Event do
     context "event with attendees including me" do
       subject { described_class.new attendees: attendees }
 
-      [
-        GCal::Event::Response::ACCEPTED,
-        GCal::Event::Response::NEEDS_ACTION,
-        GCal::Event::Response::TENTATIVE,
-      ].each do |response_status|
-        context "response status #{response_status}" do
-          before { allow(attendee_self).to receive(:response_status).and_return(response_status) }
+      (GCal::Event::RealResponse.constants - [:DECLINED]).each do |response_status_name|
+        context "response status #{response_status_name}" do
+          before do
+            allow(attendee_self).to receive(:response_status).
+                                      and_return(GCal::Event::Response.const_get(response_status_name))
+          end
 
           it { expect(subject.declined?).to be_falsey }
         end
       end
 
       context "response status DECLINED" do
-        before { allow(attendee_self).to receive(:response_status).and_return(GCal::Event::Response::DECLINED) }
+        before do
+          allow(attendee_self).to receive(:response_status).
+                                    and_return(GCal::Event::Response::DECLINED)
+        end
 
         it { expect(subject.declined?).to be_truthy }
       end
@@ -235,6 +237,36 @@ describe Google::Apis::CalendarV3::Event do
       context "implicitly" do
         subject { described_class.new(transparency: GCal::Event::Transparency::OPAQUE) }
         it { is_expected.to be_busy }
+      end
+    end
+  end
+
+  describe "#commitment?" do
+    context "with no attendees" do
+      it { is_expected.not_to be_commitment }
+    end
+
+    context "with attendees" do
+      subject { described_class.new attendees: attendees }
+
+      (GCal::Event::RealResponse.constants - [:DECLINED]).each do |response_status_name|
+        context "response is #{response_status_name}" do
+          before do
+            allow(attendee_self).to receive(:response_status).
+                                      and_return(GCal::Event::Response.const_get(response_status_name))
+          end
+
+          it { is_expected.to be_commitment }
+        end
+      end
+
+      context "response status DECLINED" do
+        before do
+          allow(attendee_self).to receive(:response_status).
+                                    and_return(GCal::Event::Response::DECLINED)
+        end
+
+        it { is_expected.not_to be_commitment }
       end
     end
   end

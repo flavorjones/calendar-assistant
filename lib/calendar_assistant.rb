@@ -146,9 +146,9 @@ class CalendarAssistant
 
       attr << event.response_status
       attr << GCal::Event::Attribute::RECURRING if event.recurring_event_id
-      if event.attendees && attr.intersect?(Set.new([GCal::Event::Attribute::ACCEPTED, GCal::Event::Attribute::TENTATIVE, GCal::Event::Attribute::NEEDS_ACTION]))
-        attr << GCal::Event::Attribute::COMMITMENT
-      end
+
+      attr << GCal::Event::Attribute::COMMITMENT if event.commitment?
+
       attr << GCal::Event::Attribute::ONE_ON_ONE if event.one_on_one?
     end
   end
