@@ -105,7 +105,29 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "#start_date" do it end
+  describe "#start_date" do
+    context "all day event" do
+      let(:start_date) { Date.today }
+
+      context "containing a Date" do
+        subject { described_class.new(start: GCal::EventDateTime.new(date: start_date)).start_date }
+        it { is_expected.to eq(start_date) }
+      end
+
+      context "containing a string" do
+        subject { described_class.new(start: GCal::EventDateTime.new(date: start_date.to_s)).start_date }
+        it { is_expected.to eq(start_date) }
+      end
+    end
+
+    context "intraday event" do
+      let(:start_time) { Time.now }
+
+      subject { described_class.new(start: GCal::EventDateTime.new(date_time: start_time)).start_date }
+      it { is_expected.to eq(start_time.to_date) }
+    end
+  end
+
   describe "#attendee" do it end
   describe "#recurrence_rules?" do it end
   describe "#recurrence" do it end
