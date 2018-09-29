@@ -11,6 +11,7 @@ class Google::Apis::CalendarV3::Event
     ACCEPTED = "accepted"
     NEEDS_ACTION = "needsAction"
     TENTATIVE = "tentative"
+    SELF = "self" # not part of Google's API, but useful to represent meetings-for-myself
   end
 
   module Attribute
@@ -18,8 +19,8 @@ class Google::Apis::CalendarV3::Event
     ACCEPTED = Response::ACCEPTED
     NEEDS_ACTION = Response::NEEDS_ACTION
     TENTATIVE = Response::TENTATIVE
+    SELF = Response::SELF
     RECURRING = "recurring"
-    SELF = "self"
     COMMITMENT = "commitment"
     ONE_ON_ONE = "1:1"
   end
@@ -77,15 +78,16 @@ class Google::Apis::CalendarV3::Event
     end
   end
 
-  def response_status ca
-    return Attribute::SELF if attendees.nil?
-    attendee(ca.calendar.id).tap do |attendee|
-      return attendee.response_status if attendee&.response_status
+  def response_status
+    return Response::SELF if attendees.nil?
+    attendees.each do |attendee|
+      return attendee.response_status if attendee.self
     end
+    nil
   end
 
-  def declined? ca
-    response_status(ca) == Attribute::DECLINED
+  def declined?
+    response_status == Attribute::DECLINED
   end
 
   def av_uri

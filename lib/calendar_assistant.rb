@@ -144,7 +144,7 @@ class CalendarAssistant
     return Set.new unless event.id
     Set.new.tap do |attr|
       attr << "not-busy" if event.transparency
-      attr << event.response_status(self)
+      attr << event.response_status
       attr << GCal::Event::Attribute::RECURRING if event.recurring_event_id
       if event.attendees && attr.intersect?(Set.new([GCal::Event::Attribute::ACCEPTED, GCal::Event::Attribute::TENTATIVE, GCal::Event::Attribute::NEEDS_ACTION]))
         attr << GCal::Event::Attribute::COMMITMENT

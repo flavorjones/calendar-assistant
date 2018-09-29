@@ -34,7 +34,7 @@ class CalendarAssistant
        Google::Apis::CalendarV3::Event::Response::NEEDS_ACTION,
       ].each do |response|
         events.reverse.select do |event|
-          event.response_status(ca) == response
+          event.response_status == response
         end.each do |event|
           return [event, event.av_uri] if event.av_uri
         end

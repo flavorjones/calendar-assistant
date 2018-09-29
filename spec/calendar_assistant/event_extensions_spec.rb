@@ -186,7 +186,24 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "#response_status" do it end
+  describe "#response_status" do
+    context "event with no attendees (i.e. for just myself)" do
+      it { expect(subject.response_status).to eq(GCal::Event::Response::SELF) }
+    end
+
+    context "event with attendees including me" do
+      before { allow(attendee_self).to receive(:response_status).and_return("my-response-status") }
+      subject { described_class.new attendees: attendees }
+
+      it { expect(subject.response_status).to eq("my-response-status") }
+    end
+
+    context "event with attendees but not me" do
+      subject { described_class.new attendees: attendees - [attendee_self] }
+
+      it { expect(subject.response_status).to eq(nil) }
+    end
+  end
 
   describe "#declined?" do it end
 
