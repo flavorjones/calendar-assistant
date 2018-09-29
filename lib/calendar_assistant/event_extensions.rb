@@ -37,9 +37,9 @@ class Google::Apis::CalendarV3::Event
 
   def past?
     if all_day?
-      Date.today >= self.end.to_date
+      self.end.to_date <= Date.today
     else
-      self.end.date_time < Time.now
+      self.end.date_time <= Time.now
     end
   end
 
@@ -108,6 +108,11 @@ class Google::Apis::CalendarV3::Event
                   return hangout_link if hangout_link
                   nil
                 end
+  end
+
+  def update **args
+    update!(**args)
+    self
   end
 end
 

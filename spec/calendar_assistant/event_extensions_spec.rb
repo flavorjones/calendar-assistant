@@ -34,7 +34,30 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
-  describe "#past?" do it end
+  describe "#past?" do
+    freeze_time
+
+    context "all day event" do
+      subject { described_class.new start: GCal::EventDateTime.new(date: Date.today-7) }
+
+      it "returns true if the event ends today or later" do
+        expect(subject.update(end: GCal::EventDateTime.new(date: Date.today-1)).past?).to be_truthy
+        expect(subject.update(end: GCal::EventDateTime.new(date: Date.today)).past?).to be_truthy
+        expect(subject.update(end: GCal::EventDateTime.new(date: Date.today+1)).past?).to be_falsey
+      end
+    end
+
+    context "intraday event" do
+      subject { described_class.new start: GCal::EventDateTime.new(date_time: Time.now - 30.minutes) }
+
+      it "returns true if the event ends now or later" do
+        expect(subject.update(end: GCal::EventDateTime.new(date_time: Time.now - 1.minute)).past?).to be_truthy
+        expect(subject.update(end: GCal::EventDateTime.new(date_time: Time.now)).past?).to be_truthy
+        expect(subject.update(end: GCal::EventDateTime.new(date_time: Time.now + 1.minute)).past?).to be_falsey
+      end
+    end
+  end
+
   describe "#current?" do it end
   describe "#future?" do it end
   describe "#start_date" do it end
