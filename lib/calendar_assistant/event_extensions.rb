@@ -25,8 +25,10 @@ class Google::Apis::CalendarV3::Event
     ONE_ON_ONE = "1:1"
   end
 
-  TRANSPARENCY_NOT_BUSY = "transparent"
-  TRANSPARENCY_BUSY = "opaque"
+  module Transparency
+    TRANSPARENT = "transparent"
+    OPAQUE = "opaque"
+  end
 
   LOCATION_EVENT_REGEX = /^#{CalendarAssistant::EMOJI_WORLDMAP}/
 
@@ -76,6 +78,10 @@ class Google::Apis::CalendarV3::Event
     return false if human_attendees.length != 2
 
     true
+  end
+
+  def busy?
+    transparency != Transparency::TRANSPARENT
   end
 
   def start_date

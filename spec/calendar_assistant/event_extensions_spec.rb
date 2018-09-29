@@ -220,6 +220,25 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
+  describe "#busy?" do
+    context "event is transparent" do
+      subject { described_class.new(transparency: GCal::Event::Transparency::TRANSPARENT) }
+      it { is_expected.not_to be_busy }
+    end
+
+    context "event is opaque" do
+      context "explicitly" do
+        subject { described_class.new(transparency: GCal::Event::Transparency::OPAQUE) }
+        it { is_expected.to be_busy }
+      end
+
+      context "implicitly" do
+        subject { described_class.new(transparency: GCal::Event::Transparency::OPAQUE) }
+        it { is_expected.to be_busy }
+      end
+    end
+  end
+
   #
   #  other methods
   #

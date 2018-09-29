@@ -59,7 +59,7 @@ class CalendarAssistant
     event = GCal::Event.new start: GCal::EventDateTime.new(date: range.first.iso8601),
                             end: GCal::EventDateTime.new(date: range.last.iso8601),
                             summary: "#{EMOJI_WORLDMAP}  #{location}",
-                            transparency: GCal::Event::TRANSPARENCY_NOT_BUSY
+                            transparency: GCal::Event::Transparency::TRANSPARENT
 
     event = service.insert_event DEFAULT_CALENDAR_ID, event
 
@@ -139,7 +139,8 @@ class CalendarAssistant
   def event_attributes event
     return Set.new unless event.id
     Set.new.tap do |attr|
-      attr << "not-busy" if event.transparency
+      attr << "not-busy" if ! event.busy?
+
       attr << event.response_status
       attr << GCal::Event::Attribute::RECURRING if event.recurring_event_id
       if event.attendees && attr.intersect?(Set.new([GCal::Event::Attribute::ACCEPTED, GCal::Event::Attribute::TENTATIVE, GCal::Event::Attribute::NEEDS_ACTION]))
