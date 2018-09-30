@@ -95,7 +95,7 @@ class CalendarAssistant
     date_ansi_codes << :faint if event.past?
     s = date_ansi_codes.inject(Rainbow(s)) { |text, ansi| text.send ansi }
 
-    s += Rainbow(sprintf(" | %s", event.summary)).bold
+    s += Rainbow(sprintf(" | %s", event.summary || "(no title)")).bold
 
     attributes = []
     attributes << "recurring" if event.recurring_event_id
