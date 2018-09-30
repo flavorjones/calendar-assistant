@@ -67,6 +67,7 @@ class CalendarAssistant
         saved_enabled = Rainbow.enabled
         Rainbow.enabled = true
 
+        events = Array(events) # allow passing a single Event
         if events.nil? || events.empty?
           io.puts "No events in this time range."
           return

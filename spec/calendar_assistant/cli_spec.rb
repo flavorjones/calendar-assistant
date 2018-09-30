@@ -106,7 +106,7 @@ describe CalendarAssistant::CLI do
         end
 
         it "prints the event" do
-          expect(out).to receive(:print_events).with(ca, [event], anything)
+          expect(out).to receive(:print_events).with(ca, event, anything)
 
           CalendarAssistant::CLI.start ["join", profile_name, "--print"]
         end

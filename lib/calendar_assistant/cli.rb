@@ -66,7 +66,7 @@ class CalendarAssistant
       ca = CalendarAssistant.new calendar_id
       event, url = CLIHelpers.find_av_uri ca, timespec
       if event
-        CLIHelpers::Out.new.print_events ca, [event], options
+        CLIHelpers::Out.new.print_events ca, event, options
         if options[:print]
           CLIHelpers::Out.new.puts url
         else
