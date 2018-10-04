@@ -23,6 +23,12 @@ class Google::Apis::CalendarV3::Event
     OPAQUE = "opaque"
   end
 
+  module Visibility
+    DEFAULT = "default"
+    PUBLIC = "public"
+    PRIVATE = "private"
+  end
+
   LOCATION_EVENT_REGEX = /^#{CalendarAssistant::EMOJI_WORLDMAP}/
 
   def update **args
@@ -80,6 +86,10 @@ class Google::Apis::CalendarV3::Event
     true
   end
 
+  def private?
+    visibility == Visibility::PRIVATE
+  end
+
   def start_date
     if all_day?
       self.start.to_date
@@ -116,6 +126,12 @@ class Google::Apis::CalendarV3::Event
                   return hangout_link if hangout_link
                   nil
                 end
+  end
+
+  def view_summary
+    return "(private)" if private?
+    return "(no title)" if summary.nil? || summary.blank?
+    summary
   end
 
   #

@@ -95,13 +95,15 @@ class CalendarAssistant
     date_ansi_codes << :faint if event.past?
     s = date_ansi_codes.inject(Rainbow(s)) { |text, ansi| text.send ansi }
 
-    s += Rainbow(sprintf(" | %s", event.summary || "(no title)")).bold
+    s += Rainbow(sprintf(" | %s", event.view_summary)).bold
 
     attributes = []
-    attributes << "recurring" if event.recurring_event_id
-    attributes << "not-busy" unless event.busy?
-    attributes << "self" if event.human_attendees.nil?
-    attributes << "1:1" if event.one_on_one?
+    unless event.private?
+      attributes << "recurring" if event.recurring_event_id
+      attributes << "not-busy" unless event.busy?
+      attributes << "self" if event.human_attendees.nil? && event.visibility != "private"
+      attributes << "1:1" if event.one_on_one?
+    end
     s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
 
     if options[:verbose] && event.recurring_event_id

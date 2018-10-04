@@ -271,6 +271,28 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
+  describe "#private?" do
+    context "visibility is private" do
+      subject { described_class.new visibility: GCal::Event::Visibility::PRIVATE }
+      it { is_expected.to be_private }
+    end
+
+    context "visibility is nil" do
+      subject { described_class.new }
+      it { is_expected.not_to be_private }
+    end
+
+    context "visibility is default" do
+      subject { described_class.new visibility: GCal::Event::Visibility::DEFAULT }
+      it { is_expected.not_to be_private }
+    end
+
+    context "visibility is public" do
+      subject { described_class.new visibility: GCal::Event::Visibility::PUBLIC }
+      it { is_expected.not_to be_private }
+    end
+  end
+
   #
   #  other methods
   #
@@ -384,6 +406,31 @@ describe Google::Apis::CalendarV3::Event do
       end
     end
   end
+
+  describe "#view_summary" do
+    context "event is not private" do
+      context "and summary exists" do
+        subject { described_class.new summary: "my summary" }
+        it { expect(subject.view_summary).to eq("my summary") }
+      end
+
+      context "and summary is blank" do
+        subject { described_class.new summary: "" }
+        it { expect(subject.view_summary).to eq("(no title)") }
+      end
+
+      context "and summary is nil" do
+        subject { described_class.new summary: nil }
+        it { expect(subject.view_summary).to eq("(no title)") }
+      end
+    end
+
+    context "event is private" do
+      subject { described_class.new summary: "ignore this", visibility: GCal::Event::Visibility::PRIVATE }
+      it { expect(subject.view_summary).to eq("(private)") }
+    end
+  end
+
 
   #
   #  recurrence-related methods that we're not really using yet
