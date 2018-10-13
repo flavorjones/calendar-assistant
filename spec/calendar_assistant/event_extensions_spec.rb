@@ -430,14 +430,6 @@ describe Google::Apis::CalendarV3::Event do
       it { expect(subject.view_summary).to eq("(private)") }
     end
   end
-
-
-  #
-  #  recurrence-related methods that we're not really using yet
-  #
-  describe "#recurrence_rules?" do it end
-  describe "#recurrence" do it end
-  describe "#recurrence_parent" do it end
 end
 
 describe Google::Apis::CalendarV3::EventDateTime do

@@ -7,10 +7,6 @@ require "calendar_assistant/cli_helpers"
 class CalendarAssistant
   class CLI < Thor
     #  note that these options are passed straight through to CLIHelpers.print_events
-    class_option :verbose,
-                 type: :boolean,
-                 desc: "print more information",
-                 aliases: ["-v"]
     class_option :debug,
                  type: :boolean,
                  desc: "how dare you suggest there are bugs",

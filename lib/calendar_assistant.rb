@@ -3,7 +3,6 @@ require "google/apis/calendar_v3"
 require "json"
 require "yaml"
 require "business_time"
-require "ice_cube"
 require "rainbow"
 require "set"
 
@@ -105,11 +104,6 @@ class CalendarAssistant
       attributes << "1:1" if event.one_on_one?
     end
     s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
-
-    if options[:verbose] && event.recurring_event_id
-      recurrence = IceCube::Schedule.from_ical(event.recurrence_rules(service))
-      s += sprintf(" [%s]", recurrence)
-    end
 
     s = Rainbow(Rainbow.uncolor(s)).faint.strike if event.declined?
 

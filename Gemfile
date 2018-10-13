@@ -4,7 +4,6 @@ gem "google-api-client"
 gem "chronic"
 gem "thor"
 gem "business_time"
-gem "ice_cube"
 gem "rainbow"
 gem "launchy"
 

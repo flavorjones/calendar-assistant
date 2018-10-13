@@ -45,10 +45,8 @@ This command will generate a URL which you should load in your browser while log
 #### Display your calendar events
 
 ``` bash
-calendar-assistant show [-v] [-c] PROFILE_NAME [DATE | DATERANGE | TIMERANGE]
+calendar-assistant show [-c] PROFILE_NAME [DATE | DATERANGE | TIMERANGE]
 ```
-
-The `-v` ("--verbose") option will display additional event information, including recurrence rules.
 
 The `-c` ("--commitments") option will omit events that you haven't accepted (either "yes" or "maybe") and that are with at least one other person.
 
