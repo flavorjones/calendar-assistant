@@ -13,8 +13,11 @@ describe CalendarAssistant do
     end
 
     describe ".authorize" do
+      let(:authorizer) { instance_double("Authorizer") }
+
       it "calls through to the Authorize class" do
-        expect(CalendarAssistant::Authorizer).to receive(:authorize).with("profile")
+        expect(CalendarAssistant::Authorizer).to receive(:new).with("profile").and_return(authorizer)
+        expect(authorizer).to receive(:authorize)
         CalendarAssistant.authorize("profile")
       end
     end
@@ -26,9 +29,11 @@ describe CalendarAssistant do
     let(:ca) { CalendarAssistant.new "profilename" }
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
+    let(:authorizer) { instance_double("Authorizer") }
 
     before do
-      allow(CalendarAssistant::Authorizer).to receive(:service).and_return(service)
+      allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
+      allow(authorizer).to receive(:service).and_return(service)
       allow(service).to receive(:get_calendar).and_return(calendar)
     end
 

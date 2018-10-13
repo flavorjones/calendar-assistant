@@ -18,7 +18,7 @@ class CalendarAssistant
   attr_reader :service, :calendar
 
   def self.authorize profile_name
-    Authorizer.authorize profile_name
+    Authorizer.new(profile_name).authorize
   end
 
   def self.date_range_cast time_range
@@ -26,7 +26,7 @@ class CalendarAssistant
   end
 
   def initialize profile_name
-    @service = Authorizer.service profile_name
+    @service = Authorizer.new(profile_name).service
     @calendar = service.get_calendar DEFAULT_CALENDAR_ID
   end
 
