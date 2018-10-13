@@ -22,6 +22,7 @@ require 'googleauth/stores/file_token_store'
 
 class CalendarAssistant
   module Authorizer
+    class NoCredentials < RuntimeError ; end
     class UnauthorizedError < RuntimeError ; end
 
     OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
@@ -35,14 +36,16 @@ class CalendarAssistant
     end
 
     def self.service profile_name
-      auth_impl profile_name, false
+      auth_impl profile_name
     end
 
     private
 
-    def self.auth_impl profile_name, create_profile_p
+    def self.auth_impl profile_name, create_profile_p=false
       service = Google::Apis::CalendarV3::CalendarService.new
       service.client_options.application_name = APPLICATION_NAME
+
+      raise NoCredentials, "No credentials found. Please run `calendar-assistant help authorize` for help" unless File.exists?(CREDENTIALS_PATH)
 
       client_id = Google::Auth::ClientId.from_file(CREDENTIALS_PATH)
       token_store = Google::Auth::Stores::FileTokenStore.new(file: TOKEN_PATH)
