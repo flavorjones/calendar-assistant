@@ -1,13 +1,19 @@
 # calendar assistant
 
-A command-line tool to help me book (and re-book) one-on-ones and other meetings automatically.
+A command-line tool to help me manage my Google Calendar.
+
+- book (and re-book) one-on-ones and other meetings automatically
+- set up all-day events to let people know your location in the world
+- easily join the videoconference for your current meeting
 
 
 ## Usage
 
-Head to https://developers.google.com/calendar/quickstart/ruby to enable the Calendar API for your Google account and create a new "project". Save the project info in `credentials.json`.
+Head to [the quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `credentials.json`.
 
 Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
+
+Once you're authorized, feel free to delete the `credentials.json` file. You can re-download that info again if you ever need it.
 
 
 ## Features
@@ -16,14 +22,12 @@ Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
 
 Events are nicely formatted, with faint strikeouts for events you've declined, and some additional attributes listed when present (e.g., "needsAction", "self", "not-busy", "1:1" ...)
 
-Event "recurrence rules" are expressed in plain english like "Every 2 weeks on Tuesdays", thanks to [Ice Cube](https://github.com/seejohnrun/ice_cube).
-
 
 ### Date and Time Specification
 
 All dates and times are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times.
 
-For a date range or a datetime range, split the start and end with `..` or `...` like:
+For a date range or a datetime range, split the start and end with `..` or `...` (with or without spaces) like:
 
 * "tomorrow ... three days from now"
 * "2018-09-24..2018-09-27".
