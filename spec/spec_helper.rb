@@ -14,6 +14,21 @@ module RspecDescribeHelpers
       end
     end
   end
+
+  def with_temp_config_file &block
+    contents = block_given? ? yield : ""
+
+    let :temp_config_file do
+      Tempfile.new "config_file"
+    end
+
+    before do
+      temp_config_file.write contents
+      temp_config_file.close
+    end
+
+    after { temp_config_file.unlink }
+  end
 end
 
 module RspecExampleHelpers

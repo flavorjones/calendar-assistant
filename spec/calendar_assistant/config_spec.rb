@@ -59,13 +59,13 @@ describe CalendarAssistant::Config do
         let :config_io do
           StringIO.new <<~EOC
             [tokens]
-            work = "this-is-a-fake-token-string"
+            work = "fake-token-string"
           EOC
         end
 
         context "loading an existing token" do
           it "loads a token from under the 'tokens' key in the config file" do
-            expect(subject.load("work")).to eq("this-is-a-fake-token-string")
+            expect(subject.load("work")).to eq("fake-token-string")
           end
         end
 
@@ -81,6 +81,41 @@ describe CalendarAssistant::Config do
 
         it "returns nil" do
           expect(subject.load("play")).to be_nil
+        end
+      end
+    end
+
+    describe "#store" do
+      context "with config file" do
+        with_temp_config_file
+
+        let(:subject) do
+          CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
+        end
+
+        context "with a user config" do
+          it "stores the token in the file" do
+            subject.store "work", "fake-token-string"
+            expect(TOML.load_file(temp_config_file.path)["tokens"]["work"]).to eq("fake-token-string")
+          end
+
+          it "is read in appropriately by a new config" do
+            subject.store "work", "fake-token-string"
+
+            new_store = CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
+            expect(new_store.load("work")).to eq("fake-token-string")
+          end
+        end
+      end
+
+      context "with config IO" do
+        let(:subject) do
+          CalendarAssistant::Config.new(config_io: StringIO.new("foo = 123")).token_store
+        end
+
+        it "raises an exception" do
+          expect { subject.store "work", "fake-token-string" }.
+            to raise_exception(CalendarAssistant::Config::NoConfigFileToPersist)
         end
       end
     end
