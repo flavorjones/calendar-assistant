@@ -66,6 +66,8 @@ class CalendarAssistant
       end
 
       def delete id
+        config[TOKENS_KEY].delete(id)
+        config.persist!
       end
 
       def load id

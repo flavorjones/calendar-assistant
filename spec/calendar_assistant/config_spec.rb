@@ -119,5 +119,46 @@ describe CalendarAssistant::Config do
         end
       end
     end
+
+    describe "#delete" do
+      with_temp_config_file do
+        <<~EOC
+          [tokens]
+          work = "fake-token-string"
+          play = "fake-token-string2"
+        EOC
+      end
+
+      let(:subject) do
+        CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
+      end
+
+      it "is setup correctly" do
+        expect(subject.load("work")).to eq("fake-token-string")
+      end
+
+      context "when deleting an existing token" do
+        it "removes the token from file" do
+          subject.delete "work"
+          expect(TOML.load_file(temp_config_file.path)["tokens"]["work"]).to be_nil
+        end
+
+        it "removes the token for a new config" do
+          subject.delete "work"
+
+          new_store = CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
+          expect(new_store.load("work")).to be_nil
+        end
+      end
+
+      context "when deleting a non-existent token" do
+        it "does nothing" do
+          subject.delete "nonexistent-profile-name"
+          new_store = CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
+
+          expect(subject.config.user_config).to eq(new_store.config.user_config)
+        end
+      end
+    end
   end
 end
