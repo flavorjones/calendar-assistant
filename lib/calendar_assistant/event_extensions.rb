@@ -129,7 +129,7 @@ class Google::Apis::CalendarV3::Event
   end
 
   def view_summary
-    return "(private)" if private?
+    return "(private)" if private? && (summary.nil? || summary.blank?)
     return "(no title)" if summary.nil? || summary.blank?
     summary
   end

@@ -426,8 +426,15 @@ describe Google::Apis::CalendarV3::Event do
     end
 
     context "event is private" do
-      subject { described_class.new summary: "ignore this", visibility: GCal::Event::Visibility::PRIVATE }
-      it { expect(subject.view_summary).to eq("(private)") }
+      context "but we have access" do
+        subject { described_class.new summary: "don't ignore this", visibility: GCal::Event::Visibility::PRIVATE }
+        it { expect(subject.view_summary).to eq("don't ignore this") }
+      end
+
+      context "and we do not have access" do
+        subject { described_class.new visibility: GCal::Event::Visibility::PRIVATE }
+        it { expect(subject.view_summary).to eq("(private)") }
+      end
     end
   end
 end
