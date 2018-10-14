@@ -22,29 +22,34 @@ class CalendarAssistant
                          raise TomlParseFailure, "could not parse #{config_file_path}: #{e}"
                        end
                      else
-                       Hash.new
+                       Hash.new { |hash, key| Hash.new }
                      end
     end
 
+    def [] key
+      user_config[key]
+    end
+
     def token_store
-      CalendarAssistant::TokenStore.new self
-    end
-  end
-
-  class TokenStore
-    attr_reader :config
-
-    def initialize config
-      @config = config
+      CalendarAssistant::Config::TokenStore.new self
     end
 
-    def delete id
-    end
+    class TokenStore
+      attr_reader :config
 
-    def load id
-    end
+      def initialize config
+        @config = config
+      end
 
-    def store id, token
+      def delete id
+      end
+
+      def load id
+        config["tokens"][id]
+      end
+
+      def store id, token
+      end
     end
   end
 end

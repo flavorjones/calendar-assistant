@@ -50,4 +50,39 @@ describe CalendarAssistant::Config do
       expect(subject.token_store.method(:store).arity).to eq(2)
     end
   end
+
+  describe CalendarAssistant::Config::TokenStore do
+    describe "#load" do
+      context "with a user config" do
+        let(:subject) { CalendarAssistant::Config.new(config_io: config_io).token_store }
+
+        let :config_io do
+          StringIO.new <<~EOC
+            [tokens]
+            work = "this-is-a-fake-token-string"
+          EOC
+        end
+
+        context "loading an existing token" do
+          it "loads a token from under the 'tokens' key in the config file" do
+            expect(subject.load("work")).to eq("this-is-a-fake-token-string")
+          end
+        end
+
+        context "loading a non-existent token" do
+          it "returns nil" do
+            expect(subject.load("play")).to be_nil
+          end
+        end
+      end
+
+      context "without a user config" do
+        let(:subject) { CalendarAssistant::Config.new(config_file_path: "/path/to/no/file").token_store }
+
+        it "returns nil" do
+          expect(subject.load("play")).to be_nil
+        end
+      end
+    end
+  end
 end
