@@ -55,7 +55,8 @@ describe CalendarAssistant::Config do
   end
 
   describe "#profile_name" do
-    subject { described_class.new(config_file_path: temp_config_file.path) }
+    let(:options) { Hash.new }
+    subject { described_class.new(options: options, config_file_path: temp_config_file.path) }
 
     context "a default profile name is not configured" do
       context "no tokens exist" do
@@ -102,6 +103,14 @@ describe CalendarAssistant::Config do
 
       it "returns the configured default profile name" do
         expect(subject.profile_name).to eq("other")
+      end
+
+      context "a profile is specified via options" do
+        let(:options) { {"profile" => "home" } }
+
+        it "returns the profile specified in the options" do
+          expect(subject.profile_name).to eq("home")
+        end
       end
     end
   end

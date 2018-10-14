@@ -7,7 +7,7 @@ describe CalendarAssistant::CLI do
     let(:config) { instance_double("CalendarAssistant::Config") }
 
     before do
-      expect(CalendarAssistant::Config).to receive(:new).and_return(config)
+      allow(CalendarAssistant::Config).to receive(:new).with(options: {}).and_return(config)
       expect(CalendarAssistant).to receive(:new).with(config).and_return(ca)
       allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
     end
@@ -32,6 +32,17 @@ describe CalendarAssistant::CLI do
 
         CalendarAssistant::CLI.start ["show", "user-datespec"]
       end
+
+      it "uses a specified profile" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: {"profile" => "work"}).
+                                               and_return(config)
+
+        allow(ca).to receive(:find_events)
+        allow(out).to receive(:print_events)
+
+        CalendarAssistant::CLI.start ["show", "-p", "work"]
+      end
     end
 
     describe "location" do
@@ -54,6 +65,17 @@ describe CalendarAssistant::CLI do
 
         CalendarAssistant::CLI.start ["location", "user-datespec"]
       end
+
+      it "uses a specified profile" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: {"profile" => "work"}).
+                                               and_return(config)
+
+        allow(ca).to receive(:find_location_events)
+        allow(out).to receive(:print_events)
+
+        CalendarAssistant::CLI.start ["location", "-p", "work"]
+      end
     end
 
     describe "location-set" do
@@ -74,12 +96,25 @@ describe CalendarAssistant::CLI do
 
         CalendarAssistant::CLI.start ["location-set", "Palo Alto", "user-datespec"]
       end
+
+      it "uses a specified profile" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: {"profile" => "work"}).
+                                               and_return(config)
+
+        allow(ca).to receive(:create_location_event).and_return({})
+
+        CalendarAssistant::CLI.start ["location-set", "-p", "work", "Palo Alto"]
+      end
     end
 
     describe "join" do
       before do
         allow(out).to receive(:puts)
         allow(out).to receive(:print_events)
+        allow(CalendarAssistant::Config).to receive(:new).
+                                              with(options: {"join" => true}).
+                                              and_return(config)
       end
 
       context "default behavior" do
@@ -87,6 +122,16 @@ describe CalendarAssistant::CLI do
           expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "now")
 
           CalendarAssistant::CLI.start ["join"]
+        end
+
+        it "uses a specified profile" do
+          expect(CalendarAssistant::Config).to receive(:new).
+                                                 with(options: {"join" => true, "profile" => "work"}).
+                                                 and_return(config)
+
+          allow(ca).to receive(:find_events).and_return([])
+
+          CalendarAssistant::CLI.start ["join", "-p", "work"]
         end
       end
 
@@ -129,6 +174,9 @@ describe CalendarAssistant::CLI do
 
         context "with --no-join" do
           it "does not launch the meeting URL in your browser" do
+            expect(CalendarAssistant::Config).to receive(:new).
+                                                   with(options: {"join" => false}).
+                                                   and_return(config)
             expect(out).not_to receive(:launch).with(url)
 
             CalendarAssistant::CLI.start ["join", "--no-join"]

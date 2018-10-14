@@ -17,7 +17,7 @@ class CalendarAssistant
       end
     end
 
-    attr_reader :config_file_path, :user_config
+    attr_reader :config_file_path, :user_config, :options
 
     def initialize options: {}, config_file_path: CONFIG_FILE_PATH, config_io: nil
       if config_io.nil?
@@ -39,12 +39,19 @@ class CalendarAssistant
                      else
                        Hash.new
                      end
+
+      @options = options
     end
 
     def profile_name
+      # CLI option takes precedence
+      return options["profile"] if options["profile"]
+
+      # then a configured preference takes precedence
       default = self[Keys::SETTINGS][Keys::Settings::DEFAULT_PROFILE]
       return default if default
 
+      # finally we'll grab the first configured token and set that as the default
       token_names = self[Keys::TOKENS].keys
       if token_names.empty?
         raise NoTokensAuthorized, "Please run `calendar-assistant help authorize` for help."

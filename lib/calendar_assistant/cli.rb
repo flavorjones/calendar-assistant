@@ -7,6 +7,10 @@ require "calendar_assistant/cli_helpers"
 class CalendarAssistant
   class CLI < Thor
     #  note that these options are passed straight through to CLIHelpers.print_events
+    class_option :profile,
+                 type: :string,
+                 desc: "the profile you'd like to use (if different from default)",
+                 aliases: ["-p"]
     class_option :debug,
                  type: :boolean,
                  desc: "how dare you suggest there are bugs",
