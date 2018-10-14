@@ -4,12 +4,22 @@ class CalendarAssistant
   class Config
     class TomlParseFailure < CalendarAssistant::BaseException ; end
     class NoConfigFileToPersist < CalendarAssistant::BaseException ; end
+    class NoTokensAuthorized < CalendarAssistant::BaseException ; end
 
     CONFIG_FILE_PATH = File.join ENV["HOME"], ".calendar-assistant"
 
+    module Keys
+      TOKENS = "tokens"
+      SETTINGS = "settings"
+
+      module Settings
+        DEFAULT_PROFILE = "default-profile"
+      end
+    end
+
     attr_reader :config_file_path, :user_config
 
-    def initialize config_file_path: CONFIG_FILE_PATH, config_io: nil
+    def initialize options: {}, config_file_path: CONFIG_FILE_PATH, config_io: nil
       if config_io.nil?
         @config_file_path = config_file_path
       end
@@ -29,6 +39,20 @@ class CalendarAssistant
                      else
                        Hash.new
                      end
+    end
+
+    def profile_name
+      default = self[Keys::SETTINGS][Keys::Settings::DEFAULT_PROFILE]
+      return default if default
+
+      token_names = self[Keys::TOKENS].keys
+      if token_names.empty?
+        raise NoTokensAuthorized, "Please run `calendar-assistant help authorize` for help."
+      end
+      token_names.first.tap do |new_default|
+        self[Keys::SETTINGS][Keys::Settings::DEFAULT_PROFILE] = new_default
+        persist!
+      end
     end
 
     def [] key
@@ -59,23 +83,21 @@ class CalendarAssistant
     class TokenStore
       attr_reader :config
 
-      TOKENS_KEY = "tokens"
-
       def initialize config
         @config = config
       end
 
       def delete id
-        config[TOKENS_KEY].delete(id)
+        config[CalendarAssistant::Config::Keys::TOKENS].delete(id)
         config.persist!
       end
 
       def load id
-        config[TOKENS_KEY][id]
+        config[CalendarAssistant::Config::Keys::TOKENS][id]
       end
 
       def store id, token
-        config[TOKENS_KEY][id] = token
+        config[CalendarAssistant::Config::Keys::TOKENS][id] = token
         config.persist!
       end
     end

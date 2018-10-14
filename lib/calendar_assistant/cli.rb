@@ -39,26 +39,28 @@ class CalendarAssistant
     end
 
 
-    desc "show PROFILE_NAME [DATE | DATERANGE | TIMERANGE]",
+    desc "show [DATE | DATERANGE | TIMERANGE]",
          "Show your events for a date or range of dates (default 'today')"
     option :commitments,
            type: :boolean,
            desc: "only show events that you've accepted with another person",
            aliases: ["-c"]
-    def show profile_name, datespec="today"
-      ca = CalendarAssistant.new profile_name
+    def show datespec="today"
+      config = CalendarAssistant::Config.new options: options
+      ca = CalendarAssistant.new config
       events = ca.find_events CLIHelpers.parse_datespec(datespec)
       CLIHelpers::Out.new.print_events ca, events, options
     end
 
 
-    desc "join PROFILE_NAME [TIME]",
+    desc "join [TIME]",
          "Open the URL for a video call attached to your meeting at time TIME (default 'now')"
     option :join,
            type: :boolean, default: true,
            desc: "launch a browser to join the video call URL"
-    def join profile_name, timespec="now"
-      ca = CalendarAssistant.new profile_name
+    def join timespec="now"
+      config = CalendarAssistant::Config.new options: options
+      ca = CalendarAssistant.new config
       event, url = CLIHelpers.find_av_uri ca, timespec
       if event
         CLIHelpers::Out.new.print_events ca, event, options
@@ -71,18 +73,22 @@ class CalendarAssistant
       end
     end
 
-    desc "location PROFILE_NAME [DATE | DATERANGE]",
+
+    desc "location [DATE | DATERANGE]",
          "Show your location for a date or range of dates (default 'today')"
-    def location profile_name, datespec="today"
-      ca = CalendarAssistant.new profile_name
+    def location datespec="today"
+      config = CalendarAssistant::Config.new options: options
+      ca = CalendarAssistant.new config
       events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
       CLIHelpers::Out.new.print_events ca, events, options
     end
 
-    desc "location-set PROFILE_NAME LOCATION [DATE | DATERANGE]",
+
+    desc "location-set LOCATION [DATE | DATERANGE]",
          "Set your location to LOCATION for a date or range of dates (default 'today')"
-    def location_set profile_name, location, datespec="today"
-      ca = CalendarAssistant.new profile_name
+    def location_set location, datespec="today"
+      config = CalendarAssistant::Config.new options: options
+      ca = CalendarAssistant.new config
       events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
       events.keys.each do |key|
         puts Rainbow(key.capitalize).bold

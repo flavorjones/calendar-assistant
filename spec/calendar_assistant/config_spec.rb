@@ -54,6 +54,70 @@ describe CalendarAssistant::Config do
     end
   end
 
+  describe "#profile_name" do
+    subject { described_class.new(config_file_path: temp_config_file.path) }
+
+    context "a default profile name is not configured" do
+      context "no tokens exist" do
+        with_temp_config_file
+
+        it "raises an exception telling the user to authorize first" do
+          expect { subject.profile_name }.to raise_exception(CalendarAssistant::BaseException)
+        end
+      end
+
+      context "a token exists" do
+        with_temp_config_file do
+          <<~EOC
+            [tokens]
+            work = "fake-token-1"
+            play = "fake-token-2"
+          EOC
+        end
+
+        it "returns the first token key" do
+          expect(subject.profile_name).to eq("work")
+        end
+
+        it "saves a default the first token key as the default profile in 'settings.default-profile'" do
+          subject.profile_name
+
+          new_config = CalendarAssistant::Config.new(config_file_path: temp_config_file.path)          
+          expect(new_config[CalendarAssistant::Config::Keys::SETTINGS][CalendarAssistant::Config::Keys::Settings::DEFAULT_PROFILE]).to eq("work")
+        end
+      end
+    end
+
+    context "a default profile name is configured" do
+      with_temp_config_file do
+        <<~EOC
+          [tokens]
+          work = "fake-token-1"
+          play = "fake-token-2"
+
+          [settings]
+          default-profile = "other"
+        EOC
+      end
+
+      it "returns the configured default profile name" do
+        expect(subject.profile_name).to eq("other")
+      end
+    end
+  end
+
+  describe "#[]" do
+    it "needs a test"
+  end
+
+  describe "#[]=" do
+    it "needs a test"
+  end
+
+  describe "#persist!" do
+    it "needs a test"
+  end
+
   describe "#token_store" do
     it "returns an object suitable for use as a Google::Auth::TokenStore" do
       expect(subject.token_store).to respond_to(:delete)

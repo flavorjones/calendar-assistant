@@ -30,13 +30,17 @@ describe CalendarAssistant do
   describe "events" do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
-    let(:ca) { CalendarAssistant.new "profilename" }
+    let(:config) { instance_double("CalendarAssistant::Config") }
+    let(:token_store) { instance_double("CalendarAssistant::Config::TokenStore") }
+    let(:ca) { CalendarAssistant.new config }
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
     let(:authorizer) { instance_double("Authorizer") }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
+      allow(config).to receive(:token_store).and_return(token_store)
+      allow(config).to receive(:profile_name).and_return("profile-name")
       allow(authorizer).to receive(:service).and_return(service)
       allow(service).to receive(:get_calendar).and_return(calendar)
     end

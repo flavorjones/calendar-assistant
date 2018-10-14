@@ -1,13 +1,14 @@
 describe CalendarAssistant::CLI do
   describe "commands" do
-    let(:profile_name) { "work" }
     let(:ca) { instance_double("CalendarAssistant") }
     let(:events) { [instance_double("Event")] }
     let(:out) { double("STDOUT") }
     let(:time_range) { double("time range") }
+    let(:config) { instance_double("CalendarAssistant::Config") }
 
     before do
-      expect(CalendarAssistant).to receive(:new).with(profile_name).and_return(ca)
+      expect(CalendarAssistant::Config).to receive(:new).and_return(config)
+      expect(CalendarAssistant).to receive(:new).with(config).and_return(ca)
       allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
     end
 
@@ -19,7 +20,7 @@ describe CalendarAssistant::CLI do
                         and_return(events)
         expect(out).to receive(:print_events).with(ca, events, anything)
 
-        CalendarAssistant::CLI.start ["show", profile_name]
+        CalendarAssistant::CLI.start ["show"]
       end
 
       it "calls find_events with the range returned from parse_datespec" do
@@ -29,7 +30,7 @@ describe CalendarAssistant::CLI do
                         and_return(events)
         expect(out).to receive(:print_events).with(ca, events, anything)
 
-        CalendarAssistant::CLI.start ["show", profile_name, "user-datespec"]
+        CalendarAssistant::CLI.start ["show", "user-datespec"]
       end
     end
 
@@ -41,7 +42,7 @@ describe CalendarAssistant::CLI do
                         and_return(events)
         expect(out).to receive(:print_events).with(ca, events, anything)
 
-        CalendarAssistant::CLI.start ["location", profile_name]
+        CalendarAssistant::CLI.start ["location"]
       end
 
       it "calls find_location_events with the range returned from parse_datespec" do
@@ -51,7 +52,7 @@ describe CalendarAssistant::CLI do
                         and_return(events)
         expect(out).to receive(:print_events).with(ca, events, anything)
 
-        CalendarAssistant::CLI.start ["location", profile_name, "user-datespec"]
+        CalendarAssistant::CLI.start ["location", "user-datespec"]
       end
     end
 
@@ -62,7 +63,7 @@ describe CalendarAssistant::CLI do
                         with(time_range, "Palo Alto").
                         and_return({})
 
-        CalendarAssistant::CLI.start ["location-set", profile_name, "Palo Alto"]
+        CalendarAssistant::CLI.start ["location-set", "Palo Alto"]
       end
 
       it "calls create_location_event with the range returned from parse_datespec" do
@@ -71,7 +72,7 @@ describe CalendarAssistant::CLI do
                         with(time_range, "Palo Alto").
                         and_return({})
 
-        CalendarAssistant::CLI.start ["location-set", profile_name, "Palo Alto", "user-datespec"]
+        CalendarAssistant::CLI.start ["location-set", "Palo Alto", "user-datespec"]
       end
     end
 
@@ -85,7 +86,7 @@ describe CalendarAssistant::CLI do
         it "calls #find_events with a small time range around now" do
           expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "now")
 
-          CalendarAssistant::CLI.start ["join", profile_name]
+          CalendarAssistant::CLI.start ["join"]
         end
       end
 
@@ -93,7 +94,7 @@ describe CalendarAssistant::CLI do
         it "calls #find_events with a small time range around that time" do
           expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "five minutes from now")
 
-          CalendarAssistant::CLI.start ["join", profile_name, "five minutes from now"]
+          CalendarAssistant::CLI.start ["join", "five minutes from now"]
         end
       end
 
@@ -109,20 +110,20 @@ describe CalendarAssistant::CLI do
         it "prints the event" do
           expect(out).to receive(:print_events).with(ca, event, anything)
 
-          CalendarAssistant::CLI.start ["join", profile_name]
+          CalendarAssistant::CLI.start ["join"]
         end
 
         it "prints the meeting URL" do
           expect(out).to receive(:puts).with(url)
 
-          CalendarAssistant::CLI.start ["join", profile_name]
+          CalendarAssistant::CLI.start ["join"]
         end
 
         context "by default" do
           it "launches the meeting URL in your browser" do
             expect(out).to receive(:launch).with(url)
 
-            CalendarAssistant::CLI.start ["join", profile_name]
+            CalendarAssistant::CLI.start ["join"]
           end
         end
 
@@ -130,7 +131,7 @@ describe CalendarAssistant::CLI do
           it "does not launch the meeting URL in your browser" do
             expect(out).not_to receive(:launch).with(url)
 
-            CalendarAssistant::CLI.start ["join", profile_name, "--no-join"]
+            CalendarAssistant::CLI.start ["join", "--no-join"]
           end
         end
       end

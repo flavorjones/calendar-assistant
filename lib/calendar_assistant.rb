@@ -28,9 +28,9 @@ class CalendarAssistant
     time_range.first.to_date..(time_range.last + 1.day).to_date
   end
 
-  def initialize profile_name
-    @config = CalendarAssistant::Config.new
-    @service = Authorizer.new(profile_name, config.token_store).service
+  def initialize config=CalendarAssistant::Config.new
+    @config = config
+    @service = Authorizer.new(config.profile_name, config.token_store).service
     @calendar = service.get_calendar DEFAULT_CALENDAR_ID
   end
 
