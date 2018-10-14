@@ -6,6 +6,7 @@ gem "thor"
 gem "business_time"
 gem "rainbow"
 gem "launchy"
+gem "toml"
 
 group :test do
   gem "rspec"

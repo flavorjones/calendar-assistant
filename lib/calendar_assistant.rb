@@ -129,6 +129,7 @@ class CalendarAssistant
   end
 end
 
+require "calendar_assistant/config"
 require "calendar_assistant/authorizer"
 require "calendar_assistant/cli"
 require "calendar_assistant/string_helpers"
