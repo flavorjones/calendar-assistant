@@ -16,7 +16,11 @@ describe CalendarAssistant do
       let(:authorizer) { instance_double("Authorizer") }
 
       it "calls through to the Authorize class" do
-        expect(CalendarAssistant::Authorizer).to receive(:new).with("profile").and_return(authorizer)
+        expect(CalendarAssistant::Authorizer).to(
+          receive(:new).
+            with("profile", instance_of(CalendarAssistant::Config::TokenStore)).
+            and_return(authorizer)
+        )
         expect(authorizer).to receive(:authorize)
         CalendarAssistant.authorize("profile")
       end

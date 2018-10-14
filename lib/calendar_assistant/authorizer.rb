@@ -18,7 +18,6 @@
 # limitations under the License.
 
 require 'googleauth'
-require 'googleauth/stores/file_token_store'
 require 'rainbow'
 
 class CalendarAssistant
@@ -29,13 +28,13 @@ class CalendarAssistant
     OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
     APPLICATION_NAME = "Flavorjones Calendar Assistant".freeze
     CREDENTIALS_PATH = 'credentials.json'.freeze
-    TOKEN_PATH = 'token.yaml'.freeze
     SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR
 
-    attr_reader :profile_name
+    attr_reader :profile_name, :config_token_store
 
-    def initialize profile_name
+    def initialize profile_name, config_token_store
       @profile_name = profile_name
+      @config_token_store = config_token_store
     end
 
     def authorize
@@ -82,8 +81,7 @@ class CalendarAssistant
                         end
 
                         client_id = Google::Auth::ClientId.from_file(CREDENTIALS_PATH)
-                        token_store = Google::Auth::Stores::FileTokenStore.new(file: TOKEN_PATH)
-                        Google::Auth::UserAuthorizer.new(client_id, SCOPE, token_store)
+                        Google::Auth::UserAuthorizer.new(client_id, SCOPE, config_token_store)
                       end
     end
   end
