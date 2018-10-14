@@ -103,20 +103,19 @@ describe CalendarAssistant::CLI do
 
         before do
           allow(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).and_return([event, url])
+          allow(out).to receive(:launch).with(url)
         end
 
         it "prints the event" do
           expect(out).to receive(:print_events).with(ca, event, anything)
 
-          CalendarAssistant::CLI.start ["join", profile_name, "--print"]
+          CalendarAssistant::CLI.start ["join", profile_name]
         end
 
-        context "with --print option" do
-          it "prints the meeting URL" do
-            expect(out).to receive(:puts).with(url)
+        it "prints the meeting URL" do
+          expect(out).to receive(:puts).with(url)
 
-            CalendarAssistant::CLI.start ["join", profile_name, "--print"]
-          end
+          CalendarAssistant::CLI.start ["join", profile_name]
         end
 
         context "by default" do
@@ -124,6 +123,14 @@ describe CalendarAssistant::CLI do
             expect(out).to receive(:launch).with(url)
 
             CalendarAssistant::CLI.start ["join", profile_name]
+          end
+        end
+
+        context "with --no-join" do
+          it "does not launch the meeting URL in your browser" do
+            expect(out).not_to receive(:launch).with(url)
+
+            CalendarAssistant::CLI.start ["join", profile_name, "--no-join"]
           end
         end
       end
