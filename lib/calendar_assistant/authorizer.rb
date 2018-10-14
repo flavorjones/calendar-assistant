@@ -23,8 +23,8 @@ require 'rainbow'
 
 class CalendarAssistant
   class Authorizer
-    class NoCredentials < RuntimeError ; end
-    class UnauthorizedError < RuntimeError ; end
+    class NoCredentials < CalendarAssistant::BaseException ; end
+    class UnauthorizedError < CalendarAssistant::BaseException ; end
 
     OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
     APPLICATION_NAME = "Flavorjones Calendar Assistant".freeze

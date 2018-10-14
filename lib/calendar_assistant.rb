@@ -9,6 +9,8 @@ require "set"
 class CalendarAssistant
   GCal = Google::Apis::CalendarV3
 
+  class BaseException < RuntimeError ; end
+
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
   EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS

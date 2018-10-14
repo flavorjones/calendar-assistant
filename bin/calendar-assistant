@@ -4,7 +4,7 @@ require "calendar_assistant"
 
 begin
   CalendarAssistant::CLI.start ARGV
-rescue Google::Apis::AuthorizationError, CalendarAssistant::Authorizer::UnauthorizedError, CalendarAssistant::Authorizer::NoCredentials => e
+rescue Google::Apis::AuthorizationError, CalendarAssistant::BaseException => e
   printf "ERROR: %s\n", e
   exit 1
 end
