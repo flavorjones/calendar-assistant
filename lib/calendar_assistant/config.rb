@@ -7,7 +7,7 @@ class CalendarAssistant
     attr_reader :user_config
 
     def initialize config_file_path: CONFIG_FILE_PATH
-      @user_config = if File.exists? config_file_path
+      @user_config = if File.exist? config_file_path
                        TOML.load_file config_file_path
                      else
                        Hash.new
