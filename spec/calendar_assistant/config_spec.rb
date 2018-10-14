@@ -37,4 +37,17 @@ describe CalendarAssistant::Config do
       end
     end
   end
+
+  describe "#token_store" do
+    it "returns an object suitable for use as a Google::Auth::TokenStore" do
+      expect(subject.token_store).to respond_to(:delete)
+      expect(subject.token_store.method(:delete).arity).to eq(1)
+
+      expect(subject.token_store).to respond_to(:load)
+      expect(subject.token_store.method(:load).arity).to eq(1)
+
+      expect(subject.token_store).to respond_to(:store)
+      expect(subject.token_store.method(:store).arity).to eq(2)
+    end
+  end
 end

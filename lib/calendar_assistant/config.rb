@@ -25,5 +25,26 @@ class CalendarAssistant
                        Hash.new
                      end
     end
+
+    def token_store
+      CalendarAssistant::TokenStore.new self
+    end
+  end
+
+  class TokenStore
+    attr_reader :config
+
+    def initialize config
+      @config = config
+    end
+
+    def delete id
+    end
+
+    def load id
+    end
+
+    def store id, token
+    end
   end
 end
