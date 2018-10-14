@@ -1,4 +1,0 @@
-# -*- toml -*-
-[settings]
-start-of-day = "8am"
-end-of-day = "5:30pm"

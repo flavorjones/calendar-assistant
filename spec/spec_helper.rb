@@ -32,11 +32,6 @@ module RspecDescribeHelpers
 end
 
 module RspecExampleHelpers
-  SPEC_ARTIFACT_PATH = File.join(File.dirname(__FILE__), "artifacts")
-
-  def artifact_path filename
-    File.join SPEC_ARTIFACT_PATH, filename
-  end
 end
 
 RSpec.configure do |config|

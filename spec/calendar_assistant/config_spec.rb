@@ -1,17 +1,33 @@
 describe CalendarAssistant::Config do
   describe ".new" do
     context "passed a config file" do
-      context "config file exists" do
-        it "reads the TOML and makes it available as #user_config" do
-          expect(described_class.new(config_file_path: artifact_path("user_config_1")).user_config).
-            to eq({"settings" => {"start-of-day" => "8am", "end-of-day" => "5:30pm"}})
+      context "TOML config file exists" do
+        with_temp_config_file do
+          <<~EOC
+            [settings]
+            start-of-day = "8am"
+            end-of-day = "5:30pm"
+          EOC
         end
 
-        context "and is not TOML" do
-          it "raises an exception" do
-            expect { described_class.new(config_file_path: artifact_path("user_config_bad")) }.
-              to raise_exception(CalendarAssistant::BaseException)
-          end
+        it "reads the TOML and makes it available as #user_config" do
+          expect(described_class.new(config_file_path: temp_config_file.path).user_config).
+            to eq({"settings" => {"start-of-day" => "8am", "end-of-day" => "5:30pm"}})
+        end
+      end
+
+      context "config file exists but is not TOML" do
+        with_temp_config_file do
+          <<~EOC
+            # this is yaml
+            ---
+            foo: 123
+          EOC
+        end
+
+        it "raises an exception" do
+          expect { described_class.new(config_file_path: temp_config_file.path) }.
+            to raise_exception(CalendarAssistant::BaseException)
         end
       end
 
