@@ -146,6 +146,11 @@ class Google::Apis::CalendarV3::EventDateTime
     @date
   end
 
+  def to_date!
+    return @date_time.to_date if @date.nil?
+    to_date
+  end
+
   def to_s
     return @date.to_s if @date
     @date_time.strftime "%Y-%m-%d %H:%M"
