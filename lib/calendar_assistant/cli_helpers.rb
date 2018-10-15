@@ -64,8 +64,14 @@ class CalendarAssistant
       end
 
       def print_events ca, events, options={}
-        saved_enabled = Rainbow.enabled
-        Rainbow.enabled = true
+        if events.is_a?(Hash)
+          events.each do |key, value|
+            puts Rainbow(key.to_s.capitalize + ":").bold.italic
+            CLIHelpers::Out.new.print_events ca, value, options
+            puts
+          end
+          return
+        end
 
         events = Array(events) # allow passing a single Event
         if events.nil? || events.empty?
@@ -83,8 +89,6 @@ class CalendarAssistant
           io.puts ca.event_description(event)
           pp event if options[:debug]
         end
-      ensure
-        Rainbow.enabled = saved_enabled
       end
 
       def launch url

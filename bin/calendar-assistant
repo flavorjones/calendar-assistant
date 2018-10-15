@@ -2,6 +2,8 @@
 
 require "calendar_assistant"
 
+Rainbow.enabled = true
+
 begin
   CalendarAssistant::CLI.start ARGV
 rescue Google::Apis::AuthorizationError, CalendarAssistant::BaseException => e

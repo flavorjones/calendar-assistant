@@ -84,6 +84,7 @@ describe CalendarAssistant::CLI do
         expect(ca).to receive("create_location_event").
                         with(time_range, "Palo Alto").
                         and_return({})
+        expect(out).to receive(:print_events).with(ca, {}, anything)
 
         CalendarAssistant::CLI.start ["location-set", "Palo Alto"]
       end
@@ -93,6 +94,7 @@ describe CalendarAssistant::CLI do
         expect(ca).to receive("create_location_event").
                         with(time_range, "Palo Alto").
                         and_return({})
+        expect(out).to receive(:print_events).with(ca, {}, anything)
 
         CalendarAssistant::CLI.start ["location-set", "Palo Alto", "user-datespec"]
       end
@@ -103,6 +105,7 @@ describe CalendarAssistant::CLI do
                                                and_return(config)
 
         allow(ca).to receive(:create_location_event).and_return({})
+        allow(out).to receive(:print_events)
 
         CalendarAssistant::CLI.start ["location-set", "-p", "work", "Palo Alto"]
       end
