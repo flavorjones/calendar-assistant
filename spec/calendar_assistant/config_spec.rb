@@ -83,7 +83,7 @@ describe CalendarAssistant::Config do
         it "saves a default the first token key as the default profile in 'settings.default-profile'" do
           subject.profile_name
 
-          new_config = CalendarAssistant::Config.new(config_file_path: temp_config_file.path)          
+          new_config = CalendarAssistant::Config.new(config_file_path: temp_config_file.path)
           expect(new_config[CalendarAssistant::Config::Keys::SETTINGS][CalendarAssistant::Config::Keys::Settings::DEFAULT_PROFILE]).to eq("work")
         end
       end
@@ -116,15 +116,77 @@ describe CalendarAssistant::Config do
   end
 
   describe "#[]" do
-    it "needs a test"
+    let(:config) do
+      <<~EOC
+        size = "medium"
+
+        [things]
+        thing1 = "foo"
+        thing2 = "bar"
+      EOC
+    end
+
+    subject { described_class.new(config_io: StringIO.new(config)) }
+
+    context "the key exists in the user config" do
+      it "returns the value" do
+        expect(subject["things"]).to eq({"thing1" => "foo", "thing2" => "bar"})
+        expect(subject["size"]).to eq("medium")
+      end
+    end
+
+    context "the key does not exist in the user config" do
+      it "returns an empty hash" do
+        expect(subject["nonexistent"]).to eq({})
+      end
+    end
   end
 
   describe "#[]=" do
-    it "needs a test"
+    let(:config) do
+      <<~EOC
+        size = "medium"
+
+        [things]
+        thing1 = "foo"
+        thing2 = "bar"
+      EOC
+    end
+
+    subject { described_class.new(config_io: StringIO.new(config)) }
+
+    context "the key exists in the user config" do
+      it "sets the value in the config" do
+        subject["size"] = "large"
+        expect(subject["size"]).to eq("large")
+      end
+    end
+
+    context "the key does not exist in the user config" do
+      it "sets the value in the config" do
+        subject["quantity"] = "dozen"
+        expect(subject["quantity"]).to eq("dozen")
+      end
+    end
   end
 
   describe "#persist!" do
-    it "needs a test"
+    with_temp_config_file do
+      <<~EOC
+        [settings]
+        start-of-day = "8am"
+        end-of-day = "5:30pm"
+      EOC
+    end
+
+    subject { described_class.new(config_file_path: temp_config_file.path) }
+
+    it "persists the config to file" do
+      subject["settings"]["size"] = "medium"
+      subject.persist!
+      new_config = described_class.new(config_file_path: temp_config_file.path)
+      expect(new_config["settings"]["size"]).to eq("medium")
+    end
   end
 
   describe "#token_store" do
