@@ -65,6 +65,10 @@ class Google::Apis::CalendarV3::Event
     end
   end
 
+  def accepted?
+    response_status == Response::ACCEPTED
+  end
+
   def declined?
     response_status == Response::DECLINED
   end

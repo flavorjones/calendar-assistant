@@ -192,6 +192,42 @@ describe Google::Apis::CalendarV3::Event do
     end
   end
 
+  describe "#accepted?" do
+    context "event with no attendees" do
+      it { is_expected.not_to be_accepted }
+    end
+
+    context "event with attendees including me" do
+      subject { described_class.new attendees: attendees }
+
+      (GCal::Event::RealResponse.constants - [:ACCEPTED]).each do |response_status_name|
+        context "response status #{response_status_name}" do
+          before do
+            allow(attendee_self).to receive(:response_status).
+                                      and_return(GCal::Event::Response.const_get(response_status_name))
+          end
+
+          it { expect(subject.accepted?).to be_falsey }
+        end
+      end
+
+      context "response status ACCEPTED" do
+        before do
+          allow(attendee_self).to receive(:response_status).
+                                    and_return(GCal::Event::Response::ACCEPTED)
+        end
+
+        it { expect(subject.accepted?).to be_truthy }
+      end
+    end
+
+    context "event with attendees but not me" do
+      subject { described_class.new attendees: attendees - [attendee_self] }
+
+      it { expect(subject.accepted?).to be_falsey }
+    end
+  end
+
   describe "#one_on_one?" do
     context "event with no attendees" do
       it { is_expected.not_to be_one_on_one }
