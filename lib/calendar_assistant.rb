@@ -90,7 +90,7 @@ class CalendarAssistant
     response
   end
 
-  def event_description event, options={}
+  def event_description event
     s = sprintf("%-25.25s", event_date_description(event))
 
     date_ansi_codes = []
