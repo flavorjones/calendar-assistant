@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+if [[ ! -e node_modules/ansi-to-html/bin/ansi-to-html ]] ; then
+  echo "NOTICE: installing npm modjule ansi-to-html ..."
+  npm install ansi-to-html
+fi
+
+echo "Generating updated README.md..."
+erb README.md.erb > README.md

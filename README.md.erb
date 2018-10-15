@@ -1,0 +1,161 @@
+<%
+def run args
+  output = []
+  output << "<b>$</b> calendar-assistant #{args}"
+  output << `ruby -Ilib bin/calendar-assistant #{args} | node_modules/ansi-to-html/bin/ansi-to-html`
+  output.join("\n")
+end
+%>
+# calendar assistant
+
+A command-line tool to help me manage my Google Calendar.
+
+- book (and re-book) one-on-ones and other meetings automatically
+- set up all-day events to let people know your location in the world
+- easily join the videoconference for your current meeting
+
+
+## Usage
+
+Head to [the quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `credentials.json`.
+
+Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
+
+Once you're authorized, feel free to delete the `credentials.json` file. You can re-download that info again if you ever need it.
+
+
+## Features
+
+### Pretty Display
+
+Events are nicely formatted, with faint strikeouts for events you've declined, and some additional attributes listed when present (e.g., "needsAction", "self", "not-busy", "1:1" ...)
+
+
+### Date and Time Specification
+
+All dates and times are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times.
+
+For a date range or a datetime range, split the start and end with `..` or `...` (with or without spaces) like:
+
+* "tomorrow ... three days from now"
+* "2018-09-24..2018-09-27".
+
+Also note that every command will adopt an intelligent default, which is generally "today" or "now".
+
+
+### Preferences
+
+All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format.
+
+
+### Commands
+
+#### Authorize access to your Google Calendar
+
+<pre>
+<%= run "help authorize" %>
+</pre>
+
+This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
+
+Your access token will be stored in `~/.calendar-assistant` in the `[tokens]` section.
+
+
+#### Display your calendar events
+
+<pre>
+<%= run "help show" %>
+</pre>
+
+For example: display all events scheduled for tomorrow:
+
+<pre>
+<%= run "show --profile=work 2018-10-01" %>
+</pre>
+
+Display _only_ the commitments I have to other people using the `-c` option:
+
+<pre>
+<%= run "show -c 2018-10-01" %>
+</pre>
+
+
+#### Tell people where you are at in the world
+
+Declare your location as an all-day non-busy event:
+
+<pre>
+<%= run "help location-set" %>
+</pre>
+
+**Note** that you can only be in one place at a time, so existing location events may be modified or deleted when new overlapping events are created.
+
+Some examples:
+
+<pre>
+# create an event titled `🗺 WFH` for today
+<b>$</b> calendar-assistant location set -p home WFH
+<b>Created:</b>
+2018-09-03                | <b>🗺  WFH</b> (not-busy, self)
+
+# create an event titled `🗺 OOO` for tomorrow
+<b>$</b> calendar-assistant location-set OOO tomorrow
+<b>Created:</b>
+2018-09-04                | <b>🗺  OOO</b> (not-busy, self)
+
+# create an event titled `🗺 Spring One` on the days of that conference
+<b>$</b> calendar-assistant location-set "Spring One" 2018-09-24...2018-09-27
+<b>Created:</b>
+2018-09-24 - 2018-09-27   | <b>🗺  Spring One</b> (not-busy, self)
+
+# create a vacation event for next week
+<b>$</b> calendar-assistant location-set "Vacation!" "next monday ... next week friday"
+<b>Created:</b>
+2018-09-10 - 2018-09-14   | <b>🗺  Vacation!</b> (not-busy, self)
+</pre>
+
+#### Look up where you're going to be
+
+<pre>
+<%= run "help location" %>
+</pre>
+
+For example:
+
+<pre>
+<%= run "location \"2018-09-24...2018-09-28\"" %>
+</pre>
+
+#### Join a video call attached to a meeting
+
+<pre>
+<%= run "help join" %>
+</pre>
+
+Some examples:
+
+<pre>
+<b>$</b> calendar-assistant join
+2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
+https://pivotal.zoom.us/j/ABC90210
+# ... and opens the URL, which is associated with an event happening now
+
+<b>$</b> calendar-assistant join work --no-join 11:30
+2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
+https://pivotal.zoom.us/j/ABC90210
+# ... and does not open the URL
+</pre>
+
+
+## References
+
+Google Calendar Concepts: https://developers.google.com/calendar/concepts/
+
+Google's API docs: https://www.rubydoc.info/github/google/google-api-ruby-client/Google/Apis/CalendarV3
+
+Recurrence: https://github.com/seejohnrun/ice_cube
+
+
+## License
+
+See files `LICENSE` and `NOTICE` in this repository.
