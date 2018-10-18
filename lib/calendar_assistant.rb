@@ -30,24 +30,15 @@ class CalendarAssistant
     time_range.first.to_date..(time_range.last + 1.day).to_date
   end
 
-  def initialize config=CalendarAssistant::Config.new
+  def initialize config=CalendarAssistant::Config.new, event_repository: nil
     @config = config
     @service = Authorizer.new(config.profile_name, config.token_store).service
     @calendar = service.get_calendar DEFAULT_CALENDAR_ID
+    @event_repository = event_repository || EventRepository.new(@service, DEFAULT_CALENDAR_ID)
   end
 
   def find_events time_range
-    events = service.list_events(DEFAULT_CALENDAR_ID,
-                                 time_min: time_range.first.iso8601,
-                                 time_max: time_range.last.iso8601,
-                                 order_by: "startTime",
-                                 single_events: true,
-                                 max_results: 2000,
-                                )
-    if events.nil? || events.items.nil?
-      return []
-    end
-    events.items
+    @event_repository.find(time_range)
   end
 
   def availability time_range
@@ -100,7 +91,7 @@ class CalendarAssistant
   end
 
   def find_location_events time_range
-    find_events(time_range).select { |e| e.location_event? }
+    @event_repository.find(time_range).select { |e| e.location_event? }
   end
 
   def create_location_event time_range, location
@@ -200,4 +191,5 @@ require "calendar_assistant/cli"
 require "calendar_assistant/string_helpers"
 require "calendar_assistant/extensions/event_date_time_extensions"
 require "calendar_assistant/extensions/event_extensions"
+require "calendar_assistant/event_repository"
 require "calendar_assistant/extensions/rainbow_extensions"
