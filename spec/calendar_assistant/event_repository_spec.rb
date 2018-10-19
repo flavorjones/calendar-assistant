@@ -1,3 +1,5 @@
+require 'date'
+
 describe CalendarAssistant::EventRepository do
 
   let(:service) {instance_double("CalendarService")}
@@ -37,6 +39,44 @@ describe CalendarAssistant::EventRepository do
         expect(service).to receive(:list_events).and_return(events)
         result = event_repository.find time_range
         expect(result).to eq([])
+      end
+    end
+  end
+
+  describe "#delete" do
+    it "calls the service with the event id" do
+      event = double(:event, id: 1)
+
+      expect(service).to receive(:delete_event).with(calendar_id, event.id)
+      event_repository.delete(event)
+    end
+  end
+
+  describe "#update" do
+    context "no date values" do
+      it "updates the event and the service" do
+        event = double(:event, id: 1)
+        new_attributes = {funky: "cold medina"}
+        expect(event).to receive(:update!).with(new_attributes)
+        expect(service).to receive(:update_event).with(calendar_id, event.id, event)
+        event_repository.update(event, new_attributes)
+      end
+    end
+
+    context "with date values" do
+      it "casts dates to GCal::EventDateTime" do
+        event = double(:event, id: 1)
+        new_attributes = {random_date: Date.today}
+        allow(service).to receive(:update_event)
+
+        expect(event).to receive(:update!) do |attributes|
+          date_attr = attributes[:random_date];
+          expect(date_attr.date).to eq(Date.today.iso8601)
+          expect(date_attr).to be_kind_of(GCal::EventDateTime)
+        end
+
+
+        event_repository.update(event, new_attributes)
       end
     end
   end

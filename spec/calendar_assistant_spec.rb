@@ -32,7 +32,8 @@ describe CalendarAssistant do
     let(:calendar) { instance_double("Calendar") }
     let(:config) { instance_double("CalendarAssistant::Config") }
     let(:token_store) { instance_double("CalendarAssistant::Config::TokenStore") }
-    let(:ca) { CalendarAssistant.new config }
+    let(:event_repository) { instance_double("EventRepository") }
+    let(:ca) { CalendarAssistant.new config, event_repository: event_repository }
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
     let(:authorizer) { instance_double("Authorizer") }
@@ -42,7 +43,17 @@ describe CalendarAssistant do
       allow(config).to receive(:token_store).and_return(token_store)
       allow(config).to receive(:profile_name).and_return("profile-name")
       allow(authorizer).to receive(:service).and_return(service)
+      allow(event_repository).to receive(:find).and_return([])
       allow(service).to receive(:get_calendar).and_return(calendar)
+    end
+
+    describe "#find_events" do
+      let(:time) { Time.now.beginning_of_day..(Time.now + 1.day).end_of_day }
+
+      it "calls through to the repository" do
+        expect(event_repository).to receive(:find).with(time)
+        ca.find_events(time)
+      end
     end
 
     describe "#find_location_events" do
@@ -83,13 +94,14 @@ describe CalendarAssistant do
         let(:new_event_end_date) { new_event_start_date }
 
         it "creates an appropriately-titled transparent all-day event" do
-          expect(GCal::Event).to(receive(:new).
-                                   with(start: event_date_time(date: new_event_start.date),
-                                        end: event_date_time(date: new_event_end.date),
-                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
-                                        transparency: GCal::Event::Transparency::TRANSPARENT).
-                                   and_return(new_event))
-          expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
+          attributes = {
+              start: new_event_start.date,
+              end: new_event_end.date,
+              summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+              transparency: GCal::Event::Transparency::TRANSPARENT
+          }
+
+          expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
 
           response = ca.create_location_event CalendarAssistant::CLIHelpers.parse_datespec("today"), "WFH"
           expect(response[:created]).to eq([new_event])
@@ -101,13 +113,14 @@ describe CalendarAssistant do
         let(:new_event_end_date) { Date.parse("2019-09-05") }
 
         it "creates an appropriately-titled transparent all-day event" do
-          expect(GCal::Event).to(receive(:new).
-                                   with(start: event_date_time(date: new_event_start.date),
-                                        end: event_date_time(date: new_event_end.date),
-                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
-                                        transparency: GCal::Event::Transparency::TRANSPARENT).
-                                   and_return(new_event))
-          expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
+          attributes = {
+              start: new_event_start.date,
+              end: new_event_end.date,
+              summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+              transparency: GCal::Event::Transparency::TRANSPARENT
+          }
+
+          expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
 
           response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
           expect(response[:created]).to eq([new_event])
@@ -130,13 +143,14 @@ describe CalendarAssistant do
         end
 
         before do
-          expect(GCal::Event).to(receive(:new).
-                                   with(start: event_date_time(date: new_event_start.date),
-                                        end: event_date_time(date: new_event_end.date),
-                                        summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
-                                        transparency: GCal::Event::Transparency::TRANSPARENT).
-                                   and_return(new_event))
-          expect(service).to receive(:insert_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, new_event).and_return(new_event)
+          attributes = {
+              start: new_event_start.date,
+              end: new_event_end.date,
+              summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+              transparency: GCal::Event::Transparency::TRANSPARENT
+          }
+
+          expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
           expect(ca).to receive(:find_location_events).and_return([existing_event])
         end
 
@@ -145,7 +159,7 @@ describe CalendarAssistant do
           let(:existing_event_end_date) { new_event_end_date }
 
           it "removes the pre-existing event" do
-            expect(service).to receive(:delete_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, existing_event.id)
+            expect(event_repository).to receive(:delete).with(existing_event)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
             expect(response[:created]).to eq([new_event])
@@ -158,8 +172,7 @@ describe CalendarAssistant do
           let(:existing_event_end_date) { Date.parse("2019-09-06") }
 
           it "shrinks the pre-existing event" do
-            expect(existing_event).to receive(:update!).with(start: event_date_time(date: "2019-09-06"))
-            expect(service).to receive(:update_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, existing_event.id, existing_event)
+            expect(event_repository).to receive(:update).with(existing_event, start: existing_event_end_date)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
             expect(response[:created]).to eq([new_event])
@@ -172,8 +185,7 @@ describe CalendarAssistant do
           let(:existing_event_end_date) { Date.parse("2019-09-04") }
 
           it "shrinks the pre-existing event" do
-            expect(existing_event).to receive(:update!).with(end: event_date_time(date: "2019-09-03"))
-            expect(service).to receive(:update_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, existing_event.id, existing_event)
+            expect(event_repository).to receive(:update).with(existing_event, end: new_event_start_date )
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
             expect(response[:created]).to eq([new_event])
@@ -186,8 +198,7 @@ describe CalendarAssistant do
           let(:existing_event_end_date) { Date.parse("2019-09-06") }
 
           it "shrinks the pre-existing event" do
-            expect(existing_event).to receive(:update!).with(start: event_date_time(date: "2019-09-06"))
-            expect(service).to receive(:update_event).with(CalendarAssistant::DEFAULT_CALENDAR_ID, existing_event.id, existing_event)
+            expect(event_repository).to receive(:update).with(existing_event, start: existing_event_end_date)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
             expect(response[:created]).to eq([new_event])

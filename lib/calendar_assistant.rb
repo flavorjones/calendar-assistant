@@ -104,24 +104,17 @@ class CalendarAssistant
     deleted_events = []
     modified_events = []
 
-    event = GCal::Event.new start: GCal::EventDateTime.new(date: range.first.iso8601),
-                            end: GCal::EventDateTime.new(date: range.last.iso8601),
-                            summary: "#{EMOJI_WORLDMAP}  #{location}",
-                            transparency: GCal::Event::Transparency::TRANSPARENT
-
-    event = service.insert_event DEFAULT_CALENDAR_ID, event
+    event = @event_repository.create(transparency: GCal::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{EMOJI_WORLDMAP}  #{location}")
 
     existing_events.each do |existing_event|
       if existing_event.start.date >= event.start.date && existing_event.end.date <= event.end.date
-        service.delete_event DEFAULT_CALENDAR_ID, existing_event.id
+        @event_repository.delete existing_event
         deleted_events << existing_event
       elsif existing_event.start.date <= event.end.date && existing_event.end.date > event.end.date
-        existing_event.update! start: GCal::EventDateTime.new(date: range.last)
-        service.update_event DEFAULT_CALENDAR_ID, existing_event.id, existing_event
+        @event_repository.update existing_event, start: range.last
         modified_events << existing_event
       elsif existing_event.start.date < event.start.date && existing_event.end.date >= event.start.date
-        existing_event.update! end: GCal::EventDateTime.new(date: range.first)
-        service.update_event DEFAULT_CALENDAR_ID, existing_event.id, existing_event
+        @event_repository.update existing_event, end: range.first
         modified_events << existing_event
       end
     end

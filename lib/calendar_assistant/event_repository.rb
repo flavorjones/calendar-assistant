@@ -18,5 +18,31 @@ class CalendarAssistant
       end
       events.items
     end
+
+    def create event_attributes
+      event = GCal::Event.new cast_dates(event_attributes)
+      @service.insert_event @calendar_id, event
+    end
+
+    def delete event
+      @service.delete_event @calendar_id,  event.id
+    end
+
+    def update(event, attributes)
+      event.update! cast_dates(attributes)
+      @service.update_event @calendar_id, event.id, event
+    end
+
+    private
+
+    def cast_dates attributes
+      attributes.each_with_object({}) do |(key, value), object|
+        if value.is_a?(Date)
+          object[key] = GCal::EventDateTime.new(date: value.iso8601)
+        else
+          object[key] = value
+        end
+      end
+    end
   end
 end
