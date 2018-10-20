@@ -3,3 +3,5 @@ Gemfile.lock
 node_modules
 package-lock.json
 
+concourse/private.yml
+concourse/calendar-assistant.final.yml
