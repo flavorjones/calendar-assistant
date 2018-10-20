@@ -94,10 +94,7 @@ class CalendarAssistant
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
-      events.keys.each do |key|
-        puts Rainbow(key.capitalize).bold
-        CLIHelpers::Out.new.print_events ca, events[key], options
-      end
+      CLIHelpers::Out.new.print_events ca, events, options
     end
   end
 end
