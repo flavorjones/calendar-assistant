@@ -8,6 +8,11 @@ gem "rainbow"
 gem "launchy"
 gem "toml"
 
+group :development do
+  gem "rake"
+  gem "concourse"
+end
+
 group :test do
   gem "rspec"
   gem "timecop"
