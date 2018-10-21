@@ -107,7 +107,11 @@ class CalendarAssistant
 
       def print_available_blocks ca, events, options={}
         unless options[:omit_title]
-          puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
+          puts Rainbow(sprintf("%s\n- all times in %s\n- looking for blocks at least %s long\n",
+                               ca.calendar.id,
+                               ca.calendar.time_zone,
+                               ChronicDuration.output(ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))))
+                      ).italic
           options = options.merge(omit_title: true)
         end
 
@@ -123,7 +127,7 @@ class CalendarAssistant
 
         events = Array(events)
         if events.empty?
-          puts "No available blocks in this time range."
+          puts "  (No available blocks in this time range.)"
           return
         end
 
