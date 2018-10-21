@@ -96,6 +96,9 @@ class CalendarAssistant
         end
       end
 
+      def print_available_blocks ca, events, options={}
+      end
+
       def launch url
         Launchy.open url
       end

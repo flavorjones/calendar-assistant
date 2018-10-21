@@ -48,6 +48,9 @@ class CalendarAssistant
     events.items
   end
 
+  def availability time_range
+  end
+
   def find_location_events time_range
     find_events(time_range).select { |e| e.location_event? }
   end
