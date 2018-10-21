@@ -37,7 +37,7 @@ resources:
 
 % ruby_version = RUBIES[:mri].last
 jobs:
-  - name: ruby-<%= ruby_version %>
+  - name: rake-spec
     public: true
     plan:
       - get: ci
@@ -67,7 +67,7 @@ jobs:
             text: |
               :concourse-succeeded: $ATC_EXTERNAL_URL/builds/$BUILD_ID (master) The build succeeded!
 
-  - name: ruby-<%= ruby_version %>-pr
+  - name: rake-spec-pr
     public: true
     plan:
       - get: ci
