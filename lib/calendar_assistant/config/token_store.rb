@@ -8,16 +8,16 @@ class CalendarAssistant
       end
 
       def delete id
-        config[CalendarAssistant::Config::Keys::TOKENS].delete(id)
+        config.tokens.delete(id)
         config.persist!
       end
 
       def load id
-        config[CalendarAssistant::Config::Keys::TOKENS][id]
+        config.tokens[id]
       end
 
       def store id, token
-        config[CalendarAssistant::Config::Keys::TOKENS][id] = token
+        config.tokens[id] = token
         config.persist!
       end
     end
