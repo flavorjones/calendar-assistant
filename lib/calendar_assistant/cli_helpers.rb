@@ -64,6 +64,11 @@ class CalendarAssistant
       end
 
       def print_events ca, events, options={}
+        unless options[:omit_title]
+          puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
+          options = options.merge(omit_title: true)
+        end
+
         if events.is_a?(Hash)
           events.each do |key, value|
             puts Rainbow(key.to_s.capitalize + ":").bold.italic
