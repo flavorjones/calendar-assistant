@@ -8,6 +8,7 @@ A command-line tool to help me manage my Google Calendar.
 - easily join the videoconference for your current meeting
 
 [![Concourse CI](https://ci.nokogiri.org/api/v1/teams/calendar-assistants/pipelines/calendar-assistant/jobs/rake-spec/badge)](https://ci.nokogiri.org/teams/calendar-assistants/pipelines/calendar-assistant)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/maintainability)](https://codeclimate.com/github/flavorjones/calendar-assistant/maintainability)
 
 ## Usage
 
@@ -96,6 +97,8 @@ For example: display all events scheduled for tomorrow:
 
 <pre>
 <b>$</b> calendar-assistant show --profile=work 2018-10-01
+<i>mdalessio@pivotal.io (all times in America/New_York)
+</i>
 2018-10-01               <b> | 🗺  NJ</b><i> (not-busy, self)</i>
 <strike>2018-10-01  03:30 - 05:00 | INTERNATIONAL COFFEE DAYYYYYYYY</strike>
 <strike>2018-10-01  07:30 - 08:30 | Lunch and  -GDPR</strike>
@@ -127,6 +130,8 @@ Display _only_ the commitments I have to other people using the `-c` option:
 
 <pre>
 <b>$</b> calendar-assistant show -c 2018-10-01
+<i>mdalessio@pivotal.io (all times in America/New_York)
+</i>
 2018-10-01  10:30 - 10:55<b> | Mike D / Stev 1:1</b><i> (1:1, recurring)</i>
 2018-10-01  11:00 - 11:30<b> | Dublin Office Status Meeting</b><i> (recurring)</i>
 2018-10-01  11:30 - 12:00<b> | Mike/Rupa 1:1</b><i> (1:1, recurring)</i>
@@ -202,6 +207,8 @@ For example:
 
 <pre>
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
+<i>mdalessio@pivotal.io (all times in America/New_York)
+</i>
 2018-09-24 - 2018-09-27  <b> | 🗺  Spring One @ DC</b><i> (not-busy, self)</i>
 2018-09-28               <b> | 🗺  NJ</b><i> (not-busy, self)</i>
 
