@@ -310,8 +310,8 @@ describe CalendarAssistant::CLIHelpers do
         end
 
         it "prints each hash key capitalized" do
-          expect(stdout).to receive(:puts).with("First:")
-          expect(stdout).to receive(:puts).with("Second:")
+          expect(stdout).to receive(:puts).with(/First:/)
+          expect(stdout).to receive(:puts).with(/Second:/)
           subject.print_events ca, {first: [events.first], second: [events.second]}
         end
 
