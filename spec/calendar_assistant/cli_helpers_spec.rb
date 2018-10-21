@@ -134,6 +134,7 @@ describe CalendarAssistant::CLIHelpers do
   describe CalendarAssistant::CLIHelpers::Out do
     it "test print_now!"
     it "test print_events"
+    it "test print_available_blocks"
     it "test puts"
     it "test launch"
   end
