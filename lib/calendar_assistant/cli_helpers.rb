@@ -51,12 +51,20 @@ class CalendarAssistant
         @io = io
       end
 
+      def launch url
+        Launchy.open url
+      end
+
+      def puts *args
+        io.puts(*args)
+      end
+
       def print_now! ca, event, printed_now
         return true if printed_now
         return false if event.start_date != Date.today
 
         if event.start_time > Time.now
-          io.puts ca.event_description(CLIHelpers.now)
+          puts ca.event_description(CLIHelpers.now)
           return true
         end
 
@@ -65,21 +73,21 @@ class CalendarAssistant
 
       def print_events ca, events, options={}
         unless options[:omit_title]
-          io.puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
+          puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
           options = options.merge(omit_title: true)
         end
 
         if events.is_a?(Hash)
           events.each do |key, value|
-            io.puts Rainbow(key.to_s.capitalize + ":").bold.italic
+            puts Rainbow(key.to_s.capitalize + ":").bold.italic
             print_events ca, value, options
           end
           return
         end
 
-        events = Array(events) # allow passing a single Event
+        events = Array(events)
         if events.empty?
-          io.puts "No events in this time range."
+          puts "No events in this time range."
           return
         end
 
@@ -90,11 +98,11 @@ class CalendarAssistant
         printed_now = false
         display_events.each do |event|
           printed_now = print_now! ca, event, printed_now
-          io.puts ca.event_description(event)
+          puts ca.event_description(event)
           pp event if options[:debug]
         end
 
-        io.puts
+        puts
       end
 
       def print_available_blocks ca, events, options={}
@@ -105,38 +113,26 @@ class CalendarAssistant
 
         if events.is_a?(Hash)
           events.each do |key, value|
-            printf Rainbow("Availability on %s:\n").bold,
-                   key.strftime("%A, %B %-d")
-            CLIHelpers::Out.new.print_available_blocks ca, value, options
+            puts(sprintf(Rainbow("Availability on %s:\n").bold,
+                         key.strftime("%A, %B %-d")))
+            print_available_blocks ca, value, options
             puts
           end
           return
         end
 
-        if events.nil? || events.empty?
-          io.puts "No available blocks in this time range."
+        events = Array(events)
+        if events.empty?
+          puts "No available blocks in this time range."
           return
         end
 
-        display_events = events.select do |event|
-          ! options[:commitments] || event.commitment?
-        end
-
-        display_events.each do |event|
-          date_desc = sprintf " • %s - %s",
-                              event.start.date_time.strftime("%-l:%M%P"),
-                              event.end.date_time.strftime("%-l:%M%P")
-          io.puts date_desc
+        events.each do |event|
+          puts(sprintf(" • %s - %s",
+                       event.start.date_time.strftime("%-l:%M%P"),
+                       event.end.date_time.strftime("%-l:%M%P")))
           pp event if options[:debug]
         end
-      end
-
-      def launch url
-        Launchy.open url
-      end
-
-      def puts *args
-        io.puts(*args)
       end
     end
   end

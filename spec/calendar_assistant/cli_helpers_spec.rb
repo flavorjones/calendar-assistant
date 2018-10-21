@@ -1,3 +1,4 @@
+# coding: utf-8
 describe CalendarAssistant::CLIHelpers do
   describe ".parse_datespec" do
     describe "parsing" do
@@ -324,24 +325,99 @@ describe CalendarAssistant::CLIHelpers do
     end
 
     describe "#print_available_blocks" do
-      context "passed an Array of Events" do
-        it "prints a title"
+      let(:calendar) { instance_double("Calendar") }
+      let(:calendar_id) { "calendar-id" }
+      let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}") }
+      let(:calendar_time_zone) { "calendar/time/zone" }
 
-        it "prints out the time range of each free block"
+      before do
+        allow(ca).to receive(:calendar).and_return(calendar)
+        allow(calendar).to receive(:id).and_return(calendar_id)
+        allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
+        allow(ca).to receive(:event_description)
+        allow(stdout).to receive(:puts)
+      end
+
+      context "passed an Array of Events" do
+        let(:events) do
+          [
+            GCal::Event.new(summary: "do a thing",
+                            start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")),
+                            end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00"))),
+            GCal::Event.new(summary: "do another thing",
+                            start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 12:30:00")),
+                            end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 14:00:00"))),
+          ]
+        end
+
+        it "prints a title containing the time zone" do
+          expect(stdout).to receive(:puts).with(title_regexp)
+          subject.print_available_blocks ca, events
+        end
+
+        context "passed option omit_title:true" do
+          it "does not print a title" do
+            expect(stdout).not_to receive(:puts).with(title_regexp)
+            subject.print_available_blocks ca, events, omit_title: true
+          end
+        end
+
+        it "prints out the time range of each free block" do
+          expect(stdout).to receive(:puts).with(" • 9:00am - 10:00am")
+          expect(stdout).to receive(:puts).with(" • 12:30pm - 2:00pm")
+          subject.print_available_blocks ca, events
+        end
 
         context "the array is empty" do
-          it "prints a standard message"
+          it "prints a standard message" do
+            expect(stdout).to receive(:puts).with("No available blocks in this time range.")
+            subject.print_available_blocks ca, []
+          end
         end
 
         context "the array is nil" do
-          it "prints a standard message"
+          it "prints a standard message" do
+            expect(stdout).to receive(:puts).with("No available blocks in this time range.")
+            subject.print_available_blocks ca, nil
+          end
         end
       end
 
       context "passed a Hash of Arrays of Events" do
-        it "prints a title"
-        it "assumes each hash key is a date and prints it"
-        it "recursively calls #print_available_blocks for each hash value setting omit_title option to true"
+        let(:events) do
+          {
+            Date.parse("2018-10-18") => [
+              GCal::Event.new(summary: "do a thing",
+                              start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")),
+                              end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00"))),
+            ],
+            Date.parse("2018-10-19") => [
+              GCal::Event.new(summary: "do another thing",
+                              start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 12:30:00")),
+                              end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 14:00:00"))),
+            ],
+          }
+        end
+
+        it "prints a title containing the time zone" do
+          expect(stdout).to receive(:puts).with(title_regexp)
+          subject.print_available_blocks ca, {}
+        end
+
+        it "assumes each hash key is a Date and prints it" do
+          events.keys.each do |key|
+            expect(key).to receive(:strftime).and_return(key.to_s)
+            expect(stdout).to receive(:puts).with(Regexp.new(key.to_s))
+          end
+          subject.print_available_blocks ca, events
+        end
+
+        it "recursively calls #print_available_blocks for each hash value" do
+          allow(subject).to receive(:print_available_blocks).and_call_original
+          expect(subject).to receive(:print_available_blocks).with(ca, events.values.first, omit_title: true)
+          expect(subject).to receive(:print_available_blocks).with(ca, events.values.second, omit_title: true)
+          subject.print_available_blocks ca, events
+        end
       end
     end
   end
