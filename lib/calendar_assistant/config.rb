@@ -15,14 +15,20 @@ class CalendarAssistant
 
       module Settings
         PROFILE = "profile"
+        MEETING_LENGTH = "meeting-length"
       end
     end
 
-    attr_reader :config_file_path, :user_config, :options
+    DEFAULT_SETTINGS = {
+      Keys::Settings::MEETING_LENGTH => 30.minutes
+    }
+
+    attr_reader :config_file_path, :user_config, :options, :defaults
 
     def initialize options: {},
                    config_file_path: CONFIG_FILE_PATH,
-                   config_io: nil
+                   config_io: nil,
+                   defaults: DEFAULT_SETTINGS
       if config_io.nil?
         @config_file_path = config_file_path
       end
@@ -43,6 +49,7 @@ class CalendarAssistant
                        Hash.new
                      end
 
+      @defaults = defaults
       @options = options
     end
 
@@ -77,6 +84,12 @@ class CalendarAssistant
 
     def set keypath, value
       Config.set_in_hash user_config, keypath, value
+    end
+
+    def setting setting_name
+      Config.find_in_hash(options, setting_name) ||
+        Config.find_in_hash(user_config, [Keys::SETTINGS, setting_name]) ||
+        Config.find_in_hash(defaults, setting_name)
     end
 
     def tokens
