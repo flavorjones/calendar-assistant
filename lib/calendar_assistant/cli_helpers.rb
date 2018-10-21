@@ -65,21 +65,20 @@ class CalendarAssistant
 
       def print_events ca, events, options={}
         unless options[:omit_title]
-          puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
+          io.puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
           options = options.merge(omit_title: true)
         end
 
         if events.is_a?(Hash)
           events.each do |key, value|
-            puts Rainbow(key.to_s.capitalize + ":").bold.italic
-            CLIHelpers::Out.new.print_events ca, value, options
-            puts
+            io.puts Rainbow(key.to_s.capitalize + ":").bold.italic
+            print_events ca, value, options
           end
           return
         end
 
         events = Array(events) # allow passing a single Event
-        if events.nil? || events.empty?
+        if events.empty?
           io.puts "No events in this time range."
           return
         end
@@ -94,6 +93,8 @@ class CalendarAssistant
           io.puts ca.event_description(event)
           pp event if options[:debug]
         end
+
+        io.puts
       end
 
       def print_available_blocks ca, events, options={}

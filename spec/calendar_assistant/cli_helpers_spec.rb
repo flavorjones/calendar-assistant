@@ -134,6 +134,7 @@ describe CalendarAssistant::CLIHelpers do
   describe CalendarAssistant::CLIHelpers::Out do
     let(:stdout) { StringIO.new }
     let(:subject) { described_class.new(stdout) }
+    let(:ca) { instance_double("CalendarAssistant") }
 
     describe "#launch" do
       let(:url) { "https://this.is.a.url.com/foo/bar#asdf?q=123" }
@@ -157,7 +158,6 @@ describe CalendarAssistant::CLIHelpers do
       freeze_time
 
       let(:event) { GCal::Event.new start: GCal::EventDateTime.new(date_time: start_time) }
-      let(:ca) { instance_double("CalendarAssistant") }
       let(:now) { instance_double("Event<now>") }
 
       before do
@@ -213,9 +213,136 @@ describe CalendarAssistant::CLIHelpers do
       end
     end
 
-    it "test print_events"
-    it "test print_available_blocks"
-    it "test puts"
-    it "test launch"
+    describe "#print_events" do
+      let(:calendar) { instance_double("Calendar") }
+      let(:calendar_id) { "calendar-id" }
+      let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}") }
+      let(:calendar_time_zone) { "calendar/time/zone" }
+      let(:events) do
+        [
+          GCal::Event.new(summary: "do a thing",
+                          start: GCal::EventDateTime.new(date_time: Time.now)),
+          GCal::Event.new(summary: "do another thing",
+                          start: GCal::EventDateTime.new(date_time: Time.now)),
+        ]
+      end
+      let(:event) { events.first }
+
+      before do
+        allow(ca).to receive(:calendar).and_return(calendar)
+        allow(calendar).to receive(:id).and_return(calendar_id)
+        allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
+        allow(ca).to receive(:event_description)
+        allow(stdout).to receive(:puts)
+      end
+
+      context "passed a single Event" do
+        it "prints a title containing the cal id and time zone" do
+          expect(stdout).to receive(:puts).with(title_regexp)
+          subject.print_events ca, event
+        end
+
+        context "passed option omit_title:true" do
+          it "does not print a title" do
+            expect(stdout).not_to receive(:puts).with(title_regexp)
+            subject.print_events ca, event, omit_title: true
+          end
+        end
+
+        it "prints the event description" do
+          expect(ca).to receive(:event_description).with(event).and_return("event-description")
+          expect(stdout).to receive(:puts).with("event-description")
+          subject.print_events ca, event
+        end
+      end
+
+      context "passed an Array of Events" do
+        it "prints a title containing the cal id and time zone" do
+          expect(stdout).to receive(:puts).with(title_regexp)
+          subject.print_events ca, events
+        end
+
+        it "calls #print_now! before each event" do
+          expect(subject).to receive(:print_now!).exactly(events.length).times
+          subject.print_events ca, events
+        end
+
+        it "calls puts with event descriptions for each Event" do
+          events.each do |event|
+            expect(ca).to receive(:event_description).with(event).and_return(event.summary)
+            expect(stdout).to receive(:puts).with(event.summary)
+          end
+          subject.print_events ca, events
+        end
+
+        context "option 'commitments'" do
+          it "omits events that are not a commitment" do
+            allow(events.first).to receive(:commitment?).and_return(true)
+            allow(events.last).to receive(:commitment?).and_return(false)
+
+            expect(ca).to receive(:event_description).with(events.first)
+            expect(ca).not_to receive(:event_description).with(events.last)
+
+            subject.print_events ca, events, commitments: true
+          end
+        end
+
+        context "the array is empty" do
+          it "prints a standard message" do
+            expect(stdout).to receive(:puts).with("No events in this time range.")
+            subject.print_events ca, []
+          end
+        end
+
+        context "the array is nil" do
+          it "prints a standard message" do
+            expect(stdout).to receive(:puts).with("No events in this time range.")
+            subject.print_events ca, nil
+          end
+        end
+      end
+
+      context "passed a Hash of Arrays of Events" do
+        it "prints a title containing the cal id and time zone" do
+          expect(stdout).to receive(:puts).with(title_regexp)
+          subject.print_events ca, {}
+        end
+
+        it "prints each hash key capitalized" do
+          expect(stdout).to receive(:puts).with("First:")
+          expect(stdout).to receive(:puts).with("Second:")
+          subject.print_events ca, {first: [events.first], second: [events.second]}
+        end
+
+        it "recursively calls #print_events for each hash value" do
+          allow(subject).to receive(:print_events).and_call_original
+          expect(subject).to receive(:print_events).with(ca, [events.first], omit_title: true)
+          expect(subject).to receive(:print_events).with(ca, [events.second], omit_title: true)
+          subject.print_events ca, {first: [events.first], second: [events.second]}
+        end
+      end
+    end
+
+    describe "#print_available_blocks" do
+      context "passed an Array of Events" do
+        it "prints a title"
+
+        it "prints out the time range of each free block"
+
+        context "the array is empty" do
+          it "prints a standard message"
+        end
+
+        context "the array is nil" do
+          it "prints a standard message"
+        end
+      end
+
+      context "passed a Hash of Arrays of Events" do
+        it "prints a title"
+        it "assumes each hash key is a date and prints it"
+        it "recursively calls #print_available_blocks for each hash value setting omit_title option to true"
+      end
+    end
   end
 end
