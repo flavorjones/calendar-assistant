@@ -231,13 +231,15 @@ describe CalendarAssistant do
     end
 
     describe "#availability" do
+      it "gets min duration from Config"
+      it "gets intraday range start from Config"
+      it "gets intraday range end from Config"
+      it "prints a subtitle stating duration and intraday range"
+
       it "finds chunks of free time longer than min duration"
       it "finds chunks of free time at the end of the day"
       it "ignores meetings that are not accepted"
       it "handles completely-free days"
-      it "gets min duration from Config"
-      it "gets start time from Config"
-      it "gets end time from Config"
     end
   end
 

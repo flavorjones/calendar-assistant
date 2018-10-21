@@ -222,13 +222,13 @@ describe CalendarAssistant::CLI do
 
       it "uses a specified duration" do
         expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {"duration" => "30min"}).
+                                               with(options: {CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "30min"}).
                                                and_return(config)
 
         allow(ca).to receive(:availability)
         allow(out).to receive(:print_available_blocks)
 
-        CalendarAssistant::CLI.start ["avail", "-d", "30min"]
+        CalendarAssistant::CLI.start ["avail", "-l", "30min"]
       end
     end
   end

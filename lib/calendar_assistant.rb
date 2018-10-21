@@ -50,6 +50,7 @@ class CalendarAssistant
 
   def availability time_range
     length = config.setting(Config::Keys::Settings::MEETING_LENGTH)
+    length = ChronicDuration.parse(length) if length.is_a?(String)
 
     events = find_events time_range
     date_range = time_range.first.to_date .. time_range.last.to_date
