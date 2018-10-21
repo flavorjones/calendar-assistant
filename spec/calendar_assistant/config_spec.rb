@@ -222,6 +222,58 @@ describe CalendarAssistant::Config do
     end
   end
 
+  describe "#defaults" do
+    it "has an intelligent default for the duration of a new meeting" do
+      expect(subject.setting("meeting-length")).to eq(30.minutes)
+    end
+  end
+
+  describe "#setting" do
+    let(:config) do
+      <<~EOC
+        [settings]
+        only-in-user-config = "user-config"
+        in-user-config-and-defaults = "user-config"
+        in-user-config-and-options = "user-config"
+        everywhere = "user-config"
+      EOC
+    end
+
+    let(:defaults) do
+      {
+        "only-in-defaults" => "defaults",
+        "in-user-config-and-defaults" => "defaults",
+        "in-defaults-and-options" => "defaults",
+        "everywhere" => "defaults",
+      }
+    end
+
+    let(:options) do
+      {
+        "only-in-options" => "options",
+        "in-user-config-and-options" => "options",
+        "in-defaults-and-options" => "options",
+        "everywhere" => "options",
+      }
+    end
+
+    subject do
+      described_class.new config_io: StringIO.new(config),
+                          defaults: defaults,
+                          options: options
+    end
+
+    it { expect(subject.setting("only-in-user-config")).to eq("user-config") }
+    it { expect(subject.setting("only-in-defaults")).to eq("defaults") }
+    it { expect(subject.setting("only-in-options")).to eq("options") }
+
+    it { expect(subject.setting("in-user-config-and-defaults")).to eq("user-config") }
+    it { expect(subject.setting("in-user-config-and-options")).to eq("options") }
+    it { expect(subject.setting("in-defaults-and-options")).to eq("options") }
+
+    it { expect(subject.setting("everywhere")).to eq("options") }
+  end
+
   describe "#persist!" do
     with_temp_config_file do
       <<~EOC

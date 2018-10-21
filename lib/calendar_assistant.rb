@@ -49,7 +49,7 @@ class CalendarAssistant
   end
 
   def availability time_range
-    length = 30.minutes
+    length = config.setting(Config::Keys::Settings::MEETING_LENGTH)
 
     events = find_events time_range
     date_range = time_range.first.to_date .. time_range.last.to_date

@@ -134,8 +134,8 @@ describe CalendarAssistant::CLIHelpers do
 
   describe CalendarAssistant::CLIHelpers::Out do
     let(:stdout) { StringIO.new }
-    let(:subject) { described_class.new(stdout) }
     let(:ca) { instance_double("CalendarAssistant") }
+    subject { described_class.new(stdout) }
 
     describe "#launch" do
       let(:url) { "https://this.is.a.url.com/foo/bar#asdf?q=123" }
