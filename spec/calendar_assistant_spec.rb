@@ -229,6 +229,16 @@ describe CalendarAssistant do
         end
       end
     end
+
+    describe "#availability" do
+      it "finds chunks of free time longer than min duration"
+      it "finds chunks of free time at the end of the day"
+      it "ignores meetings that are not accepted"
+      it "handles completely-free days"
+      it "gets min duration from Config"
+      it "gets start time from Config"
+      it "gets end time from Config"
+    end
   end
 
   describe "event formatting" do
