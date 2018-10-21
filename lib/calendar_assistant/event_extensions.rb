@@ -94,6 +94,14 @@ class Google::Apis::CalendarV3::Event
     visibility == Visibility::PRIVATE
   end
 
+  def start_time
+    if all_day?
+      self.start.to_date.beginning_of_day
+    else
+      self.start.date_time
+    end
+  end
+
   def start_date
     if all_day?
       self.start.to_date

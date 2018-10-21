@@ -332,6 +332,29 @@ describe Google::Apis::CalendarV3::Event do
   #
   #  other methods
   #
+  describe "#start_time" do
+    context "all day event" do
+      let(:start_date) { Date.today }
+
+      context "containing a Date" do
+        subject { described_class.new(start: GCal::EventDateTime.new(date: start_date)).start_time }
+        it { is_expected.to eq(start_date.beginning_of_day) }
+      end
+
+      context "containing a String" do
+        subject { described_class.new(start: GCal::EventDateTime.new(date: start_date.to_s)).start_time }
+        it { is_expected.to eq(start_date.beginning_of_day) }
+      end
+    end
+
+    context "intraday event" do
+      let(:start_time) { Time.now }
+
+      subject { described_class.new(start: GCal::EventDateTime.new(date_time: start_time)).start_time }
+      it { is_expected.to eq(start_time) }
+    end
+  end
+
   describe "#start_date" do
     context "all day event" do
       let(:start_date) { Date.today }
@@ -341,7 +364,7 @@ describe Google::Apis::CalendarV3::Event do
         it { is_expected.to eq(start_date) }
       end
 
-      context "containing a string" do
+      context "containing a String" do
         subject { described_class.new(start: GCal::EventDateTime.new(date: start_date.to_s)).start_date }
         it { is_expected.to eq(start_date) }
       end
