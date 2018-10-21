@@ -132,10 +132,30 @@ describe CalendarAssistant::CLIHelpers do
   end
 
   describe CalendarAssistant::CLIHelpers::Out do
+    let(:stdout) { StringIO.new }
+    let(:subject) { described_class.new(stdout) }
+
+    describe "#launch" do
+      let(:url) { "https://this.is.a.url.com/foo/bar#asdf?q=123" }
+
+      it "calls Launchy.open with the url" do
+        expect(Launchy).to receive(:open).with(url)
+        subject.launch(url)
+      end
+    end
+
+    describe "#puts" do
+      let(:args) { [1, 2, 3, "a", "b", {"c" => "d"}] }
+
+      it "calls #puts on the IO object with the args" do
+        expect(stdout).to receive(:puts).with(*args)
+        subject.puts(*args)
+      end
+    end
+
     describe "#print_now!" do
       freeze_time
 
-      let(:stdout) { StringIO.new }
       let(:event) { GCal::Event.new start: GCal::EventDateTime.new(date_time: start_time) }
       let(:ca) { instance_double("CalendarAssistant") }
       let(:now) { instance_double("Event<now>") }
@@ -152,7 +172,7 @@ describe CalendarAssistant::CLIHelpers do
 
           it "does not print and returns false" do
             expect(ca).not_to receive(:event_description)
-            rval = described_class.new(stdout).print_now!(ca, event, printed)
+            rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_falsey
           end
         end
@@ -162,7 +182,7 @@ describe CalendarAssistant::CLIHelpers do
 
           it "does not print and returns false" do
             expect(ca).not_to receive(:event_description)
-            rval = described_class.new(stdout).print_now!(ca, event, printed)
+            rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_falsey
           end
         end
@@ -172,7 +192,7 @@ describe CalendarAssistant::CLIHelpers do
 
           it "prints and returns true" do
             expect(ca).to receive(:event_description).with(now)
-            rval = described_class.new(stdout).print_now!(ca, event, printed)
+            rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_truthy
           end
         end
@@ -186,7 +206,7 @@ describe CalendarAssistant::CLIHelpers do
 
           it "does not print and returns true" do
             expect(ca).not_to receive(:event_description).with(now)
-            rval = described_class.new(stdout).print_now!(ca, event, printed)
+            rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_truthy
           end
         end
