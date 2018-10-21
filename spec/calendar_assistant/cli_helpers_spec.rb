@@ -327,7 +327,7 @@ describe CalendarAssistant::CLIHelpers do
     describe "#print_available_blocks" do
       let(:calendar) { instance_double("Calendar") }
       let(:calendar_id) { "calendar-id" }
-      let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}") }
+      let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}", Regexp::MULTILINE) }
       let(:calendar_time_zone) { "calendar/time/zone" }
       let(:config) { CalendarAssistant::Config.new }
 
@@ -372,14 +372,14 @@ describe CalendarAssistant::CLIHelpers do
 
         context "the array is empty" do
           it "prints a standard message" do
-            expect(stdout).to receive(:puts).with("No available blocks in this time range.")
+            expect(stdout).to receive(:puts).with(/No available blocks in this time range/)
             subject.print_available_blocks ca, []
           end
         end
 
         context "the array is nil" do
           it "prints a standard message" do
-            expect(stdout).to receive(:puts).with("No available blocks in this time range.")
+            expect(stdout).to receive(:puts).with(/No available blocks in this time range/)
             subject.print_available_blocks ca, nil
           end
         end
