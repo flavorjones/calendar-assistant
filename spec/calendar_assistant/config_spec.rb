@@ -224,7 +224,7 @@ describe CalendarAssistant::Config do
 
   describe "#defaults" do
     it "has an intelligent default for the duration of a new meeting" do
-      expect(subject.setting("meeting-length")).to eq(30.minutes)
+      expect(subject.setting("meeting-length")).to eq("30m")
     end
   end
 

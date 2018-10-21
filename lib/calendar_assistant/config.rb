@@ -20,7 +20,7 @@ class CalendarAssistant
     end
 
     DEFAULT_SETTINGS = {
-      Keys::Settings::MEETING_LENGTH => 30.minutes
+      Keys::Settings::MEETING_LENGTH => "30m", # ChronicDuration
     }
 
     attr_reader :config_file_path, :user_config, :options, :defaults

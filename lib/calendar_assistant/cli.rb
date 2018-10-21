@@ -1,5 +1,6 @@
 require "thor"
 require "chronic"
+require "chronic_duration"
 require "launchy"
 
 require "calendar_assistant/cli_helpers"
@@ -108,10 +109,11 @@ class CalendarAssistant
 
     desc "availability [DATE | DATERANGE | TIMERANGE]",
          "Show your availability for a date or range of dates (default 'today')"
-    option :duration,
+    option CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH,
            type: :string,
-           desc: "find chunks of available time at least as long as DURATION",
-           aliases: ["-d"]
+           banner: "LENGTH",
+           desc: "find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')",
+           aliases: ["-l"]
     def availability datespec="today"
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config

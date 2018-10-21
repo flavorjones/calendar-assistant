@@ -329,12 +329,14 @@ describe CalendarAssistant::CLIHelpers do
       let(:calendar_id) { "calendar-id" }
       let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}") }
       let(:calendar_time_zone) { "calendar/time/zone" }
+      let(:config) { CalendarAssistant::Config.new }
 
       before do
         allow(ca).to receive(:calendar).and_return(calendar)
         allow(calendar).to receive(:id).and_return(calendar_id)
         allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
         allow(ca).to receive(:event_description)
+        allow(ca).to receive(:config).and_return(config)
         allow(stdout).to receive(:puts)
       end
 
