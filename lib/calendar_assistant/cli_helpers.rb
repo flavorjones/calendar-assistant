@@ -1,3 +1,4 @@
+# coding: utf-8
 class CalendarAssistant
   module CLIHelpers
     def self.parse_datespec userspec
@@ -97,6 +98,37 @@ class CalendarAssistant
       end
 
       def print_available_blocks ca, events, options={}
+        unless options[:omit_title]
+          puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
+          options = options.merge(omit_title: true)
+        end
+
+        if events.is_a?(Hash)
+          events.each do |key, value|
+            printf Rainbow("Availability on %s:\n").bold,
+                   key.strftime("%A, %B %-d")
+            CLIHelpers::Out.new.print_available_blocks ca, value, options
+            puts
+          end
+          return
+        end
+
+        if events.nil? || events.empty?
+          io.puts "No available blocks in this time range."
+          return
+        end
+
+        display_events = events.select do |event|
+          ! options[:commitments] || event.commitment?
+        end
+
+        display_events.each do |event|
+          date_desc = sprintf " • %s - %s",
+                              event.start.date_time.strftime("%-l:%M%P"),
+                              event.end.date_time.strftime("%-l:%M%P")
+          io.puts date_desc
+          pp event if options[:debug]
+        end
       end
 
       def launch url
