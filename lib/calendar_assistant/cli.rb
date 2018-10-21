@@ -18,8 +18,7 @@ class CalendarAssistant
                  aliases: ["-p"]
     class_option :debug,
                  type: :boolean,
-                 desc: "how dare you suggest there are bugs",
-                 aliases: ["-d"]
+                 desc: "how dare you suggest there are bugs"
 
 
     desc "authorize PROFILE_NAME",
@@ -105,6 +104,19 @@ class CalendarAssistant
       ca = CalendarAssistant.new config
       events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
       CLIHelpers::Out.new.print_events ca, events, options
+    end
+
+    desc "availability [DATE | DATERANGE | TIMERANGE]",
+         "Show your availability for a date or range of dates (default 'today')"
+    option :duration,
+           type: :string,
+           desc: "find chunks of available time at least as long as DURATION",
+           aliases: ["-d"]
+    def availability datespec="today"
+      config = CalendarAssistant::Config.new options: options
+      ca = CalendarAssistant.new config
+      events = ca.availability CLIHelpers.parse_datespec(datespec)
+      CLIHelpers::Out.new.print_available_blocks ca, events, options
     end
 
     private
