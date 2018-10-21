@@ -132,7 +132,67 @@ describe CalendarAssistant::CLIHelpers do
   end
 
   describe CalendarAssistant::CLIHelpers::Out do
-    it "test print_now!"
+    describe "#print_now!" do
+      freeze_time
+
+      let(:stdout) { StringIO.new }
+      let(:event) { GCal::Event.new start: GCal::EventDateTime.new(date_time: start_time) }
+      let(:ca) { instance_double("CalendarAssistant") }
+      let(:now) { instance_double("Event<now>") }
+
+      before do
+        allow(CalendarAssistant::CLIHelpers).to receive(:now).and_return(now)
+      end
+
+      context "having not printed yet" do
+        let(:printed) { false }
+
+        context "event start time is earlier than now" do
+          let(:start_time) { Time.now - 1.minute }
+
+          it "does not print and returns false" do
+            expect(ca).not_to receive(:event_description)
+            rval = described_class.new(stdout).print_now!(ca, event, printed)
+            expect(rval).to be_falsey
+          end
+        end
+
+        context "event start time is later than now but on a different day" do
+          let(:start_time) { Time.now + 1.day + 1.minute }
+
+          it "does not print and returns false" do
+            expect(ca).not_to receive(:event_description)
+            rval = described_class.new(stdout).print_now!(ca, event, printed)
+            expect(rval).to be_falsey
+          end
+        end
+
+        context "event start time is later than now" do
+          let(:start_time) { Time.now + 1.minute }
+
+          it "prints and returns true" do
+            expect(ca).to receive(:event_description).with(now)
+            rval = described_class.new(stdout).print_now!(ca, event, printed)
+            expect(rval).to be_truthy
+          end
+        end
+      end
+
+      context "having already printed" do
+        let(:printed) { true }
+
+        context "event start time is later than now" do
+          let(:start_time) { Time.now + 1.minute }
+
+          it "does not print and returns true" do
+            expect(ca).not_to receive(:event_description).with(now)
+            rval = described_class.new(stdout).print_now!(ca, event, printed)
+            expect(rval).to be_truthy
+          end
+        end
+      end
+    end
+
     it "test print_events"
     it "test print_available_blocks"
     it "test puts"
