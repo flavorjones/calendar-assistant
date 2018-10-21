@@ -1,12 +1,13 @@
-# resource_types:
+resource_types:
 # - name: pull-request
 #   type: docker-image
 #   source:
 #     repository: jtarchie/pr
-# - name: slack-notification
-#   type: docker-image
-#   source:
-#     repository: cloudfoundry-community/slack-notification-resource
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
 
 resources:
   - name: ci
@@ -29,6 +30,10 @@ resources:
   #     access_token: {{github-repo-status-access-token}}
   #     ignore_paths:
   #       - concourse/**
+  - name: slack-notification
+    type: slack-notification
+    source:
+      url: {{pivotal-slack-calendar-assistant-webhook-url}}
 
 jobs:
 % ruby_version = RUBIES[:mri].last
@@ -49,3 +54,14 @@ jobs:
             - name: calendar-assistant
           run:
             path: ci/concourse/tasks/rake-spec/run.sh
+        on_failure:
+          put: slack-notification
+          params:
+            silent: true
+            text: |
+              :concourse-failed: The build failed! https://ci.nokogiri.org/builds/$BUILD_ID
+      - put: slack-notification
+        params:
+          silent: true
+          text: |
+            :concourse-succeeded: The build succeeded! https://ci.nokogiri.org/builds/$BUILD_ID
