@@ -6,6 +6,11 @@ require "calendar_assistant/cli_helpers"
 
 class CalendarAssistant
   class CLI < Thor
+    #  it's unfortunate that thor does not support this usage of help args
+    class_option :help,
+                 type: :boolean,
+                 aliases: ["-h", "-?"]
+
     #  note that these options are passed straight through to CLIHelpers.print_events
     class_option :profile,
                  type: :string,
@@ -38,6 +43,7 @@ class CalendarAssistant
       \x5 3. Download the configuration file for the Project, and name it as `credentials.json`
     EOD
     def authorize profile_name
+      return if handle_help_args
       CalendarAssistant.authorize profile_name
       puts "\nYou're authorized!\n\n"
     end
@@ -50,6 +56,7 @@ class CalendarAssistant
            desc: "only show events that you've accepted with another person",
            aliases: ["-c"]
     def show datespec="today"
+      return if handle_help_args
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.find_events CLIHelpers.parse_datespec(datespec)
@@ -63,6 +70,7 @@ class CalendarAssistant
            type: :boolean, default: true,
            desc: "launch a browser to join the video call URL"
     def join timespec="now"
+      return if handle_help_args
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       event, url = CLIHelpers.find_av_uri ca, timespec
@@ -81,6 +89,7 @@ class CalendarAssistant
     desc "location [DATE | DATERANGE]",
          "Show your location for a date or range of dates (default 'today')"
     def location datespec="today"
+      return if handle_help_args
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
@@ -91,10 +100,20 @@ class CalendarAssistant
     desc "location-set LOCATION [DATE | DATERANGE]",
          "Set your location to LOCATION for a date or range of dates (default 'today')"
     def location_set location, datespec="today"
+      return if handle_help_args
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
       CLIHelpers::Out.new.print_events ca, events, options
+    end
+
+    private
+
+    def handle_help_args
+      if options[:help]
+        help(current_command_chain.first)
+        return true
+      end
     end
   end
 end
