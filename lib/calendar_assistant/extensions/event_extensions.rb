@@ -30,16 +30,10 @@ class Google::Apis::CalendarV3::Event
     PRIVATE = "private"
   end
 
-  LOCATION_EVENT_REGEX = /^#{CalendarAssistant::EMOJI_WORLDMAP}/
-
   def update **args
     # this should be in the google API classes, IMHO
     update!(**args)
     self
-  end
-
-  def location_event?
-    !! (summary =~ LOCATION_EVENT_REGEX)
   end
 
   def all_day?

@@ -47,23 +47,9 @@ describe Google::Apis::CalendarV3::Event do
     [attendee_self, attendee_room_resource, attendee_optional, attendee_required, attendee_organizer, attendee_group]
   end
 
-
   #
   #  predicates
   #
-  describe "#location_event?" do
-    context "event summary does not begin with a worldmap emoji" do
-      it "returns false" do
-        expect(described_class.new(summary: "not a location event").location_event?).to be_falsey
-      end
-    end
-
-    context "event summary begins with a worldmap emoji" do
-      it "returns true" do
-        expect(described_class.new(summary: "🗺 yes a location event").location_event?).to be_truthy
-      end
-    end
-  end
 
   describe "#all_day?" do
     context "event has start and end dates" do
