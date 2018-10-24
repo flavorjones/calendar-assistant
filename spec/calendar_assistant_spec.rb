@@ -75,11 +75,11 @@ describe CalendarAssistant do
 
     describe "#create_location_event" do
       let(:new_event) do
-        instance_double("GCal::Event", {
+        CalendarAssistant::Event.new(instance_double("GCal::Event", {
                           id: SecureRandom.uuid,
                           start: new_event_start,
                           end: new_event_end
-                        })
+                        }))
       end
 
       before do
@@ -135,11 +135,11 @@ describe CalendarAssistant do
         let(:new_event_end_date) { Date.parse("2019-09-05") }
 
         let(:existing_event) do
-          instance_double("GCal::Event", {
+          CalendarAssistant::Event.new(instance_double("GCal::Event", {
                             id: SecureRandom.uuid,
                             start: existing_event_start,
                             end: existing_event_end
-                          })
+                          }))
         end
 
         before do

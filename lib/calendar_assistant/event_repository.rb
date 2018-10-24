@@ -16,12 +16,13 @@ class CalendarAssistant
       if events.nil? || events.items.nil?
         return []
       end
-      events.items
+      events.items.map { |e| CalendarAssistant::Event.new(e) }
     end
 
     def create event_attributes
       event = GCal::Event.new cast_dates(event_attributes)
       @service.insert_event @calendar_id, event
+      CalendarAssistant::Event.new(event)
     end
 
     def delete event
@@ -31,6 +32,7 @@ class CalendarAssistant
     def update(event, attributes)
       event.update! cast_dates(attributes)
       @service.update_event @calendar_id, event.id, event
+      CalendarAssistant::Event.new(event)
     end
 
     private
