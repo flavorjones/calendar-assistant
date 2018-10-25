@@ -6,6 +6,8 @@ require "business_time"
 require "rainbow"
 require "set"
 
+require "calendar_assistant/version"
+
 class CalendarAssistant
   GCal = Google::Apis::CalendarV3
 
