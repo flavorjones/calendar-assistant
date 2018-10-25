@@ -130,6 +130,7 @@ class CalendarAssistant
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
            aliases: ["-e"]
     def availability datespec="today"
+      return if handle_help_args
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.availability CLIHelpers.parse_datespec(datespec)
@@ -139,6 +140,7 @@ class CalendarAssistant
     desc "config",
          "Dump your configuration parameters (merge of defaults and overrides from #{CalendarAssistant::Config::CONFIG_FILE_PATH})"
     def config
+      return if handle_help_args
       config = CalendarAssistant::Config.new
       settings = {}
       setting_names = CalendarAssistant::Config::Keys::Settings.constants.map { |k| CalendarAssistant::Config::Keys::Settings.const_get k }
