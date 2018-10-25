@@ -36,75 +36,6 @@ class Google::Apis::CalendarV3::Event
     self
   end
 
-  def all_day?
-    !! @start.to_date
-  end
-
-  def past?
-    if all_day?
-      Date.today >= self.end.to_date
-    else
-      Time.now >= self.end.date_time
-    end
-  end
-
-  def current?
-    ! (past? || future?)
-  end
-
-  def future?
-    if all_day?
-      self.start.to_date > Date.today
-    else
-      self.start.date_time > Time.now
-    end
-  end
-
-  def accepted?
-    response_status == Response::ACCEPTED
-  end
-
-  def declined?
-    response_status == Response::DECLINED
-  end
-
-  def one_on_one?
-    return false if attendees.nil?
-    return false unless attendees.any? { |a| a.self }
-    return false if human_attendees.length != 2
-    true
-  end
-
-  def busy?
-    transparency != Transparency::TRANSPARENT
-  end
-
-  def commitment?
-    return false if human_attendees.nil? || human_attendees.length < 2
-    return false if declined?
-    true
-  end
-
-  def private?
-    visibility == Visibility::PRIVATE
-  end
-
-  def start_time
-    if all_day?
-      self.start.to_date.beginning_of_day
-    else
-      self.start.date_time
-    end
-  end
-
-  def start_date
-    if all_day?
-      self.start.to_date
-    else
-      self.start.date_time.to_date
-    end
-  end
-
   def human_attendees
     return nil if attendees.nil?
     attendees.select { |a| ! a.resource }
@@ -133,11 +64,5 @@ class Google::Apis::CalendarV3::Event
                   return hangout_link if hangout_link
                   nil
                 end
-  end
-
-  def view_summary
-    return "(private)" if private? && (summary.nil? || summary.blank?)
-    return "(no title)" if summary.nil? || summary.blank?
-    summary
   end
 end
