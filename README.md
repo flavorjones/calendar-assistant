@@ -43,9 +43,60 @@ Also note that every command will adopt an intelligent default, which is general
 All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format.
 
 
-### Commands
+## Commands
 
-#### Authorize access to your Google Calendar
+<pre>
+<b>$</b> calendar-assistant help
+Commands:
+  calendar-assistant authorize PROFILE_NAME                       # create (or validate) a profile named NAME with calendar access
+  calendar-assistant availability [DATE | DATERANGE | TIMERANGE]  # Show your availability for a date or range of dates (default 'today')
+  calendar-assistant config                                       # Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
+  calendar-assistant help [COMMAND]                               # Describe available commands or one specific command
+  calendar-assistant join [TIME]                                  # Open the URL for a video call attached to your meeting at time TIME (default 'now')
+  calendar-assistant location [DATE | DATERANGE]                  # Show your location for a date or range of dates (default 'today')
+  calendar-assistant location-set LOCATION [DATE | DATERANGE]     # Set your location to LOCATION for a date or range of dates (default 'today')
+  calendar-assistant show [DATE | DATERANGE | TIMERANGE]          # Show your events for a date or range of dates (default 'today')
+
+Options:
+  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
+      [--debug], [--no-debug]  # how dare you suggest there are bugs
+
+
+</pre>
+
+
+### View your configuration parameters
+
+Calendar Assistant has intelligent defaults, which can be overridden in the TOML file `~/.calendar-assistant`, and further overridden via command-line parameters. Sometimes it's nice to be able to see what defaults Calendar Assistant is using:
+
+<pre>
+<b>$</b> calendar-assistant help config
+Usage:
+  calendar-assistant config
+
+Options:
+  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
+      [--debug], [--no-debug]  # how dare you suggest there are bugs
+
+Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
+
+</pre>
+
+The output is TOML, which is suitable for dumping into `~/.calendar-assistant` and editing.
+
+<pre>
+<b>$</b> calendar-assistant config
+
+[settings]
+end-of-day = "6pm"
+meeting-length = "30m"
+profile = "work"
+start-of-day = "9am"
+
+</pre>
+
+
+### Authorize access to your Google Calendar
 
 <pre>
 <b>$</b> calendar-assistant help authorize
@@ -54,7 +105,7 @@ Usage:
 
 Options:
   -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-  -d, [--debug], [--no-debug]  # how dare you suggest there are bugs
+      [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your calendar.
@@ -77,7 +128,7 @@ This command will generate a URL which you should load in your browser while log
 Your access token will be stored in `~/.calendar-assistant` in the `[tokens]` section.
 
 
-#### Display your calendar events
+### Display your calendar events
 
 <pre>
 <b>$</b> calendar-assistant help show
@@ -87,7 +138,7 @@ Usage:
 Options:
   -c, [--commitments], [--no-commitments]  # only show events that you've accepted with another person
   -p, [--profile=PROFILE]                  # the profile you'd like to use (if different from default)
-  -d, [--debug], [--no-debug]              # how dare you suggest there are bugs
+      [--debug], [--no-debug]              # how dare you suggest there are bugs
 
 Show your events for a date or range of dates (default 'today')
 
@@ -124,6 +175,7 @@ For example: display all events scheduled for tomorrow:
 <strike>2018-10-01  18:30 - 19:00 | SF CF Directors / HR Bi-weekly (recurring)</strike>
 <strike>2018-10-01  19:00 - 19:30 | CF SF Manager Sit Down (recurring)</strike>
 
+
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -142,10 +194,124 @@ Display _only_ the commitments I have to other people using the `-c` option:
 2018-10-01  17:00 - 17:30<b> | CF Security Council Sync</b><i> (recurring)</i>
 2018-10-01  17:30 - 17:55<b> | Mike / Dieu 1:1</b><i> (1:1, recurring)</i>
 
+
 </pre>
 
 
-#### Tell people where you are at in the world
+### Join a video call attached to a meeting
+
+<pre>
+<b>$</b> calendar-assistant help join
+Usage:
+  calendar-assistant join [TIME]
+
+Options:
+      [--join], [--no-join]    # launch a browser to join the video call URL
+                               # Default: true
+  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
+      [--debug], [--no-debug]  # how dare you suggest there are bugs
+
+Open the URL for a video call attached to your meeting at time TIME (default 'now')
+
+</pre>
+
+Some examples:
+
+<pre>
+<b>$</b> calendar-assistant join
+2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
+https://pivotal.zoom.us/j/ABC90210
+# ... and opens the URL, which is associated with an event happening now
+
+<b>$</b> calendar-assistant join work --no-join 11:30
+2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
+https://pivotal.zoom.us/j/ABC90210
+# ... and does not open the URL
+</pre>
+
+
+### Find your availability for meetings
+
+This is useful for emailing people your availability. It only considers `accepted` meetings when determining busy/free.
+
+<pre>
+<b>$</b> calendar-assistant help availability
+Usage:
+  calendar-assistant availability [DATE | DATERANGE | TIMERANGE]
+
+Options:
+  -l, [--meeting-length=LENGTH]  # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
+  -s, [--start-of-day=TIME]      # [default 9am] find chunks of available time after TIME (which is a Chronic string like '9am' or '14:30')
+  -e, [--end-of-day=TIME]        # [default 6pm] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')
+  -p, [--profile=PROFILE]        # the profile you'd like to use (if different from default)
+      [--debug], [--no-debug]    # how dare you suggest there are bugs
+
+Show your availability for a date or range of dates (default 'today')
+
+</pre>
+
+
+For example: show me my available time over a chunk of time:
+
+<pre>
+<b>$</b> calendar-assistant avail 2018-10-02..2018-10-04
+<i>mdalessio@pivotal.io
+- all times in America/New_York
+- looking for blocks at least 30 mins long
+</i>
+<b>Availability on Tuesday, October 2:
+</b>
+ • 11:25am - 12:00pm
+ • 1:30pm - 3:00pm
+ • 3:30pm - 4:00pm
+
+<b>Availability on Wednesday, October 3:
+</b>
+ • 9:00am - 10:30am
+ • 11:00am - 1:30pm
+ • 1:55pm - 2:30pm
+ • 2:55pm - 3:30pm
+
+<b>Availability on Thursday, October 4:
+</b>
+ • 10:55am - 1:00pm
+
+
+</pre>
+
+
+You can also set start and end times for the search, which is useful when looking for overlap with another time zone:
+
+<pre>
+<b>$</b> calendar-assistant avail 2018-10-02..2018-10-04 -s 12pm -e 7pm
+<i>mdalessio@pivotal.io
+- all times in America/New_York
+- looking for blocks at least 30 mins long
+</i>
+<b>Availability on Tuesday, October 2:
+</b>
+ • 11:25am - 12:00pm
+ • 1:30pm - 3:00pm
+ • 3:30pm - 4:00pm
+ • 6:25pm - 7:00pm
+
+<b>Availability on Wednesday, October 3:
+</b>
+ • 11:00am - 1:30pm
+ • 1:55pm - 2:30pm
+ • 2:55pm - 3:30pm
+ • 6:00pm - 7:00pm
+
+<b>Availability on Thursday, October 4:
+</b>
+ • 10:55am - 1:00pm
+ • 6:00pm - 7:00pm
+
+
+</pre>
+
+
+### Tell people where you are at in the world
 
 Declare your location as an all-day non-busy event:
 
@@ -156,7 +322,7 @@ Usage:
 
 Options:
   -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-  -d, [--debug], [--no-debug]  # how dare you suggest there are bugs
+      [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Set your location to LOCATION for a date or range of dates (default 'today')
 
@@ -188,7 +354,8 @@ Some examples:
 2018-09-10 - 2018-09-14   | <b>🗺  Vacation!</b> (not-busy, self)
 </pre>
 
-#### Look up where you're going to be
+
+### Look up where you're going to be
 
 <pre>
 <b>$</b> calendar-assistant help location
@@ -197,7 +364,7 @@ Usage:
 
 Options:
   -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-  -d, [--debug], [--no-debug]  # how dare you suggest there are bugs
+      [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Show your location for a date or range of dates (default 'today')
 
@@ -212,37 +379,7 @@ For example:
 2018-09-24 - 2018-09-27  <b> | 🗺  Spring One @ DC</b><i> (not-busy, self)</i>
 2018-09-28               <b> | 🗺  NJ</b><i> (not-busy, self)</i>
 
-</pre>
 
-#### Join a video call attached to a meeting
-
-<pre>
-<b>$</b> calendar-assistant help join
-Usage:
-  calendar-assistant join [TIME]
-
-Options:
-      [--join], [--no-join]    # launch a browser to join the video call URL
-                               # Default: true
-  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-  -d, [--debug], [--no-debug]  # how dare you suggest there are bugs
-
-Open the URL for a video call attached to your meeting at time TIME (default 'now')
-
-</pre>
-
-Some examples:
-
-<pre>
-<b>$</b> calendar-assistant join
-2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
-https://pivotal.zoom.us/j/ABC90210
-# ... and opens the URL, which is associated with an event happening now
-
-<b>$</b> calendar-assistant join work --no-join 11:30
-2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
-https://pivotal.zoom.us/j/ABC90210
-# ... and does not open the URL
 </pre>
 
 
