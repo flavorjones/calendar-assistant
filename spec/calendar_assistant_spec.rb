@@ -231,15 +231,151 @@ describe CalendarAssistant do
     end
 
     describe "#availability" do
+      let(:config) do
+        CalendarAssistant::Config.new options: {"meeting-length" => "30m"}
+      end
+
+      context "single date" do
+        let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
+        let(:date) { time_range.first.to_date }
+
+        before do
+          expect(ca).to receive(:find_events).with(time_range).and_return(events)        
+        end
+
+
+        context "with an event at the end of the day and other events later" do
+          let(:events) do
+            [
+              event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
+              event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
+              event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
+              event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
+              event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm"))),
+              event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm"))),
+            ]
+          end
+
+          let(:expected_avails) do
+            {
+              date => [
+                event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
+                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
+                event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
+                event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
+              ]
+            }
+          end
+
+          before do
+            events.each { |e| allow(e).to receive(:accepted?).and_return(true) }
+          end
+
+          it "returns a hash of date => chunks-of-free-time-longer-than-min-duration" do
+            found_avails = ca.availability time_range
+
+            expect(found_avails.keys).to eq([date])
+            expect(found_avails[date].length).to eq(expected_avails[date].length)
+            found_avails[date].each_with_index do |found_avail, j|
+              expect(found_avail.start).to eq(expected_avails[date][j].start)
+            end
+          end
+
+          context "some meetings haven't been accepted" do
+            before do
+              allow(events[1]).to receive(:accepted?).and_return(false)
+            end
+
+            let(:expected_avails) do
+              {
+                date => [
+                  event_factory("available", Chronic.parse("10am")..Chronic.parse("1:30pm")),
+                  event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
+                  event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
+                ]
+              }
+            end
+
+            it "ignores meetings that are not accepted" do
+              found_avails = ca.availability time_range
+
+              expect(found_avails.keys).to eq([date])
+              expect(found_avails[date].length).to eq(expected_avails[date].length)
+              found_avails[date].each_with_index do |found_avail, j|
+                expect(found_avail.start).to eq(expected_avails[date][j].start)
+              end
+            end
+          end
+        end
+
+        context "single date with no event at the end of the day" do
+          let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
+          let(:date) { time_range.first.to_date }
+
+          let(:events) do
+            [
+              event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
+              event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
+              event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
+              event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
+            ]
+          end
+
+          let(:expected_avails) do
+            {
+              date => [
+                event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
+                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
+                event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
+                event_factory("available", Chronic.parse("5pm")..Chronic.parse("6pm")),
+              ]
+            }
+          end
+
+          before do
+            events.each { |e| allow(e).to receive(:accepted?).and_return(true) }
+          end
+
+          it "finds chunks of free time at the end of the day" do
+            found_avails = ca.availability time_range
+
+            expect(found_avails.keys).to eq([date])
+            expect(found_avails[date].length).to eq(expected_avails[date].length)
+            found_avails[date].each_with_index do |found_avail, j|
+              expect(found_avail.start).to eq(expected_avails[date][j].start)
+            end
+          end
+        end
+
+        context "completely free day" do
+          let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
+          let(:date) { time_range.first.to_date }
+
+          let(:events) { [] }
+          let(:expected_avails) do
+            {
+              date => [
+                event_factory("available", Chronic.parse("9am")..Chronic.parse("6pm")),
+              ]
+            }
+          end
+
+          it "returns a big fat available block" do
+            found_avails = ca.availability time_range
+
+            expect(found_avails.keys).to eq([date])
+            expect(found_avails[date].length).to eq(expected_avails[date].length)
+            found_avails[date].each_with_index do |found_avail, j|
+              expect(found_avail.start).to eq(expected_avails[date][j].start)
+            end
+          end
+        end
+      end
+
       it "gets min duration from Config"
       it "gets intraday range start from Config"
       it "gets intraday range end from Config"
       it "prints a subtitle stating duration and intraday range"
-
-      it "finds chunks of free time longer than min duration"
-      it "finds chunks of free time at the end of the day"
-      it "ignores meetings that are not accepted"
-      it "handles completely-free days"
     end
   end
 

@@ -49,14 +49,14 @@ class CalendarAssistant
   end
 
   def availability time_range
-    length = config.setting(Config::Keys::Settings::MEETING_LENGTH)
-    length = ChronicDuration.parse(length) if length.is_a?(String)
+    length = ChronicDuration.parse(config.setting(Config::Keys::Settings::MEETING_LENGTH))
 
     events = find_events time_range
     date_range = time_range.first.to_date .. time_range.last.to_date
 
     # find relevant events and map them into dates
-    dates_events = events.inject({}) do |dates_events, event|
+    dates_events = date_range.inject({}) { |de, date| de[date] = [] ; de }
+    events.each do |event|
       if event.accepted?
         event_date = event.start.to_date!
         dates_events[event_date] ||= []
@@ -68,17 +68,17 @@ class CalendarAssistant
     # iterate over the days finding free chunks of time
     avail_time = date_range.inject({}) do |avail_time, date|
       avail_time[date] ||= []
-      date_events = dates_events[date] || [] # the day may be completely open.
+      date_events = dates_events[date]
 
-      start_time = date_events.first.start.to_date!.to_time + 9.hours # 9am
-      end_time = date_events.first.start.to_date!.to_time + 18.hours # 6pm
+      start_time = date.to_time + 9.hours # 9am
+      end_time = date.to_time + 18.hours # 9am
 
       date_events.each do |e|
         if (e.start.date_time.to_time - start_time) >= length
           avail_time[date] << CalendarAssistant.available_block(start_time.to_datetime, e.start.date_time)
         end
         start_time = e.end.date_time.to_time
-        break if start_time > end_time
+        break if start_time >= end_time
       end
 
       if end_time - start_time >= length
