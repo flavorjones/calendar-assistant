@@ -240,9 +240,8 @@ describe CalendarAssistant do
         let(:date) { time_range.first.to_date }
 
         before do
-          expect(ca).to receive(:find_events).with(time_range).and_return(events)        
+          expect(ca).to receive(:find_events).with(time_range).and_return(events)
         end
-
 
         context "with an event at the end of the day and other events later" do
           let(:events) do
@@ -278,6 +277,7 @@ describe CalendarAssistant do
             expect(found_avails[date].length).to eq(expected_avails[date].length)
             found_avails[date].each_with_index do |found_avail, j|
               expect(found_avail.start).to eq(expected_avails[date][j].start)
+              expect(found_avail.end).to eq(expected_avails[date][j].end)
             end
           end
 
@@ -303,6 +303,7 @@ describe CalendarAssistant do
               expect(found_avails[date].length).to eq(expected_avails[date].length)
               found_avails[date].each_with_index do |found_avail, j|
                 expect(found_avail.start).to eq(expected_avails[date][j].start)
+                expect(found_avail.end).to eq(expected_avails[date][j].end)
               end
             end
           end
@@ -343,11 +344,12 @@ describe CalendarAssistant do
             expect(found_avails[date].length).to eq(expected_avails[date].length)
             found_avails[date].each_with_index do |found_avail, j|
               expect(found_avail.start).to eq(expected_avails[date][j].start)
+              expect(found_avail.end).to eq(expected_avails[date][j].end)
             end
           end
         end
 
-        context "completely free day" do
+        context "completely free day with no events" do
           let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
           let(:date) { time_range.first.to_date }
 
@@ -367,14 +369,45 @@ describe CalendarAssistant do
             expect(found_avails[date].length).to eq(expected_avails[date].length)
             found_avails[date].each_with_index do |found_avail, j|
               expect(found_avail.start).to eq(expected_avails[date][j].start)
+              expect(found_avail.end).to eq(expected_avails[date][j].end)
             end
           end
         end
       end
 
-      it "gets min duration from Config"
-      it "gets intraday range start from Config"
-      it "gets intraday range end from Config"
+      describe "multiple days" do
+        let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "2018-01-01..2018-01-03" }
+        let(:events) { [] }
+        let(:expected_avails) do
+          {
+            Date.parse("2018-01-01") => [event_factory("available", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 6pm"))],
+            Date.parse("2018-01-02") => [event_factory("available", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 6pm"))],
+            Date.parse("2018-01-03") => [event_factory("available", Chronic.parse("2018-01-03 9am")..Chronic.parse("2018-01-03 6pm"))],
+          }
+        end
+
+        before do
+          expect(ca).to receive(:find_events).with(time_range).and_return(events)
+        end
+
+        it "returns a hash of all dates" do
+          found_avails = ca.availability time_range
+
+          expect(found_avails.keys).to eq(expected_avails.keys)
+          expected_avails.keys.each do |date|
+            expect(found_avails[date].length).to eq(1)
+            expect(found_avails[date].first.start).to eq(expected_avails[date].first.start)
+            expect(found_avails[date].first.end).to eq(expected_avails[date].first.end)
+          end
+        end
+      end
+
+      describe "configurable parameters" do
+        it "gets min duration from Config"
+        it "gets intraday range start from Config"
+        it "gets intraday range end from Config"
+      end
+
       it "prints a subtitle stating duration and intraday range"
     end
   end
