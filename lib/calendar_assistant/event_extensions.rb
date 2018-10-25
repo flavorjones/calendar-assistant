@@ -163,4 +163,11 @@ class Google::Apis::CalendarV3::EventDateTime
     return @date.to_s if @date
     @date_time.strftime "%Y-%m-%d %H:%M"
   end
+
+  def == lhs
+    if @date
+      return to_date == lhs.to_date
+    end
+    date_time == lhs.date_time
+  end
 end
