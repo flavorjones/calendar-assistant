@@ -332,6 +332,29 @@ describe Google::Apis::CalendarV3::Event do
   #
   #  other methods
   #
+  describe "#start_time" do
+    context "all day event" do
+      let(:start_date) { Date.today }
+
+      context "containing a Date" do
+        subject { described_class.new(start: GCal::EventDateTime.new(date: start_date)).start_time }
+        it { is_expected.to eq(start_date.beginning_of_day) }
+      end
+
+      context "containing a String" do
+        subject { described_class.new(start: GCal::EventDateTime.new(date: start_date.to_s)).start_time }
+        it { is_expected.to eq(start_date.beginning_of_day) }
+      end
+    end
+
+    context "intraday event" do
+      let(:start_time) { Time.now }
+
+      subject { described_class.new(start: GCal::EventDateTime.new(date_time: start_time)).start_time }
+      it { is_expected.to eq(start_time) }
+    end
+  end
+
   describe "#start_date" do
     context "all day event" do
       let(:start_date) { Date.today }
@@ -341,7 +364,7 @@ describe Google::Apis::CalendarV3::Event do
         it { is_expected.to eq(start_date) }
       end
 
-      context "containing a string" do
+      context "containing a String" do
         subject { described_class.new(start: GCal::EventDateTime.new(date: start_date.to_s)).start_date }
         it { is_expected.to eq(start_date) }
       end
@@ -526,6 +549,40 @@ describe Google::Apis::CalendarV3::EventDateTime do
 
       subject { described_class.new date_time: time }
       it { expect(subject.to_s).to eq("2019-09-01 13:14") }
+    end
+  end
+
+  describe "#==" do
+    context "comparing a date to a datetime" do
+      it { expect(described_class.new(date: Date.parse("2018-01-01")) == described_class.new(date_time: Time.now)).to be_falsey }
+
+      it { expect(described_class.new(date_time: Time.now) == described_class.new(date: Date.parse("2018-01-01"))).to be_falsey }
+    end
+
+    context "comparing dates" do
+      it { expect(described_class.new(date: Date.parse("2018-01-01")) == described_class.new(date: Date.parse("2018-01-01"))).to be_truthy }
+      it { expect(described_class.new(date: "2018-01-01") == described_class.new(date: Date.parse("2018-01-01"))).to be_truthy }
+      it { expect(described_class.new(date: Date.parse("2018-01-01")) == described_class.new(date: "2018-01-01")).to be_truthy }
+
+      it { expect(described_class.new(date: Date.parse("2018-01-02")) == described_class.new(date: Date.parse("2018-01-01"))).to be_falsey }
+      it { expect(described_class.new(date: "2018-01-02") == described_class.new(date: Date.parse("2018-01-01"))).to be_falsey }
+      it { expect(described_class.new(date: Date.parse("2018-01-02")) == described_class.new(date: "2018-01-01")).to be_falsey }
+    end
+
+    context "comparing datetimes" do
+      freeze_time
+
+      it { expect(described_class.new(date_time: Time.now.to_datetime) == described_class.new(date_time: Time.now.to_datetime)).to be_truthy }
+      it { expect(described_class.new(date_time: Time.now.to_datetime) == described_class.new(date_time: (Time.now + 1).to_datetime)).to be_falsey }
+    end
+
+    context "comparing time to datetime" do
+      freeze_time
+
+      it { expect(described_class.new(date_time: Time.now) == described_class.new(date_time: Time.now.to_datetime)).to be_truthy }
+      it { expect(described_class.new(date_time: Time.now.to_datetime) == described_class.new(date_time: (Time.now + 1))).to be_falsey }
+      it { expect(described_class.new(date_time: Time.now.to_datetime) == described_class.new(date_time: Time.now)).to be_truthy }
+      it { expect(described_class.new(date_time: Time.now) == described_class.new(date_time: (Time.now + 1).to_datetime)).to be_falsey  }
     end
   end
 end

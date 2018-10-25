@@ -80,11 +80,11 @@ describe CalendarAssistant::Config do
           expect(subject.profile_name).to eq("work")
         end
 
-        it "saves a default the first token key as the default profile in 'settings.default-profile'" do
+        it "saves a default the first token key as the default profile in 'settings.profile'" do
           subject.profile_name
 
           new_config = CalendarAssistant::Config.new(config_file_path: temp_config_file.path)
-          expect(new_config[CalendarAssistant::Config::Keys::SETTINGS][CalendarAssistant::Config::Keys::Settings::DEFAULT_PROFILE]).to eq("work")
+          expect(new_config.get([CalendarAssistant::Config::Keys::SETTINGS, CalendarAssistant::Config::Keys::Settings::PROFILE])).to eq("work")
         end
       end
     end
@@ -97,7 +97,7 @@ describe CalendarAssistant::Config do
           play = "fake-token-2"
 
           [settings]
-          default-profile = "other"
+          profile = "other"
         EOC
       end
 
@@ -115,7 +115,7 @@ describe CalendarAssistant::Config do
     end
   end
 
-  describe "#[]" do
+  describe "#get" do
     let(:config) do
       <<~EOC
         size = "medium"
@@ -129,20 +129,36 @@ describe CalendarAssistant::Config do
     subject { described_class.new(config_io: StringIO.new(config)) }
 
     context "the key exists in the user config" do
-      it "returns the value" do
-        expect(subject["things"]).to eq({"thing1" => "foo", "thing2" => "bar"})
-        expect(subject["size"]).to eq("medium")
+      context "the value is a scalar" do
+        it "returns the value" do
+          expect(subject.get("size")).to eq("medium")
+          expect(subject.get(["size"])).to eq("medium")
+
+          expect(subject.get("things.thing1")).to eq("foo")
+          expect(subject.get(["things", "thing1"])).to eq("foo")
+
+          expect(subject.get("things.thing2")).to eq("bar")
+          expect(subject.get(["things", "thing2"])).to eq("bar")
+        end
+      end
+
+      context "the value is a Hash" do
+        it "raises an exception" do
+          expect { subject.get("things") }.
+            to raise_exception(CalendarAssistant::Config::AccessingHashAsScalar)
+        end
       end
     end
 
     context "the key does not exist in the user config" do
-      it "returns an empty hash" do
-        expect(subject["nonexistent"]).to eq({})
+      it "returns nil" do
+        expect(subject.get("nonexistentScalarKey")).to eq(nil)
+        expect(subject.get("nonexistentHashKey.nonexistentKey")).to eq(nil)
       end
     end
   end
 
-  describe "#[]=" do
+  describe "#set" do
     let(:config) do
       <<~EOC
         size = "medium"
@@ -155,19 +171,115 @@ describe CalendarAssistant::Config do
 
     subject { described_class.new(config_io: StringIO.new(config)) }
 
-    context "the key exists in the user config" do
-      it "sets the value in the config" do
-        subject["size"] = "large"
-        expect(subject["size"]).to eq("large")
+    context "keys as array" do
+      context "the key exists in the user config" do
+        it "sets the value in the config" do
+          subject.set(["size"], "large")
+          expect(subject.get("size")).to eq("large")
+
+          subject.set(["things", "thing1"], "quux")
+          expect(subject.get("things.thing1")).to eq("quux")
+        end
+      end
+
+      context "the key does not exist in the user config" do
+        it "sets the value in the config" do
+          subject.set(["quantity"], "dozen")
+          expect(subject.get("quantity")).to eq("dozen")
+
+          subject.set(["things", "thing3"], "quux")
+          expect(subject.get("things.thing3")).to eq("quux")
+
+          subject.set(["nonexistentHashKey", "nonexistentKey"], "such wow")
+          expect(subject.get("nonexistentHashKey.nonexistentKey")).to eq("such wow")
+        end
       end
     end
 
-    context "the key does not exist in the user config" do
-      it "sets the value in the config" do
-        subject["quantity"] = "dozen"
-        expect(subject["quantity"]).to eq("dozen")
+    context "keys as strings" do
+      context "the key exists in the user config" do
+        it "sets the value in the config" do
+          subject.set("size", "large")
+          expect(subject.get("size")).to eq("large")
+
+          subject.set("things.thing1", "quux")
+          expect(subject.get("things.thing1")).to eq("quux")
+        end
+      end
+
+      context "the key does not exist in the user config" do
+        it "sets the value in the config" do
+          subject.set("quantity", "dozen")
+          expect(subject.get("quantity")).to eq("dozen")
+
+          subject.set("things.thing3", "quux")
+          expect(subject.get("things.thing3")).to eq("quux")
+
+          subject.set("nonexistentHashKey.nonexistentKey", "such wow")
+          expect(subject.get("nonexistentHashKey.nonexistentKey")).to eq("such wow")
+        end
       end
     end
+  end
+
+  describe "#defaults" do
+    it "has an intelligent default for the duration of a new meeting" do
+      expect(subject.setting("meeting-length")).to eq("30m")
+    end
+
+    it "has an intelligent default for the start of the day" do
+      expect(subject.setting("start-of-day")).to eq("9am")
+    end
+
+    it "has an intelligent default for the end of the day" do
+      expect(subject.setting("end-of-day")).to eq("6pm")
+    end
+  end
+
+  describe "#setting" do
+    let(:config) do
+      <<~EOC
+        [settings]
+        only-in-user-config = "user-config"
+        in-user-config-and-defaults = "user-config"
+        in-user-config-and-options = "user-config"
+        everywhere = "user-config"
+      EOC
+    end
+
+    let(:defaults) do
+      {
+        "only-in-defaults" => "defaults",
+        "in-user-config-and-defaults" => "defaults",
+        "in-defaults-and-options" => "defaults",
+        "everywhere" => "defaults",
+      }
+    end
+
+    let(:options) do
+      {
+        "only-in-options" => "options",
+        "in-user-config-and-options" => "options",
+        "in-defaults-and-options" => "options",
+        "everywhere" => "options",
+      }
+    end
+
+    subject do
+      described_class.new config_io: StringIO.new(config),
+                          defaults: defaults,
+                          options: options
+    end
+
+    it { expect(subject.setting("only-in-user-config")).to eq("user-config") }
+    it { expect(subject.setting("only-in-defaults")).to eq("defaults") }
+    it { expect(subject.setting("only-in-options")).to eq("options") }
+
+    it { expect(subject.setting("in-user-config-and-defaults")).to eq("user-config") }
+    it { expect(subject.setting("in-user-config-and-options")).to eq("options") }
+    it { expect(subject.setting("in-defaults-and-options")).to eq("options") }
+
+    it { expect(subject.setting("everywhere")).to eq("options") }
   end
 
   describe "#persist!" do
@@ -182,10 +294,42 @@ describe CalendarAssistant::Config do
     subject { described_class.new(config_file_path: temp_config_file.path) }
 
     it "persists the config to file" do
-      subject["settings"]["size"] = "medium"
+      subject.set "settings.size", "medium"
       subject.persist!
       new_config = described_class.new(config_file_path: temp_config_file.path)
-      expect(new_config["settings"]["size"]).to eq("medium")
+      expect(new_config.get("settings.size")).to eq("medium")
+    end
+  end
+
+  describe "#tokens" do
+    context "there are tokens configured in user_config" do
+      let(:config) do
+        <<~EOC
+          [tokens]
+          work = "asdfasdf"
+        EOC
+      end
+
+      subject { described_class.new(config_io: StringIO.new(config)) }
+
+      it "returns the tokens hash" do
+        expect(subject.tokens).to eq("work" => "asdfasdf")
+      end
+    end
+
+    context "there are no tokens configured in user_config" do
+      let(:config) do
+        <<~EOC
+          [things]
+          thing1 = "asdfasdf"
+        EOC
+      end
+
+      subject { described_class.new(config_io: StringIO.new(config)) }
+
+      it "returns the tokens hash" do
+        expect(subject.tokens).to eq({})
+      end
     end
   end
 
@@ -199,117 +343,6 @@ describe CalendarAssistant::Config do
 
       expect(subject.token_store).to respond_to(:store)
       expect(subject.token_store.method(:store).arity).to eq(2)
-    end
-  end
-
-  describe CalendarAssistant::Config::TokenStore do
-    describe "#load" do
-      context "with a user config" do
-        let(:subject) { CalendarAssistant::Config.new(config_io: config_io).token_store }
-
-        let :config_io do
-          StringIO.new <<~EOC
-            [tokens]
-            work = "fake-token-string"
-          EOC
-        end
-
-        context "loading an existing token" do
-          it "loads a token from under the 'tokens' key in the config file" do
-            expect(subject.load("work")).to eq("fake-token-string")
-          end
-        end
-
-        context "loading a non-existent token" do
-          it "returns nil" do
-            expect(subject.load("play")).to be_nil
-          end
-        end
-      end
-
-      context "without a user config" do
-        let(:subject) { CalendarAssistant::Config.new(config_file_path: "/path/to/no/file").token_store }
-
-        it "returns nil" do
-          expect(subject.load("play")).to be_nil
-        end
-      end
-    end
-
-    describe "#store" do
-      context "with config file" do
-        with_temp_config_file
-
-        let(:subject) do
-          CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
-        end
-
-        context "with a user config" do
-          it "stores the token in the file" do
-            subject.store "work", "fake-token-string"
-            expect(TOML.load_file(temp_config_file.path)["tokens"]["work"]).to eq("fake-token-string")
-          end
-
-          it "is read in appropriately by a new config" do
-            subject.store "work", "fake-token-string"
-
-            new_store = CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
-            expect(new_store.load("work")).to eq("fake-token-string")
-          end
-        end
-      end
-
-      context "with config IO" do
-        let(:subject) do
-          CalendarAssistant::Config.new(config_io: StringIO.new("foo = 123")).token_store
-        end
-
-        it "raises an exception" do
-          expect { subject.store "work", "fake-token-string" }.
-            to raise_exception(CalendarAssistant::Config::NoConfigFileToPersist)
-        end
-      end
-    end
-
-    describe "#delete" do
-      with_temp_config_file do
-        <<~EOC
-          [tokens]
-          work = "fake-token-string"
-          play = "fake-token-string2"
-        EOC
-      end
-
-      let(:subject) do
-        CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
-      end
-
-      it "is setup correctly" do
-        expect(subject.load("work")).to eq("fake-token-string")
-      end
-
-      context "when deleting an existing token" do
-        it "removes the token from file" do
-          subject.delete "work"
-          expect(TOML.load_file(temp_config_file.path)["tokens"]["work"]).to be_nil
-        end
-
-        it "removes the token for a new config" do
-          subject.delete "work"
-
-          new_store = CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
-          expect(new_store.load("work")).to be_nil
-        end
-      end
-
-      context "when deleting a non-existent token" do
-        it "does nothing" do
-          subject.delete "nonexistent-profile-name"
-          new_store = CalendarAssistant::Config.new(config_file_path: temp_config_file.path).token_store
-
-          expect(subject.config.user_config).to eq(new_store.config.user_config)
-        end
-      end
     end
   end
 end

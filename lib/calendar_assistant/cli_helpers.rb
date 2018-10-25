@@ -1,3 +1,4 @@
+# coding: utf-8
 class CalendarAssistant
   module CLIHelpers
     def self.parse_datespec userspec
@@ -50,13 +51,20 @@ class CalendarAssistant
         @io = io
       end
 
-      def print_now! event, ca, printed_now
+      def launch url
+        Launchy.open url
+      end
+
+      def puts *args
+        io.puts(*args)
+      end
+
+      def print_now! ca, event, printed_now
         return true if printed_now
-        return false if event.all_day?
         return false if event.start_date != Date.today
 
-        if event.start.date_time > Time.now
-          io.puts ca.event_description(CLIHelpers.now)
+        if event.start_time > Time.now
+          puts ca.event_description(CLIHelpers.now)
           return true
         end
 
@@ -72,15 +80,14 @@ class CalendarAssistant
         if events.is_a?(Hash)
           events.each do |key, value|
             puts Rainbow(key.to_s.capitalize + ":").bold.italic
-            CLIHelpers::Out.new.print_events ca, value, options
-            puts
+            print_events ca, value, options
           end
           return
         end
 
-        events = Array(events) # allow passing a single Event
-        if events.nil? || events.empty?
-          io.puts "No events in this time range."
+        events = Array(events)
+        if events.empty?
+          puts "No events in this time range."
           return
         end
 
@@ -90,18 +97,46 @@ class CalendarAssistant
 
         printed_now = false
         display_events.each do |event|
-          printed_now = print_now! event, ca, printed_now
-          io.puts ca.event_description(event)
+          printed_now = print_now! ca, event, printed_now
+          puts ca.event_description(event)
           pp event if options[:debug]
         end
+
+        puts
       end
 
-      def launch url
-        Launchy.open url
-      end
+      def print_available_blocks ca, events, options={}
+        unless options[:omit_title]
+          puts Rainbow(sprintf("%s\n- all times in %s\n- looking for blocks at least %s long\n",
+                               ca.calendar.id,
+                               ca.calendar.time_zone,
+                               ChronicDuration.output(ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))))
+                      ).italic
+          options = options.merge(omit_title: true)
+        end
 
-      def puts *args
-        io.puts(*args)
+        if events.is_a?(Hash)
+          events.each do |key, value|
+            puts(sprintf(Rainbow("Availability on %s:\n").bold,
+                         key.strftime("%A, %B %-d")))
+            print_available_blocks ca, value, options
+            puts
+          end
+          return
+        end
+
+        events = Array(events)
+        if events.empty?
+          puts "  (No available blocks in this time range.)"
+          return
+        end
+
+        events.each do |event|
+          puts(sprintf(" • %s - %s",
+                       event.start.date_time.strftime("%-l:%M%P"),
+                       event.end.date_time.strftime("%-l:%M%P")))
+          pp event if options[:debug]
+        end
       end
     end
   end

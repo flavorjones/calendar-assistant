@@ -5,6 +5,7 @@ class CalendarAssistant
     class TomlParseFailure < CalendarAssistant::BaseException ; end
     class NoConfigFileToPersist < CalendarAssistant::BaseException ; end
     class NoTokensAuthorized < CalendarAssistant::BaseException ; end
+    class AccessingHashAsScalar < CalendarAssistant::BaseException ; end
 
     CONFIG_FILE_PATH = File.join ENV["HOME"], ".calendar-assistant"
 
@@ -13,13 +14,25 @@ class CalendarAssistant
       SETTINGS = "settings"
 
       module Settings
-        DEFAULT_PROFILE = "default-profile"
+        PROFILE = "profile"
+        MEETING_LENGTH = "meeting-length"
+        START_OF_DAY = "start-of-day"
+        END_OF_DAY = "end-of-day"
       end
     end
 
-    attr_reader :config_file_path, :user_config, :options
+    DEFAULT_SETTINGS = {
+      Keys::Settings::MEETING_LENGTH => "30m", # ChronicDuration
+      Keys::Settings::START_OF_DAY => "9am", # Chronic
+      Keys::Settings::END_OF_DAY => "6pm", # Chronic
+    }
 
-    def initialize options: {}, config_file_path: CONFIG_FILE_PATH, config_io: nil
+    attr_reader :config_file_path, :user_config, :options, :defaults
+
+    def initialize options: {},
+                   config_file_path: CONFIG_FILE_PATH,
+                   config_io: nil,
+                   defaults: DEFAULT_SETTINGS
       if config_io.nil?
         @config_file_path = config_file_path
       end
@@ -40,6 +53,7 @@ class CalendarAssistant
                        Hash.new
                      end
 
+      @defaults = defaults
       @options = options
     end
 
@@ -48,27 +62,43 @@ class CalendarAssistant
       return options["profile"] if options["profile"]
 
       # then a configured preference takes precedence
-      default = self[Keys::SETTINGS][Keys::Settings::DEFAULT_PROFILE]
+      default = get([Keys::SETTINGS, Keys::Settings::PROFILE])
       return default if default
 
       # finally we'll grab the first configured token and set that as the default
-      token_names = self[Keys::TOKENS].keys
+      token_names = tokens.keys
       if token_names.empty?
         raise NoTokensAuthorized, "Please run `calendar-assistant help authorize` for help."
       end
       token_names.first.tap do |new_default|
-        self[Keys::SETTINGS][Keys::Settings::DEFAULT_PROFILE] = new_default
+        Config.set_in_hash user_config, [Keys::SETTINGS, Keys::Settings::PROFILE], new_default
         persist!
       end
     end
 
-    def [] key
-      user_config[key] ||= {}
-      user_config[key]
+    def get keypath
+      rval = Config.find_in_hash(user_config, keypath)
+
+      if rval.is_a?(Hash)
+        raise AccessingHashAsScalar, "keypath #{keypath} is not a scalar"
+      end
+
+      rval
     end
 
-    def []= key, value
-      user_config[key] = value
+    def set keypath, value
+      Config.set_in_hash user_config, keypath, value
+    end
+
+    def setting setting_name
+      Config.find_in_hash(options, setting_name) ||
+        Config.find_in_hash(user_config, [Keys::SETTINGS, setting_name]) ||
+        Config.find_in_hash(defaults, setting_name)
+    end
+
+    def tokens
+      Config.find_in_hash(user_config, Keys::TOKENS) ||
+        Config.set_in_hash(user_config, Keys::TOKENS, {})
     end
 
     def token_store
@@ -87,26 +117,37 @@ class CalendarAssistant
       end
     end
 
-    class TokenStore
-      attr_reader :config
+    private
 
-      def initialize config
-        @config = config
+    def self.find_in_hash hash, keypath
+      current_val = hash
+      keypath = keypath.split(".") unless keypath.is_a?(Array)
+
+      keypath.each do |key|
+        if current_val.has_key?(key)
+          current_val = current_val[key]
+        else
+          current_val = nil
+          break
+        end
       end
 
-      def delete id
-        config[CalendarAssistant::Config::Keys::TOKENS].delete(id)
-        config.persist!
+      current_val
+    end
+
+    def self.set_in_hash hash, keypath, new_value
+      current_hash = hash
+      keypath = keypath.split(".") unless keypath.is_a?(Array)
+      *path_parts, key = *keypath
+
+      path_parts.each do |path_part|
+        current_hash[path_part] ||= {}
+        current_hash = current_hash[path_part]
       end
 
-      def load id
-        config[CalendarAssistant::Config::Keys::TOKENS][id]
-      end
-
-      def store id, token
-        config[CalendarAssistant::Config::Keys::TOKENS][id] = token
-        config.persist!
-      end
+      current_hash[key] = new_value
     end
   end
 end
+
+require "calendar_assistant/config/token_store"

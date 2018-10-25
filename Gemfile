@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "google-api-client"
 gem "chronic"
+gem "chronic_duration"
 gem "thor"
 gem "business_time"
 gem "rainbow"
