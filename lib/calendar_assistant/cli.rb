@@ -7,6 +7,8 @@ require "calendar_assistant/cli_helpers"
 
 class CalendarAssistant
   class CLI < Thor
+    default_config = CalendarAssistant::Config.new options: options # used in option descriptions
+
     #  it's unfortunate that thor does not support this usage of help args
     class_option :help,
                  type: :boolean,
@@ -112,8 +114,21 @@ class CalendarAssistant
     option CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH,
            type: :string,
            banner: "LENGTH",
-           desc: "find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')",
+           desc: sprintf("[default %s] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')",
+                         default_config.setting(CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH)),
            aliases: ["-l"]
+    option CalendarAssistant::Config::Keys::Settings::START_OF_DAY,
+           type: :string,
+           banner: "TIME",
+           desc: sprintf("[default %s] find chunks of available time after TIME (which is a Chronic string like '9am' or '14:30')",
+                         default_config.setting(CalendarAssistant::Config::Keys::Settings::START_OF_DAY)),
+           aliases: ["-s"]
+    option CalendarAssistant::Config::Keys::Settings::END_OF_DAY,
+           type: :string,
+           banner: "TIME",
+           desc: sprintf("[default %s] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')",
+                         default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
+           aliases: ["-e"]
     def availability datespec="today"
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config

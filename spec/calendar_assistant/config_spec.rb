@@ -226,6 +226,14 @@ describe CalendarAssistant::Config do
     it "has an intelligent default for the duration of a new meeting" do
       expect(subject.setting("meeting-length")).to eq("30m")
     end
+
+    it "has an intelligent default for the start of the day" do
+      expect(subject.setting("start-of-day")).to eq("9am")
+    end
+
+    it "has an intelligent default for the end of the day" do
+      expect(subject.setting("end-of-day")).to eq("6pm")
+    end
   end
 
   describe "#setting" do

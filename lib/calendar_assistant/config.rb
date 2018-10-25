@@ -16,11 +16,15 @@ class CalendarAssistant
       module Settings
         PROFILE = "profile"
         MEETING_LENGTH = "meeting-length"
+        START_OF_DAY = "start-of-day"
+        END_OF_DAY = "end-of-day"
       end
     end
 
     DEFAULT_SETTINGS = {
       Keys::Settings::MEETING_LENGTH => "30m", # ChronicDuration
+      Keys::Settings::START_OF_DAY => "9am", # Chronic
+      Keys::Settings::END_OF_DAY => "6pm", # Chronic
     }
 
     attr_reader :config_file_path, :user_config, :options, :defaults
