@@ -58,16 +58,16 @@ jobs:
           put: slack-notification
           params:
             silent: true
-            text_file: calendar-assistant-pr/.git/commit_message
+            text_file: calendar-assistant/.git/commit_message
             text: |
-              :concourse-failed: $ATC_EXTERNAL_URL/builds/$BUILD_ID (master) Fail. $TEXT_FILE_CONTENT
+              :concourse-failed: $ATC_EXTERNAL_URL/builds/$BUILD_ID (master) Fail: "$TEXT_FILE_CONTENT"
         on_success:
           put: slack-notification
           params:
             silent: true
-            text_file: calendar-assistant-pr/.git/commit_message
+            text_file: calendar-assistant/.git/commit_message
             text: |
-              :concourse-succeeded: $ATC_EXTERNAL_URL/builds/$BUILD_ID (master) Success! $TEXT_FILE_CONTENT
+              :concourse-succeeded: $ATC_EXTERNAL_URL/builds/$BUILD_ID (master) Success: "$TEXT_FILE_CONTENT"
 
   - name: rake-spec-pr
     public: true
@@ -95,9 +95,9 @@ jobs:
             - put: slack-notification
               params:
                 silent: true
-                text_file: calendar-assistant-pr/.git/id
+                text_file: calendar-assistant/.git/id
                 text: |
-                  :concourse-failed: $ATC_EXTERNAL_URL/builds/$BUILD_ID PR $TEXT_FILE_CONTENT failed. (https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT)
+                  :concourse-failed: $ATC_EXTERNAL_URL/builds/$BUILD_ID PR $TEXT_FILE_CONTENT Fail: https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
             - put: calendar-assistant-pr
               params: {path: calendar-assistant-pr, status: failure}
         on_success:
@@ -105,8 +105,8 @@ jobs:
             - put: slack-notification
               params:
                 silent: true
-                text_file: calendar-assistant-pr/.git/id
+                text_file: calendar-assistant/.git/id
                 text: |
-                  :concourse-succeeded: $ATC_EXTERNAL_URL/builds/$BUILD_ID PR $TEXT_FILE_CONTENT succeeded! (https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT)
+                  :concourse-succeeded: $ATC_EXTERNAL_URL/builds/$BUILD_ID PR $TEXT_FILE_CONTENT Success: https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
             - put: calendar-assistant-pr
               params: {path: calendar-assistant-pr, status: success}
