@@ -38,6 +38,11 @@ For a date range or a datetime range, split the start and end with `..` or `...`
 Also note that every command will adopt an intelligent default, which is generally "today" or "now".
 
 
+### Duration Specification
+
+Some duration-related preferences are interpreted by [ChronicDuration](https://github.com/henrypoydar/chronic_duration) and so can be terms like "10m", "30 minutes", "four hours", etc.
+
+
 ### Preferences
 
 All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format.
@@ -58,8 +63,9 @@ Commands:
   calendar-assistant show [DATE | DATERANGE | TIMERANGE]          # Show your events for a date or range of dates (default 'today')
 
 Options:
-  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-      [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]    
+  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 
 </pre>
@@ -75,8 +81,9 @@ Usage:
   calendar-assistant config
 
 Options:
-  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-      [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]    
+  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
 
@@ -104,8 +111,9 @@ Usage:
   calendar-assistant authorize PROFILE_NAME
 
 Options:
-  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-      [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]    
+  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your calendar.
@@ -137,8 +145,9 @@ Usage:
 
 Options:
   -c, [--commitments], [--no-commitments]  # only show events that you've accepted with another person
+  -h, -?, [--help], [--no-help]            
   -p, [--profile=PROFILE]                  # the profile you'd like to use (if different from default)
-      [--debug], [--no-debug]              # how dare you suggest there are bugs
+          [--debug], [--no-debug]          # how dare you suggest there are bugs
 
 Show your events for a date or range of dates (default 'today')
 
@@ -206,10 +215,11 @@ Usage:
   calendar-assistant join [TIME]
 
 Options:
-      [--join], [--no-join]    # launch a browser to join the video call URL
-                               # Default: true
-  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-      [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--join], [--no-join]    # launch a browser to join the video call URL
+                                   # Default: true
+  -h, -?, [--help], [--no-help]    
+  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
 
@@ -240,11 +250,12 @@ Usage:
   calendar-assistant availability [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -l, [--meeting-length=LENGTH]  # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
-  -s, [--start-of-day=TIME]      # [default 9am] find chunks of available time after TIME (which is a Chronic string like '9am' or '14:30')
-  -e, [--end-of-day=TIME]        # [default 6pm] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')
-  -p, [--profile=PROFILE]        # the profile you'd like to use (if different from default)
-      [--debug], [--no-debug]    # how dare you suggest there are bugs
+  -l, [--meeting-length=LENGTH]    # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
+  -s, [--start-of-day=TIME]        # [default 9am] find chunks of available time after TIME (which is a Chronic string like '9am' or '14:30')
+  -e, [--end-of-day=TIME]          # [default 6pm] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')
+  -h, -?, [--help], [--no-help]    
+  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Show your availability for a date or range of dates (default 'today')
 
@@ -321,8 +332,9 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-      [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]    
+  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Set your location to LOCATION for a date or range of dates (default 'today')
 
@@ -363,8 +375,9 @@ Usage:
   calendar-assistant location [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]      # the profile you'd like to use (if different from default)
-      [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]    
+  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Show your location for a date or range of dates (default 'today')
 
