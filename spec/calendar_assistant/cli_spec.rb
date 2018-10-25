@@ -192,49 +192,49 @@ describe CalendarAssistant::CLI do
           end
         end
       end
-    end
 
-    describe "availability" do
-      it "calls availability by default for today" do
-        expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
-        expect(ca).to receive(:availability).
-                        with(time_range).
-                        and_return(events)
-        expect(out).to receive(:print_available_blocks).with(ca, events, anything)
+      describe "availability" do
+        it "calls availability by default for today" do
+          expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
+          expect(ca).to receive(:availability).
+                          with(time_range).
+                          and_return(events)
+          expect(out).to receive(:print_available_blocks).with(ca, events, anything)
 
-        CalendarAssistant::CLI.start ["avail"]
-      end
+          CalendarAssistant::CLI.start ["avail"]
+        end
 
-      it "calls availability with the range returned from parse_datespec" do
-        expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
-        expect(ca).to receive(:availability).
-                        with(time_range).
-                        and_return(events)
-        expect(out).to receive(:print_available_blocks).with(ca, events, anything)
+        it "calls availability with the range returned from parse_datespec" do
+          expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
+          expect(ca).to receive(:availability).
+                          with(time_range).
+                          and_return(events)
+          expect(out).to receive(:print_available_blocks).with(ca, events, anything)
 
-        CalendarAssistant::CLI.start ["avail", "user-datespec"]
-      end
+          CalendarAssistant::CLI.start ["avail", "user-datespec"]
+        end
 
-      it "uses a specified profile" do
-        expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {"profile" => "work"}).
-                                               and_return(config)
+        it "uses a specified profile" do
+          expect(CalendarAssistant::Config).to receive(:new).
+                                                 with(options: {"profile" => "work"}).
+                                                 and_return(config)
 
-        allow(ca).to receive(:availability)
-        allow(out).to receive(:print_available_blocks)
+          allow(ca).to receive(:availability)
+          allow(out).to receive(:print_available_blocks)
 
-        CalendarAssistant::CLI.start ["avail", "-p", "work"]
-      end
+          CalendarAssistant::CLI.start ["avail", "-p", "work"]
+        end
 
-      it "uses a specified duration" do
-        expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "30min"}).
-                                               and_return(config)
+        it "uses a specified duration" do
+          expect(CalendarAssistant::Config).to receive(:new).
+                                                 with(options: {CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "30min"}).
+                                                 and_return(config)
 
-        allow(ca).to receive(:availability)
-        allow(out).to receive(:print_available_blocks)
+          allow(ca).to receive(:availability)
+          allow(out).to receive(:print_available_blocks)
 
-        CalendarAssistant::CLI.start ["avail", "-l", "30min"]
+          CalendarAssistant::CLI.start ["avail", "-l", "30min"]
+        end
       end
     end
   end
