@@ -38,9 +38,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "timecop", "~> 0.9.0"
-
-  # optional, natch
-  spec.add_development_dependency "autotest"
-  spec.add_development_dependency "rspec-autotest"
-  spec.add_development_dependency "test_notifier"
 end
