@@ -23,6 +23,7 @@ resources:
       branch: master
       ignore_paths:
         - concourse/**
+        - doc/**
   - name: calendar-assistant-pr
     type: pull-request
     source:
