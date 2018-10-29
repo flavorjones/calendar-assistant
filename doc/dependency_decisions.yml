@@ -11,3 +11,27 @@
     :why: 
     :versions: []
     :when: 2018-10-29 15:43:52.039304411 Z
+- - :whitelist
+  - MIT
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2018-10-29 15:46:44.014908282 Z
+- - :whitelist
+  - Apache 2.0
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2018-10-29 15:46:53.786676923 Z
+- - :whitelist
+  - ruby
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2018-10-29 15:46:59.481095782 Z
+- - :whitelist
+  - ISC
+  - :who: 
+    :why: 
+    :versions: []
+    :when: 2018-10-29 15:47:23.338539457 Z
