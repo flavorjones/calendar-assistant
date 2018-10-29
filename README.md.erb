@@ -1,9 +1,19 @@
 <%
+require "faker"
+
+def obfuscate line
+  if line =~ /🗺/
+    line.gsub(/\|.*?</, "| 🗺 #{Faker::Hobbit.location} <")
+  else
+    line.gsub(/\|.*?</, "| #{Faker::Company.bs.capitalize} <")
+  end
+end
+
 def run args
   output = []
   output << "<b>$</b> calendar-assistant #{args}"
-  output << `ruby -Ilib bin/calendar-assistant #{args} | node_modules/ansi-to-html/bin/ansi-to-html`
-  output.join("\n")
+  output += `ruby -Ilib bin/calendar-assistant #{args} | node_modules/ansi-to-html/bin/ansi-to-html`.split("\n")
+  output.map {|line| obfuscate line }.join("\n")
 end
 %>
 # calendar assistant
