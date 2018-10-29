@@ -101,6 +101,12 @@ describe CalendarAssistant::CLIHelpers do
                         response_status: GCal::Event::Response::DECLINED
       end
 
+      let(:no_av_uri_event) do
+        instance_double "no avi uri",
+                        av_uri: nil,
+                        response_status: GCal::Event::Response::ACCEPTED
+      end
+
       it "prefers later meetings to earlier meetings" do
         # reminder that #find_events returns in order of start time
         allow(ca).to receive(:find_events).and_return([accepted_event, accepted2_event])
@@ -131,6 +137,13 @@ describe CalendarAssistant::CLIHelpers do
 
         expect(subject.find_av_uri(ca, "now")).to eq(nil)
       end
+
+      it "fails gracefully when the meeting has no link" do
+        allow(ca).to receive(:find_events).and_return([no_av_uri_event])
+
+        expect(subject.find_av_uri(ca, "now")).to eq(nil)
+      end
+
     end
   end
 
