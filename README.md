@@ -66,8 +66,6 @@ Options:
   -h, -?, [--help], [--no-help]    
   -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
           [--debug], [--no-debug]  # how dare you suggest there are bugs
-
-
 </pre>
 
 
@@ -86,7 +84,6 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
-
 </pre>
 
 The output is TOML, which is suitable for dumping into `~/.calendar-assistant` and editing.
@@ -99,7 +96,6 @@ end-of-day = "6pm"
 meeting-length = "30m"
 profile = "work"
 start-of-day = "9am"
-
 </pre>
 
 
@@ -128,7 +124,6 @@ Description:
    1. Turn on the Google API for your account 
    2. Create a new Google API Project 
    3. Download the configuration file for the Project, and name it as `credentials.json`
-
 </pre>
 
 This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
@@ -150,7 +145,6 @@ Options:
           [--debug], [--no-debug]          # how dare you suggest there are bugs
 
 Show your events for a date or range of dates (default 'today')
-
 </pre>
 
 For example: display all events scheduled for tomorrow:
@@ -159,32 +153,30 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show --profile=work 2018-10-01
 <i>mdalessio@pivotal.io (all times in America/New_York)
 </i>
-2018-10-01               <b> | 🗺  NJ</b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | INTERNATIONAL COFFEE DAYYYYYYYY</strike>
-<strike>2018-10-01  07:30 - 08:30 | Lunch and  -GDPR</strike>
-<strike>2018-10-01  07:30 - 08:30 | Lunch & Learn</strike>
-2018-10-01  08:00 - 09:00<b> | Commuting/Email</b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | None</b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Mike D / Stev 1:1</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Dublin Office Status Meeting</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Mike/Rupa 1:1</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Reminder: CF Standup prep (recurring)</strike>
-2018-10-01  12:00 - 12:30<b> | Lunch</b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | CF NYC Standup (recurring)</strike>
-<strike>2018-10-01  12:30 - 13:30 | Office Events Retro</strike>
-2018-10-01  12:30 - 13:30<b> | Global Director's Check-In</b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | proactivity</b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Psychological Safety Workshop (Session 1)</strike>
-2018-10-01  15:00 - 15:30<b> | Matthew/Mike</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Mike/Ryan T. 1:1</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Manager Initiative check-in</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | CF Security Council Sync</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Mike / Dieu 1:1</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Steak!</strike>
-<strike>2018-10-01  18:30 - 19:00 | SF CF Directors / HR Bi-weekly (recurring)</strike>
-<strike>2018-10-01  19:00 - 19:30 | CF SF Manager Sit Down (recurring)</strike>
-
-
+2018-10-01               <b> | 🗺 Under-Hill </b><i> (not-busy, self)</i>
+<strike>2018-10-01  03:30 - 05:00 | Evolve proactive paradigms </strike>
+<strike>2018-10-01  07:30 - 08:30 | Leverage user-centric initiatives </strike>
+<strike>2018-10-01  07:30 - 08:30 | Leverage enterprise partnerships </strike>
+2018-10-01  08:00 - 09:00<b> | E-enable visionary technologies </b><i> (recurring, self)</i>
+2018-10-01  09:00 - 10:30<b> | Innovate bleeding-edge platforms </b><i> (self)</i>
+2018-10-01  10:30 - 10:55<b> | Orchestrate bleeding-edge applications </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Whiteboard 24/365 content </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Iterate plug-and-play functionalities </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Enable back-end roi </strike>
+2018-10-01  12:00 - 12:30<b> | Facilitate vertical interfaces </b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Iterate b2b initiatives </strike>
+<strike>2018-10-01  12:30 - 13:30 | Syndicate enterprise supply-chains </strike>
+2018-10-01  12:30 - 13:30<b> | Implement back-end eyeballs </b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Iterate bricks-and-clicks infomediaries </b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Morph user-centric e-commerce </strike>
+2018-10-01  15:00 - 15:30<b> | Recontextualize seamless action-items </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Scale holistic systems </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Transition revolutionary relationships </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Deploy out-of-the-box methodologies </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Utilize b2c synergies </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Facilitate scalable functionalities </strike>
+<strike>2018-10-01  18:30 - 19:00 | Utilize extensible infomediaries </strike>
+<strike>2018-10-01  19:00 - 19:30 | Synergize extensible niches </strike>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -193,17 +185,15 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>mdalessio@pivotal.io (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Mike D / Stev 1:1</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Dublin Office Status Meeting</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Mike/Rupa 1:1</b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Global Director's Check-In</b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Matthew/Mike</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Mike/Ryan T. 1:1</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Manager Initiative check-in</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | CF Security Council Sync</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Mike / Dieu 1:1</b><i> (1:1, recurring)</i>
-
-
+2018-10-01  10:30 - 10:55<b> | Scale rich roi </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Innovate ubiquitous solutions </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Disintermediate open-source deliverables </b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Benchmark one-to-one e-commerce </b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Whiteboard plug-and-play bandwidth </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Implement one-to-one roi </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Strategize interactive e-tailers </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Mesh back-end applications </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Facilitate dot-com web-readiness </b><i> (1:1, recurring)</i>
 </pre>
 
 
@@ -222,7 +212,6 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
-
 </pre>
 
 Some examples:
@@ -258,7 +247,6 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Show your availability for a date or range of dates (default 'today')
-
 </pre>
 
 
@@ -286,8 +274,6 @@ For example: show me my available time over a chunk of time:
 <b>Availability on Thursday, October 4:
 </b>
  • 10:55am - 1:00pm
-
-
 </pre>
 
 
@@ -317,8 +303,6 @@ You can also set start and end times for the search, which is useful when lookin
 </b>
  • 10:55am - 1:00pm
  • 6:00pm - 7:00pm
-
-
 </pre>
 
 
@@ -337,7 +321,6 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Set your location to LOCATION for a date or range of dates (default 'today')
-
 </pre>
 
 **Note** that you can only be in one place at a time, so existing location events may be modified or deleted when new overlapping events are created.
@@ -380,7 +363,6 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Show your location for a date or range of dates (default 'today')
-
 </pre>
 
 For example:
@@ -389,10 +371,8 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>mdalessio@pivotal.io (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-27  <b> | 🗺  Spring One @ DC</b><i> (not-busy, self)</i>
-2018-09-28               <b> | 🗺  NJ</b><i> (not-busy, self)</i>
-
-
+2018-09-24 - 2018-09-27  <b> | 🗺 Beorn's Hall </b><i> (not-busy, self)</i>
+2018-09-28               <b> | 🗺 Green Fields </b><i> (not-busy, self)</i>
 </pre>
 
 
