@@ -105,6 +105,16 @@ describe Google::Apis::CalendarV3::Event do
   end
 
   describe "av_uri" do
+    context "location has a zoom link" do
+      let(:event) do
+        described_class.new location: "zoom at https://company.zoom.us/j/123412341 please", hangout_link: nil
+      end
+
+      it "returns the URI" do
+        expect(event.av_uri).to eq("https://company.zoom.us/j/123412341")
+      end
+    end
+
     context "description has a zoom link" do
       let(:event) do
         described_class.new description: "zoom at https://company.zoom.us/j/123412341 please",

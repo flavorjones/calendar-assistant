@@ -58,8 +58,11 @@ class Google::Apis::CalendarV3::Event
 
   def av_uri
     @av_uri ||= begin
-                  zoom = CalendarAssistant::StringHelpers.find_uri_for_domain(description, "zoom.us")
-                  return zoom if zoom
+                  description_link = CalendarAssistant::StringHelpers.find_uri_for_domain(description, "zoom.us")
+                  return description_link if description_link
+
+                  location_link = CalendarAssistant::StringHelpers.find_uri_for_domain(location, "zoom.us")
+                  return location_link if location_link
 
                   return hangout_link if hangout_link
                   nil
