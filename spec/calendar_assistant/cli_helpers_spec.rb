@@ -158,7 +158,7 @@ describe CalendarAssistant::CLIHelpers do
     describe "#print_now!" do
       freeze_time
 
-      let(:event) { GCal::Event.new start: GCal::EventDateTime.new(date_time: start_time) }
+      let(:event) { CalendarAssistant::Event.new(GCal::Event.new start: GCal::EventDateTime.new(date_time: start_time)) }
       let(:now) { instance_double("Event<now>") }
 
       before do
@@ -221,10 +221,10 @@ describe CalendarAssistant::CLIHelpers do
       let(:calendar_time_zone) { "calendar/time/zone" }
       let(:events) do
         [
-          GCal::Event.new(summary: "do a thing",
-                          start: GCal::EventDateTime.new(date_time: Time.now)),
-          GCal::Event.new(summary: "do another thing",
-                          start: GCal::EventDateTime.new(date_time: Time.now)),
+          CalendarAssistant::Event.new(GCal::Event.new(summary: "do a thing",
+                          start: GCal::EventDateTime.new(date_time: Time.now))),
+          CalendarAssistant::Event.new(GCal::Event.new(summary: "do another thing",
+                          start: GCal::EventDateTime.new(date_time: Time.now))),
         ]
       end
       let(:event) { events.first }
@@ -343,12 +343,12 @@ describe CalendarAssistant::CLIHelpers do
       context "passed an Array of Events" do
         let(:events) do
           [
-            GCal::Event.new(summary: "do a thing",
+            CalendarAssistant::Event.new(GCal::Event.new(summary: "do a thing",
                             start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")),
-                            end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00"))),
-            GCal::Event.new(summary: "do another thing",
+                            end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00")))),
+            CalendarAssistant::Event.new(GCal::Event.new(summary: "do another thing",
                             start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 12:30:00")),
-                            end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 14:00:00"))),
+                            end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 14:00:00")))),
           ]
         end
 
@@ -389,14 +389,14 @@ describe CalendarAssistant::CLIHelpers do
         let(:events) do
           {
             Date.parse("2018-10-18") => [
-              GCal::Event.new(summary: "do a thing",
+              CalendarAssistant::Event.new(GCal::Event.new(summary: "do a thing",
                               start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")),
-                              end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00"))),
+                              end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00")))),
             ],
             Date.parse("2018-10-19") => [
-              GCal::Event.new(summary: "do another thing",
+                CalendarAssistant::Event.new(GCal::Event.new(summary: "do another thing",
                               start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 12:30:00")),
-                              end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 14:00:00"))),
+                              end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 14:00:00")))),
             ],
           }
         end

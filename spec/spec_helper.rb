@@ -34,13 +34,13 @@ end
 module RspecExampleHelpers
   def event_factory summary, time_range, stub={}
     if time_range.first.is_a?(Date)
-      GCal::Event.new summary: summary,
+      CalendarAssistant::Event.new(GCal::Event.new summary: summary,
                       start: GCal::EventDateTime.new(date: time_range.first),
-                      end: GCal::EventDateTime.new(date: time_range.last)
+                      end: GCal::EventDateTime.new(date: time_range.last))
     else
-      GCal::Event.new summary: summary,
+      CalendarAssistant::Event.new(GCal::Event.new summary: summary,
                       start: GCal::EventDateTime.new(date_time: time_range.first.to_datetime),
-                      end: GCal::EventDateTime.new(date_time: time_range.last.to_datetime)
+                      end: GCal::EventDateTime.new(date_time: time_range.last.to_datetime))
     end
   end
 end
