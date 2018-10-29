@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gemspec
 
-group :development do
+group :optional do
   # These gems are not required for a functioning test suite, so not listing them in the gemspec.
   # I personally find them useful in the developer role, though.
   gem "autotest"
