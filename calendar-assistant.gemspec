@@ -6,8 +6,8 @@ require "calendar_assistant/version"
 Gem::Specification.new do |spec|
   spec.name          = "calendar-assistant"
   spec.version       = CalendarAssistant::VERSION
-  spec.authors       = ["Mike Dalessio"]
-  spec.email         = ["mike.dalessio@gmail.com"]
+  spec.authors       = ["Mike Dalessio",           "Mik Freedman"]
+  spec.email         = ["mike.dalessio@gmail.com", "github@michael-freedman.com"]
 
   spec.summary       = %q{A command-line tool to help manage your Google Calendar.}
   spec.description   = %q{A command-line tool to help manage your Google Calendar.}
