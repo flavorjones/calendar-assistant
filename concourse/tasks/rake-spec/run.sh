@@ -4,7 +4,7 @@ set -e -x -u
 
 pushd calendar-assistant
 
-  bundle install --without=development
-  bundle exec rspec
+  bundle install
+  bundle exec rake spec
 
 popd
