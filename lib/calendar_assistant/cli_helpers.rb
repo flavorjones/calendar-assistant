@@ -20,9 +20,9 @@ class CalendarAssistant
     end
 
     def self.now
-      GCal::Event.new start: GCal::EventDateTime.new(date_time: Time.now),
+      CalendarAssistant::Event.new(GCal::Event.new start: GCal::EventDateTime.new(date_time: Time.now),
                       end: GCal::EventDateTime.new(date_time: Time.now),
-                      summary: Rainbow("          now          ").inverse.faint
+                      summary: Rainbow("          now          ").inverse.faint)
     end
 
     def self.find_av_uri ca, timespec

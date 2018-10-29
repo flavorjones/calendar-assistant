@@ -51,7 +51,9 @@ describe CalendarAssistant::CLIHelpers do
   end
 
   describe ".now" do
-    it { }
+    it "returns a CalendarAssistant event" do
+      expect(subject.now).to be_a(CalendarAssistant::Event)
+    end
   end
 
   describe ".find_av_uri" do
