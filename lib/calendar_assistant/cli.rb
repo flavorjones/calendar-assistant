@@ -7,21 +7,35 @@ require "calendar_assistant/cli_helpers"
 
 class CalendarAssistant
   class CLI < Thor
+    def self.supports_profile_option
+      option :profile,
+             type: :string,
+             desc: "the profile you'd like to use (if different from default)",
+             aliases: ["-p"]
+    end
+
     default_config = CalendarAssistant::Config.new options: options # used in option descriptions
 
-    #  it's unfortunate that thor does not support this usage of help args
     class_option :help,
                  type: :boolean,
                  aliases: ["-h", "-?"]
-
-    #  note that these options are passed straight through to CLIHelpers.print_events
-    class_option :profile,
-                 type: :string,
-                 desc: "the profile you'd like to use (if different from default)",
-                 aliases: ["-p"]
     class_option :debug,
                  type: :boolean,
                  desc: "how dare you suggest there are bugs"
+
+
+    desc "config",
+         "Dump your configuration parameters (merge of defaults and overrides from #{CalendarAssistant::Config::CONFIG_FILE_PATH})"
+    def config
+      return if handle_help_args
+      config = CalendarAssistant::Config.new
+      settings = {}
+      setting_names = CalendarAssistant::Config::Keys::Settings.constants.map { |k| CalendarAssistant::Config::Keys::Settings.const_get k }
+      setting_names.each do |key|
+        settings[key] = config.setting key
+      end
+      puts TOML::Generator.new({CalendarAssistant::Config::Keys::SETTINGS => settings}).body
+    end
 
 
     desc "authorize PROFILE_NAME",
@@ -57,6 +71,7 @@ class CalendarAssistant
            type: :boolean,
            desc: "only show events that you've accepted with another person",
            aliases: ["-c"]
+    supports_profile_option
     def show datespec="today"
       return if handle_help_args
       config = CalendarAssistant::Config.new options: options
@@ -71,6 +86,7 @@ class CalendarAssistant
     option :join,
            type: :boolean, default: true,
            desc: "launch a browser to join the video call URL"
+    supports_profile_option
     def join timespec="now"
       return if handle_help_args
       config = CalendarAssistant::Config.new options: options
@@ -90,6 +106,7 @@ class CalendarAssistant
 
     desc "location [DATE | DATERANGE]",
          "Show your location for a date or range of dates (default 'today')"
+    supports_profile_option
     def location datespec="today"
       return if handle_help_args
       config = CalendarAssistant::Config.new options: options
@@ -101,6 +118,7 @@ class CalendarAssistant
 
     desc "location-set LOCATION [DATE | DATERANGE]",
          "Set your location to LOCATION for a date or range of dates (default 'today')"
+    supports_profile_option
     def location_set location, datespec="today"
       return if handle_help_args
       config = CalendarAssistant::Config.new options: options
@@ -108,6 +126,7 @@ class CalendarAssistant
       events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
       CLIHelpers::Out.new.print_events ca, events, options
     end
+
 
     desc "availability [DATE | DATERANGE | TIMERANGE]",
          "Show your availability for a date or range of dates (default 'today')"
@@ -129,25 +148,13 @@ class CalendarAssistant
            desc: sprintf("[default %s] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')",
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
            aliases: ["-e"]
+    supports_profile_option
     def availability datespec="today"
       return if handle_help_args
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.availability CLIHelpers.parse_datespec(datespec)
       CLIHelpers::Out.new.print_available_blocks ca, events, options
-    end
-
-    desc "config",
-         "Dump your configuration parameters (merge of defaults and overrides from #{CalendarAssistant::Config::CONFIG_FILE_PATH})"
-    def config
-      return if handle_help_args
-      config = CalendarAssistant::Config.new
-      settings = {}
-      setting_names = CalendarAssistant::Config::Keys::Settings.constants.map { |k| CalendarAssistant::Config::Keys::Settings.const_get k }
-      setting_names.each do |key|
-        settings[key] = config.setting key
-      end
-      puts TOML::Generator.new({CalendarAssistant::Config::Keys::SETTINGS => settings}).body
     end
 
     private
