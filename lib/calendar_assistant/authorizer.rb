@@ -27,7 +27,7 @@ class CalendarAssistant
 
     OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
     APPLICATION_NAME = "Flavorjones Calendar Assistant".freeze
-    CREDENTIALS_PATH = 'credentials.json'.freeze
+    CREDENTIALS_PATH = File.join ENV["HOME"], ".calendar-assistant.client"
     SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR
 
     attr_reader :profile_name, :config_token_store
@@ -77,9 +77,10 @@ class CalendarAssistant
     def authorizer
       @authorizer ||= begin
                         if ! File.exists?(CREDENTIALS_PATH)
-                          raise NoCredentials, "No credentials found. Please run `calendar-assistant help authorize` for help"
+                          raise NoCredentials, "No credentials found. Please run `calendar-assistant help setup` for instructions"
                         end
 
+                        FileUtils.chmod 0600, CREDENTIALS_PATH
                         client_id = Google::Auth::ClientId.from_file(CREDENTIALS_PATH)
                         Google::Auth::UserAuthorizer.new(client_id, SCOPE, config_token_store)
                       end

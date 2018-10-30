@@ -45,6 +45,7 @@ class CalendarAssistant
                        end
                      elsif File.exist? config_file_path
                        begin
+                         FileUtils.chmod 0600, config_file_path
                          TOML.load_file config_file_path
                        rescue Exception => e
                          raise TomlParseFailure, "could not parse #{config_file_path}: #{e}"
