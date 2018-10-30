@@ -14,6 +14,20 @@ describe CalendarAssistant::Config do
           expect(described_class.new(config_file_path: temp_config_file.path).user_config).
             to eq({"settings" => {"start-of-day" => "8am", "end-of-day" => "5:30pm"}})
         end
+
+        context "file permissions" do
+          before { FileUtils.chmod 0777, temp_config_file.path }
+
+          def perm file_path
+            sprintf("%o", File::Stat.new(temp_config_file.path).mode & 07777)
+          end
+
+          it "ensures the file is chmodded to 600" do
+            expect(perm(temp_config_file.path)).to eq("777")
+            described_class.new(config_file_path: temp_config_file.path).user_config
+            expect(perm(temp_config_file.path)).to eq("600")
+          end
+        end
       end
 
       context "config file exists but is not TOML" do
