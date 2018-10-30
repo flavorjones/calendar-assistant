@@ -89,15 +89,8 @@ class CalendarAssistant
       authenticate, grant authorization, and generate and persist an
       access token.
 
-      In order for this to work, you'll need to follow the
-      instructions at this URL first:
-
-      > https://developers.google.com/calendar/quickstart/ruby
-
-      Namely, the prerequisites are:
-      \x5 1. Turn on the Google API for your account
-      \x5 2. Create a new Google API Project
-      \x5 3. Download the configuration file for the Project, and name it as `credentials.json`
+      In order for this to work, you'll need to have set up your API client
+      credentials. Run `calendar-assistant help setup` for instructions.
     EOD
     def authorize profile_name
       return if handle_help_args
