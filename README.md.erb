@@ -1,7 +1,10 @@
 <%
 require "faker"
 
+EMAIL_REGEX = /[a-z]+@[a-z]+\.[a-z]+/
+
 def obfuscate line
+  return line.gsub(EMAIL_REGEX, "me@example.com") if line =~ EMAIL_REGEX
   if line =~ /🗺/
     line.gsub(/\|.*?</, "| 🗺 #{Faker::Hobbit.location} <")
   else
