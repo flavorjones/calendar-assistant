@@ -170,6 +170,10 @@ describe CalendarAssistant::CLIHelpers do
       end
     end
 
+    describe "#prompt" do
+      it "should have tests"
+    end
+
     describe "#print_now!" do
       freeze_time
 

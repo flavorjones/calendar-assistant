@@ -38,6 +38,47 @@ class CalendarAssistant
     end
 
 
+    desc "setup",
+         "Link your local calendar-assistant installation to a Google API Client"
+    long_desc <<~EOD
+      This command will walk you through setting up a Google Cloud
+      Project, enabling the Google Calendar API, and saving the
+      credentials necessary to access the API on behalf of users.
+
+      If you already have downloaded client credentials, you don't
+      need to run this command. Instead, rename the downloaded JSON
+      file to `#{CalendarAssistant::Authorizer::CREDENTIALS_PATH}`
+    EOD
+    def setup
+      out = CLIHelpers::Out.new
+      if File.exist? CalendarAssistant::Authorizer::CREDENTIALS_PATH
+        out.puts sprintf("Credentials already exist in %s",
+                         CalendarAssistant::Authorizer::CREDENTIALS_PATH)
+        exit 0
+      end
+
+      out.launch "https://developers.google.com/calendar/quickstart/ruby"
+      sleep 1
+      out.puts <<~EOT
+        Please click on "ENABLE THE GOOGLE CALENDAR API" and either create a new project or select an existing project.
+
+        (If you create a new project, name it something like "yourname-calendar-assistant" so you remember why it exists.)
+
+        Then click "DOWNLOAD CLIENT CONFIGURATION" to download the credentials to local disk.
+
+        Finally, paste the contents of the downloaded file here (it should be a complete JSON object):
+      EOT
+
+      json = out.prompt "Paste JSON here"
+      File.open(CalendarAssistant::Authorizer::CREDENTIALS_PATH, "w") do |f|
+        f.write json
+      end
+      FileUtils.chmod 0600, CalendarAssistant::Authorizer::CREDENTIALS_PATH
+
+      out.puts "\nOK! Your next step is to run `calendar-assistant authorize`."
+    end
+
+
     desc "authorize PROFILE_NAME",
          "create (or validate) a profile named NAME with calendar access"
     long_desc <<~EOD

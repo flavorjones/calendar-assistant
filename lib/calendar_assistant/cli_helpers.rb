@@ -59,6 +59,22 @@ class CalendarAssistant
         io.puts(*args)
       end
 
+      def prompt query, default=nil
+        loop do
+          message = query
+          message += " [#{default}]" if default
+          message += ": "
+          print Rainbow(message).bold
+          answer = STDIN.gets.chomp.strip
+          if answer.empty?
+            return default if default
+            puts Rainbow("Please provide an answer.").red
+          else
+            return answer
+          end
+        end
+      end
+
       def print_now! ca, event, printed_now
         return true if printed_now
         return false if event.start_date != Date.today
