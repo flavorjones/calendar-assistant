@@ -309,6 +309,31 @@ describe CalendarAssistant::Event do
     end
   end
 
+  describe "#public?" do
+    context "visibility is private" do
+      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PRIVATE) }
+      subject { described_class.new decorated_object }
+      it { is_expected.not_to be_public }
+    end
+
+    context "visibility is nil" do
+      subject { described_class.new(decorated_class.new) }
+      it { is_expected.not_to be_public }
+    end
+
+    context "visibility is default" do
+      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::DEFAULT) }
+      subject { described_class.new decorated_object }
+      it { is_expected.not_to be_public }
+    end
+
+    context "visibility is public" do
+      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PUBLIC) }
+      subject { described_class.new decorated_object }
+      it { is_expected.to be_public }
+    end
+  end
+
   describe "#private?" do
     context "visibility is private" do
       let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PRIVATE) }
