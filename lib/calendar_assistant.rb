@@ -142,6 +142,9 @@ class CalendarAssistant
       attributes << "self" if event.human_attendees.nil? && event.visibility != "private"
       attributes << "1:1" if event.one_on_one?
     end
+
+    attributes << event.visibility if event.explicit_visibility?
+
     s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
 
     s = Rainbow(Rainbow.uncolor(s)).faint.strike if event.declined?

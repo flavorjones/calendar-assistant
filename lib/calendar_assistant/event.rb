@@ -69,6 +69,10 @@ class CalendarAssistant
       visibility == GCal::Event::Visibility::PUBLIC
     end
 
+    def explicit_visibility?
+      private? || public?
+    end
+
     def start_time
       if all_day?
         start.to_date.beginning_of_day

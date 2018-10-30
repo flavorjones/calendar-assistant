@@ -358,6 +358,31 @@ describe CalendarAssistant::Event do
       it { is_expected.not_to be_private }
     end
   end
+
+  describe "#explicit_visibility?" do
+    subject { described_class.new decorated_object }
+
+    context "when visibility is private" do
+      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PRIVATE) }
+      it { is_expected.to be_explicit_visibility }
+    end
+
+    context "when visibility is public" do
+      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PUBLIC) }
+      it { is_expected.to be_explicit_visibility }
+    end
+
+    context "when visibility is default" do
+      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::DEFAULT) }
+      it { is_expected.not_to be_explicit_visibility }
+    end
+
+    context "when visibility is nil" do
+      let(:decorated_object) { decorated_class.new(visibility: nil) }
+      it { is_expected.not_to be_explicit_visibility }
+    end
+  end
+
   describe "#current?" do
     it "is the past" do
       allow(subject).to receive(:past?).and_return(true)
