@@ -112,7 +112,7 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
-  Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your calendar.
+  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your calendar.
 
   When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and persist an access token.
 
@@ -151,49 +151,49 @@ For example: display all events scheduled for tomorrow:
 
 <pre>
 <b>$</b> calendar-assistant show --profile=work 2018-10-01
-<i>mdalessio@pivotal.io (all times in America/New_York)
+<i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01               <b> | 🗺 Under-Hill </b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | Evolve proactive paradigms </strike>
-<strike>2018-10-01  07:30 - 08:30 | Leverage user-centric initiatives </strike>
-<strike>2018-10-01  07:30 - 08:30 | Leverage enterprise partnerships </strike>
-2018-10-01  08:00 - 09:00<b> | E-enable visionary technologies </b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | Innovate bleeding-edge platforms </b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Orchestrate bleeding-edge applications </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Whiteboard 24/365 content </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Iterate plug-and-play functionalities </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Enable back-end roi </strike>
-2018-10-01  12:00 - 12:30<b> | Facilitate vertical interfaces </b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Iterate b2b initiatives </strike>
-<strike>2018-10-01  12:30 - 13:30 | Syndicate enterprise supply-chains </strike>
-2018-10-01  12:30 - 13:30<b> | Implement back-end eyeballs </b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Iterate bricks-and-clicks infomediaries </b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Morph user-centric e-commerce </strike>
-2018-10-01  15:00 - 15:30<b> | Recontextualize seamless action-items </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Scale holistic systems </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Transition revolutionary relationships </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Deploy out-of-the-box methodologies </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Utilize b2c synergies </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Facilitate scalable functionalities </strike>
-<strike>2018-10-01  18:30 - 19:00 | Utilize extensible infomediaries </strike>
-<strike>2018-10-01  19:00 - 19:30 | Synergize extensible niches </strike>
+2018-10-01               <b> | 🗺 Mines of Moria </b><i> (not-busy, self)</i>
+<strike>2018-10-01  03:30 - 05:00 | Generate enterprise portals </strike>
+<strike>2018-10-01  07:30 - 08:30 | Incentivize wireless functionalities </strike>
+<strike>2018-10-01  07:30 - 08:30 | Brand end-to-end action-items </strike>
+2018-10-01  08:00 - 09:00<b> | Grow web-enabled synergies </b><i> (recurring, self)</i>
+2018-10-01  09:00 - 10:30<b> | Disintermediate integrated web services </b><i> (self)</i>
+2018-10-01  10:30 - 10:55<b> | Architect sticky synergies </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Leverage out-of-the-box supply-chains </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Architect dot-com portals </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Grow out-of-the-box convergence </strike>
+2018-10-01  12:00 - 12:30<b> | Morph leading-edge experiences </b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Revolutionize innovative communities </strike>
+<strike>2018-10-01  12:30 - 13:30 | Evolve mission-critical e-services </strike>
+2018-10-01  12:30 - 13:30<b> | Embrace world-class e-tailers </b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Deliver out-of-the-box infomediaries </b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Transform user-centric e-tailers </strike>
+2018-10-01  15:00 - 15:30<b> | Aggregate magnetic e-business </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Leverage turn-key e-tailers </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Monetize real-time interfaces </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Generate out-of-the-box technologies </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Strategize enterprise communities </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Redefine 24/365 infrastructures </strike>
+<strike>2018-10-01  18:30 - 19:00 | Innovate vertical e-business </strike>
+<strike>2018-10-01  19:00 - 19:30 | Repurpose seamless deliverables </strike>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
 
 <pre>
 <b>$</b> calendar-assistant show -c 2018-10-01
-<i>mdalessio@pivotal.io (all times in America/New_York)
+<i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Scale rich roi </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Innovate ubiquitous solutions </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Disintermediate open-source deliverables </b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Benchmark one-to-one e-commerce </b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Whiteboard plug-and-play bandwidth </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Implement one-to-one roi </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Strategize interactive e-tailers </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Mesh back-end applications </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Facilitate dot-com web-readiness </b><i> (1:1, recurring)</i>
+2018-10-01  10:30 - 10:55<b> | Exploit b2b synergies </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Reinvent customized systems </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Incentivize visionary users </b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Engineer robust roi </b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Exploit next-generation content </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Integrate sticky platforms </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Enhance intuitive portals </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Reinvent viral platforms </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Incubate magnetic interfaces </b><i> (1:1, recurring)</i>
 </pre>
 
 
@@ -254,7 +254,7 @@ For example: show me my available time over a chunk of time:
 
 <pre>
 <b>$</b> calendar-assistant avail 2018-10-02..2018-10-04
-<i>mdalessio@pivotal.io
+<i>me@example.com
 - all times in America/New_York
 - looking for blocks at least 30 mins long
 </i>
@@ -281,7 +281,7 @@ You can also set start and end times for the search, which is useful when lookin
 
 <pre>
 <b>$</b> calendar-assistant avail 2018-10-02..2018-10-04 -s 12pm -e 7pm
-<i>mdalessio@pivotal.io
+<i>me@example.com
 - all times in America/New_York
 - looking for blocks at least 30 mins long
 </i>
@@ -369,10 +369,10 @@ For example:
 
 <pre>
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
-<i>mdalessio@pivotal.io (all times in America/New_York)
+<i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-27  <b> | 🗺 Beorn's Hall </b><i> (not-busy, self)</i>
-2018-09-28               <b> | 🗺 Green Fields </b><i> (not-busy, self)</i>
+2018-09-24 - 2018-09-27  <b> | 🗺 Grey Mountains </b><i> (not-busy, self)</i>
+2018-09-28               <b> | 🗺 Dorwinion </b><i> (not-busy, self)</i>
 </pre>
 
 
