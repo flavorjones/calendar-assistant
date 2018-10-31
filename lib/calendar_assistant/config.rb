@@ -97,6 +97,16 @@ class CalendarAssistant
         Config.find_in_hash(defaults, setting_name)
     end
 
+    def settings
+      setting_names = CalendarAssistant::Config::Keys::Settings.constants.map do |k|
+        CalendarAssistant::Config::Keys::Settings.const_get k
+      end
+      setting_names.inject({}) do |settings, key|
+        settings[key] = setting key
+        settings
+      end
+    end
+
     def tokens
       Config.find_in_hash(user_config, Keys::TOKENS) ||
         Config.set_in_hash(user_config, Keys::TOKENS, {})

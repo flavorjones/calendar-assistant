@@ -296,6 +296,19 @@ describe CalendarAssistant::Config do
     it { expect(subject.setting("everywhere")).to eq("options") }
   end
 
+  describe "#settings" do
+    it "returns a hash of user-configurable settings and their values" do
+      expected_hash = {}
+      CalendarAssistant::Config::Keys::Settings.constants.each do |constant|
+        name = CalendarAssistant::Config::Keys::Settings.const_get constant
+        expect(subject).to receive(:setting).with(name).and_return("value:#{name}")
+        expected_hash[name] = "value:#{name}"
+      end
+
+      expect(subject.settings).to eq(expected_hash)
+    end
+  end
+
   describe "#persist!" do
     with_temp_config_file do
       <<~EOC

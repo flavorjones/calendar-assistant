@@ -35,13 +35,8 @@ class CalendarAssistant
          "Dump your configuration parameters (merge of defaults and overrides from #{CalendarAssistant::Config::CONFIG_FILE_PATH})"
     def config
       return if handle_help_args
-      config = CalendarAssistant::Config.new
-      settings = {}
-      setting_names = CalendarAssistant::Config::Keys::Settings.constants.map { |k| CalendarAssistant::Config::Keys::Settings.const_get k }
-      setting_names.each do |key|
-        settings[key] = config.setting key
-      end
-      puts TOML::Generator.new({CalendarAssistant::Config::Keys::SETTINGS => settings}).body
+      settings = CalendarAssistant::Config.new.settings
+      out.puts TOML::Generator.new({CalendarAssistant::Config::Keys::SETTINGS => settings}).body
     end
 
 
