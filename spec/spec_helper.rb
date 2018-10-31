@@ -1,4 +1,6 @@
 require_relative "../lib/calendar_assistant"
+require_relative "./helpers/fake_service"
+
 require "timecop"
 require "securerandom"
 

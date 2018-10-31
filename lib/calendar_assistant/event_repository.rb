@@ -31,8 +31,8 @@ class CalendarAssistant
 
     def update(event, attributes)
       event.update! cast_dates(attributes)
-      @service.update_event @calendar_id, event.id, event
-      CalendarAssistant::Event.new(event)
+      updated_event = @service.update_event @calendar_id, event.id, event
+      CalendarAssistant::Event.new(updated_event)
     end
 
     private
