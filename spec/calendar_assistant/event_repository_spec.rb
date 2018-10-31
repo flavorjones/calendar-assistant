@@ -73,7 +73,7 @@ describe CalendarAssistant::EventRepository do
       event_repository.update(nine_event, new_attributes)
 
       result = event_repository.find time_range
-      expect(result[0].start.date).to eq "1776-07-04T00:00:00+00:00"
+      expect(result[0].start.date_time).to eq DateTime.parse("1776-07-04")
     end
   end
 end
