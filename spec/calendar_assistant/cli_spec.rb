@@ -181,7 +181,7 @@ describe CalendarAssistant::CLI do
         allow(out).to receive(:puts)
         allow(out).to receive(:print_events)
         allow(CalendarAssistant::Config).to receive(:new).
-                                              with(options: {"join" => true}).
+                                              with(options: {CalendarAssistant::Config::Keys::Options::JOIN => true}).
                                               and_return(config)
       end
 
@@ -197,7 +197,7 @@ describe CalendarAssistant::CLI do
 
         it "uses a specified profile" do
           expect(CalendarAssistant::Config).to receive(:new).
-                                                 with(options: {"join" => true, CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
+                                                 with(options: {CalendarAssistant::Config::Keys::Options::JOIN => true, CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
                                                  and_return(config)
 
           allow(ca).to receive(:find_events).and_return([])
@@ -246,7 +246,7 @@ describe CalendarAssistant::CLI do
         context "with --no-join" do
           it "does not launch the meeting URL in your browser" do
             expect(CalendarAssistant::Config).to receive(:new).
-                                                   with(options: {"join" => false}).
+                                                   with(options: {CalendarAssistant::Config::Keys::Options::JOIN => false}).
                                                    and_return(config)
             expect(out).not_to receive(:launch).with(url)
 
@@ -300,6 +300,28 @@ describe CalendarAssistant::CLI do
         allow(out).to receive(:print_available_blocks)
 
         CalendarAssistant::CLI.start [command, "-l", "30min"]
+      end
+
+      it "uses a specified start time" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: {CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "8:30am"}).
+                                               and_return(config)
+
+        allow(ca).to receive(:availability)
+        allow(out).to receive(:print_available_blocks)
+
+        CalendarAssistant::CLI.start [command, "-s", "8:30am"]
+      end
+
+      it "uses a specified end time" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: {CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "6:30pm"}).
+                                               and_return(config)
+
+        allow(ca).to receive(:availability)
+        allow(out).to receive(:print_available_blocks)
+
+        CalendarAssistant::CLI.start [command, "-e", "6:30pm"]
       end
     end
   end

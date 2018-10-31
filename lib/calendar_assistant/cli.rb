@@ -8,7 +8,7 @@ require "calendar_assistant/cli_helpers"
 class CalendarAssistant
   class CLI < Thor
     def self.supports_profile_option
-      option :profile,
+      option CalendarAssistant::Config::Keys::Settings::PROFILE,
              type: :string,
              desc: "the profile you'd like to use (if different from default)",
              aliases: ["-p"]
@@ -30,6 +30,7 @@ class CalendarAssistant
       return if handle_help_args
       out.puts CalendarAssistant::VERSION
     end
+
 
     desc "config",
          "Dump your configuration parameters (merge of defaults and overrides from #{CalendarAssistant::Config::CONFIG_FILE_PATH})"
@@ -106,7 +107,7 @@ class CalendarAssistant
 
     desc "show [DATE | DATERANGE | TIMERANGE]",
          "Show your events for a date or range of dates (default 'today')"
-    option :commitments,
+    option CalendarAssistant::Config::Keys::Options::COMMITMENTS,
            type: :boolean,
            desc: "only show events that you've accepted with another person",
            aliases: ["-c"]
@@ -122,7 +123,7 @@ class CalendarAssistant
 
     desc "join [TIME]",
          "Open the URL for a video call attached to your meeting at time TIME (default 'now')"
-    option :join,
+    option CalendarAssistant::Config::Keys::Options::JOIN,
            type: :boolean, default: true,
            desc: "launch a browser to join the video call URL"
     supports_profile_option
@@ -134,7 +135,7 @@ class CalendarAssistant
       if event
         out.print_events ca, event, options
         out.puts url
-        out.launch url if options[:join]
+        out.launch url if options[CalendarAssistant::Config::Keys::Options::JOIN]
       else
         out.puts "Could not find a meeting '#{timespec}' with a video call to join."
       end

@@ -108,7 +108,7 @@ class CalendarAssistant
         end
 
         display_events = events.select do |event|
-          ! options[:commitments] || event.commitment?
+          ! options[CalendarAssistant::Config::Keys::Options::COMMITMENTS] || event.commitment?
         end
 
         printed_now = false

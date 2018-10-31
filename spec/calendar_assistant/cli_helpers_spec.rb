@@ -303,7 +303,7 @@ describe CalendarAssistant::CLIHelpers do
             expect(ca).to receive(:event_description).with(events.first)
             expect(ca).not_to receive(:event_description).with(events.last)
 
-            subject.print_events ca, events, commitments: true
+            subject.print_events ca, events, CalendarAssistant::Config::Keys::Options::COMMITMENTS => true
           end
         end
 

@@ -13,11 +13,27 @@ class CalendarAssistant
       TOKENS = "tokens"
       SETTINGS = "settings"
 
+      #
+      #  Settings are values that have a value in DEFAULT_SETTINGS below,
+      #  and which can be overridden by entries in the user config file
+      #
       module Settings
         PROFILE = "profile"
         MEETING_LENGTH = "meeting-length"
         START_OF_DAY = "start-of-day"
         END_OF_DAY = "end-of-day"
+      end
+
+      #
+      #  Options are:
+      #  * ephemeral command-line flag settings (e.g. JOIN),
+      #  * or options whose values are determined by factors outside
+      #    of the user config file (e.g. TIMEZONE which is determined
+      #    by the profile calendar)
+      #
+      module Options
+        COMMITMENTS = "commitments"
+        JOIN = "join"
       end
     end
 
