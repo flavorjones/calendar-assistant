@@ -19,10 +19,15 @@ class CalendarAssistant
       events.items.map { |e| CalendarAssistant::Event.new(e) }
     end
 
-    def create event_attributes
+    def new event_attributes
       event = GCal::Event.new cast_dates(event_attributes)
-      @service.insert_event @calendar_id, event
       CalendarAssistant::Event.new(event)
+    end
+
+    def create event_attributes
+      new(event_attributes).tap do |event|
+        @service.insert_event @calendar_id, event.__getobj__
+      end
     end
 
     def delete event
