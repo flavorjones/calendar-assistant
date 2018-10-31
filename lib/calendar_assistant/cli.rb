@@ -28,7 +28,7 @@ class CalendarAssistant
          "Display the version of calendar-assistant"
     def version
       return if handle_help_args
-      CLIHelpers::Out.new.puts CalendarAssistant::VERSION
+      out.puts CalendarAssistant::VERSION
     end
 
     desc "config",
@@ -58,7 +58,6 @@ class CalendarAssistant
     EOD
     def setup
       return if handle_help_args
-      out = CLIHelpers::Out.new
       if File.exist? CalendarAssistant::Authorizer::CREDENTIALS_PATH
         out.puts sprintf("Credentials already exist in %s",
                          CalendarAssistant::Authorizer::CREDENTIALS_PATH)
@@ -121,7 +120,7 @@ class CalendarAssistant
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.find_events CLIHelpers.parse_datespec(datespec)
-      CLIHelpers::Out.new.print_events ca, events, options
+      out.print_events ca, events, options
     end
 
 
@@ -137,13 +136,11 @@ class CalendarAssistant
       ca = CalendarAssistant.new config
       event, url = CLIHelpers.find_av_uri ca, timespec
       if event
-        CLIHelpers::Out.new.print_events ca, event, options
-        CLIHelpers::Out.new.puts url
-        if options[:join]
-          CLIHelpers::Out.new.launch url
-        end
+        out.print_events ca, event, options
+        out.puts url
+        out.launch url if options[:join]
       else
-        CLIHelpers::Out.new.puts "Could not find a meeting '#{timespec}' with a video call to join."
+        out.puts "Could not find a meeting '#{timespec}' with a video call to join."
       end
     end
 
@@ -156,7 +153,7 @@ class CalendarAssistant
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
-      CLIHelpers::Out.new.print_events ca, events, options
+      out.print_events ca, events, options
     end
 
 
@@ -170,7 +167,7 @@ class CalendarAssistant
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
-      CLIHelpers::Out.new.print_events ca, events, options
+      out.print_events ca, events, options
     end
 
 
@@ -200,10 +197,14 @@ class CalendarAssistant
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.availability CLIHelpers.parse_datespec(datespec)
-      CLIHelpers::Out.new.print_available_blocks ca, events, options
+      out.print_available_blocks ca, events, options
     end
 
     private
+
+    def out
+      @out ||= CLIHelpers::Out.new
+    end
 
     def help!
       help(current_command_chain.first)

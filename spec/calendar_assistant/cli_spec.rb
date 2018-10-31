@@ -31,10 +31,9 @@ describe CalendarAssistant::CLI do
       it_behaves_like "a command"
 
       it "outputs the version number of calendar-assistant" do
-        allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
         expect(out).to receive(:puts).with(CalendarAssistant::VERSION)
 
-        CalendarAssistant::CLI.start ["version"]
+        CalendarAssistant::CLI.start [command]
       end
     end
 
