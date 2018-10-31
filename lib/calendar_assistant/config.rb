@@ -60,7 +60,7 @@ class CalendarAssistant
 
     def profile_name
       # CLI option takes precedence
-      return options["profile"] if options["profile"]
+      return options[Keys::Settings::PROFILE] if options[Keys::Settings::PROFILE]
 
       # then a configured preference takes precedence
       default = get([Keys::SETTINGS, Keys::Settings::PROFILE])
