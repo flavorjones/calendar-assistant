@@ -94,7 +94,7 @@ describe CalendarAssistant::CLI do
 
       it "uses a specified profile" do
         expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {"profile" => "work"}).
+                                               with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
                                                and_return(config)
 
         allow(ca).to receive(:find_events)
@@ -130,7 +130,7 @@ describe CalendarAssistant::CLI do
 
       it "uses a specified profile" do
         expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {"profile" => "work"}).
+                                               with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
                                                and_return(config)
 
         allow(ca).to receive(:find_location_events)
@@ -166,7 +166,7 @@ describe CalendarAssistant::CLI do
 
       it "uses a specified profile" do
         expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {"profile" => "work"}).
+                                               with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
                                                and_return(config)
 
         allow(ca).to receive(:create_location_event).and_return({})
@@ -197,7 +197,7 @@ describe CalendarAssistant::CLI do
 
         it "uses a specified profile" do
           expect(CalendarAssistant::Config).to receive(:new).
-                                                 with(options: {"join" => true, "profile" => "work"}).
+                                                 with(options: {"join" => true, CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
                                                  and_return(config)
 
           allow(ca).to receive(:find_events).and_return([])
@@ -282,7 +282,7 @@ describe CalendarAssistant::CLI do
 
       it "uses a specified profile" do
         expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {"profile" => "work"}).
+                                               with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
                                                and_return(config)
 
         allow(ca).to receive(:availability)
