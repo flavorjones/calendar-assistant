@@ -52,6 +52,7 @@ class CalendarAssistant
       file to `#{CalendarAssistant::Authorizer::CREDENTIALS_PATH}`
     EOD
     def setup
+      # TODO ugh see #34 for advice on how to clean this up
       return if handle_help_args
       if File.exist? CalendarAssistant::Authorizer::CREDENTIALS_PATH
         out.puts sprintf("Credentials already exist in %s",
