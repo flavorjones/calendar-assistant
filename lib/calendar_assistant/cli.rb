@@ -100,8 +100,10 @@ class CalendarAssistant
       In order for this to work, you'll need to have set up your API client
       credentials. Run `calendar-assistant help setup` for instructions.
     EOD
-    def authorize profile_name
+    def authorize profile_name=nil
       return if handle_help_args
+      return help! if profile_name.nil?
+
       CalendarAssistant.authorize profile_name
       puts "\nYou're authorized!\n\n"
     end
@@ -161,8 +163,10 @@ class CalendarAssistant
     desc "location-set LOCATION [DATE | DATERANGE]",
          "Set your location to LOCATION for a date or range of dates (default 'today')"
     supports_profile_option
-    def location_set location, datespec="today"
+    def location_set location=nil, datespec="today"
       return if handle_help_args
+      return help! if location.nil?
+
       config = CalendarAssistant::Config.new options: options
       ca = CalendarAssistant.new config
       events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
@@ -201,9 +205,13 @@ class CalendarAssistant
 
     private
 
+    def help!
+      help(current_command_chain.first)
+    end
+
     def handle_help_args
       if options[:help]
-        help(current_command_chain.first)
+        help!
         return true
       end
     end
