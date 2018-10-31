@@ -1,9 +1,17 @@
+require 'yaml'
+
 class CalendarAssistant
   class LocalService
     Result = Struct.new(:items)
+    attr_reader :file
 
-    def initialize
-      @calendars = {}
+    def initialize(file: nil, load_events: true)
+      @file = file
+      if (@file && File.exists?(@file) && load_events)
+        @calendars = YAML::load_file(@file)
+      else
+        @calendars = {}
+      end
     end
 
     def list_events(calendar_id, options)
@@ -19,15 +27,21 @@ class CalendarAssistant
     end
 
     def insert_event(calendar_id, event)
-      get_calendar(calendar_id)[event.id] = event
+      save do
+        get_calendar(calendar_id)[event.id] = event
+      end
     end
 
     def delete_event(calendar_id, id)
-      get_calendar(calendar_id).delete(id)
+      save do
+        get_calendar(calendar_id).delete(id)
+      end
     end
 
     def update_event(calendar_id, id, event)
-      get_calendar(calendar_id)[id] = event
+      save do
+        get_calendar(calendar_id)[id] = event
+      end
     end
 
     def get_event(calendar_id, id)
@@ -35,6 +49,15 @@ class CalendarAssistant
     end
 
     private
+
+    def save
+      event = yield
+      if (file)
+        File.open(file, "w") { |f| f.write(@calendars.to_yaml) }
+      end
+
+      event
+    end
 
     def get_calendar(calendar_id)
       @calendars[calendar_id] ||= {}
