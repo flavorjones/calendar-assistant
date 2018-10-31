@@ -24,6 +24,13 @@ class CalendarAssistant
                  desc: "how dare you suggest there are bugs"
 
 
+    desc "version",
+         "Display the version of calendar-assistant"
+    def version
+      return if handle_help_args
+      CLIHelpers::Out.new.puts CalendarAssistant::VERSION
+    end
+
     desc "config",
          "Dump your configuration parameters (merge of defaults and overrides from #{CalendarAssistant::Config::CONFIG_FILE_PATH})"
     def config
@@ -50,11 +57,12 @@ class CalendarAssistant
       file to `#{CalendarAssistant::Authorizer::CREDENTIALS_PATH}`
     EOD
     def setup
+      return if handle_help_args
       out = CLIHelpers::Out.new
       if File.exist? CalendarAssistant::Authorizer::CREDENTIALS_PATH
         out.puts sprintf("Credentials already exist in %s",
                          CalendarAssistant::Authorizer::CREDENTIALS_PATH)
-        exit 0
+        return
       end
 
       out.launch "https://developers.google.com/calendar/quickstart/ruby"

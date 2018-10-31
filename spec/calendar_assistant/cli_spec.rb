@@ -6,11 +6,42 @@ describe CalendarAssistant::CLI do
     let(:time_range) { double("time range") }
     let(:config) { instance_double("CalendarAssistant::Config") }
 
-    it "supports help strings" do
-      expect { CalendarAssistant::CLI.start ["show", "-h"] }.to output(/Usage:/).to_stdout
+    context "inverted help flag" do
+      it { expect { CalendarAssistant::CLI.start ["version", "-h"] }.to output(/Usage:/).to_stdout }
+      it { expect { CalendarAssistant::CLI.start ["config", "-h"] }.to output(/Usage:/).to_stdout }
+      it { expect { CalendarAssistant::CLI.start ["setup", "-h"] }.to output(/Usage:/).to_stdout }
+      xit { expect { CalendarAssistant::CLI.start ["authorize", "-h"] }.to output(/Usage:/).to_stdout }
+      it { expect { CalendarAssistant::CLI.start ["show", "-h"] }.to output(/Usage:/).to_stdout }
+      it { expect { CalendarAssistant::CLI.start ["location", "-h"] }.to output(/Usage:/).to_stdout }
+      xit { expect { CalendarAssistant::CLI.start ["location-set", "-h"] }.to output(/Usage:/).to_stdout }
+      it { expect { CalendarAssistant::CLI.start ["join", "-h"] }.to output(/Usage:/).to_stdout }
+      it { expect { CalendarAssistant::CLI.start ["availability", "-h"] }.to output(/Usage:/).to_stdout }
     end
 
-    describe "non-auth commands" do
+    describe "commands that do not require a profile" do
+      describe "version" do
+        it "outputs the version number of calendar-assistant" do
+          allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
+          expect(out).to receive(:puts).with(CalendarAssistant::VERSION)
+
+          CalendarAssistant::CLI.start ["version"]
+        end
+      end
+
+      describe "config" do
+        it "should have a test"
+      end
+
+      describe "setup" do
+        it "should have a test"
+      end
+
+      describe "authorize" do
+        it "should have a test"
+      end
+    end
+
+    describe "commands that require a profile" do
       before do
         allow(CalendarAssistant::Config).to receive(:new).with(options: {}).and_return(config)
         expect(CalendarAssistant).to receive(:new).with(config).and_return(ca)
