@@ -8,4 +8,5 @@ group :optional do
   gem "autotest"
   gem "rspec-autotest"
   gem "test_notifier"
+  gem "pry"
 end
