@@ -1,4 +1,4 @@
-describe FakeService do
+describe CalendarAssistant::LocalService do
   let(:service) { described_class.new }
   let(:calendar_id) { "calendar_id" }
   let(:event) { double(:event, id: "1", original: true) }
