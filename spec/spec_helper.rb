@@ -1,6 +1,5 @@
 require_relative "../lib/calendar_assistant"
 require_relative "./helpers/fake_service"
-require_relative "./shared_examples/an_event_repository"
 
 require "timecop"
 require "securerandom"
