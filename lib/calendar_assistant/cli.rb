@@ -115,8 +115,10 @@ class CalendarAssistant
     def show datespec="today"
       return if handle_help_args
       ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
-      events = ca.find_events CLIHelpers.parse_datespec(datespec)
-      out.print_events ca, events, options
+      ca.in_env do
+        events = ca.find_events CLIHelpers.parse_datespec(datespec)
+        out.print_events ca, events, options
+      end
     end
 
 
@@ -129,13 +131,15 @@ class CalendarAssistant
     def join timespec="now"
       return if handle_help_args
       ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
-      event, url = CLIHelpers.find_av_uri ca, timespec
-      if event
-        out.print_events ca, event, options
-        out.puts url
-        out.launch url if options[CalendarAssistant::Config::Keys::Options::JOIN]
-      else
-        out.puts "Could not find a meeting '#{timespec}' with a video call to join."
+      ca.in_env do
+        event, url = CLIHelpers.find_av_uri ca, timespec
+        if event
+          out.print_events ca, event, options
+          out.puts url
+          out.launch url if options[CalendarAssistant::Config::Keys::Options::JOIN]
+        else
+          out.puts "Could not find a meeting '#{timespec}' with a video call to join."
+        end
       end
     end
 
@@ -146,8 +150,10 @@ class CalendarAssistant
     def location datespec="today"
       return if handle_help_args
       ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
-      events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
-      out.print_events ca, events, options
+      ca.in_env do
+        events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
+        out.print_events ca, events, options
+      end
     end
 
 
@@ -159,8 +165,10 @@ class CalendarAssistant
       return help! if location.nil?
 
       ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
-      events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
-      out.print_events ca, events, options
+      ca.in_env do
+        events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
+        out.print_events ca, events, options
+      end
     end
 
 
@@ -188,8 +196,10 @@ class CalendarAssistant
     def availability datespec="today"
       return if handle_help_args
       ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
-      events = ca.availability CLIHelpers.parse_datespec(datespec)
-      out.print_available_blocks ca, events, options
+      ca.in_env do
+        events = ca.availability CLIHelpers.parse_datespec(datespec)
+        out.print_available_blocks ca, events, options
+      end
     end
 
     private
