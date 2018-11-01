@@ -114,8 +114,7 @@ class CalendarAssistant
     supports_profile_option
     def show datespec="today"
       return if handle_help_args
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
       events = ca.find_events CLIHelpers.parse_datespec(datespec)
       out.print_events ca, events, options
     end
@@ -129,8 +128,7 @@ class CalendarAssistant
     supports_profile_option
     def join timespec="now"
       return if handle_help_args
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
       event, url = CLIHelpers.find_av_uri ca, timespec
       if event
         out.print_events ca, event, options
@@ -147,8 +145,7 @@ class CalendarAssistant
     supports_profile_option
     def location datespec="today"
       return if handle_help_args
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
       events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
       out.print_events ca, events, options
     end
@@ -161,8 +158,7 @@ class CalendarAssistant
       return if handle_help_args
       return help! if location.nil?
 
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
       events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
       out.print_events ca, events, options
     end
@@ -191,8 +187,7 @@ class CalendarAssistant
     supports_profile_option
     def availability datespec="today"
       return if handle_help_args
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
       events = ca.availability CLIHelpers.parse_datespec(datespec)
       out.print_available_blocks ca, events, options
     end
