@@ -371,6 +371,8 @@ describe CalendarAssistant::CLIHelpers do
           ]
         end
 
+        it "prints a subtitle stating duration and intraday range"
+
         it "prints a title containing the time zone" do
           expect(stdout).to receive(:puts).with(title_regexp)
           subject.print_available_blocks ca, events
