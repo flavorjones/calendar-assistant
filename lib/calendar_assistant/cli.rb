@@ -183,13 +183,13 @@ class CalendarAssistant
     option CalendarAssistant::Config::Keys::Settings::START_OF_DAY,
            type: :string,
            banner: "TIME",
-           desc: sprintf("[default %s] find chunks of available time after TIME (which is a Chronic string like '9am' or '14:30')",
+           desc: sprintf("[default %s] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')",
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::START_OF_DAY)),
            aliases: ["-s"]
     option CalendarAssistant::Config::Keys::Settings::END_OF_DAY,
            type: :string,
            banner: "TIME",
-           desc: sprintf("[default %s] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')",
+           desc: sprintf("[default %s] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')",
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
            aliases: ["-e"]
     option CalendarAssistant::Config::Keys::Options::TIMEZONE,
