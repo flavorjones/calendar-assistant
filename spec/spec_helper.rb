@@ -8,6 +8,12 @@ ENV["THOR_DEBUG"] = "1" # UGH THOR
 
 GCal = Google::Apis::CalendarV3
 
+# set these to ridiculous values to make sure code is handling time environment properly
+BusinessTime::Config.beginning_of_workday = "12pm"
+BusinessTime::Config.end_of_workday = "12:30pm"
+Time.zone = "Pacific/Fiji"
+ENV['TZ'] = "Pacific/Fiji"
+
 module RspecDescribeHelpers
   def freeze_time
     around do |example|

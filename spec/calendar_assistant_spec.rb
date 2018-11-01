@@ -223,6 +223,73 @@ describe CalendarAssistant do
         expect(response).to eq(events)
       end
     end
+
+    describe "#in_env" do
+      let(:config) do
+        CalendarAssistant::Config.new(
+          options: {
+            CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
+            CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
+          })
+      end
+
+      before do
+        allow(calendar).to receive(:time_zone).and_return("Europe/London")
+      end
+
+      it "sets beginning and end of workday and restores them" do
+        BusinessTime::Config.beginning_of_workday = "6am"
+        BusinessTime::Config.end_of_workday = "2pm"
+        ca.in_env do
+          expect(BusinessTime::Config.beginning_of_workday.hour).to eq(7)
+          expect(BusinessTime::Config.end_of_workday.hour).to eq(15)
+        end
+        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
+        expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+      end
+
+      it "exceptionally restores beginning and end of workday" do
+        BusinessTime::Config.beginning_of_workday = "6am"
+        BusinessTime::Config.end_of_workday = "2pm"
+        ca.in_env do
+          raise RuntimeError
+        rescue
+        end
+        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
+        expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+      end
+
+      it "calls in_tz with the calendar timezone" do
+        expect(ca).to receive(:in_tz).with("Europe/London")
+        ca.in_env do ; end
+      end
+    end
+
+    describe "#in_tz" do
+      it "sets the timezone and restores it" do
+        Time.zone = "Pacific/Fiji"
+        ENV['TZ'] = "Pacific/Fiji"
+        ca.in_tz "Europe/Istanbul" do
+          expect(Time.zone.name).to eq("Europe/Istanbul")
+          expect(ENV['TZ']).to eq("Europe/Istanbul")
+        end
+        expect(Time.zone.name).to eq("Pacific/Fiji")
+        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
+
+      it "exceptionally restores the timezone" do
+        Time.zone = "Pacific/Fiji"
+        ENV['TZ'] = "Pacific/Fiji"
+        begin
+          ca.in_tz "Europe/Istanbul" do
+            raise RuntimeError
+          end
+        rescue
+        end
+        expect(Time.zone.name).to eq("Pacific/Fiji")
+        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
+    end
   end
 
   describe "event formatting" do

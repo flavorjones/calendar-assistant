@@ -37,6 +37,38 @@ class CalendarAssistant
     @event_repository = event_repository || EventRepository.new(@service, DEFAULT_CALENDAR_ID)
   end
 
+  def in_env &block
+    # this is totally not thread-safe
+    orig_b_o_d = BusinessTime::Config.beginning_of_workday
+    orig_e_o_d = BusinessTime::Config.end_of_workday
+    begin
+      BusinessTime::Config.beginning_of_workday = config.setting(Config::Keys::Settings::START_OF_DAY)
+      BusinessTime::Config.end_of_workday = config.setting(Config::Keys::Settings::END_OF_DAY)
+      in_tz calendar.time_zone do
+        yield
+      end
+    ensure
+      BusinessTime::Config.beginning_of_workday = orig_b_o_d
+      BusinessTime::Config.end_of_workday = orig_e_o_d
+    end
+  end
+
+  def in_tz time_zone, &block
+    # this is totally not thread-safe
+    orig_time_tz = Time.zone
+    orig_env_tz = ENV['TZ']
+    begin
+      unless time_zone.nil?
+        Time.zone = time_zone
+        ENV['TZ'] = time_zone
+      end
+      yield
+    ensure
+      Time.zone = orig_time_tz
+      ENV['TZ'] = orig_env_tz
+    end
+  end
+
   def find_events time_range
     @event_repository.find(time_range)
   end
