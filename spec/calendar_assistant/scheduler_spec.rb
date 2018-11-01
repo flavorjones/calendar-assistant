@@ -19,6 +19,7 @@ describe CalendarAssistant::Scheduler do
       context "with an event at the end of the day and other events later" do
         let(:events) do
           [
+            event_factory("zeroth", Chronic.parse("7:30am")..(Chronic.parse("8am"))),
             event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
             event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
             event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
@@ -56,7 +57,7 @@ describe CalendarAssistant::Scheduler do
 
         context "some meetings haven't been accepted" do
           before do
-            allow(events[1]).to receive(:accepted?).and_return(false)
+            allow(events[2]).to receive(:accepted?).and_return(false)
           end
 
           let(:expected_avails) do

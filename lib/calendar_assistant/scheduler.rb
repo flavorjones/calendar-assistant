@@ -39,6 +39,8 @@ class CalendarAssistant
         end_time = date.to_time + end_of_day
 
         date_events.each do |e|
+          next if e.end.date_time.to_time < start_time
+
           if (e.start.date_time.to_time - start_time) >= length
             avail_time[date] << CalendarAssistant.available_block(start_time.to_datetime, e.start.date_time)
           end
