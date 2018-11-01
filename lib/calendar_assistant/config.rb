@@ -34,6 +34,7 @@ class CalendarAssistant
       module Options
         COMMITMENTS = "commitments"
         JOIN = "join"
+        TIMEZONE = "timezone"
       end
     end
 

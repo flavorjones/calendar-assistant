@@ -5,10 +5,21 @@ describe CalendarAssistant::Scheduler do
 
   describe "#available_blocks" do
     let(:scheduler) { described_class.new ca, config: config }
-    let(:config) { CalendarAssistant::Config.new }
-    let(:ca) { instance_double(CalendarAssistant) }
+    let(:config) { CalendarAssistant::Config.new options: config_options }
+    let(:config_options) { Hash.new }
+    let(:ca) { CalendarAssistant.new config }
+    let(:authorizer) { instance_double("Authorizer") }
+    let(:service) { instance_double("CalendarService") }
+    let(:calendar) { instance_double("Calendar") }
+    let(:time_zone) { ENV['TZ'] }
 
     before do
+      allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
+      allow(authorizer).to receive(:service).and_return(service)
+      allow(service).to receive(:get_calendar).and_return(calendar)
+      allow(calendar).to receive(:time_zone).and_return(time_zone)
+      allow(config).to receive(:profile_name).and_return("profile-name")
+
       expect(ca).to receive(:find_events).with(time_range).and_return(events)
     end
 
@@ -173,22 +184,20 @@ describe CalendarAssistant::Scheduler do
     end
 
     describe "configurable parameters" do
-      let(:config) do
-        CalendarAssistant::Config.new options: options
-      end
-
-      let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
-      let(:date) { time_range.first.to_date }
+      let(:time_range) { in_tz { CalendarAssistant::CLIHelpers.parse_datespec "today" } }
+      let(:date) { in_tz { time_range.first.to_date } }
 
       let(:events) do
-        [
-          event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
-          event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
-          event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
-          event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
-          event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm"))),
-          event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm"))),
-        ]
+        in_tz do
+          [
+            event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
+            event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
+            event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
+            event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
+            event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm"))),
+            event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm"))),
+          ]
+        end
       end
 
       before do
@@ -197,7 +206,11 @@ describe CalendarAssistant::Scheduler do
 
       describe "meeting-length" do
         context "30m" do
-          let(:options) { {"meeting-length" => "30m"} }
+          let(:config_options) do
+            {
+              CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "30m"
+            }
+          end
 
           let(:expected_avails) do
             {
@@ -223,7 +236,11 @@ describe CalendarAssistant::Scheduler do
         end
 
         context "60m" do
-          let(:options) { {"meeting-length" => "60m"} }
+          let(:config_options) do
+            {
+              CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "60m"
+            }
+          end
 
           let(:expected_avails) do
             {
@@ -248,7 +265,12 @@ describe CalendarAssistant::Scheduler do
 
       describe "start-of-day and end-of-day" do
         context "9-6" do
-          let(:options) { {"start-of-day" => "9am", "end-of-day" => "6pm"} }
+          let(:config_options) do
+            {
+              CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "9am",
+              CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "6pm",
+            }
+          end
 
           let(:expected_avails) do
             {
@@ -274,7 +296,12 @@ describe CalendarAssistant::Scheduler do
         end
 
         context "8-7" do
-          let(:options) { {"start-of-day" => "8am", "end-of-day" => "7pm"} }
+          let(:config_options) do
+            {
+              CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "8am",
+              CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "7pm",
+            }
+          end
 
           let(:expected_avails) do
             {
@@ -290,6 +317,73 @@ describe CalendarAssistant::Scheduler do
           end
 
           it "finds blocks of time 30m or longer" do
+            found_avails = scheduler.available_blocks time_range
+
+            expect(found_avails.keys).to eq([date])
+            expect(found_avails[date].length).to eq(expected_avails[date].length)
+            found_avails[date].each_with_index do |found_avail, j|
+              expect(found_avail.start).to eq(expected_avails[date][j].start)
+              expect(found_avail.end).to eq(expected_avails[date][j].end)
+            end
+          end
+        end
+      end
+
+      describe "time zone" do
+        context "same as home time zone" do
+          let(:config_options) do
+            {
+              CalendarAssistant::Config::Keys::Options::TIMEZONE => time_zone,
+            }
+          end
+
+          let(:expected_avails) do
+            {
+              date => [
+                event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
+                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
+                event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
+                event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
+              ]
+            }
+          end
+
+          it "returns the free blocks for home time zone" do
+            found_avails = scheduler.available_blocks time_range
+
+            expect(found_avails.keys).to eq([date])
+            expect(found_avails[date].length).to eq(expected_avails[date].length)
+            found_avails[date].each_with_index do |found_avail, j|
+              expect(found_avail.start).to eq(expected_avails[date][j].start)
+              expect(found_avail.end).to eq(expected_avails[date][j].end)
+            end
+          end
+        end
+
+        context "different from home time zone" do
+          let(:time_zone) { "America/New_York" }
+
+          let(:config_options) do
+            {
+              CalendarAssistant::Config::Keys::Options::TIMEZONE => "America/Los_Angeles",
+            }
+          end
+
+          let(:expected_avails) do
+            in_tz do
+              {
+                date => [
+                  event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
+                  event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
+                  event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
+                  event_factory("available", Chronic.parse("6pm")..Chronic.parse("6:30pm")),
+                  event_factory("available", Chronic.parse("7pm")..Chronic.parse("9pm")),
+                ]
+              }
+            end
+          end
+
+          it "returns the free blocks for home time zone" do
             found_avails = scheduler.available_blocks time_range
 
             expect(found_avails.keys).to eq([date])

@@ -40,6 +40,20 @@ module RspecDescribeHelpers
 end
 
 module RspecExampleHelpers
+  def in_tz &block
+    # this is totally not thread-safe
+    orig_time_tz = Time.zone
+    orig_env_tz = ENV['TZ']
+    begin
+      Time.zone = time_zone
+      ENV['TZ'] = time_zone
+      yield
+    ensure
+      Time.zone = orig_time_tz
+      ENV['TZ'] = orig_env_tz
+    end
+  end
+
   def event_factory summary, time_range, stub={}
     if time_range.first.is_a?(Date)
       CalendarAssistant::Event.new(GCal::Event.new summary: summary,

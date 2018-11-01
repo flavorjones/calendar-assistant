@@ -192,6 +192,11 @@ class CalendarAssistant
            desc: sprintf("[default %s] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')",
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
            aliases: ["-e"]
+    option CalendarAssistant::Config::Keys::Options::TIMEZONE,
+           type: :string,
+           banner: "TIMEZONE",
+           desc: "[default is calendar tz] find chunks of available time in TIMEZONE (e.g., 'America/New_York')",
+           aliases: ["-z"]
     supports_profile_option
     def availability datespec="today"
       return if handle_help_args
