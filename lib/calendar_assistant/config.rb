@@ -34,13 +34,14 @@ class CalendarAssistant
       module Options
         COMMITMENTS = "commitments"
         JOIN = "join"
+        TIMEZONE = "timezone"
       end
     end
 
     DEFAULT_SETTINGS = {
       Keys::Settings::MEETING_LENGTH => "30m", # ChronicDuration
-      Keys::Settings::START_OF_DAY => "9am", # Chronic
-      Keys::Settings::END_OF_DAY => "6pm", # Chronic
+      Keys::Settings::START_OF_DAY => "9am", # BusinessTime
+      Keys::Settings::END_OF_DAY => "6pm", # BusinessTime
     }
 
     attr_reader :config_file_path, :user_config, :options, :defaults

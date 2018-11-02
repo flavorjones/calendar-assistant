@@ -123,11 +123,14 @@ class CalendarAssistant
 
       def print_available_blocks ca, events, options={}
         unless options[:omit_title]
-          puts Rainbow(sprintf("%s\n- all times in %s\n- looking for blocks at least %s long\n",
+          puts Rainbow(sprintf("%s\n- all times in %s\n- looking for blocks at least %s long\n- between %s and %s in %s\n",
                                ca.calendar.id,
                                ca.calendar.time_zone,
-                               ChronicDuration.output(ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))))
-                      ).italic
+                               ChronicDuration.output(ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))),
+                               ca.config.setting(Config::Keys::Settings::START_OF_DAY),
+                               ca.config.setting(Config::Keys::Settings::END_OF_DAY),
+                               ca.config.setting(Config::Keys::Options::TIMEZONE) || ca.calendar.time_zone,
+                              )).italic
           options = options.merge(omit_title: true)
         end
 

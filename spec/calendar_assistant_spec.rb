@@ -209,308 +209,86 @@ describe CalendarAssistant do
     end
 
     describe "#availability" do
-      let(:config) { CalendarAssistant::Config.new }
+      let(:scheduler) { instance_double(CalendarAssistant::Scheduler) }
+      let(:time_range) { instance_double("time range") }
 
-      context "single date" do
-        let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
-        let(:date) { time_range.first.to_date }
+      it "creates a scheduler and invokes #available_blocks" do
+        expect(CalendarAssistant::Scheduler).to receive(:new).
+                                                  with(ca, config: config).
+                                                  and_return(scheduler)
+        expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
 
-        before do
-          expect(ca).to receive(:find_events).with(time_range).and_return(events)
-        end
+        response = ca.availability(time_range)
 
-        context "with an event at the end of the day and other events later" do
-          let(:events) do
-            [
-              event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
-              event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
-              event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
-              event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
-              event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm"))),
-              event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm"))),
-            ]
-          end
+        expect(response).to eq(events)
+      end
+    end
 
-          let(:expected_avails) do
-            {
-              date => [
-                event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-              ]
-            }
-          end
-
-          before do
-            events.each { |e| allow(e).to receive(:accepted?).and_return(true) }
-          end
-
-          it "returns a hash of date => chunks-of-free-time-longer-than-min-duration" do
-            found_avails = ca.availability time_range
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
-          end
-
-          context "some meetings haven't been accepted" do
-            before do
-              allow(events[1]).to receive(:accepted?).and_return(false)
-            end
-
-            let(:expected_avails) do
-              {
-                date => [
-                  event_factory("available", Chronic.parse("10am")..Chronic.parse("1:30pm")),
-                  event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                  event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-                ]
-              }
-            end
-
-            it "ignores meetings that are not accepted" do
-              found_avails = ca.availability time_range
-
-              expect(found_avails.keys).to eq([date])
-              expect(found_avails[date].length).to eq(expected_avails[date].length)
-              found_avails[date].each_with_index do |found_avail, j|
-                expect(found_avail.start).to eq(expected_avails[date][j].start)
-                expect(found_avail.end).to eq(expected_avails[date][j].end)
-              end
-            end
-          end
-        end
-
-        context "single date with no event at the end of the day" do
-          let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
-          let(:date) { time_range.first.to_date }
-
-          let(:events) do
-            [
-              event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
-              event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
-              event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
-              event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
-            ]
-          end
-
-          let(:expected_avails) do
-            {
-              date => [
-                event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                event_factory("available", Chronic.parse("5pm")..Chronic.parse("6pm")),
-              ]
-            }
-          end
-
-          before do
-            events.each { |e| allow(e).to receive(:accepted?).and_return(true) }
-          end
-
-          it "finds chunks of free time at the end of the day" do
-            found_avails = ca.availability time_range
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
-          end
-        end
-
-        context "completely free day with no events" do
-          let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
-          let(:date) { time_range.first.to_date }
-
-          let(:events) { [] }
-          let(:expected_avails) do
-            {
-              date => [
-                event_factory("available", Chronic.parse("9am")..Chronic.parse("6pm")),
-              ]
-            }
-          end
-
-          it "returns a big fat available block" do
-            found_avails = ca.availability time_range
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
-          end
-        end
+    describe "#in_env" do
+      let(:config) do
+        CalendarAssistant::Config.new(
+          options: {
+            CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
+            CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
+          })
       end
 
-      describe "multiple days" do
-        let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "2018-01-01..2018-01-03" }
-        let(:events) { [] }
-        let(:expected_avails) do
-          {
-            Date.parse("2018-01-01") => [event_factory("available", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 6pm"))],
-            Date.parse("2018-01-02") => [event_factory("available", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 6pm"))],
-            Date.parse("2018-01-03") => [event_factory("available", Chronic.parse("2018-01-03 9am")..Chronic.parse("2018-01-03 6pm"))],
-          }
-        end
-
-        before do
-          expect(ca).to receive(:find_events).with(time_range).and_return(events)
-        end
-
-        it "returns a hash of all dates" do
-          found_avails = ca.availability time_range
-
-          expect(found_avails.keys).to eq(expected_avails.keys)
-          expected_avails.keys.each do |date|
-            expect(found_avails[date].length).to eq(1)
-            expect(found_avails[date].first.start).to eq(expected_avails[date].first.start)
-            expect(found_avails[date].first.end).to eq(expected_avails[date].first.end)
-          end
-        end
+      before do
+        allow(calendar).to receive(:time_zone).and_return("Europe/London")
       end
 
-      describe "configurable parameters" do
-        let(:config) do
-          CalendarAssistant::Config.new options: options
+      it "sets beginning and end of workday and restores them" do
+        BusinessTime::Config.beginning_of_workday = "6am"
+        BusinessTime::Config.end_of_workday = "2pm"
+        ca.in_env do
+          expect(BusinessTime::Config.beginning_of_workday.hour).to eq(7)
+          expect(BusinessTime::Config.end_of_workday.hour).to eq(15)
         end
-
-        let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
-        let(:date) { time_range.first.to_date }
-
-        let(:events) do
-          [
-            event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
-            event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
-            event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
-            event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
-            event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm"))),
-            event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm"))),
-          ]
-        end
-
-        before do
-          expect(ca).to receive(:find_events).with(time_range).and_return(events)
-          events.each { |e| allow(e).to receive(:accepted?).and_return(true) }
-        end
-
-        describe "meeting-length" do
-          context "30m" do
-            let(:options) { {"meeting-length" => "30m"} }
-
-            let(:expected_avails) do
-              {
-                date => [
-                  event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-                  event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                  event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                  event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-                ]
-              }
-            end
-
-            it "finds blocks of time 30m or longer" do
-              found_avails = ca.availability time_range
-
-              expect(found_avails.keys).to eq([date])
-              expect(found_avails[date].length).to eq(expected_avails[date].length)
-              found_avails[date].each_with_index do |found_avail, j|
-                expect(found_avail.start).to eq(expected_avails[date][j].start)
-                expect(found_avail.end).to eq(expected_avails[date][j].end)
-              end
-            end
-          end
-
-          context "60m" do
-            let(:options) { {"meeting-length" => "60m"} }
-
-            let(:expected_avails) do
-              {
-                date => [
-                  event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                ]
-              }
-            end
-
-            it "finds blocks of time 60m or longer" do
-              found_avails = ca.availability time_range
-
-              expect(found_avails.keys).to eq([date])
-              expect(found_avails[date].length).to eq(expected_avails[date].length)
-              found_avails[date].each_with_index do |found_avail, j|
-                expect(found_avail.start).to eq(expected_avails[date][j].start)
-                expect(found_avail.end).to eq(expected_avails[date][j].end)
-              end
-            end
-          end
-        end
-
-        describe "start-of-day and end-of-day" do
-          context "9-6" do
-            let(:options) { {"start-of-day" => "9am", "end-of-day" => "6pm"} }
-
-            let(:expected_avails) do
-              {
-                date => [
-                  event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-                  event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                  event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                  event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-                ]
-              }
-            end
-
-            it "finds blocks of time 30m or longer" do
-              found_avails = ca.availability time_range
-
-              expect(found_avails.keys).to eq([date])
-              expect(found_avails[date].length).to eq(expected_avails[date].length)
-              found_avails[date].each_with_index do |found_avail, j|
-                expect(found_avail.start).to eq(expected_avails[date][j].start)
-                expect(found_avail.end).to eq(expected_avails[date][j].end)
-              end
-            end
-          end
-
-          context "8-7" do
-            let(:options) { {"start-of-day" => "8am", "end-of-day" => "7pm"} }
-
-            let(:expected_avails) do
-              {
-                date => [
-                  event_factory("available", Chronic.parse("8am")..Chronic.parse("8:30am")),
-                  event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-                  event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                  event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                  event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-                  event_factory("available", Chronic.parse("6pm")..Chronic.parse("6:30pm")),
-                ]
-              }
-            end
-
-            it "finds blocks of time 30m or longer" do
-              found_avails = ca.availability time_range
-
-              expect(found_avails.keys).to eq([date])
-              expect(found_avails[date].length).to eq(expected_avails[date].length)
-              found_avails[date].each_with_index do |found_avail, j|
-                expect(found_avail.start).to eq(expected_avails[date][j].start)
-                expect(found_avail.end).to eq(expected_avails[date][j].end)
-              end
-            end
-          end
-        end
+        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
+        expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
       end
 
-      it "prints a subtitle stating duration and intraday range"
+      it "exceptionally restores beginning and end of workday" do
+        BusinessTime::Config.beginning_of_workday = "6am"
+        BusinessTime::Config.end_of_workday = "2pm"
+        ca.in_env do
+          raise RuntimeError
+        rescue
+        end
+        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
+        expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+      end
+
+      it "calls in_tz with the calendar timezone" do
+        expect(ca).to receive(:in_tz).with("Europe/London")
+        ca.in_env do ; end
+      end
+    end
+
+    describe "#in_tz" do
+      it "sets the timezone and restores it" do
+        Time.zone = "Pacific/Fiji"
+        ENV['TZ'] = "Pacific/Fiji"
+        ca.in_tz "Europe/Istanbul" do
+          expect(Time.zone.name).to eq("Europe/Istanbul")
+          expect(ENV['TZ']).to eq("Europe/Istanbul")
+        end
+        expect(Time.zone.name).to eq("Pacific/Fiji")
+        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
+
+      it "exceptionally restores the timezone" do
+        Time.zone = "Pacific/Fiji"
+        ENV['TZ'] = "Pacific/Fiji"
+        begin
+          ca.in_tz "Europe/Istanbul" do
+            raise RuntimeError
+          end
+        rescue
+        end
+        expect(Time.zone.name).to eq("Pacific/Fiji")
+        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
     end
   end
 

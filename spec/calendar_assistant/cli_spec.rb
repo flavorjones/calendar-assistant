@@ -12,6 +12,17 @@ describe CalendarAssistant::CLI do
           end
         end
       end
+
+      if options[:profile]
+        it "wraps commands #in_env" do
+          expect(ca).to receive(:in_env).and_return(0)
+          if options[:profile].is_a?(Array)
+            CalendarAssistant::CLI.start([command] + options[:profile])
+          else
+            CalendarAssistant::CLI.start([command])
+          end
+        end
+      end
     end
 
     let(:ca) { instance_double("CalendarAssistant") }
@@ -24,6 +35,7 @@ describe CalendarAssistant::CLI do
       allow(CalendarAssistant::Config).to receive(:new).with(options: {}).and_return(config)
       allow(CalendarAssistant).to receive(:new).with(config).and_return(ca)
       allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
+      allow(ca).to receive(:in_env).and_yield
     end
 
     describe "version" do
@@ -70,7 +82,7 @@ describe CalendarAssistant::CLI do
 
     describe "show" do
       let(:command) { "show" }
-      it_behaves_like "a command"
+      it_behaves_like "a command", profile: true
 
       it "calls find_events by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
@@ -106,7 +118,7 @@ describe CalendarAssistant::CLI do
 
     describe "location" do
       let(:command) { "location" }
-      it_behaves_like "a command"
+      it_behaves_like "a command", profile: true
 
       it "calls find_location_events by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
@@ -142,7 +154,7 @@ describe CalendarAssistant::CLI do
 
     describe "location-set" do
       let(:command) { "location-set" }
-      it_behaves_like "a command", argc: 1
+      it_behaves_like "a command", argc: 1, profile: ["here"]
 
       it "calls create_location_event by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
@@ -186,7 +198,7 @@ describe CalendarAssistant::CLI do
       end
 
       let(:command) { "join" }
-      it_behaves_like "a command"
+      it_behaves_like "a command", profile: true
 
       context "default behavior" do
         it "calls #find_events with a small time range around now" do
@@ -258,7 +270,7 @@ describe CalendarAssistant::CLI do
 
     describe "availability" do
       let(:command) { "availability" }
-      it_behaves_like "a command"
+      it_behaves_like "a command", profile: true
 
       it "calls availability by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)

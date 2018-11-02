@@ -37,57 +37,44 @@ class CalendarAssistant
     @event_repository = event_repository || EventRepository.new(@service, DEFAULT_CALENDAR_ID)
   end
 
+  def in_env &block
+    # this is totally not thread-safe
+    orig_b_o_d = BusinessTime::Config.beginning_of_workday
+    orig_e_o_d = BusinessTime::Config.end_of_workday
+    begin
+      BusinessTime::Config.beginning_of_workday = config.setting(Config::Keys::Settings::START_OF_DAY)
+      BusinessTime::Config.end_of_workday = config.setting(Config::Keys::Settings::END_OF_DAY)
+      in_tz calendar.time_zone do
+        yield
+      end
+    ensure
+      BusinessTime::Config.beginning_of_workday = orig_b_o_d
+      BusinessTime::Config.end_of_workday = orig_e_o_d
+    end
+  end
+
+  def in_tz time_zone, &block
+    # this is totally not thread-safe
+    orig_time_tz = Time.zone
+    orig_env_tz = ENV['TZ']
+    begin
+      unless time_zone.nil?
+        Time.zone = time_zone
+        ENV['TZ'] = time_zone
+      end
+      yield
+    ensure
+      Time.zone = orig_time_tz
+      ENV['TZ'] = orig_env_tz
+    end
+  end
+
   def find_events time_range
     @event_repository.find(time_range)
   end
 
   def availability time_range
-    length = ChronicDuration.parse(config.setting(Config::Keys::Settings::MEETING_LENGTH))
-
-    start_of_day = Chronic.parse(config.setting(Config::Keys::Settings::START_OF_DAY))
-    start_of_day = start_of_day - start_of_day.beginning_of_day
-
-    end_of_day = Chronic.parse(config.setting(Config::Keys::Settings::END_OF_DAY))
-    end_of_day = end_of_day - end_of_day.beginning_of_day
-
-    events = find_events time_range
-    date_range = time_range.first.to_date .. time_range.last.to_date
-
-    # find relevant events and map them into dates
-    dates_events = date_range.inject({}) { |de, date| de[date] = [] ; de }
-    events.each do |event|
-      if event.accepted?
-        event_date = event.start.to_date!
-        dates_events[event_date] ||= []
-        dates_events[event_date] << event
-      end
-      dates_events
-    end
-
-    # iterate over the days finding free chunks of time
-    avail_time = date_range.inject({}) do |avail_time, date|
-      avail_time[date] ||= []
-      date_events = dates_events[date]
-
-      start_time = date.to_time + start_of_day
-      end_time = date.to_time + end_of_day
-
-      date_events.each do |e|
-        if (e.start.date_time.to_time - start_time) >= length
-          avail_time[date] << CalendarAssistant.available_block(start_time.to_datetime, e.start.date_time)
-        end
-        start_time = e.end.date_time.to_time
-        break if start_time >= end_time
-      end
-
-      if end_time - start_time >= length
-        avail_time[date] << CalendarAssistant.available_block(start_time.to_datetime, end_time.to_datetime)
-      end
-
-      avail_time
-    end
-
-    avail_time
+    Scheduler.new(self, config: config).available_blocks(time_range)
   end
 
   def find_location_events time_range
@@ -189,4 +176,5 @@ require "calendar_assistant/extensions/event_date_time_extensions"
 require "calendar_assistant/extensions/event_extensions"
 require "calendar_assistant/event"
 require "calendar_assistant/event_repository"
+require "calendar_assistant/scheduler"
 require "calendar_assistant/extensions/rainbow_extensions"

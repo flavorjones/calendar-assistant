@@ -8,6 +8,12 @@ ENV["THOR_DEBUG"] = "1" # UGH THOR
 
 GCal = Google::Apis::CalendarV3
 
+# set these to ridiculous values to make sure code is handling time environment properly
+BusinessTime::Config.beginning_of_workday = "12pm"
+BusinessTime::Config.end_of_workday = "12:30pm"
+Time.zone = "Pacific/Fiji"
+ENV['TZ'] = "Pacific/Fiji"
+
 module RspecDescribeHelpers
   def freeze_time
     around do |example|
@@ -34,6 +40,20 @@ module RspecDescribeHelpers
 end
 
 module RspecExampleHelpers
+  def in_tz &block
+    # this is totally not thread-safe
+    orig_time_tz = Time.zone
+    orig_env_tz = ENV['TZ']
+    begin
+      Time.zone = time_zone
+      ENV['TZ'] = time_zone
+      yield
+    ensure
+      Time.zone = orig_time_tz
+      ENV['TZ'] = orig_env_tz
+    end
+  end
+
   def event_factory summary, time_range, stub={}
     if time_range.first.is_a?(Date)
       CalendarAssistant::Event.new(GCal::Event.new summary: summary,

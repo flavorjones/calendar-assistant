@@ -1,5 +1,13 @@
 # Changelog for Calendar Assistant
 
+## v0.3.0 / unreleased
+
+Features:
+
+- "availability" can now look for meetings while you're traveling outside of your home timezone.
+- "version" command will output the version of calendar-assistant
+
+
 ## v0.2.1 / 2018-10-31
 
 Features:

@@ -12,11 +12,9 @@ A command-line tool to help me manage my Google Calendar.
 
 ## Usage
 
-Head to [the quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `credentials.json`.
+Head to [the quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `~/.calendar-assistant.client`.
 
 Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
-
-Once you're authorized, feel free to delete the `credentials.json` file. You can re-download that info again if you ever need it.
 
 
 ## Features
@@ -60,11 +58,12 @@ Commands:
   calendar-assistant join [TIME]                                  # Open the URL for a video call attached to your meeting at time TIME (default 'now')
   calendar-assistant location [DATE | DATERANGE]                  # Show your location for a date or range of dates (default 'today')
   calendar-assistant location-set LOCATION [DATE | DATERANGE]     # Set your location to LOCATION for a date or range of dates (default 'today')
+  calendar-assistant setup                                        # Link your local calendar-assistant installation to a Google API Client
   calendar-assistant show [DATE | DATERANGE | TIMERANGE]          # Show your events for a date or range of dates (default 'today')
+  calendar-assistant version                                      # Display the version of calendar-assistant
 
 Options:
   -h, -?, [--help], [--no-help]    
-  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 </pre>
 
@@ -80,7 +79,6 @@ Usage:
 
 Options:
   -h, -?, [--help], [--no-help]    
-  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
@@ -108,7 +106,6 @@ Usage:
 
 Options:
   -h, -?, [--help], [--no-help]    
-  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
@@ -116,14 +113,7 @@ Description:
 
   When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and persist an access token.
 
-  In order for this to work, you'll need to follow the instructions at this URL first:
-
-  > https://developers.google.com/calendar/quickstart/ruby
-
-  Namely, the prerequisites are: 
-   1. Turn on the Google API for your account 
-   2. Create a new Google API Project 
-   3. Download the configuration file for the Project, and name it as `credentials.json`
+  In order for this to work, you'll need to have set up your API client credentials. Run `calendar-assistant help setup` for instructions.
 </pre>
 
 This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
@@ -140,8 +130,8 @@ Usage:
 
 Options:
   -c, [--commitments], [--no-commitments]  # only show events that you've accepted with another person
-  -h, -?, [--help], [--no-help]            
   -p, [--profile=PROFILE]                  # the profile you'd like to use (if different from default)
+  -h, -?, [--help], [--no-help]            
           [--debug], [--no-debug]          # how dare you suggest there are bugs
 
 Show your events for a date or range of dates (default 'today')
@@ -153,30 +143,30 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show --profile=work 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01               <b> | 🗺 Mines of Moria </b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | Generate enterprise portals </strike>
-<strike>2018-10-01  07:30 - 08:30 | Incentivize wireless functionalities </strike>
-<strike>2018-10-01  07:30 - 08:30 | Brand end-to-end action-items </strike>
-2018-10-01  08:00 - 09:00<b> | Grow web-enabled synergies </b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | Disintermediate integrated web services </b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Architect sticky synergies </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Leverage out-of-the-box supply-chains </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Architect dot-com portals </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Grow out-of-the-box convergence </strike>
-2018-10-01  12:00 - 12:30<b> | Morph leading-edge experiences </b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Revolutionize innovative communities </strike>
-<strike>2018-10-01  12:30 - 13:30 | Evolve mission-critical e-services </strike>
-2018-10-01  12:30 - 13:30<b> | Embrace world-class e-tailers </b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Deliver out-of-the-box infomediaries </b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Transform user-centric e-tailers </strike>
-2018-10-01  15:00 - 15:30<b> | Aggregate magnetic e-business </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Leverage turn-key e-tailers </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Monetize real-time interfaces </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Generate out-of-the-box technologies </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Strategize enterprise communities </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Redefine 24/365 infrastructures </strike>
-<strike>2018-10-01  18:30 - 19:00 | Innovate vertical e-business </strike>
-<strike>2018-10-01  19:00 - 19:30 | Repurpose seamless deliverables </strike>
+2018-10-01               <b> | 🗺 Beorn's Hall </b><i> (not-busy, self)</i>
+<strike>2018-10-01  03:30 - 05:00 | Leverage robust content </strike>
+<strike>2018-10-01  07:30 - 08:30 | Revolutionize distributed functionalities </strike>
+<strike>2018-10-01  07:30 - 08:30 | Cultivate seamless networks </strike>
+2018-10-01  08:00 - 09:00<b> | Evolve next-generation vortals </b><i> (recurring, self)</i>
+2018-10-01  09:00 - 10:30<b> | Matrix innovative portals </b><i> (self)</i>
+2018-10-01  10:30 - 10:55<b> | Aggregate transparent users </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Generate open-source e-tailers </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Leverage e-business architectures </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Unleash cross-platform synergies </strike>
+2018-10-01  12:00 - 12:30<b> | Extend user-centric deliverables </b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Transition integrated networks </strike>
+<strike>2018-10-01  12:30 - 13:30 | Maximize cutting-edge models </strike>
+2018-10-01  12:30 - 13:30<b> | E-enable dot-com users </b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Strategize frictionless roi </b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Innovate scalable technologies </strike>
+2018-10-01  15:00 - 15:30<b> | Monetize frictionless relationships </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Revolutionize proactive communities </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Target seamless partnerships </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Evolve b2b supply-chains </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Visualize b2c interfaces </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Recontextualize sticky methodologies </strike>
+<strike>2018-10-01  18:30 - 19:00 | Disintermediate b2b convergence </strike>
+<strike>2018-10-01  19:00 - 19:30 | Leverage out-of-the-box web services </strike>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -185,15 +175,15 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Exploit b2b synergies </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Reinvent customized systems </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Incentivize visionary users </b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Engineer robust roi </b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Exploit next-generation content </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Integrate sticky platforms </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Enhance intuitive portals </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Reinvent viral platforms </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Incubate magnetic interfaces </b><i> (1:1, recurring)</i>
+2018-10-01  10:30 - 10:55<b> | Unleash robust bandwidth </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Enable customized methodologies </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Streamline strategic networks </b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Target synergistic technologies </b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Expedite web-enabled action-items </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Aggregate magnetic partnerships </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Brand one-to-one interfaces </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Exploit out-of-the-box bandwidth </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Matrix bleeding-edge synergies </b><i> (1:1, recurring)</i>
 </pre>
 
 
@@ -207,8 +197,8 @@ Usage:
 Options:
           [--join], [--no-join]    # launch a browser to join the video call URL
                                    # Default: true
-  -h, -?, [--help], [--no-help]    
   -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+  -h, -?, [--help], [--no-help]    
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
@@ -240,10 +230,11 @@ Usage:
 
 Options:
   -l, [--meeting-length=LENGTH]    # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
-  -s, [--start-of-day=TIME]        # [default 9am] find chunks of available time after TIME (which is a Chronic string like '9am' or '14:30')
-  -e, [--end-of-day=TIME]          # [default 6pm] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')
-  -h, -?, [--help], [--no-help]    
+  -s, [--start-of-day=TIME]        # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
+  -e, [--end-of-day=TIME]          # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
+  -z, [--timezone=TIMEZONE]        # [default is calendar tz] find chunks of available time in TIMEZONE (e.g., 'America/New_York')
   -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+  -h, -?, [--help], [--no-help]    
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Show your availability for a date or range of dates (default 'today')
@@ -257,6 +248,7 @@ For example: show me my available time over a chunk of time:
 <i>me@example.com
 - all times in America/New_York
 - looking for blocks at least 30 mins long
+- between 9am and 6pm in America/New_York
 </i>
 <b>Availability on Tuesday, October 2:
 </b>
@@ -284,24 +276,24 @@ You can also set start and end times for the search, which is useful when lookin
 <i>me@example.com
 - all times in America/New_York
 - looking for blocks at least 30 mins long
+- between 12pm and 7pm in America/New_York
 </i>
 <b>Availability on Tuesday, October 2:
 </b>
- • 11:25am - 12:00pm
  • 1:30pm - 3:00pm
  • 3:30pm - 4:00pm
  • 6:25pm - 7:00pm
 
 <b>Availability on Wednesday, October 3:
 </b>
- • 11:00am - 1:30pm
+ • 12:00pm - 1:30pm
  • 1:55pm - 2:30pm
  • 2:55pm - 3:30pm
  • 6:00pm - 7:00pm
 
 <b>Availability on Thursday, October 4:
 </b>
- • 10:55am - 1:00pm
+ • 12:00pm - 1:00pm
  • 6:00pm - 7:00pm
 </pre>
 
@@ -316,8 +308,8 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
-  -h, -?, [--help], [--no-help]    
   -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+  -h, -?, [--help], [--no-help]    
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Set your location to LOCATION for a date or range of dates (default 'today')
@@ -358,8 +350,8 @@ Usage:
   calendar-assistant location [DATE | DATERANGE]
 
 Options:
-  -h, -?, [--help], [--no-help]    
   -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
+  -h, -?, [--help], [--no-help]    
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Show your location for a date or range of dates (default 'today')
@@ -371,8 +363,8 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-27  <b> | 🗺 Grey Mountains </b><i> (not-busy, self)</i>
-2018-09-28               <b> | 🗺 Dorwinion </b><i> (not-busy, self)</i>
+2018-09-24 - 2018-09-27  <b> | 🗺 The Shire </b><i> (not-busy, self)</i>
+2018-09-28               <b> | 🗺 The Shire </b><i> (not-busy, self)</i>
 </pre>
 
 

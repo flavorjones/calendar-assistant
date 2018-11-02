@@ -114,10 +114,11 @@ class CalendarAssistant
     supports_profile_option
     def show datespec="today"
       return if handle_help_args
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
-      events = ca.find_events CLIHelpers.parse_datespec(datespec)
-      out.print_events ca, events, options
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+      ca.in_env do
+        events = ca.find_events CLIHelpers.parse_datespec(datespec)
+        out.print_events ca, events, options
+      end
     end
 
 
@@ -129,15 +130,16 @@ class CalendarAssistant
     supports_profile_option
     def join timespec="now"
       return if handle_help_args
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
-      event, url = CLIHelpers.find_av_uri ca, timespec
-      if event
-        out.print_events ca, event, options
-        out.puts url
-        out.launch url if options[CalendarAssistant::Config::Keys::Options::JOIN]
-      else
-        out.puts "Could not find a meeting '#{timespec}' with a video call to join."
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+      ca.in_env do
+        event, url = CLIHelpers.find_av_uri ca, timespec
+        if event
+          out.print_events ca, event, options
+          out.puts url
+          out.launch url if options[CalendarAssistant::Config::Keys::Options::JOIN]
+        else
+          out.puts "Could not find a meeting '#{timespec}' with a video call to join."
+        end
       end
     end
 
@@ -147,10 +149,11 @@ class CalendarAssistant
     supports_profile_option
     def location datespec="today"
       return if handle_help_args
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
-      events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
-      out.print_events ca, events, options
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+      ca.in_env do
+        events = ca.find_location_events CLIHelpers.parse_datespec(datespec)
+        out.print_events ca, events, options
+      end
     end
 
 
@@ -161,10 +164,11 @@ class CalendarAssistant
       return if handle_help_args
       return help! if location.nil?
 
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
-      events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
-      out.print_events ca, events, options
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+      ca.in_env do
+        events = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
+        out.print_events ca, events, options
+      end
     end
 
 
@@ -179,22 +183,28 @@ class CalendarAssistant
     option CalendarAssistant::Config::Keys::Settings::START_OF_DAY,
            type: :string,
            banner: "TIME",
-           desc: sprintf("[default %s] find chunks of available time after TIME (which is a Chronic string like '9am' or '14:30')",
+           desc: sprintf("[default %s] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')",
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::START_OF_DAY)),
            aliases: ["-s"]
     option CalendarAssistant::Config::Keys::Settings::END_OF_DAY,
            type: :string,
            banner: "TIME",
-           desc: sprintf("[default %s] find chunks of available time before TIME (which is a Chronic string like '9am' or '14:30')",
+           desc: sprintf("[default %s] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')",
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
            aliases: ["-e"]
+    option CalendarAssistant::Config::Keys::Options::TIMEZONE,
+           type: :string,
+           banner: "TIMEZONE",
+           desc: "[default is calendar tz] find chunks of available time in TIMEZONE (e.g., 'America/New_York')",
+           aliases: ["-z"]
     supports_profile_option
     def availability datespec="today"
       return if handle_help_args
-      config = CalendarAssistant::Config.new options: options
-      ca = CalendarAssistant.new config
-      events = ca.availability CLIHelpers.parse_datespec(datespec)
-      out.print_available_blocks ca, events, options
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+      ca.in_env do
+        events = ca.availability CLIHelpers.parse_datespec(datespec)
+        out.print_available_blocks ca, events, options
+      end
     end
 
     private
