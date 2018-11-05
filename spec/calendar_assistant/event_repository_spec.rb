@@ -12,6 +12,8 @@ describe CalendarAssistant::EventRepository do
   let(:time_range) { Time.parse("2018-10-18")..Time.parse("2018-10-19") }
 
   before do
+    service.insert_calendar(GCal::Calendar.new(id: calendar_id))
+
     event_array.each do |event|
       service.insert_event(calendar_id, event)
     end

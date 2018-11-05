@@ -48,14 +48,22 @@ class CalendarAssistant
       get_calendar_events(calendar_id)[id]
     end
 
-    private
-
-    def get_calendar_events(calendar_id)
-      get_calendar(calendar_id)[:events]
+    def insert_calendar(calendar)
+      @store[calendar.id] ||= {}
+      @store[calendar.id][:calendar] = calendar
+      @store[calendar.id][:events] = {}
     end
 
     def get_calendar(calendar_id)
-      @store[calendar_id] ||= { events: {} }
+      raise Google::Apis::ClientError.new("notFound") unless @store.has_key?(calendar_id)
+      @store[calendar_id][:calendar]
+    end
+
+    private
+
+    def get_calendar_events(calendar_id)
+      raise Google::Apis::ClientError.new("notFound") unless @store.has_key?(calendar_id)
+      @store[calendar_id][:events]
     end
 
     def save
