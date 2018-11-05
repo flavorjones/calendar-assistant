@@ -49,9 +49,11 @@ class CalendarAssistant
     end
 
     def insert_calendar(calendar)
-      @store[calendar.id] ||= {}
-      @store[calendar.id][:calendar] = calendar
-      @store[calendar.id][:events] = {}
+      save do
+        @store[calendar.id] ||= {}
+        @store[calendar.id][:calendar] = calendar
+        @store[calendar.id][:events] = {}
+      end
     end
 
     def get_calendar(calendar_id)
@@ -67,12 +69,12 @@ class CalendarAssistant
     end
 
     def save
-      event = yield
+      obj = yield
       if (file)
         File.open(file, "w") { |f| f.write(@store.to_yaml) }
       end
 
-      event
+      obj
     end
   end
 end
