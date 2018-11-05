@@ -53,7 +53,7 @@ describe CalendarAssistant::LocalService do
     let(:service) { described_class.new(file: filename, load_events: load_events) }
 
     before do
-      File.open(filename, "w") { |f| f.write({calendar_id => {5678 => GCal::Event.new(id: 5678)}}.to_yaml) }
+      File.open(filename, "w") { |f| f.write({calendar_id => {events: { 5678 => GCal::Event.new(id: 5678)}}}.to_yaml) }
     end
 
     context "and we want to load events" do
