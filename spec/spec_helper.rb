@@ -35,18 +35,25 @@ module RspecDescribeHelpers
   end
 
   def with_temp_config_file &block
+    with_temp_file("config_file", :temp_config_file, &block)
+  end
+
+  def with_temp_file(filename, identifier = :temp_file)
     contents = block_given? ? yield : ""
 
-    let :temp_config_file do
-      Tempfile.new "config_file"
+    let identifier do
+      Tempfile.new filename
     end
 
     before do
-      temp_config_file.write contents
-      temp_config_file.close
+      self.send(identifier).write contents
+      self.send(identifier).close
     end
 
-    after { temp_config_file.unlink }
+    after do
+      self.send(identifier).close
+      self.send(identifier).unlink
+    end
   end
 end
 
