@@ -1,6 +1,5 @@
 require_relative "../lib/calendar_assistant"
 
-require 'fakefs/spec_helpers'
 require "timecop"
 require "securerandom"
 

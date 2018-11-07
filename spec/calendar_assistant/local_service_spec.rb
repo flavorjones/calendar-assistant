@@ -74,9 +74,9 @@ describe CalendarAssistant::LocalService do
     end
 
     context "when a filename is passed" do
-      include FakeFS::SpecHelpers
+      let(:filename) { temp_file.path }
+      with_temp_file("a_file_to_remember")
 
-      let(:filename) { "a_file_to_remember" }
       let(:service) { described_class.new(file: filename, load_events: load_events) }
 
       before do
