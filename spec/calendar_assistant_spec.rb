@@ -60,7 +60,8 @@ describe CalendarAssistant do
     let(:config) { CalendarAssistant::Config.new(options: options) }
     let(:token_store) { instance_double("CalendarAssistant::Config::TokenStore") }
     let(:event_repository) { instance_double("EventRepository") }
-    let(:ca) { CalendarAssistant.new config, event_repository: event_repository }
+    let(:event_repository_factory) { instance_double("EventRepositoryFactory") }
+    let(:ca) { CalendarAssistant.new config, event_repository_factory: event_repository_factory }
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
     let(:authorizer) { instance_double("Authorizer") }
@@ -73,6 +74,7 @@ describe CalendarAssistant do
       allow(authorizer).to receive(:service).and_return(service)
       allow(event_repository).to receive(:find).and_return([])
       allow(service).to receive(:get_calendar).and_return(calendar)
+      allow(event_repository_factory).to receive(:new_event_repository).and_return(event_repository)
     end
 
     describe "#find_events" do
@@ -314,6 +316,19 @@ describe CalendarAssistant do
         end
         expect(Time.zone.name).to eq("Pacific/Fiji")
         expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
+    end
+
+    describe "#event_repository" do
+      it "invokes the factory method to create a new repository" do
+        expect(event_repository_factory).to receive(:new_event_repository).with(service, "foo")
+        ca.event_repository("foo")
+      end
+
+      it "caches the result" do
+        expect(event_repository_factory).to receive(:new_event_repository).once
+        ca.event_repository("foo")
+        ca.event_repository("foo")
       end
     end
   end

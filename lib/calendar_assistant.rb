@@ -30,7 +30,8 @@ class CalendarAssistant
     time_range.first.to_date..(time_range.last + 1.day).to_date
   end
 
-  def initialize config=CalendarAssistant::Config.new, event_repository: nil
+  def initialize config=CalendarAssistant::Config.new,
+                 event_repository_factory: EventRepositoryFactory
     @config = config
 
     if filename = config.options[:local_store]
@@ -39,7 +40,8 @@ class CalendarAssistant
       @service = Authorizer.new(config.profile_name, config.token_store).service
     end
     @calendar = service.get_calendar DEFAULT_CALENDAR_ID
-    @event_repository = event_repository || EventRepository.new(@service, DEFAULT_CALENDAR_ID)
+    @event_repository_factory = event_repository_factory
+    @event_repositories = {} # calendar_id → event_repository
   end
 
   def in_env &block
@@ -75,7 +77,7 @@ class CalendarAssistant
   end
 
   def find_events time_range
-    @event_repository.find(time_range)
+    event_repository.find(time_range)
   end
 
   def availability time_range
@@ -83,7 +85,7 @@ class CalendarAssistant
   end
 
   def find_location_events time_range
-    @event_repository.find(time_range).select { |e| e.location_event? }
+    event_repository.find(time_range).select { |e| e.location_event? }
   end
 
   def create_location_event time_range, location
@@ -96,17 +98,17 @@ class CalendarAssistant
     deleted_events = []
     modified_events = []
 
-    event = @event_repository.create(transparency: GCal::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{EMOJI_WORLDMAP}  #{location}")
+    event = event_repository.create(transparency: GCal::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{EMOJI_WORLDMAP}  #{location}")
 
     existing_events.each do |existing_event|
       if existing_event.start.date >= event.start.date && existing_event.end.date <= event.end.date
-        @event_repository.delete existing_event
+        event_repository.delete existing_event
         deleted_events << existing_event
       elsif existing_event.start.date <= event.end.date && existing_event.end.date > event.end.date
-        @event_repository.update existing_event, start: range.last
+        event_repository.update existing_event, start: range.last
         modified_events << existing_event
       elsif existing_event.start.date < event.start.date && existing_event.end.date >= event.start.date
-        @event_repository.update existing_event, end: range.first
+        event_repository.update existing_event, end: range.first
         modified_events << existing_event
       end
     end
@@ -161,6 +163,10 @@ class CalendarAssistant
         sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))
       end
     end
+  end
+
+  def event_repository calendar_id=DEFAULT_CALENDAR_ID
+    @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id)
   end
 
   private
