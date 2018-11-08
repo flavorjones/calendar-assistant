@@ -201,6 +201,11 @@ class CalendarAssistant
            banner: "TIMEZONE",
            desc: "[default is calendar tz] find chunks of available time in TIMEZONE (e.g., 'America/New_York')",
            aliases: ["-z"]
+    option CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE,
+           type: :string,
+           banner: "ATTENDEE",
+           desc: "Find availability for someone else",
+           aliases: ["-r"]
     supports_profile_option
     def availability datespec="today"
       return if handle_help_args

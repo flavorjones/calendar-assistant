@@ -35,6 +35,7 @@ class CalendarAssistant
         COMMITMENTS = "commitments"
         JOIN = "join"
         TIMEZONE = "timezone"
+        REQUIRED_ATTENDEE = "required"
       end
     end
 

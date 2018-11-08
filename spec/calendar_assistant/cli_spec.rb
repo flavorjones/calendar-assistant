@@ -335,6 +335,17 @@ describe CalendarAssistant::CLI do
 
         CalendarAssistant::CLI.start [command, "-e", "6:30pm"]
       end
+
+      it "looks up another person's availability" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: {CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => "somebody@example.com"}).
+                                               and_return(config)
+
+        allow(ca).to receive(:availability)
+        allow(out).to receive(:print_available_blocks)
+
+        CalendarAssistant::CLI.start [command, "-r", "somebody@example.com"]
+      end
     end
   end
 end
