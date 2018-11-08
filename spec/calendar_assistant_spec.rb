@@ -86,7 +86,6 @@ describe CalendarAssistant do
 
     describe "#find_location_events" do
       let(:event_repository) { instance_double("EventRepository") }
-      let(:ca) { CalendarAssistant.new config, event_repository: event_repository }
       let(:location_event) { instance_double("Event", :location_event? => true) }
       let(:other_event) { instance_double("Event", :location_event? => false) }
       let(:events) { [location_event, other_event].shuffle }
