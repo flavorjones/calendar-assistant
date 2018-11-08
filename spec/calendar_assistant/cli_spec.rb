@@ -30,12 +30,14 @@ describe CalendarAssistant::CLI do
     let(:out) { double("STDOUT") }
     let(:time_range) { double("time range") }
     let(:config) { instance_double("CalendarAssistant::Config") }
+    let(:config_options) { Hash.new }
 
     before do
       allow(CalendarAssistant::Config).to receive(:new).with(options: {}).and_return(config)
       allow(CalendarAssistant).to receive(:new).with(config).and_return(ca)
       allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
       allow(ca).to receive(:in_env).and_yield
+      allow(config).to receive(:options).and_return(config_options)
     end
 
     describe "version" do
@@ -87,7 +89,7 @@ describe CalendarAssistant::CLI do
       it "calls find_events by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
         expect(ca).to receive(:find_events).
-                        with(time_range).
+                        with(time_range, calendar_id: nil).
                         and_return(events)
         expect(out).to receive(:print_events).with(ca, events, anything)
 
@@ -97,7 +99,7 @@ describe CalendarAssistant::CLI do
       it "calls find_events with the range returned from parse_datespec" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
         expect(ca).to receive(:find_events).
-                        with(time_range).
+                        with(time_range, calendar_id: nil).
                         and_return(events)
         expect(out).to receive(:print_events).with(ca, events, anything)
 
@@ -113,6 +115,25 @@ describe CalendarAssistant::CLI do
         allow(out).to receive(:print_events)
 
         CalendarAssistant::CLI.start [command, "-p", "work"]
+      end
+
+      context "given another person's calendar id" do
+        let(:config_options) do
+          {
+            CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => "somebody@example.com"
+          }
+        end
+
+        it "shows another person's day" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: config_options).
+                                               and_return(config)
+          expect(ca).to receive(:find_events).
+                          with(anything, calendar_id: "somebody@example.com")
+          allow(out).to receive(:print_events)
+
+          CalendarAssistant::CLI.start [command, "-r", "somebody@example.com"]
+        end
       end
     end
 

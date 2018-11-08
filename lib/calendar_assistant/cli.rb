@@ -115,12 +115,20 @@ class CalendarAssistant
            type: :boolean,
            desc: "only show events that you've accepted with another person",
            aliases: ["-c"]
+    option CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE,
+           type: :string,
+           banner: "ATTENDEE",
+           desc: "Show events from someone else's calendar",
+           aliases: ["-r"]
     supports_profile_option
     def show datespec="today"
       return if handle_help_args
-      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+      config = CalendarAssistant::Config.new(options: options)
+      ca = CalendarAssistant.new config
+      calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE]
+
       ca.in_env do
-        events = ca.find_events CLIHelpers.parse_datespec(datespec)
+        events = ca.find_events CLIHelpers.parse_datespec(datespec), calendar_id: calendar_id
         out.print_events ca, events, options
       end
     end
