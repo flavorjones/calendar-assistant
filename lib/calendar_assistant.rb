@@ -76,8 +76,8 @@ class CalendarAssistant
     end
   end
 
-  def find_events time_range
-    event_repository.find(time_range)
+  def find_events time_range, calendar_id: DEFAULT_CALENDAR_ID
+    event_repository(calendar_id).find(time_range)
   end
 
   def availability time_range

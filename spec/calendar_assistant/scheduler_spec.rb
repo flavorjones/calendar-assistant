@@ -14,6 +14,7 @@ describe CalendarAssistant::Scheduler do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
     let(:time_zone) { ENV['TZ'] }
+    let(:calendar_id) { CalendarAssistant::DEFAULT_CALENDAR_ID }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
@@ -22,7 +23,7 @@ describe CalendarAssistant::Scheduler do
       allow(calendar).to receive(:time_zone).and_return(time_zone)
       allow(config).to receive(:profile_name).and_return("profile-name")
 
-      expect(ca).to receive(:find_events).with(time_range).and_return(events)
+      expect(ca).to receive(:find_events).with(time_range, calendar_id: calendar_id).and_return(events)
     end
 
     context "single date" do
@@ -55,6 +56,26 @@ describe CalendarAssistant::Scheduler do
 
         before do
           events.each { |e| allow(e).to receive(:accepted?).and_return(true) }
+        end
+
+        context "given an attendee calendar id" do
+          let(:calendar_id) { "foo@example.com" }
+          let(:config_options) do
+            {
+              CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => calendar_id
+            }
+          end
+
+          it "returns a hash of date => chunks-of-free-time-longer-than-min-duration" do
+            found_avails = scheduler.available_blocks time_range
+
+            expect(found_avails.keys).to eq([date])
+            expect(found_avails[date].length).to eq(expected_avails[date].length)
+            found_avails[date].each_with_index do |found_avail, j|
+              expect(found_avail.start).to eq(expected_avails[date][j].start)
+              expect(found_avail.end).to eq(expected_avails[date][j].end)
+            end
+          end
         end
 
         it "returns a hash of date => chunks-of-free-time-longer-than-min-duration" do

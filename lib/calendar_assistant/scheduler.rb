@@ -8,10 +8,12 @@ class CalendarAssistant
     end
 
     def available_blocks time_range
+      calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || CalendarAssistant::DEFAULT_CALENDAR_ID
+
       ca.in_env do
         length = ChronicDuration.parse(config.setting(Config::Keys::Settings::MEETING_LENGTH))
 
-        events = ca.find_events time_range
+        events = ca.find_events time_range, calendar_id: calendar_id
         date_range = time_range.first.to_date .. time_range.last.to_date
 
         # find relevant events and map them into dates
