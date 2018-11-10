@@ -2,7 +2,7 @@ resource_types:
 - name: pull-request
   type: docker-image
   source:
-    repository: jtarchie/pr
+    repository: teliaoss/github-pr-resource
 - name: slack-notification
   type: docker-image
   source:
@@ -26,8 +26,9 @@ resources:
         - doc/**
   - name: calendar-assistant-pr
     type: pull-request
+    check_every: 1m
     source:
-      repo: flavorjones/calendar-assistant
+      repository: flavorjones/calendar-assistant
       access_token: {{github-repo-status-access-token}}
       ignore_paths:
         - concourse/**
@@ -37,6 +38,24 @@ resources:
       url: {{pivotal-slack-calendar-assistant-webhook-url}}
 
 anchors:
+  generate_pr_messages: &generate_pr_messages
+    task: generate-pr-messages
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: cfmanteiga/alpine-bash-curl-jq, tag: "latest"}
+      inputs:
+        - name: ci
+        - name: calendar-assistant-pr
+      outputs:
+        - name: pr-messages
+      params:
+        PR_INPUT_PATH: calendar-assistant-pr
+        PR_OUTPUT_PATH: pr-messages
+      run:
+        path: ci/concourse/tasks/pr-messages/run.sh
+
   notify_failure_to_slack: &notify_failure_to_slack
     put: slack-notification
     params:
@@ -44,6 +63,7 @@ anchors:
       text_file: calendar-assistant/.git/commit_message
       text: |
         :concourse-failed: $ATC_EXTERNAL_URL/builds/$BUILD_ID (master) Fail: "$TEXT_FILE_CONTENT"
+
   notify_success_to_slack: &notify_success_to_slack
     put: slack-notification
     params:
@@ -55,17 +75,17 @@ anchors:
     put: slack-notification
     params:
       silent: true
-      text_file: calendar-assistant-pr/.git/id
+      text_file: pr-messages/message.log
       text: |
-        :concourse-failed: $ATC_EXTERNAL_URL/builds/$BUILD_ID PR $TEXT_FILE_CONTENT Fail: https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
+        :concourse-failed: $TEXT_FILE_CONTENT
+
   notify_pr_success_to_slack: &notify_pr_success_to_slack
     put: slack-notification
     params:
       silent: true
-      text_file: calendar-assistant-pr/.git/id
+      text_file: pr-messages/message.log
       text: |
-        :concourse-succeeded: $ATC_EXTERNAL_URL/builds/$BUILD_ID PR $TEXT_FILE_CONTENT Success: https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
-
+        :concourse-succeeded: $TEXT_FILE_CONTENT
 
 % ruby_version = RUBIES[:mri].last
 jobs:
@@ -75,59 +95,32 @@ jobs:
       - get: ci
       - get: calendar-assistant
         trigger: true
-      - task: rake-spec
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source: {repository: ruby, tag: "<%= ruby_version %>"}
-          inputs:
-            - name: ci
-            - name: calendar-assistant
-          run:
-            path: ci/concourse/tasks/rake-spec/run.sh
-        on_failure: *notify_failure_to_slack
+      - aggregate:
+        - task: rake-spec
+          config:
+            platform: linux
+            image_resource:
+              type: docker-image
+              source: {repository: ruby, tag: "<%= ruby_version %>"}
+            inputs:
+              - name: ci
+              - name: calendar-assistant
+            run:
+              path: ci/concourse/tasks/rake-spec/run.sh
+        - task: license-finder
+          config:
+            platform: linux
+            image_resource:
+              type: docker-image
+              source: {repository: ruby, tag: "<%= ruby_version %>"}
+            inputs:
+              - name: ci
+              - name: calendar-assistant
+            run:
+              path: ci/concourse/tasks/license-finder/run.sh
+    on_success: *notify_success_to_slack
+    on_failure: *notify_failure_to_slack
 
-  - name: license-check
-    public: true
-    plan:
-      - get: ci
-      - get: calendar-assistant
-        trigger: true
-        passed: ["rake-spec"]
-      - task: license-finder
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source: {repository: ruby, tag: "<%= ruby_version %>"}
-          inputs:
-            - name: ci
-            - name: calendar-assistant
-          run:
-            path: ci/concourse/tasks/license-finder/run.sh
-        on_failure: *notify_failure_to_slack
-
-  - name: build-success
-    public: true
-    disable_manual_trigger: true
-    plan:
-      - get: calendar-assistant
-        trigger: true
-        version: every
-        passed: ["license-check"]
-      - *notify_success_to_slack
-
-
-  - name: pr-pending
-    public: true
-    plan:
-      - get: ci
-      - get: calendar-assistant-pr
-        trigger: true
-        version: every
-      - put: calendar-assistant-pr
-        params: {path: calendar-assistant-pr, status: pending}
 
   - name: rake-spec-pr
     public: true
@@ -136,59 +129,41 @@ jobs:
       - get: calendar-assistant-pr
         trigger: true
         version: every
-        passed: ["pr-pending"]
-      - task: rake-spec
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source: {repository: ruby, tag: "<%= ruby_version %>"}
-          inputs:
-            - name: ci
-            - name: calendar-assistant-pr
-              path: calendar-assistant
-          run:
-            path: ci/concourse/tasks/rake-spec/run.sh
-        on_failure:
-          aggregate:
-            - *notify_pr_failure_to_slack
-            - put: calendar-assistant-pr
-              params: {path: calendar-assistant-pr, status: failure}
-
-  - name: license-check-pr
-    public: true
-    plan:
-      - get: ci
-      - get: calendar-assistant-pr
-        trigger: true
-        version: every
-        passed: ["rake-spec-pr"]
-      - task: license-finder
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source: {repository: ruby, tag: "<%= ruby_version %>"}
-          inputs:
-            - name: ci
-            - name: calendar-assistant-pr
-              path: calendar-assistant
-          run:
-            path: ci/concourse/tasks/license-finder/run.sh
-        on_failure:
-          aggregate:
-            - *notify_pr_failure_to_slack
-            - put: calendar-assistant-pr
-              params: {path: calendar-assistant-pr, status: failure}
-
-  - name: pr-success
-    public: true
-    disable_manual_trigger: true
-    plan:
-      - get: calendar-assistant-pr
-        trigger: true
-        version: every
-        passed: ["license-check-pr"]
-      - *notify_pr_success_to_slack
+      - *generate_pr_messages
       - put: calendar-assistant-pr
-        params: {path: calendar-assistant-pr, status: success}
+        params: {path: calendar-assistant-pr, status: pending}
+      - aggregate:
+        - task: rake-spec
+          config:
+            platform: linux
+            image_resource:
+              type: docker-image
+              source: {repository: ruby, tag: "<%= ruby_version %>"}
+            inputs:
+              - name: ci
+              - name: calendar-assistant-pr
+                path: calendar-assistant
+            run:
+              path: ci/concourse/tasks/rake-spec/run.sh
+        - task: license-finder
+          config:
+            platform: linux
+            image_resource:
+              type: docker-image
+              source: {repository: ruby, tag: latest}
+            inputs:
+              - name: ci
+              - name: calendar-assistant-pr
+                path: calendar-assistant
+            run:
+              path: ci/concourse/tasks/license-finder/run.sh
+    on_success:
+      aggregate:
+        - *notify_pr_success_to_slack
+        - put: calendar-assistant-pr
+          params: {path: calendar-assistant-pr, status: success}
+    on_failure:
+      aggregate:
+        - *notify_pr_failure_to_slack
+        - put: calendar-assistant-pr
+          params: {path: calendar-assistant-pr, status: failure}
