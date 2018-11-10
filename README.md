@@ -1,4 +1,6 @@
 
+FOO
+
 # calendar assistant
 
 A command-line tool to help me manage my Google Calendar.
