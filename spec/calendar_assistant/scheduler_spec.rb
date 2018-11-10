@@ -4,6 +4,8 @@ describe CalendarAssistant::Scheduler do
   end
 
   describe "#available_blocks" do
+    set_date_to_a_weekday # because otherwise if tests run on a weekend they'll fail
+
     let(:scheduler) { described_class.new ca, config: config }
     let(:config) { CalendarAssistant::Config.new options: config_options }
     let(:config_options) { Hash.new }

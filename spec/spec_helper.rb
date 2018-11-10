@@ -23,6 +23,14 @@ module RspecDescribeHelpers
     end
   end
 
+  def set_date_to_a_weekday
+    around do |example|
+      Timecop.travel(Time.local(2018, 7, 11, 12, 1, 1)) do
+        example.run
+      end
+    end
+  end
+
   def with_temp_config_file &block
     contents = block_given? ? yield : ""
 
