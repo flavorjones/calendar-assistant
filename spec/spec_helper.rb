@@ -14,6 +14,9 @@ BusinessTime::Config.end_of_workday = "12:30pm"
 Time.zone = "Pacific/Fiji"
 ENV['TZ'] = "Pacific/Fiji"
 
+# make sure we don't do weird things with timecop
+Timecop.safe_mode = true
+
 module RspecDescribeHelpers
   def freeze_time
     around do |example|
