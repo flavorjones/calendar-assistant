@@ -1,19 +1,17 @@
 class CalendarAssistant
   class Scheduler
-    attr_reader :config, :ca
+    attr_reader :ca, :er
 
-    def initialize ca, config: Config.new
+    def initialize ca, er
       @ca = ca
-      @config = config
+      @er = er
     end
 
     def available_blocks time_range
-      calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || CalendarAssistant::DEFAULT_CALENDAR_ID
-
       ca.in_env do
-        length = ChronicDuration.parse(config.setting(Config::Keys::Settings::MEETING_LENGTH))
+        length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
 
-        events = ca.find_events time_range, calendar_id: calendar_id
+        events = er.find time_range
         date_range = time_range.first.to_date .. time_range.last.to_date
 
         # find relevant events and map them into dates
@@ -28,7 +26,7 @@ class CalendarAssistant
         end
 
         # iterate over the days finding free chunks of time
-        ca.in_tz(config.options[Config::Keys::Options::TIMEZONE]) do
+        ca.in_tz(ca.config.options[Config::Keys::Options::TIMEZONE]) do
           date_range.inject({}) do |avail_time, date|
             avail_time[date] ||= []
             date_events = dates_events[date]

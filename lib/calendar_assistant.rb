@@ -82,7 +82,9 @@ class CalendarAssistant
   end
 
   def availability time_range
-    Scheduler.new(self, config: config).available_blocks(time_range)
+    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || DEFAULT_CALENDAR_ID
+    er = event_repository(calendar_id)
+    Scheduler.new(self, er).available_blocks(time_range)
   end
 
   def find_location_events time_range

@@ -241,15 +241,49 @@ describe CalendarAssistant do
       let(:scheduler) { instance_double(CalendarAssistant::Scheduler) }
       let(:time_range) { instance_double("time range") }
 
-      it "creates a scheduler and invokes #available_blocks" do
-        expect(CalendarAssistant::Scheduler).to receive(:new).
-                                                  with(ca, config: config).
-                                                  and_return(scheduler)
-        expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
+      context "looking at own calendar" do
+        before do
+          expect(event_repository_factory).to receive(:new_event_repository).
+                                                with(anything, CalendarAssistant::DEFAULT_CALENDAR_ID).
+                                                and_return(event_repository)
+        end
 
-        response = ca.availability(time_range)
+        it "creates a scheduler and invokes #available_blocks" do
+          expect(CalendarAssistant::Scheduler).to receive(:new).
+                                                    with(ca, event_repository).
+                                                    and_return(scheduler)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
 
-        expect(response).to eq(events)
+          response = ca.availability(time_range)
+
+          expect(response).to eq(events)
+        end
+      end
+
+      context "looking at someone else's calendar" do
+        let(:other_calendar_id) { "somebodyelse@example.com" }
+        let(:config_options) do
+          {
+            CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => other_calendar_id,
+          }
+        end
+
+        before do
+          expect(event_repository_factory).to receive(:new_event_repository).
+                                                with(anything, other_calendar_id).
+                                                and_return(event_repository)
+        end
+
+        it "creates a scheduler and invokes #available_blocks" do
+          expect(CalendarAssistant::Scheduler).to receive(:new).
+                                                    with(ca, event_repository).
+                                                    and_return(scheduler)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
+
+          response = ca.availability(time_range)
+
+          expect(response).to eq(events)
+        end
       end
     end
 

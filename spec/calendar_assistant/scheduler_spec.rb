@@ -6,7 +6,7 @@ describe CalendarAssistant::Scheduler do
   describe "#available_blocks" do
     set_date_to_a_weekday # because otherwise if tests run on a weekend they'll fail
 
-    let(:scheduler) { described_class.new ca, config: config }
+    let(:scheduler) { described_class.new ca, er }
     let(:config) { CalendarAssistant::Config.new options: config_options }
     let(:config_options) { Hash.new }
     let(:ca) { CalendarAssistant.new config }
@@ -15,6 +15,7 @@ describe CalendarAssistant::Scheduler do
     let(:calendar) { instance_double("Calendar") }
     let(:time_zone) { ENV['TZ'] }
     let(:calendar_id) { CalendarAssistant::DEFAULT_CALENDAR_ID }
+    let(:er) { instance_double("EventRepository") }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
@@ -23,7 +24,7 @@ describe CalendarAssistant::Scheduler do
       allow(calendar).to receive(:time_zone).and_return(time_zone)
       allow(config).to receive(:profile_name).and_return("profile-name")
 
-      expect(ca).to receive(:find_events).with(time_range, calendar_id: calendar_id).and_return(events)
+      expect(er).to receive(:find).with(time_range).and_return(events)
     end
 
     context "single date" do
