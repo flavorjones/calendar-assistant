@@ -57,7 +57,8 @@ describe CalendarAssistant do
   describe "events" do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
-    let(:config) { CalendarAssistant::Config.new(options: options) }
+    let(:config) { CalendarAssistant::Config.new options: config_options }
+    let(:config_options) { Hash.new }
     let(:token_store) { instance_double("CalendarAssistant::Config::TokenStore") }
     let(:event_repository) { instance_double("EventRepository") }
     let(:event_repository_factory) { instance_double("EventRepositoryFactory") }
@@ -65,7 +66,6 @@ describe CalendarAssistant do
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
     let(:authorizer) { instance_double("Authorizer") }
-    let(:options) { { } }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
@@ -254,10 +254,10 @@ describe CalendarAssistant do
     end
 
     describe "#in_env" do
-      let(:options) do
+      let(:config_options) do
         {
-            CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
-            CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
+          CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
+          CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
         }
       end
 
