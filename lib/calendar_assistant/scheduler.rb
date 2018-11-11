@@ -45,20 +45,30 @@ class CalendarAssistant
               next if ! e.end.date_time.to_time.during_business_hours?
 
               if (e.start.date_time.to_time - start_time) >= length
-                avail_time[date] << CalendarAssistant.available_block(start_time.in_time_zone(ca.calendar.time_zone), e.start.date_time)
+                avail_time[date] << available_block(start_time.in_time_zone(ca.calendar.time_zone), e.start.date_time)
               end
               start_time = e.end.date_time.to_time
               break if ! start_time.during_business_hours?
             end
 
             if end_time - start_time >= length
-              avail_time[date] << CalendarAssistant.available_block(start_time.in_time_zone(ca.calendar.time_zone), end_time.in_time_zone(ca.calendar.time_zone))
+              avail_time[date] << available_block(start_time.in_time_zone(ca.calendar.time_zone), end_time.in_time_zone(ca.calendar.time_zone))
             end
 
             avail_time
           end
         end
       end
+    end
+
+    private
+
+    def available_block start_time, end_time
+      Google::Apis::CalendarV3::Event.new(
+        start: Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time),
+        end: Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time),
+        summary: "available"
+      )
     end
   end
 end

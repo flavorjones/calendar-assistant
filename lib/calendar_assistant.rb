@@ -170,15 +170,6 @@ class CalendarAssistant
     @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id)
   end
 
-  private
-
-  def self.available_block start_time, end_time
-    Google::Apis::CalendarV3::Event.new(
-      start: Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time),
-      end: Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time),
-      summary: "available"
-    )
-  end
 end
 
 require "calendar_assistant/config"
