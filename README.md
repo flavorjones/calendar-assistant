@@ -21,7 +21,7 @@ Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
 
 ### Pretty Display
 
-Events are nicely formatted, with faint strikeouts for events you've declined, and some additional attributes listed when present (e.g., "needsAction", "self", "not-busy", "1:1" ...)
+Events are nicely formatted, with faint strikeouts for events you've declined, and some additional attributes listed when present (e.g., "awaiting", "self", "not-busy", "1:1" ...)
 
 
 ### Date and Time Specification

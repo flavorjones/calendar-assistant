@@ -128,6 +128,7 @@ class CalendarAssistant
       attributes << "not-busy" unless event.busy?
       attributes << "self" if event.human_attendees.nil? && event.visibility != "private"
       attributes << "1:1" if event.one_on_one?
+      attributes << "awaiting" if event.awaiting?
     end
 
     attributes << event.visibility if event.explicit_visibility?

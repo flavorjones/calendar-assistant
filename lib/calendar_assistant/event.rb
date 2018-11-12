@@ -44,6 +44,10 @@ class CalendarAssistant
       response_status == GCal::Event::Response::DECLINED
     end
 
+    def awaiting?
+      response_status == GCal::Event::Response::NEEDS_ACTION
+    end
+
     def one_on_one?
       return false if attendees.nil?
       return false unless attendees.any? { |a| a.self }

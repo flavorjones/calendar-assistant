@@ -222,6 +222,44 @@ describe CalendarAssistant::Event do
     end
   end
 
+  describe "#awaiting?" do
+    context "event with no attendees" do
+      it { is_expected.not_to be_awaiting }
+    end
+
+    context "event with attendees including me" do
+      let(:decorated_object) { decorated_class.new(attendees: attendees) }
+      subject { described_class.new decorated_object }
+
+      (GCal::Event::RealResponse.constants - [:NEEDS_ACTION]).each do |response_status_name|
+        context "response status #{response_status_name}" do
+          before do
+            allow(attendee_self).to receive(:response_status).
+                and_return(GCal::Event::Response.const_get(response_status_name))
+          end
+
+          it { expect(subject.awaiting?).to be_falsey }
+        end
+      end
+
+      context "response status NEEDS_ACTION" do
+        before do
+          allow(attendee_self).to receive(:response_status).
+              and_return(GCal::Event::Response::NEEDS_ACTION)
+        end
+
+        it { expect(subject.awaiting?).to be_truthy }
+      end
+    end
+
+    context "event with attendees but not me" do
+      let(:decorated_object) { decorated_class.new(attendees: attendees - [attendee_self]) }
+      subject { described_class.new decorated_object }
+
+      it { expect(subject.awaiting?).to be_falsey }
+    end
+  end
+
   describe "#one_on_one?" do
     context "event with no attendees" do
       it { is_expected.not_to be_one_on_one }
