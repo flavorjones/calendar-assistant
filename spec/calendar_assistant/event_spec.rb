@@ -63,7 +63,7 @@ describe CalendarAssistant::Event do
     end
 
     context "event summary begins with a worldmap emoji" do
-      let(:decorated_object) { decorated_class.new(summary: "🗺 yes a location event") }
+      let(:decorated_object) { decorated_class.new(summary: "#{CalendarAssistant::EMOJI_WORLDMAP} yes a location event") }
 
       it "returns true" do
         expect(described_class.new(decorated_object).location_event?).to be_truthy
