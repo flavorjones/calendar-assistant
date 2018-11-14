@@ -27,16 +27,44 @@ describe CalendarAssistant do
     end
   end
 
+  describe "using the local file store" do
+    with_temp_file("filestore", :temp_filestore_file)
+
+    let(:config) { instance_double(CalendarAssistant::Config, profile_name: double, token_store: double) }
+    let(:ca) { CalendarAssistant.new config }
+    let(:local_service) { CalendarAssistant::LocalService.new(file: filename) }
+    let(:filename) { temp_filestore_file.path }
+
+    before do
+      event_list_factory(file: filename, calendar_id: "primary") do
+        [
+            {start: "10:00", end: "11:00", options: [:recurring, :self], id: "eminently beautiful"},
+            {start: "10:00", end: "11:00", options: [:recurring]},
+            {start: "10:00", end: "11:00", summary: "test", options: [:recurring, :one_on_one]}
+        ]
+      end
+
+      allow(config).to receive(:options).and_return({local_store: filename})
+    end
+
+    it "reads from those events" do
+      results = ca.find_events(Time.now.beginning_of_day..(Time.now + 1.day))
+      expect(results.length).to eq 3
+      expect(results.first.id).to eq "eminently beautiful"
+    end
+  end
+
   describe "events" do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
-    let(:config) { instance_double("CalendarAssistant::Config") }
+    let(:config) { CalendarAssistant::Config.new(options: options) }
     let(:token_store) { instance_double("CalendarAssistant::Config::TokenStore") }
     let(:event_repository) { instance_double("EventRepository") }
     let(:ca) { CalendarAssistant.new config, event_repository: event_repository }
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
     let(:authorizer) { instance_double("Authorizer") }
+    let(:options) { { } }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
@@ -225,12 +253,11 @@ describe CalendarAssistant do
     end
 
     describe "#in_env" do
-      let(:config) do
-        CalendarAssistant::Config.new(
-          options: {
+      let(:options) do
+        {
             CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
             CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
-          })
+        }
       end
 
       before do

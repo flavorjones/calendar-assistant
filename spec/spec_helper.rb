@@ -1,4 +1,5 @@
 require_relative "../lib/calendar_assistant"
+require_relative "./helpers/event_factory"
 
 require "timecop"
 require "securerandom"
@@ -69,6 +70,12 @@ module RspecExampleHelpers
       Time.zone = orig_time_tz
       ENV['TZ'] = orig_env_tz
     end
+  end
+
+  def event_list_factory(date: Time.now, file: nil, calendar_id:, &block)
+    service = CalendarAssistant::LocalService.new(file: file, load_events: false)
+    service.insert_calendar(GCal::Calendar.new(id: calendar_id))
+    EventFactory.new(service: service, calendar_id: calendar_id).for(date, &block)
   end
 
   def event_factory summary, time_range, stub={}

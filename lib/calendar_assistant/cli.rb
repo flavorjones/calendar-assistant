@@ -16,6 +16,10 @@ class CalendarAssistant
 
     default_config = CalendarAssistant::Config.new options: options # used in option descriptions
 
+    class_option :local_store,
+                 type: :string,
+                 desc: "filename of local store"
+
     class_option :help,
                  type: :boolean,
                  aliases: ["-h", "-?"]

@@ -32,7 +32,12 @@ class CalendarAssistant
 
   def initialize config=CalendarAssistant::Config.new, event_repository: nil
     @config = config
-    @service = Authorizer.new(config.profile_name, config.token_store).service
+
+    if filename = config.options[:local_store]
+      @service = CalendarAssistant::LocalService.new(file: filename)
+    else
+      @service = Authorizer.new(config.profile_name, config.token_store).service
+    end
     @calendar = service.get_calendar DEFAULT_CALENDAR_ID
     @event_repository = event_repository || EventRepository.new(@service, DEFAULT_CALENDAR_ID)
   end
