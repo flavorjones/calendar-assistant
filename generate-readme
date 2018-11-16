@@ -12,5 +12,6 @@ for module in $modules ; do
 done
 
 echo "Generating updated README.md..."
+export THOR_COLUMNS=100
 erb README.md.erb > README.md
 node_modules/.bin/markdown-toc README.md -i --maxdepth 3

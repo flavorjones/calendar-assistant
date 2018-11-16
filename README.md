@@ -77,13 +77,16 @@ Usage:
   calendar-assistant setup
 
 Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--local-store=LOCAL_STORE]  # filename of local store
+  -h, -?, [--help], [--no-help]        
+          [--debug], [--no-debug]      # how dare you suggest there are bugs
 
 Description:
-  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar API, and saving the credentials necessary to access the API on behalf of users.
+  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar
+  API, and saving the credentials necessary to access the API on behalf of users.
 
-  If you already have downloaded client credentials, you don't need to run this command. Instead, rename the downloaded JSON file to `/home/flavorjones/.calendar-assistant.client`
+  If you already have downloaded client credentials, you don't need to run this command. Instead,
+  rename the downloaded JSON file to `/home/flavorjones/.calendar-assistant.client`
 </pre>
 
 
@@ -94,15 +97,19 @@ Usage:
   calendar-assistant authorize PROFILE_NAME
 
 Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--local-store=LOCAL_STORE]  # filename of local store
+  -h, -?, [--help], [--no-help]        
+          [--debug], [--no-debug]      # how dare you suggest there are bugs
 
 Description:
-  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your calendar.
+  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your
+  calendar.
 
-  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and persist an access token.
+  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and
+  generate and persist an access token.
 
-  In order for this to work, you'll need to have set up your API client credentials. Run `calendar-assistant help setup` for instructions.
+  In order for this to work, you'll need to have set up your API client credentials. Run
+  `calendar-assistant help setup` for instructions.
 </pre>
 
 
@@ -110,20 +117,21 @@ Description:
 
 <pre>
 Commands:
-  calendar-assistant authorize PROFILE_NAME                       # create (or validate) a profile named NAME with calendar access
-  calendar-assistant availability [DATE | DATERANGE | TIMERANGE]  # Show your availability for a date or range of dates (default 'today')
-  calendar-assistant config                                       # Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
-  calendar-assistant help [COMMAND]                               # Describe available commands or one specific command
-  calendar-assistant join [TIME]                                  # Open the URL for a video call attached to your meeting at time TIME (default 'now')
-  calendar-assistant location [DATE | DATERANGE]                  # Show your location for a date or range of dates (default 'today')
-  calendar-assistant location-set LOCATION [DATE | DATERANGE]     # Set your location to LOCATION for a date or range of dates (default 'today')
-  calendar-assistant setup                                        # Link your local calendar-assistant installation to a Google API Client
-  calendar-assistant show [DATE | DATERANGE | TIMERANGE]          # Show your events for a date or range of dates (default 'today')
-  calendar-assistant version                                      # Display the version of calendar-assistant
+  calendar-assistant authorize PROFILE_NAME                       # create (or validate) a profil...
+  calendar-assistant availability [DATE | DATERANGE | TIMERANGE]  # Show your availability for a ...
+  calendar-assistant config                                       # Dump your configuration param...
+  calendar-assistant help [COMMAND]                               # Describe available commands o...
+  calendar-assistant join [TIME]                                  # Open the URL for a video call...
+  calendar-assistant location [DATE | DATERANGE]                  # Show your location for a date...
+  calendar-assistant location-set LOCATION [DATE | DATERANGE]     # Set your location to LOCATION...
+  calendar-assistant setup                                        # Link your local calendar-assi...
+  calendar-assistant show [DATE | DATERANGE | TIMERANGE]          # Show your events for a date o...
+  calendar-assistant version                                      # Display the version of calend...
 
 Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--local-store=LOCAL_STORE]  # filename of local store
+  -h, -?, [--help], [--no-help]        
+          [--debug], [--no-debug]      # how dare you suggest there are bugs
 </pre>
 
 
@@ -134,11 +142,12 @@ Usage:
   calendar-assistant join [TIME]
 
 Options:
-          [--join], [--no-join]    # launch a browser to join the video call URL
-                                   # Default: true
-  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--join], [--no-join]        # launch a browser to join the video call URL
+                                       # Default: true
+  -p, [--profile=PROFILE]              # the profile you'd like to use (if different from default)
+          [--local-store=LOCAL_STORE]  # filename of local store
+  -h, -?, [--help], [--no-help]        
+          [--debug], [--no-debug]      # how dare you suggest there are bugs
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
 </pre>
@@ -167,13 +176,14 @@ Usage:
   calendar-assistant availability [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -l, [--meeting-length=LENGTH]    # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
-  -s, [--start-of-day=TIME]        # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
-  -e, [--end-of-day=TIME]          # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
-  -z, [--timezone=TIMEZONE]        # [default is calendar tz] find chunks of available time in TIMEZONE (e.g., 'America/New_York')
-  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -l, [--meeting-length=LENGTH]        # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
+  -s, [--start-of-day=TIME]            # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
+  -e, [--end-of-day=TIME]              # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
+  -z, [--timezone=TIMEZONE]            # [default is calendar tz] find chunks of available time in TIMEZONE (e.g., 'America/New_York')
+  -p, [--profile=PROFILE]              # the profile you'd like to use (if different from default)
+          [--local-store=LOCAL_STORE]  # filename of local store
+  -h, -?, [--help], [--no-help]        
+          [--debug], [--no-debug]      # how dare you suggest there are bugs
 
 Show your availability for a date or range of dates (default 'today')
 </pre>
@@ -245,9 +255,10 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -p, [--profile=PROFILE]              # the profile you'd like to use (if different from default)
+          [--local-store=LOCAL_STORE]  # filename of local store
+  -h, -?, [--help], [--no-help]        
+          [--debug], [--no-debug]      # how dare you suggest there are bugs
 
 Set your location to LOCATION for a date or range of dates (default 'today')
 </pre>
@@ -286,9 +297,10 @@ Usage:
   calendar-assistant location [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]          # the profile you'd like to use (if different from default)
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -p, [--profile=PROFILE]              # the profile you'd like to use (if different from default)
+          [--local-store=LOCAL_STORE]  # filename of local store
+  -h, -?, [--help], [--no-help]        
+          [--debug], [--no-debug]      # how dare you suggest there are bugs
 
 Show your location for a date or range of dates (default 'today')
 </pre>
@@ -299,8 +311,8 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-27  <b> | 🗺 Beorn's Hall </b><i> (not-busy, self)</i>
-2018-09-28               <b> | 🗺 Goblin Gate </b><i> (not-busy, self)</i>
+2018-09-24 - 2018-09-27  <b> | 🗺 The Great Mill </b><i> (not-busy, self)</i>
+2018-09-28               <b> | 🗺 Land Beyond </b><i> (not-busy, self)</i>
 </pre>
 
 
@@ -313,6 +325,7 @@ Usage:
 Options:
   -c, [--commitments], [--no-commitments]  # only show events that you've accepted with another person
   -p, [--profile=PROFILE]                  # the profile you'd like to use (if different from default)
+          [--local-store=LOCAL_STORE]      # filename of local store
   -h, -?, [--help], [--no-help]            
           [--debug], [--no-debug]          # how dare you suggest there are bugs
 
@@ -325,30 +338,30 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show --profile=work 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01               <b> | 🗺 Bree </b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | Scale revolutionary bandwidth </strike>
-<strike>2018-10-01  07:30 - 08:30 | Repurpose clicks-and-mortar communities </strike>
-<strike>2018-10-01  07:30 - 08:30 | Enhance frictionless experiences </strike>
-2018-10-01  08:00 - 09:00<b> | Generate user-centric bandwidth </b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | Exploit innovative channels </b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Target real-time markets </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Maximize frictionless systems </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Facilitate compelling platforms </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Productize leading-edge deliverables </strike>
-2018-10-01  12:00 - 12:30<b> | Exploit open-source functionalities </b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Incentivize leading-edge initiatives </strike>
-<strike>2018-10-01  12:30 - 13:30 | Optimize user-centric e-markets </strike>
-2018-10-01  12:30 - 13:30<b> | Reintermediate bricks-and-clicks web-readiness </b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Seize compelling metrics </b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Drive intuitive e-services </strike>
-2018-10-01  15:00 - 15:30<b> | Strategize intuitive infrastructures </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Integrate mission-critical users </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Visualize 24/7 roi </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Morph frictionless vortals </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Repurpose impactful web services </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | E-enable synergistic channels </strike>
-<strike>2018-10-01  18:30 - 19:00 | Iterate world-class applications </strike>
-<strike>2018-10-01  19:00 - 19:30 | Incubate out-of-the-box technologies </strike>
+2018-10-01               <b> | 🗺 The Great Mill </b><i> (not-busy, self)</i>
+<strike>2018-10-01  03:30 - 05:00 | E-enable collaborative communities </strike>
+<strike>2018-10-01  07:30 - 08:30 | Morph next-generation bandwidth </strike>
+<strike>2018-10-01  07:30 - 08:30 | Maximize compelling networks </strike>
+2018-10-01  08:00 - 09:00<b> | Recontextualize integrated interfaces </b><i> (recurring, self)</i>
+2018-10-01  09:00 - 10:30<b> | Syndicate web-enabled content </b><i> (self)</i>
+2018-10-01  10:30 - 10:55<b> | Iterate efficient methodologies </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Benchmark next-generation infomediaries </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Reinvent web-enabled infomediaries </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Incentivize customized experiences </strike>
+2018-10-01  12:00 - 12:30<b> | Visualize clicks-and-mortar functionalities </b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Transition efficient e-commerce </strike>
+<strike>2018-10-01  12:30 - 13:30 | Target proactive e-services </strike>
+2018-10-01  12:30 - 13:30<b> | Innovate leading-edge systems </b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Evolve 24/7 deliverables </b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Leverage bleeding-edge applications </strike>
+2018-10-01  15:00 - 15:30<b> | Redefine open-source metrics </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Extend magnetic systems </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Aggregate e-business metrics </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Matrix distributed interfaces </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Synthesize vertical niches </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Matrix out-of-the-box web services </strike>
+<strike>2018-10-01  18:30 - 19:00 | Mesh innovative mindshare </strike>
+<strike>2018-10-01  19:00 - 19:30 | Optimize world-class paradigms </strike>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -357,15 +370,15 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Reinvent out-of-the-box infomediaries </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Mesh real-time action-items </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Harness innovative infrastructures </b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Revolutionize proactive e-commerce </b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Scale best-of-breed applications </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Harness collaborative partnerships </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Mesh world-class web-readiness </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Revolutionize 24/365 metrics </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Implement holistic convergence </b><i> (1:1, recurring)</i>
+2018-10-01  10:30 - 10:55<b> | Maximize interactive e-commerce </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Incubate innovative content </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Extend virtual content </b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Innovate proactive content </b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Transform seamless systems </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Architect granular mindshare </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Cultivate turn-key initiatives </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Synergize next-generation supply-chains </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Seize global vortals </b><i> (1:1, recurring)</i>
 </pre>
 
 
@@ -378,8 +391,9 @@ Usage:
   calendar-assistant config
 
 Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--local-store=LOCAL_STORE]  # filename of local store
+  -h, -?, [--help], [--no-help]        
+          [--debug], [--no-debug]      # how dare you suggest there are bugs
 
 Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
 </pre>
