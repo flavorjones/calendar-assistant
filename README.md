@@ -1,4 +1,3 @@
-
 # calendar assistant
 
 A command-line tool to help you manage your Google Calendar.
@@ -12,15 +11,28 @@ A command-line tool to help you manage your Google Calendar.
 [![Concourse CI](https://ci.nokogiri.org/api/v1/teams/calendar-assistants/pipelines/calendar-assistant/jobs/rake-spec/badge)](https://ci.nokogiri.org/teams/calendar-assistants/pipelines/calendar-assistant)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/maintainability)](https://codeclimate.com/github/flavorjones/calendar-assistant/maintainability)
 
+<!-- toc -->
 
-## Setup
+- [Features](#features)
+  * [Pretty Display in Your Terminal](#pretty-display-in-your-terminal)
+  * [Human-Friendly Date and Time Specification](#human-friendly-date-and-time-specification)
+  * [Human-Friendly Duration Specification](#human-friendly-duration-specification)
+  * [Preferences](#preferences)
+- [Setup](#setup)
+  * [Installation](#installation)
+  * [Set up a Google Cloud Project with API access](#set-up-a-google-cloud-project-with-api-access)
+  * [Authorize access to your Google Calendar](#authorize-access-to-your-google-calendar)
+- [Commands](#commands)
+  * [Join a video call attached to a meeting](#join-a-video-call-attached-to-a-meeting)
+  * [Find your availability for meetings](#find-your-availability-for-meetings)
+  * [Tell people where you are at in the world](#tell-people-where-you-are-at-in-the-world)
+  * [Look up where you're going to be](#look-up-where-youre-going-to-be)
+  * [Display your calendar events](#display-your-calendar-events)
+  * [View your configuration parameters](#view-your-configuration-parameters)
+- [References](#references)
+- [License](#license)
 
-First install the gem: `gem install calendar-assistant`.
-
-Head to [the Google API quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `~/.calendar-assistant.client`.
-
-Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
-
+<!-- tocstop -->
 
 ## Features
 
@@ -49,6 +61,49 @@ Some duration-related preferences are interpreted by [ChronicDuration](https://g
 ### Preferences
 
 All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format for easy editing.
+
+
+## Setup
+
+### Installation
+
+Install the gem: `gem install calendar-assistant`.
+
+
+### Set up a Google Cloud Project with API access
+
+<pre>
+Usage:
+  calendar-assistant setup
+
+Options:
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+
+Description:
+  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar API, and saving the credentials necessary to access the API on behalf of users.
+
+  If you already have downloaded client credentials, you don't need to run this command. Instead, rename the downloaded JSON file to `/home/flavorjones/.calendar-assistant.client`
+</pre>
+
+
+### Authorize access to your Google Calendar
+
+<pre>
+Usage:
+  calendar-assistant authorize PROFILE_NAME
+
+Options:
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+
+Description:
+  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your calendar.
+
+  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and persist an access token.
+
+  In order for this to work, you'll need to have set up your API client credentials. Run `calendar-assistant help setup` for instructions.
+</pre>
 
 
 ## Commands
@@ -94,12 +149,12 @@ Some examples:
 <b>$</b> calendar-assistant join
 2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
 https://pivotal.zoom.us/j/ABC90210
-  # ... and opens the URL, which is associated with an event happening now
+<i># ... and opens the URL, which is associated with an event happening now</i>
 
 <b>$</b> calendar-assistant join work 11:30 --no-join 
 2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
 https://pivotal.zoom.us/j/ABC90210
-  # ... and does not open the URL
+<i># ... and does not open the URL</i>
 </pre>
 
 
@@ -202,22 +257,22 @@ Set your location to LOCATION for a date or range of dates (default 'today')
 Some examples:
 
 <pre>
-# create an event titled `🗺 WFH` for today
+<i># create an event titled `🗺 WFH` for today</i>
 <b>$</b> calendar-assistant location set -p home WFH
 <b>Created:</b>
 2018-09-03                | <b>🗺  WFH</b> (not-busy, self)
 
-# create an event titled `🗺 OOO` for tomorrow
+<i># create an event titled `🗺 OOO` for tomorrow</i>
 <b>$</b> calendar-assistant location-set OOO tomorrow
 <b>Created:</b>
 2018-09-04                | <b>🗺  OOO</b> (not-busy, self)
 
-# create an event titled `🗺 Spring One` on the days of that conference
+<i># create an event titled `🗺 Spring One` on the days of that conference</i>
 <b>$</b> calendar-assistant location-set "Spring One" 2018-09-24...2018-09-27
 <b>Created:</b>
 2018-09-24 - 2018-09-27   | <b>🗺  Spring One</b> (not-busy, self)
 
-# create a vacation event for next week
+<i># create a vacation event for next week</i>
 <b>$</b> calendar-assistant location-set "Vacation!" "next monday ... next week friday"
 <b>Created:</b>
 2018-09-10 - 2018-09-14   | <b>🗺  Vacation!</b> (not-busy, self)
@@ -244,7 +299,7 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-27  <b> | 🗺 Mines of Moria </b><i> (not-busy, self)</i>
+2018-09-24 - 2018-09-27  <b> | 🗺 Beorn's Hall </b><i> (not-busy, self)</i>
 2018-09-28               <b> | 🗺 Goblin Gate </b><i> (not-busy, self)</i>
 </pre>
 
@@ -270,30 +325,30 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show --profile=work 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01               <b> | 🗺 Esgaroth </b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | Generate user-centric niches </strike>
-<strike>2018-10-01  07:30 - 08:30 | Morph cross-platform markets </strike>
-<strike>2018-10-01  07:30 - 08:30 | Orchestrate proactive networks </strike>
-2018-10-01  08:00 - 09:00<b> | Engineer innovative niches </b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | Engage innovative interfaces </b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Exploit next-generation niches </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Extend visionary partnerships </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Matrix cross-platform e-markets </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Reinvent user-centric interfaces </strike>
-2018-10-01  12:00 - 12:30<b> | Brand rich schemas </b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Brand visionary infrastructures </strike>
-<strike>2018-10-01  12:30 - 13:30 | Syndicate real-time supply-chains </strike>
-2018-10-01  12:30 - 13:30<b> | Envisioneer wireless experiences </b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Brand intuitive metrics </b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Deliver world-class infomediaries </strike>
-2018-10-01  15:00 - 15:30<b> | Iterate enterprise applications </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Benchmark virtual niches </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Aggregate cross-media vortals </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Whiteboard user-centric deliverables </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Synthesize impactful models </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Facilitate visionary communities </strike>
-<strike>2018-10-01  18:30 - 19:00 | Whiteboard impactful infrastructures </strike>
-<strike>2018-10-01  19:00 - 19:30 | Orchestrate magnetic architectures </strike>
+2018-10-01               <b> | 🗺 Bree </b><i> (not-busy, self)</i>
+<strike>2018-10-01  03:30 - 05:00 | Scale revolutionary bandwidth </strike>
+<strike>2018-10-01  07:30 - 08:30 | Repurpose clicks-and-mortar communities </strike>
+<strike>2018-10-01  07:30 - 08:30 | Enhance frictionless experiences </strike>
+2018-10-01  08:00 - 09:00<b> | Generate user-centric bandwidth </b><i> (recurring, self)</i>
+2018-10-01  09:00 - 10:30<b> | Exploit innovative channels </b><i> (self)</i>
+2018-10-01  10:30 - 10:55<b> | Target real-time markets </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Maximize frictionless systems </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Facilitate compelling platforms </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Productize leading-edge deliverables </strike>
+2018-10-01  12:00 - 12:30<b> | Exploit open-source functionalities </b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Incentivize leading-edge initiatives </strike>
+<strike>2018-10-01  12:30 - 13:30 | Optimize user-centric e-markets </strike>
+2018-10-01  12:30 - 13:30<b> | Reintermediate bricks-and-clicks web-readiness </b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Seize compelling metrics </b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Drive intuitive e-services </strike>
+2018-10-01  15:00 - 15:30<b> | Strategize intuitive infrastructures </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Integrate mission-critical users </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Visualize 24/7 roi </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Morph frictionless vortals </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Repurpose impactful web services </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | E-enable synergistic channels </strike>
+<strike>2018-10-01  18:30 - 19:00 | Iterate world-class applications </strike>
+<strike>2018-10-01  19:00 - 19:30 | Incubate out-of-the-box technologies </strike>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -302,39 +357,16 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Extend cutting-edge bandwidth </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Engineer one-to-one metrics </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Transform virtual eyeballs </b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Streamline virtual supply-chains </b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Reintermediate cutting-edge platforms </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Innovate revolutionary architectures </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Evolve strategic mindshare </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Implement cross-media e-services </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Whiteboard real-time niches </b><i> (1:1, recurring)</i>
+2018-10-01  10:30 - 10:55<b> | Reinvent out-of-the-box infomediaries </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Mesh real-time action-items </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Harness innovative infrastructures </b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Revolutionize proactive e-commerce </b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Scale best-of-breed applications </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Harness collaborative partnerships </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Mesh world-class web-readiness </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Revolutionize 24/365 metrics </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Implement holistic convergence </b><i> (1:1, recurring)</i>
 </pre>
-
-
-### Authorize access to your Google Calendar
-
-<pre>
-Usage:
-  calendar-assistant authorize PROFILE_NAME
-
-Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
-
-Description:
-  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your calendar.
-
-  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and persist an access token.
-
-  In order for this to work, you'll need to have set up your API client credentials. Run `calendar-assistant help setup` for instructions.
-</pre>
-
-This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
-
-Your access token will be stored in `~/.calendar-assistant` in the `[tokens]` section.
 
 
 ### View your configuration parameters

@@ -15,7 +15,7 @@ end
 def run args
   output = []
   output << "<b>$</b> calendar-assistant #{args}" unless args =~ /\bhelp\b/
-  output += `ruby -Ilib bin/calendar-assistant #{args} | node_modules/ansi-to-html/bin/ansi-to-html`.split("\n")
+  output += `ruby -Ilib bin/calendar-assistant #{args} | node_modules/.bin/ansi-to-html`.split("\n")
   output.map {|line| obfuscate line }.join("\n")
 end
 %>
@@ -33,13 +33,7 @@ A command-line tool to help you manage your Google Calendar.
 [![Maintainability](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/maintainability)](https://codeclimate.com/github/flavorjones/calendar-assistant/maintainability)
 
 
-## Setup
-
-First install the gem: `gem install calendar-assistant`.
-
-Head to [the Google API quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `~/.calendar-assistant.client`.
-
-Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
+<!-- toc -->
 
 
 ## Features
@@ -71,6 +65,27 @@ Some duration-related preferences are interpreted by [ChronicDuration](https://g
 All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format for easy editing.
 
 
+## Setup
+
+### Installation
+
+Install the gem: `gem install calendar-assistant`.
+
+
+### Set up a Google Cloud Project with API access
+
+<pre>
+<%= run "help setup" %>
+</pre>
+
+
+### Authorize access to your Google Calendar
+
+<pre>
+<%= run "help authorize" %>
+</pre>
+
+
 ## Commands
 
 <pre>
@@ -90,12 +105,12 @@ Some examples:
 <b>$</b> calendar-assistant join
 2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
 https://pivotal.zoom.us/j/ABC90210
-  # ... and opens the URL, which is associated with an event happening now
+<i># ... and opens the URL, which is associated with an event happening now</i>
 
 <b>$</b> calendar-assistant join work 11:30 --no-join 
 2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
 https://pivotal.zoom.us/j/ABC90210
-  # ... and does not open the URL
+<i># ... and does not open the URL</i>
 </pre>
 
 
@@ -135,22 +150,22 @@ Declare your location as an all-day non-busy event:
 Some examples:
 
 <pre>
-# create an event titled `🗺 WFH` for today
+<i># create an event titled `🗺 WFH` for today</i>
 <b>$</b> calendar-assistant location set -p home WFH
 <b>Created:</b>
 2018-09-03                | <b>🗺  WFH</b> (not-busy, self)
 
-# create an event titled `🗺 OOO` for tomorrow
+<i># create an event titled `🗺 OOO` for tomorrow</i>
 <b>$</b> calendar-assistant location-set OOO tomorrow
 <b>Created:</b>
 2018-09-04                | <b>🗺  OOO</b> (not-busy, self)
 
-# create an event titled `🗺 Spring One` on the days of that conference
+<i># create an event titled `🗺 Spring One` on the days of that conference</i>
 <b>$</b> calendar-assistant location-set "Spring One" 2018-09-24...2018-09-27
 <b>Created:</b>
 2018-09-24 - 2018-09-27   | <b>🗺  Spring One</b> (not-busy, self)
 
-# create a vacation event for next week
+<i># create a vacation event for next week</i>
 <b>$</b> calendar-assistant location-set "Vacation!" "next monday ... next week friday"
 <b>Created:</b>
 2018-09-10 - 2018-09-14   | <b>🗺  Vacation!</b> (not-busy, self)
@@ -187,17 +202,6 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <pre>
 <%= run "show -c 2018-10-01" %>
 </pre>
-
-
-### Authorize access to your Google Calendar
-
-<pre>
-<%= run "help authorize" %>
-</pre>
-
-This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
-
-Your access token will be stored in `~/.calendar-assistant` in the `[tokens]` section.
 
 
 ### View your configuration parameters

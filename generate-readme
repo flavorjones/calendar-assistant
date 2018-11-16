@@ -2,10 +2,15 @@
 
 set -e
 
-if [[ ! -e node_modules/ansi-to-html/bin/ansi-to-html ]] ; then
-  echo "NOTICE: installing npm modjule ansi-to-html ..."
-  npm install ansi-to-html
-fi
+modules="ansi-to-html markdown-toc"
+
+for module in $modules ; do
+  if [[ ! -e node_modules/.bin/$module ]] ; then
+    echo "NOTICE: installing npm module $module ..."
+    npm install $module
+  fi
+done
 
 echo "Generating updated README.md..."
 erb README.md.erb > README.md
+node_modules/.bin/markdown-toc README.md -i --maxdepth 3
