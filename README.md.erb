@@ -14,37 +14,42 @@ end
 
 def run args
   output = []
-  output << "<b>$</b> calendar-assistant #{args}"
+  output << "<b>$</b> calendar-assistant #{args}" unless args =~ /\bhelp\b/
   output += `ruby -Ilib bin/calendar-assistant #{args} | node_modules/ansi-to-html/bin/ansi-to-html`.split("\n")
   output.map {|line| obfuscate line }.join("\n")
 end
 %>
 # calendar assistant
 
-A command-line tool to help me manage my Google Calendar.
+A command-line tool to help you manage your Google Calendar.
 
-- book (and re-book) one-on-ones and other meetings automatically
-- set up all-day events to let people know your location in the world
 - easily join the videoconference for your current meeting
+- see yours and others' "availability" suitable for an email response
+- set up all-day events to let people know where you are (for frequent travelers)
+- see views on your calendar events for a date or time range
+- book (and re-book) one-on-ones and other meetings automatically
 
 [![Concourse CI](https://ci.nokogiri.org/api/v1/teams/calendar-assistants/pipelines/calendar-assistant/jobs/rake-spec/badge)](https://ci.nokogiri.org/teams/calendar-assistants/pipelines/calendar-assistant)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/maintainability)](https://codeclimate.com/github/flavorjones/calendar-assistant/maintainability)
 
-## Usage
 
-Head to [the quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `~/.calendar-assistant.client`.
+## Setup
+
+First install the gem: `gem install calendar-assistant`.
+
+Head to [the Google API quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `~/.calendar-assistant.client`.
 
 Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
 
 
 ## Features
 
-### Pretty Display
+### Pretty Display in Your Terminal
 
 Events are nicely formatted, with faint strikeouts for events you've declined, and some additional attributes listed when present (e.g., "awaiting", "self", "not-busy", "1:1" ...)
 
 
-### Date and Time Specification
+### Human-Friendly Date and Time Specification
 
 All dates and times are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times.
 
@@ -56,65 +61,20 @@ For a date range or a datetime range, split the start and end with `..` or `...`
 Also note that every command will adopt an intelligent default, which is generally "today" or "now".
 
 
-### Duration Specification
+### Human-Friendly Duration Specification
 
 Some duration-related preferences are interpreted by [ChronicDuration](https://github.com/henrypoydar/chronic_duration) and so can be terms like "10m", "30 minutes", "four hours", etc.
 
 
 ### Preferences
 
-All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format.
+All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format for easy editing.
 
 
 ## Commands
 
 <pre>
 <%= run "help" %>
-</pre>
-
-
-### View your configuration parameters
-
-Calendar Assistant has intelligent defaults, which can be overridden in the TOML file `~/.calendar-assistant`, and further overridden via command-line parameters. Sometimes it's nice to be able to see what defaults Calendar Assistant is using:
-
-<pre>
-<%= run "help config" %>
-</pre>
-
-The output is TOML, which is suitable for dumping into `~/.calendar-assistant` and editing.
-
-<pre>
-<%= run "config" %>
-</pre>
-
-
-### Authorize access to your Google Calendar
-
-<pre>
-<%= run "help authorize" %>
-</pre>
-
-This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
-
-Your access token will be stored in `~/.calendar-assistant` in the `[tokens]` section.
-
-
-### Display your calendar events
-
-<pre>
-<%= run "help show" %>
-</pre>
-
-For example: display all events scheduled for tomorrow:
-
-<pre>
-<%= run "show --profile=work 2018-10-01" %>
-</pre>
-
-Display _only_ the commitments I have to other people using the `-c` option:
-
-<pre>
-<%= run "show -c 2018-10-01" %>
 </pre>
 
 
@@ -130,12 +90,12 @@ Some examples:
 <b>$</b> calendar-assistant join
 2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
 https://pivotal.zoom.us/j/ABC90210
-# ... and opens the URL, which is associated with an event happening now
+  # ... and opens the URL, which is associated with an event happening now
 
-<b>$</b> calendar-assistant join work --no-join 11:30
+<b>$</b> calendar-assistant join work 11:30 --no-join 
 2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
 https://pivotal.zoom.us/j/ABC90210
-# ... and does not open the URL
+  # ... and does not open the URL
 </pre>
 
 
@@ -207,6 +167,51 @@ For example:
 
 <pre>
 <%= run "location \"2018-09-24...2018-09-28\"" %>
+</pre>
+
+
+### Display your calendar events
+
+<pre>
+<%= run "help show" %>
+</pre>
+
+For example: display all events scheduled for tomorrow:
+
+<pre>
+<%= run "show --profile=work 2018-10-01" %>
+</pre>
+
+Display _only_ the commitments I have to other people using the `-c` option:
+
+<pre>
+<%= run "show -c 2018-10-01" %>
+</pre>
+
+
+### Authorize access to your Google Calendar
+
+<pre>
+<%= run "help authorize" %>
+</pre>
+
+This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
+
+Your access token will be stored in `~/.calendar-assistant` in the `[tokens]` section.
+
+
+### View your configuration parameters
+
+Calendar Assistant has intelligent defaults, which can be overridden in the TOML file `~/.calendar-assistant`, and further overridden via command-line parameters. Sometimes it's nice to be able to see what defaults Calendar Assistant is using:
+
+<pre>
+<%= run "help config" %>
+</pre>
+
+The output is TOML, which is suitable for dumping into `~/.calendar-assistant` and editing.
+
+<pre>
+<%= run "config" %>
 </pre>
 
 

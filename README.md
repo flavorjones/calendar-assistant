@@ -1,30 +1,35 @@
 
 # calendar assistant
 
-A command-line tool to help me manage my Google Calendar.
+A command-line tool to help you manage your Google Calendar.
 
-- book (and re-book) one-on-ones and other meetings automatically
-- set up all-day events to let people know your location in the world
 - easily join the videoconference for your current meeting
+- see yours and others' "availability" suitable for an email response
+- set up all-day events to let people know where you are (for frequent travelers)
+- see views on your calendar events for a date or time range
+- book (and re-book) one-on-ones and other meetings automatically
 
 [![Concourse CI](https://ci.nokogiri.org/api/v1/teams/calendar-assistants/pipelines/calendar-assistant/jobs/rake-spec/badge)](https://ci.nokogiri.org/teams/calendar-assistants/pipelines/calendar-assistant)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/maintainability)](https://codeclimate.com/github/flavorjones/calendar-assistant/maintainability)
 
-## Usage
 
-Head to [the quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `~/.calendar-assistant.client`.
+## Setup
+
+First install the gem: `gem install calendar-assistant`.
+
+Head to [the Google API quickstart](https://developers.google.com/calendar/quickstart/ruby) to enable the Calendar API for your Google account and create a new "project". Save the project info in `~/.calendar-assistant.client`.
 
 Then run `calendar-assistant authorize PROFILE_NAME` (see below for details).
 
 
 ## Features
 
-### Pretty Display
+### Pretty Display in Your Terminal
 
 Events are nicely formatted, with faint strikeouts for events you've declined, and some additional attributes listed when present (e.g., "awaiting", "self", "not-busy", "1:1" ...)
 
 
-### Date and Time Specification
+### Human-Friendly Date and Time Specification
 
 All dates and times are interpreted by [Chronic](https://github.com/mojombo/chronic) and so can be fuzzy terms like "tomorrow", "tuesday", "next thursday", and "two days from now" as well as specific dates and times.
 
@@ -36,20 +41,19 @@ For a date range or a datetime range, split the start and end with `..` or `...`
 Also note that every command will adopt an intelligent default, which is generally "today" or "now".
 
 
-### Duration Specification
+### Human-Friendly Duration Specification
 
 Some duration-related preferences are interpreted by [ChronicDuration](https://github.com/henrypoydar/chronic_duration) and so can be terms like "10m", "30 minutes", "four hours", etc.
 
 
 ### Preferences
 
-All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format.
+All tokens and preferences will be stored in `~/.calendar-assistant` which is in TOML format for easy editing.
 
 
 ## Commands
 
 <pre>
-<b>$</b> calendar-assistant help
 Commands:
   calendar-assistant authorize PROFILE_NAME                       # create (or validate) a profile named NAME with calendar access
   calendar-assistant availability [DATE | DATERANGE | TIMERANGE]  # Show your availability for a date or range of dates (default 'today')
@@ -68,129 +72,9 @@ Options:
 </pre>
 
 
-### View your configuration parameters
-
-Calendar Assistant has intelligent defaults, which can be overridden in the TOML file `~/.calendar-assistant`, and further overridden via command-line parameters. Sometimes it's nice to be able to see what defaults Calendar Assistant is using:
-
-<pre>
-<b>$</b> calendar-assistant help config
-Usage:
-  calendar-assistant config
-
-Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
-
-Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
-</pre>
-
-The output is TOML, which is suitable for dumping into `~/.calendar-assistant` and editing.
-
-<pre>
-<b>$</b> calendar-assistant config
-
-[settings]
-end-of-day = "6pm"
-meeting-length = "30m"
-profile = "work"
-start-of-day = "9am"
-</pre>
-
-
-### Authorize access to your Google Calendar
-
-<pre>
-<b>$</b> calendar-assistant help authorize
-Usage:
-  calendar-assistant authorize PROFILE_NAME
-
-Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
-
-Description:
-  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your calendar.
-
-  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and persist an access token.
-
-  In order for this to work, you'll need to have set up your API client credentials. Run `calendar-assistant help setup` for instructions.
-</pre>
-
-This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
-
-Your access token will be stored in `~/.calendar-assistant` in the `[tokens]` section.
-
-
-### Display your calendar events
-
-<pre>
-<b>$</b> calendar-assistant help show
-Usage:
-  calendar-assistant show [DATE | DATERANGE | TIMERANGE]
-
-Options:
-  -c, [--commitments], [--no-commitments]  # only show events that you've accepted with another person
-  -p, [--profile=PROFILE]                  # the profile you'd like to use (if different from default)
-  -h, -?, [--help], [--no-help]            
-          [--debug], [--no-debug]          # how dare you suggest there are bugs
-
-Show your events for a date or range of dates (default 'today')
-</pre>
-
-For example: display all events scheduled for tomorrow:
-
-<pre>
-<b>$</b> calendar-assistant show --profile=work 2018-10-01
-<i>me@example.com (all times in America/New_York)
-</i>
-2018-10-01               <b> | 🗺 Beorn's Hall </b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | Leverage robust content </strike>
-<strike>2018-10-01  07:30 - 08:30 | Revolutionize distributed functionalities </strike>
-<strike>2018-10-01  07:30 - 08:30 | Cultivate seamless networks </strike>
-2018-10-01  08:00 - 09:00<b> | Evolve next-generation vortals </b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | Matrix innovative portals </b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Aggregate transparent users </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Generate open-source e-tailers </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Leverage e-business architectures </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Unleash cross-platform synergies </strike>
-2018-10-01  12:00 - 12:30<b> | Extend user-centric deliverables </b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Transition integrated networks </strike>
-<strike>2018-10-01  12:30 - 13:30 | Maximize cutting-edge models </strike>
-2018-10-01  12:30 - 13:30<b> | E-enable dot-com users </b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Strategize frictionless roi </b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Innovate scalable technologies </strike>
-2018-10-01  15:00 - 15:30<b> | Monetize frictionless relationships </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Revolutionize proactive communities </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Target seamless partnerships </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Evolve b2b supply-chains </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Visualize b2c interfaces </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Recontextualize sticky methodologies </strike>
-<strike>2018-10-01  18:30 - 19:00 | Disintermediate b2b convergence </strike>
-<strike>2018-10-01  19:00 - 19:30 | Leverage out-of-the-box web services </strike>
-</pre>
-
-Display _only_ the commitments I have to other people using the `-c` option:
-
-<pre>
-<b>$</b> calendar-assistant show -c 2018-10-01
-<i>me@example.com (all times in America/New_York)
-</i>
-2018-10-01  10:30 - 10:55<b> | Unleash robust bandwidth </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Enable customized methodologies </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Streamline strategic networks </b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Target synergistic technologies </b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Expedite web-enabled action-items </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Aggregate magnetic partnerships </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Brand one-to-one interfaces </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Exploit out-of-the-box bandwidth </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Matrix bleeding-edge synergies </b><i> (1:1, recurring)</i>
-</pre>
-
-
 ### Join a video call attached to a meeting
 
 <pre>
-<b>$</b> calendar-assistant help join
 Usage:
   calendar-assistant join [TIME]
 
@@ -210,12 +94,12 @@ Some examples:
 <b>$</b> calendar-assistant join
 2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
 https://pivotal.zoom.us/j/ABC90210
-# ... and opens the URL, which is associated with an event happening now
+  # ... and opens the URL, which is associated with an event happening now
 
-<b>$</b> calendar-assistant join work --no-join 11:30
+<b>$</b> calendar-assistant join work 11:30 --no-join 
 2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
 https://pivotal.zoom.us/j/ABC90210
-# ... and does not open the URL
+  # ... and does not open the URL
 </pre>
 
 
@@ -224,7 +108,6 @@ https://pivotal.zoom.us/j/ABC90210
 This is useful for emailing people your availability. It only considers `accepted` meetings when determining busy/free.
 
 <pre>
-<b>$</b> calendar-assistant help availability
 Usage:
   calendar-assistant availability [DATE | DATERANGE | TIMERANGE]
 
@@ -303,7 +186,6 @@ You can also set start and end times for the search, which is useful when lookin
 Declare your location as an all-day non-busy event:
 
 <pre>
-<b>$</b> calendar-assistant help location-set
 Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
@@ -345,7 +227,6 @@ Some examples:
 ### Look up where you're going to be
 
 <pre>
-<b>$</b> calendar-assistant help location
 Usage:
   calendar-assistant location [DATE | DATERANGE]
 
@@ -363,8 +244,124 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-27  <b> | 🗺 The Shire </b><i> (not-busy, self)</i>
-2018-09-28               <b> | 🗺 The Shire </b><i> (not-busy, self)</i>
+2018-09-24 - 2018-09-27  <b> | 🗺 Mines of Moria </b><i> (not-busy, self)</i>
+2018-09-28               <b> | 🗺 Goblin Gate </b><i> (not-busy, self)</i>
+</pre>
+
+
+### Display your calendar events
+
+<pre>
+Usage:
+  calendar-assistant show [DATE | DATERANGE | TIMERANGE]
+
+Options:
+  -c, [--commitments], [--no-commitments]  # only show events that you've accepted with another person
+  -p, [--profile=PROFILE]                  # the profile you'd like to use (if different from default)
+  -h, -?, [--help], [--no-help]            
+          [--debug], [--no-debug]          # how dare you suggest there are bugs
+
+Show your events for a date or range of dates (default 'today')
+</pre>
+
+For example: display all events scheduled for tomorrow:
+
+<pre>
+<b>$</b> calendar-assistant show --profile=work 2018-10-01
+<i>me@example.com (all times in America/New_York)
+</i>
+2018-10-01               <b> | 🗺 Esgaroth </b><i> (not-busy, self)</i>
+<strike>2018-10-01  03:30 - 05:00 | Generate user-centric niches </strike>
+<strike>2018-10-01  07:30 - 08:30 | Morph cross-platform markets </strike>
+<strike>2018-10-01  07:30 - 08:30 | Orchestrate proactive networks </strike>
+2018-10-01  08:00 - 09:00<b> | Engineer innovative niches </b><i> (recurring, self)</i>
+2018-10-01  09:00 - 10:30<b> | Engage innovative interfaces </b><i> (self)</i>
+2018-10-01  10:30 - 10:55<b> | Exploit next-generation niches </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Extend visionary partnerships </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Matrix cross-platform e-markets </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Reinvent user-centric interfaces </strike>
+2018-10-01  12:00 - 12:30<b> | Brand rich schemas </b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Brand visionary infrastructures </strike>
+<strike>2018-10-01  12:30 - 13:30 | Syndicate real-time supply-chains </strike>
+2018-10-01  12:30 - 13:30<b> | Envisioneer wireless experiences </b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Brand intuitive metrics </b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Deliver world-class infomediaries </strike>
+2018-10-01  15:00 - 15:30<b> | Iterate enterprise applications </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Benchmark virtual niches </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Aggregate cross-media vortals </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Whiteboard user-centric deliverables </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Synthesize impactful models </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Facilitate visionary communities </strike>
+<strike>2018-10-01  18:30 - 19:00 | Whiteboard impactful infrastructures </strike>
+<strike>2018-10-01  19:00 - 19:30 | Orchestrate magnetic architectures </strike>
+</pre>
+
+Display _only_ the commitments I have to other people using the `-c` option:
+
+<pre>
+<b>$</b> calendar-assistant show -c 2018-10-01
+<i>me@example.com (all times in America/New_York)
+</i>
+2018-10-01  10:30 - 10:55<b> | Extend cutting-edge bandwidth </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Engineer one-to-one metrics </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Transform virtual eyeballs </b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Streamline virtual supply-chains </b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Reintermediate cutting-edge platforms </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Innovate revolutionary architectures </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Evolve strategic mindshare </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Implement cross-media e-services </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Whiteboard real-time niches </b><i> (1:1, recurring)</i>
+</pre>
+
+
+### Authorize access to your Google Calendar
+
+<pre>
+Usage:
+  calendar-assistant authorize PROFILE_NAME
+
+Options:
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+
+Description:
+  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your calendar.
+
+  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and persist an access token.
+
+  In order for this to work, you'll need to have set up your API client credentials. Run `calendar-assistant help setup` for instructions.
+</pre>
+
+This command will generate a URL which you should load in your browser while logged in as the Google account you wish to authorize. Generate a token, and paste the token back into `calendar-assistant`.
+
+Your access token will be stored in `~/.calendar-assistant` in the `[tokens]` section.
+
+
+### View your configuration parameters
+
+Calendar Assistant has intelligent defaults, which can be overridden in the TOML file `~/.calendar-assistant`, and further overridden via command-line parameters. Sometimes it's nice to be able to see what defaults Calendar Assistant is using:
+
+<pre>
+Usage:
+  calendar-assistant config
+
+Options:
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+
+Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
+</pre>
+
+The output is TOML, which is suitable for dumping into `~/.calendar-assistant` and editing.
+
+<pre>
+<b>$</b> calendar-assistant config
+
+[settings]
+end-of-day = "6pm"
+meeting-length = "30m"
+profile = "work"
+start-of-day = "9am"
 </pre>
 
 
