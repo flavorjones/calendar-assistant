@@ -191,7 +191,7 @@ describe CalendarAssistant::CLIHelpers do
           let(:start_time) { Time.now - 1.minute }
 
           it "does not print and returns false" do
-            expect(ca).not_to receive(:event_description)
+            expect(subject).not_to receive(:event_description)
             rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_falsey
           end
@@ -201,7 +201,7 @@ describe CalendarAssistant::CLIHelpers do
           let(:start_time) { Time.now + 1.day + 1.minute }
 
           it "does not print and returns false" do
-            expect(ca).not_to receive(:event_description)
+            expect(subject).not_to receive(:event_description)
             rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_falsey
           end
@@ -211,7 +211,7 @@ describe CalendarAssistant::CLIHelpers do
           let(:start_time) { Time.now + 1.minute }
 
           it "prints and returns true" do
-            expect(ca).to receive(:event_description).with(now)
+            expect(subject).to receive(:event_description).with(now)
             rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_truthy
           end
@@ -225,7 +225,7 @@ describe CalendarAssistant::CLIHelpers do
           let(:start_time) { Time.now + 1.minute }
 
           it "does not print and returns true" do
-            expect(ca).not_to receive(:event_description).with(now)
+            expect(subject).not_to receive(:event_description).with(now)
             rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_truthy
           end
@@ -252,7 +252,7 @@ describe CalendarAssistant::CLIHelpers do
         allow(ca).to receive(:calendar).and_return(calendar)
         allow(calendar).to receive(:id).and_return(calendar_id)
         allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
-        allow(ca).to receive(:event_description)
+        allow(subject).to receive(:event_description)
         allow(stdout).to receive(:puts)
       end
 
@@ -270,7 +270,7 @@ describe CalendarAssistant::CLIHelpers do
         end
 
         it "prints the event description" do
-          expect(ca).to receive(:event_description).with(event).and_return("event-description")
+          expect(subject).to receive(:event_description).with(event).and_return("event-description")
           expect(stdout).to receive(:puts).with("event-description")
           subject.print_events ca, event
         end
@@ -289,7 +289,7 @@ describe CalendarAssistant::CLIHelpers do
 
         it "calls puts with event descriptions for each Event" do
           events.each do |event|
-            expect(ca).to receive(:event_description).with(event).and_return(event.summary)
+            expect(subject).to receive(:event_description).with(event).and_return(event.summary)
             expect(stdout).to receive(:puts).with(event.summary)
           end
           subject.print_events ca, events
@@ -300,8 +300,8 @@ describe CalendarAssistant::CLIHelpers do
             allow(events.first).to receive(:commitment?).and_return(true)
             allow(events.last).to receive(:commitment?).and_return(false)
 
-            expect(ca).to receive(:event_description).with(events.first)
-            expect(ca).not_to receive(:event_description).with(events.last)
+            expect(subject).to receive(:event_description).with(events.first)
+            expect(subject).not_to receive(:event_description).with(events.last)
 
             subject.print_events ca, events, CalendarAssistant::Config::Keys::Options::COMMITMENTS => true
           end
@@ -354,7 +354,7 @@ describe CalendarAssistant::CLIHelpers do
         allow(ca).to receive(:calendar).and_return(calendar)
         allow(calendar).to receive(:id).and_return(calendar_id)
         allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
-        allow(ca).to receive(:event_description)
+        allow(subject).to receive(:event_description)
         allow(ca).to receive(:config).and_return(config)
         allow(stdout).to receive(:puts)
       end

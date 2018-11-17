@@ -127,52 +127,6 @@ class CalendarAssistant
     response
   end
 
-  def event_description event
-    s = sprintf("%-25.25s", event_date_description(event))
-
-    date_ansi_codes = []
-    date_ansi_codes << :bright if event.current?
-    date_ansi_codes << :faint if event.past?
-    s = date_ansi_codes.inject(Rainbow(s)) { |text, ansi| text.send ansi }
-
-    s += Rainbow(sprintf(" | %s", event.view_summary)).bold
-
-    attributes = []
-    unless event.private?
-      attributes << "recurring" if event.recurring_event_id
-      attributes << "not-busy" unless event.busy?
-      attributes << "self" if event.human_attendees.nil? && event.visibility != "private"
-      attributes << "1:1" if event.one_on_one?
-      attributes << "awaiting" if event.awaiting?
-    end
-
-    attributes << event.visibility if event.explicit_visibility?
-
-    s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
-
-    s = Rainbow(Rainbow.uncolor(s)).faint.strike if event.declined?
-
-    s
-  end
-
-  def event_date_description event
-    if event.all_day?
-      start_date = event.start.to_date
-      end_date = event.end.to_date
-      if (end_date - start_date) <= 1
-        event.start.to_s
-      else
-        sprintf("%s - %s", start_date, end_date - 1.day)
-      end
-    else
-      if event.start.date_time.to_date == event.end.date_time.to_date
-        sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%M"), event.end.date_time.strftime("%H:%M"))
-      else
-        sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))
-      end
-    end
-  end
-
   def event_repository calendar_id=DEFAULT_CALENDAR_ID
     @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id)
   end
