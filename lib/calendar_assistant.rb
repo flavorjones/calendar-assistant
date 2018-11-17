@@ -30,6 +30,23 @@ class CalendarAssistant
     time_range.first.to_date..(time_range.last + 1.day).to_date
   end
 
+  def self.in_tz time_zone, &block
+    # this is totally not thread-safe
+    orig_time_tz = Time.zone
+    orig_env_tz = ENV['TZ']
+    begin
+      unless time_zone.nil?
+        Time.zone = time_zone
+        ENV['TZ'] = time_zone
+      end
+      yield
+    ensure
+      Time.zone = orig_time_tz
+      ENV['TZ'] = orig_env_tz
+    end
+  end
+
+
   def initialize config=CalendarAssistant::Config.new,
                  event_repository_factory: EventRepositoryFactory
     @config = config
@@ -51,28 +68,16 @@ class CalendarAssistant
     begin
       BusinessTime::Config.beginning_of_workday = config.setting(Config::Keys::Settings::START_OF_DAY)
       BusinessTime::Config.end_of_workday = config.setting(Config::Keys::Settings::END_OF_DAY)
-      in_tz calendar.time_zone do
-        yield
-      end
+      in_tz { yield }
     ensure
       BusinessTime::Config.beginning_of_workday = orig_b_o_d
       BusinessTime::Config.end_of_workday = orig_e_o_d
     end
   end
 
-  def in_tz time_zone, &block
-    # this is totally not thread-safe
-    orig_time_tz = Time.zone
-    orig_env_tz = ENV['TZ']
-    begin
-      unless time_zone.nil?
-        Time.zone = time_zone
-        ENV['TZ'] = time_zone
-      end
+  def in_tz &block
+    CalendarAssistant.in_tz calendar.time_zone do
       yield
-    ensure
-      Time.zone = orig_time_tz
-      ENV['TZ'] = orig_env_tz
     end
   end
 

@@ -25,6 +25,32 @@ describe CalendarAssistant do
         CalendarAssistant.authorize("profile")
       end
     end
+
+    describe ".in_tz" do
+      it "sets the timezone and restores it" do
+        Time.zone = "Pacific/Fiji"
+        ENV['TZ'] = "Pacific/Fiji"
+        CalendarAssistant.in_tz "Europe/Istanbul" do
+          expect(Time.zone.name).to eq("Europe/Istanbul")
+          expect(ENV['TZ']).to eq("Europe/Istanbul")
+        end
+        expect(Time.zone.name).to eq("Pacific/Fiji")
+        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
+
+      it "exceptionally restores the timezone" do
+        Time.zone = "Pacific/Fiji"
+        ENV['TZ'] = "Pacific/Fiji"
+        begin
+          CalendarAssistant.in_tz "Europe/Istanbul" do
+            raise RuntimeError
+          end
+        rescue
+        end
+        expect(Time.zone.name).to eq("Pacific/Fiji")
+        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
+    end
   end
 
   describe "using the local file store" do
@@ -75,6 +101,7 @@ describe CalendarAssistant do
       allow(event_repository).to receive(:find).and_return([])
       allow(service).to receive(:get_calendar).and_return(calendar)
       allow(event_repository_factory).to receive(:new_event_repository).and_return(event_repository)
+      allow(calendar).to receive(:time_zone).and_return("Europe/London")
     end
 
     describe "#find_events" do
@@ -295,10 +322,6 @@ describe CalendarAssistant do
         }
       end
 
-      before do
-        allow(calendar).to receive(:time_zone).and_return("Europe/London")
-      end
-
       it "sets beginning and end of workday and restores them" do
         BusinessTime::Config.beginning_of_workday = "6am"
         BusinessTime::Config.end_of_workday = "2pm"
@@ -322,34 +345,19 @@ describe CalendarAssistant do
       end
 
       it "calls in_tz with the calendar timezone" do
-        expect(ca).to receive(:in_tz).with("Europe/London")
+        expect(ca).to receive(:in_tz)
         ca.in_env do ; end
       end
     end
 
     describe "#in_tz" do
-      it "sets the timezone and restores it" do
-        Time.zone = "Pacific/Fiji"
-        ENV['TZ'] = "Pacific/Fiji"
-        ca.in_tz "Europe/Istanbul" do
-          expect(Time.zone.name).to eq("Europe/Istanbul")
-          expect(ENV['TZ']).to eq("Europe/Istanbul")
-        end
-        expect(Time.zone.name).to eq("Pacific/Fiji")
-        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      before do
+        expect(calendar).to receive(:time_zone).and_return("a time zone id")
       end
 
-      it "exceptionally restores the timezone" do
-        Time.zone = "Pacific/Fiji"
-        ENV['TZ'] = "Pacific/Fiji"
-        begin
-          ca.in_tz "Europe/Istanbul" do
-            raise RuntimeError
-          end
-        rescue
-        end
-        expect(Time.zone.name).to eq("Pacific/Fiji")
-        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      it "calls .in_tz with the default calendar's time zone" do
+        expect(CalendarAssistant).to receive(:in_tz).with("a time zone id")
+        ca.in_env do ; end
       end
     end
 
