@@ -13,7 +13,7 @@ class CalendarAssistant
     end
 
     def all_day?
-      !! start.to_date
+      !! (start.nil? ? self.end.to_date : start.to_date)
     end
 
     def past?
@@ -90,6 +90,22 @@ class CalendarAssistant
         start.to_date
       else
         start.date_time.to_date
+      end
+    end
+
+    def end_time
+      if all_day?
+        self.end.to_date.beginning_of_day
+      else
+        self.end.date_time
+      end
+    end
+
+    def end_date
+      if all_day?
+        self.end.to_date
+      else
+        self.end.date_time.to_date
       end
     end
 

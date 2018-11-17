@@ -109,13 +109,13 @@ class CalendarAssistant
     event = event_repository.create(transparency: GCal::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{EMOJI_WORLDMAP}  #{location}")
 
     existing_events.each do |existing_event|
-      if existing_event.start.date >= event.start.date && existing_event.end.date <= event.end.date
+      if existing_event.start_date >= event.start_date && existing_event.end_date <= event.end_date
         event_repository.delete existing_event
         deleted_events << existing_event
-      elsif existing_event.start.date <= event.end.date && existing_event.end.date > event.end.date
+      elsif existing_event.start_date <= event.end_date && existing_event.end_date > event.end_date
         event_repository.update existing_event, start: range.last
         modified_events << existing_event
-      elsif existing_event.start.date < event.start.date && existing_event.end.date >= event.start.date
+      elsif existing_event.start_date < event.start_date && existing_event.end_date >= event.start_date
         event_repository.update existing_event, end: range.first
         modified_events << existing_event
       end
