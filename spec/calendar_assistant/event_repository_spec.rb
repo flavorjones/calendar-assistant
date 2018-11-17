@@ -8,6 +8,7 @@ describe CalendarAssistant::EventRepository do
   let(:calendar_id) { "primary" }
   let(:calendar) { GCal::Calendar.new(id: calendar_id) }
   let(:event_array) { [nine_event, nine_thirty_event] }
+  let(:event_set) { CalendarAssistant::EventSet.new event_repository, event_array }
   let(:time_range) { Time.parse("2018-10-18")..Time.parse("2018-10-19") }
   let(:nine_event) do
     GCal::Event.new(id: 1,
@@ -41,7 +42,7 @@ describe CalendarAssistant::EventRepository do
         event_repository.create(summary: "boom",
                                 start: Date.parse("2018-10-17"),
                                 end: Date.parse("2018-10-19"))
-        expect(event_repository.find(time_range).map(&:summary)).to include("boom")
+        expect(event_repository.find(time_range).events.map(&:summary)).to include("boom")
       end
     end
 
@@ -50,22 +51,22 @@ describe CalendarAssistant::EventRepository do
         event = event_repository.new(summary: "boom",
                                      start: Date.parse("2018-10-17"),
                                      end: Date.parse("2018-10-19"))
-        expect(event_repository.find(time_range).map(&:summary)).not_to include("boom")
+        expect(event_repository.find(time_range).events.map(&:summary)).not_to include("boom")
         expect(event).to be_a(CalendarAssistant::Event)
       end
     end
   end
 
   describe "#find" do
-    it "sets some basic query options" do
+    it "returns an EventSet with er=>self" do
       result = event_repository.find time_range
-      expect(result).to eq(event_array)
+      expect(result.event_repository).to eq(event_repository)
     end
 
     context "given a time range" do
       it "calls CalendarService#list_events with the range" do
         result = event_repository.find time_range
-        expect(result).to eq(event_array)
+        expect(result.events).to eq(event_array)
       end
     end
 
@@ -74,7 +75,7 @@ describe CalendarAssistant::EventRepository do
 
       it "returns an empty array" do
         result = event_repository.find time_range
-        expect(result).to eq([])
+        expect(result.events).to eq([])
       end
     end
   end
@@ -83,7 +84,7 @@ describe CalendarAssistant::EventRepository do
     it "calls the service with the event id" do
       event_repository.delete(nine_event)
       result = event_repository.find time_range
-      expect(result).not_to include(nine_event)
+      expect(result.events).not_to include(nine_event)
     end
   end
 
@@ -95,7 +96,7 @@ describe CalendarAssistant::EventRepository do
       event_repository.update(nine_event, new_attributes)
 
       result = event_repository.find time_range
-      expect(result[0].start.date_time).to eq DateTime.parse("1776-07-04")
+      expect(result.events.first.start.date_time).to eq DateTime.parse("1776-07-04")
     end
   end
 

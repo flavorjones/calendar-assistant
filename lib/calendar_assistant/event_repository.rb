@@ -23,9 +23,9 @@ class CalendarAssistant
                                    max_results: 2000,
                                    )
       if events.nil? || events.items.nil?
-        return []
+        return CalendarAssistant::EventSet.new self, Array.new
       end
-      events.items.map { |e| CalendarAssistant::Event.new(e) }
+      CalendarAssistant::EventSet.new self, events.items.map { |e| CalendarAssistant::Event.new(e) }
     end
 
     def new event_attributes

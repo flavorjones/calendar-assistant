@@ -28,20 +28,20 @@ class CalendarAssistant
     def self.find_av_uri ca, timespec
       time = Chronic.parse timespec
       range = time..(time+5.minutes)
-      events = ca.find_events range
+      event_set = ca.find_events range
 
       [Google::Apis::CalendarV3::Event::Response::ACCEPTED,
        Google::Apis::CalendarV3::Event::Response::TENTATIVE,
        Google::Apis::CalendarV3::Event::Response::NEEDS_ACTION,
       ].each do |response|
-        events.reverse.select do |event|
+        event_set.events.reverse.select do |event|
           event.response_status == response
         end.each do |event|
-          return [event, event.av_uri] if event.av_uri
+          return [event_set.new(event), event.av_uri] if event.av_uri
         end
       end
 
-      nil
+      event_set.new(nil)
     end
 
     class Out
@@ -87,42 +87,41 @@ class CalendarAssistant
         false
       end
 
-      def print_events ca, events, options={}
-        unless options[:omit_title]
+      def print_events ca, event_set, omit_title: false
+        unless omit_title
           puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
-          options = options.merge(omit_title: true)
         end
 
-        if events.is_a?(Hash)
-          events.each do |key, value|
+        if event_set.events.is_a?(Hash)
+          event_set.events.each do |key, value|
             puts Rainbow(key.to_s.capitalize + ":").bold.italic
-            print_events ca, value, options
+            print_events ca, event_set.new(value), omit_title: true
           end
           return
         end
 
-        events = Array(events)
+        events = Array(event_set.events)
         if events.empty?
           puts "No events in this time range."
           return
         end
 
         display_events = events.select do |event|
-          ! options[CalendarAssistant::Config::Keys::Options::COMMITMENTS] || event.commitment?
+          ! ca.config.options[CalendarAssistant::Config::Keys::Options::COMMITMENTS] || event.commitment?
         end
 
         printed_now = false
         display_events.each do |event|
           printed_now = print_now! ca, event, printed_now
           puts event_description(event)
-          pp event if options[:debug]
+          pp event if ca.config.options[:debug]
         end
 
         puts
       end
 
-      def print_available_blocks ca, events, options={}
-        unless options[:omit_title]
+      def print_available_blocks ca, event_set, omit_title: false
+        unless omit_title
           puts Rainbow(sprintf("%s\n- all times in %s\n- looking for blocks at least %s long\n- between %s and %s in %s\n",
                                ca.calendar.id,
                                ca.calendar.time_zone,
@@ -131,20 +130,19 @@ class CalendarAssistant
                                ca.config.setting(Config::Keys::Settings::END_OF_DAY),
                                ca.calendar.time_zone,
                               )).italic
-          options = options.merge(omit_title: true)
         end
 
-        if events.is_a?(Hash)
-          events.each do |key, value|
+        if event_set.events.is_a?(Hash)
+          event_set.events.each do |key, value|
             puts(sprintf(Rainbow("Availability on %s:\n").bold,
                          key.strftime("%A, %B %-d")))
-            print_available_blocks ca, value, options
+            print_available_blocks ca, event_set.new(value), omit_title: true
             puts
           end
           return
         end
 
-        events = Array(events)
+        events = Array(event_set.events)
         if events.empty?
           puts "  (No available blocks in this time range.)"
           return
@@ -154,7 +152,7 @@ class CalendarAssistant
           puts(sprintf(" • %s - %s",
                        event.start.date_time.strftime("%-l:%M%P"),
                        event.end.date_time.strftime("%-l:%M%P")))
-          pp event if options[:debug]
+          pp event if ca.config.options[:debug]
         end
       end
 

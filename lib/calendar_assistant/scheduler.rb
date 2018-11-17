@@ -11,22 +11,21 @@ class CalendarAssistant
       ca.in_env do
         length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
 
-        events = er.find time_range
+        event_set = er.find time_range
         date_range = time_range.first.to_date .. time_range.last.to_date
 
         # find relevant events and map them into dates
         dates_events = date_range.inject({}) { |de, date| de[date] = [] ; de }
-        events.each do |event|
+        event_set.events.each do |event|
           if event.accepted?
             event_date = event.start.to_date!
             dates_events[event_date] ||= []
             dates_events[event_date] << event
           end
-          dates_events
         end
 
         # iterate over the days finding free chunks of time
-        er.in_tz do
+        avail_time = er.in_tz do
           date_range.inject({}) do |avail_time, date|
             avail_time[date] ||= []
             date_events = dates_events[date]
@@ -56,6 +55,8 @@ class CalendarAssistant
             avail_time
           end
         end
+
+        event_set.new avail_time
       end
     end
 

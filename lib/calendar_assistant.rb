@@ -93,12 +93,13 @@ class CalendarAssistant
   end
 
   def find_location_events time_range
-    event_repository.find(time_range).select { |e| e.location_event? }
+    event_set = event_repository.find(time_range)
+    event_set.new event_set.events.select { |e| e.location_event? }
   end
 
   def create_location_event time_range, location
     # find pre-existing events that overlap
-    existing_events = find_location_events time_range
+    existing_event_set = find_location_events time_range
 
     # augment event end date appropriately
     range = CalendarAssistant.date_range_cast time_range
@@ -108,7 +109,7 @@ class CalendarAssistant
 
     event = event_repository.create(transparency: GCal::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{EMOJI_WORLDMAP}  #{location}")
 
-    existing_events.each do |existing_event|
+    existing_event_set.events.each do |existing_event|
       if existing_event.start_date >= event.start_date && existing_event.end_date <= event.end_date
         event_repository.delete existing_event
         deleted_events << existing_event
@@ -124,7 +125,8 @@ class CalendarAssistant
     response = {created: [event]}
     response[:deleted] = deleted_events unless deleted_events.empty?
     response[:modified] = modified_events unless modified_events.empty?
-    response
+
+    existing_event_set.new response
   end
 
   def event_repository calendar_id=DEFAULT_CALENDAR_ID

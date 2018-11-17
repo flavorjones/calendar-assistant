@@ -75,8 +75,8 @@ describe CalendarAssistant do
 
     it "reads from those events" do
       results = ca.find_events(Time.now.beginning_of_day..(Time.now + 1.day))
-      expect(results.length).to eq 3
-      expect(results.first.id).to eq "eminently beautiful"
+      expect(results.events.length).to eq 3
+      expect(results.events.first.id).to eq "eminently beautiful"
     end
   end
 
@@ -92,13 +92,14 @@ describe CalendarAssistant do
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
     let(:authorizer) { instance_double("Authorizer") }
+    let(:event_set) { CalendarAssistant::EventSet.new(event_repository, []) }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
       allow(config).to receive(:token_store).and_return(token_store)
       allow(config).to receive(:profile_name).and_return("profile-name")
       allow(authorizer).to receive(:service).and_return(service)
-      allow(event_repository).to receive(:find).and_return([])
+      allow(event_repository).to receive(:find).and_return(event_set)
       allow(service).to receive(:get_calendar).and_return(calendar)
       allow(event_repository_factory).to receive(:new_event_repository).and_return(event_repository)
       allow(calendar).to receive(:time_zone).and_return("Europe/London")
@@ -118,14 +119,15 @@ describe CalendarAssistant do
       let(:location_event) { instance_double("Event", :location_event? => true) }
       let(:other_event) { instance_double("Event", :location_event? => false) }
       let(:events) { [location_event, other_event].shuffle }
+      let(:event_set) { CalendarAssistant::EventSet.new(event_repository, events) }
 
       it "selects location events from event repository find" do
         time = Time.now.beginning_of_day..(Time.now + 1.day).end_of_day
 
-        expect(event_repository).to receive(:find).with(time).and_return(events)
+        expect(event_repository).to receive(:find).with(time).and_return(event_set)
 
         result = ca.find_location_events time
-        expect(result).to eq([location_event])
+        expect(result.events).to eq([location_event])
       end
     end
 
@@ -160,7 +162,7 @@ describe CalendarAssistant do
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
 
           response = ca.create_location_event CalendarAssistant::CLIHelpers.parse_datespec("today"), "WFH"
-          expect(response[:created]).to eq([new_event])
+          expect(response.events[:created]).to eq([new_event])
         end
       end
 
@@ -179,7 +181,7 @@ describe CalendarAssistant do
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
 
           response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-          expect(response[:created]).to eq([new_event])
+          expect(response.events[:created]).to eq([new_event])
         end
       end
 
@@ -207,7 +209,8 @@ describe CalendarAssistant do
           }
 
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
-          expect(ca).to receive(:find_location_events).and_return([existing_event])
+          expect(ca).to receive(:find_location_events).
+                          and_return(CalendarAssistant::EventSet.new(event_repository, [existing_event]))
         end
 
         context "when the new event is entirely within the range of the pre-existing event" do
@@ -218,8 +221,8 @@ describe CalendarAssistant do
             expect(event_repository).to receive(:delete).with(existing_event)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response[:created]).to eq([new_event])
-            expect(response[:deleted]).to eq([existing_event])
+            expect(response.events[:created]).to eq([new_event])
+            expect(response.events[:deleted]).to eq([existing_event])
           end
         end
 
@@ -231,8 +234,8 @@ describe CalendarAssistant do
             expect(event_repository).to receive(:update).with(existing_event, start: existing_event_end_date)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response[:created]).to eq([new_event])
-            expect(response[:modified]).to eq([existing_event])
+            expect(response.events[:created]).to eq([new_event])
+            expect(response.events[:modified]).to eq([existing_event])
           end
         end
 
@@ -244,8 +247,8 @@ describe CalendarAssistant do
             expect(event_repository).to receive(:update).with(existing_event, end: new_event_start_date )
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response[:created]).to eq([new_event])
-            expect(response[:modified]).to eq([existing_event])
+            expect(response.events[:created]).to eq([new_event])
+            expect(response.events[:modified]).to eq([existing_event])
           end
         end
 
@@ -257,8 +260,8 @@ describe CalendarAssistant do
             expect(event_repository).to receive(:update).with(existing_event, start: existing_event_end_date)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response[:created]).to eq([new_event])
-            expect(response[:modified]).to eq([existing_event])
+            expect(response.events[:created]).to eq([new_event])
+            expect(response.events[:modified]).to eq([existing_event])
           end
         end
       end
