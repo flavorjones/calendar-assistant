@@ -257,9 +257,9 @@ describe CalendarAssistant::CLIHelpers do
     describe "#print_events" do
       let(:calendar) { instance_double("Calendar") }
       let(:calendar_id) { "calendar-id" }
+      let(:calendar_time_zone) { "calendar/time/zone" }
       let(:er) { instance_double("EventRepository") }
       let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}") }
-      let(:calendar_time_zone) { "calendar/time/zone" }
       let(:config) { CalendarAssistant::Config.new options: config_options }
       let(:config_options) { Hash.new }
 
@@ -274,12 +274,12 @@ describe CalendarAssistant::CLIHelpers do
       let(:event) { events.first }
 
       before do
-        allow(ca).to receive(:calendar).and_return(calendar)
         allow(ca).to receive(:config).and_return(config)
         allow(calendar).to receive(:id).and_return(calendar_id)
         allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
         allow(subject).to receive(:event_description)
         allow(stdout).to receive(:puts)
+        allow(er).to receive(:calendar).and_return(calendar)
       end
 
       context "passed a single Event" do
@@ -378,19 +378,18 @@ describe CalendarAssistant::CLIHelpers do
     describe "#print_available_blocks" do
       let(:calendar) { instance_double("Calendar") }
       let(:calendar_id) { "calendar-id" }
-      let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}", Regexp::MULTILINE) }
       let(:calendar_time_zone) { "calendar/time/zone" }
       let(:config) { CalendarAssistant::Config.new }
       let(:er) { instance_double("EventRepository") }
       let(:event_set) { EventSet.new er, events }
 
       before do
-        allow(ca).to receive(:calendar).and_return(calendar)
         allow(ca).to receive(:config).and_return(config)
         allow(calendar).to receive(:id).and_return(calendar_id)
         allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
         allow(subject).to receive(:event_description)
         allow(stdout).to receive(:puts)
+        allow(er).to receive(:calendar).and_return(calendar)
       end
 
       context "passed an Array of Events" do
@@ -405,23 +404,32 @@ describe CalendarAssistant::CLIHelpers do
           ]
         end
 
-        it "prints a subtitle stating duration and intraday range"
+        it "prints a title containing the calendar id" do
+          expect(stdout).to receive(:puts).with(/#{calendar_id}/)
+          subject.print_available_blocks ca, event_set
+        end
 
-        it "prints a title containing the time zone" do
-          expect(stdout).to receive(:puts).with(title_regexp)
+        it "prints a subtitle stating search duration" do
+          duration = ChronicDuration.output(ChronicDuration.parse(ca.config.setting(CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH)))
+          expect(stdout).to receive(:puts).with(/at least #{duration} long/)
+          subject.print_available_blocks ca, event_set
+        end
+
+        it "prints a subtitle stating intraday range and time zone" do
+          expect(stdout).to receive(:puts).with(/\b#{ca.config.setting(CalendarAssistant::Config::Keys::Settings::START_OF_DAY)}\b.*\b#{ca.config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)}\b.*\b#{calendar_time_zone}\b/)
           subject.print_available_blocks ca, event_set
         end
 
         context "passed option omit_title:true" do
           it "does not print a title" do
-            expect(stdout).not_to receive(:puts).with(title_regexp)
+            expect(stdout).not_to receive(:puts).with(/#{calendar_id}/)
             subject.print_available_blocks ca, event_set, omit_title: true
           end
         end
 
         it "prints out the time range of each free block" do
-          expect(stdout).to receive(:puts).with(" • 9:00am - 10:00am")
-          expect(stdout).to receive(:puts).with(" • 12:30pm - 2:00pm")
+          expect(stdout).to receive(:puts).with(/ •  9:00am - 10:00am \+12 .*(1h)/)
+          expect(stdout).to receive(:puts).with(/ • 12:30pm -  2:00pm \+12 .*(1h 30m)/)
           subject.print_available_blocks ca, event_set
         end
 
@@ -460,8 +468,8 @@ describe CalendarAssistant::CLIHelpers do
           }
         end
 
-        it "prints a title containing the time zone" do
-          expect(stdout).to receive(:puts).with(title_regexp)
+        it "prints a title containing the calendar id" do
+          expect(stdout).to receive(:puts).with(/#{calendar_id}/)
           subject.print_available_blocks ca, event_set
         end
 

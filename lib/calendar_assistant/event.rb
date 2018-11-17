@@ -114,5 +114,18 @@ class CalendarAssistant
       return "(no title)" if summary.nil? || summary.blank?
       summary
     end
+
+    def duration
+      if all_day?
+        days = (self.end_date - start_date).to_i
+        return "#{days}d"
+      end
+
+      p = ActiveSupport::Duration.build(self.end.date_time - start.date_time).parts
+      s = []
+      s << "#{p[:hours]}h" if p.has_key?(:hours)
+      s << "#{p[:minutes]}m" if p.has_key?(:minutes)
+      s.join(" ")
+    end
   end
 end

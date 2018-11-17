@@ -391,4 +391,8 @@ describe CalendarAssistant::Scheduler do
       end
     end
   end
+
+  describe "#available_block" do
+    it "needs a test" # and maybe should not even be in this class - maybe EventRepository instead?
+  end
 end

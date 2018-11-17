@@ -601,4 +601,35 @@ describe CalendarAssistant::Event do
       end
     end
   end
+
+  describe "#duration" do
+    subject { described_class.new decorated_object }
+
+    context "for a one-day all-day event" do
+      let(:decorated_object) do
+        decorated_class.new start: GCal::EventDateTime.new(date: Date.today),
+                            end: GCal::EventDateTime.new(date: Date.today + 1)
+      end
+
+      it { expect(subject.duration).to eq("1d") }
+    end
+
+    context "for an multi-day all-day event" do
+      let(:decorated_object) do
+        decorated_class.new start: GCal::EventDateTime.new(date: Date.today),
+                            end: GCal::EventDateTime.new(date: Date.today + 3)
+      end
+
+      it { expect(subject.duration).to eq("3d") }
+    end
+
+    context "for an intraday event" do
+      let(:decorated_object) do
+        decorated_class.new start: GCal::EventDateTime.new(date_time: Time.now),
+                            end: GCal::EventDateTime.new(date_time: Time.now + 150.minutes)
+      end
+
+      it { expect(subject.duration).to eq("2h 30m") }
+    end
+  end
 end

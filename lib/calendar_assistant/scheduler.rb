@@ -63,11 +63,12 @@ class CalendarAssistant
     private
 
     def available_block start_time, end_time
-      Google::Apis::CalendarV3::Event.new(
-        start: Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time.in_time_zone(ca.calendar.time_zone)),
-        end: Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time.in_time_zone(ca.calendar.time_zone)),
+      e = Google::Apis::CalendarV3::Event.new(
+        start: Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time.in_time_zone(er.calendar.time_zone)),
+        end: Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time.in_time_zone(er.calendar.time_zone)),
         summary: "available"
       )
+      CalendarAssistant::Event.new e
     end
   end
 end

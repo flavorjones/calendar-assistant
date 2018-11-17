@@ -89,7 +89,8 @@ class CalendarAssistant
 
       def print_events ca, event_set, omit_title: false
         unless omit_title
-          puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
+          er = event_set.event_repository
+          puts Rainbow("#{er.calendar.id} (all times in #{er.calendar.time_zone})\n").italic
         end
 
         if event_set.events.is_a?(Hash)
@@ -122,13 +123,13 @@ class CalendarAssistant
 
       def print_available_blocks ca, event_set, omit_title: false
         unless omit_title
-          puts Rainbow(sprintf("%s\n- all times in %s\n- looking for blocks at least %s long\n- between %s and %s in %s\n",
-                               ca.calendar.id,
-                               ca.calendar.time_zone,
+          er = event_set.event_repository
+          puts Rainbow(sprintf("%s\n- looking for blocks at least %s long\n- between %s and %s in %s\n",
+                               er.calendar.id,
                                ChronicDuration.output(ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))),
                                ca.config.setting(Config::Keys::Settings::START_OF_DAY),
                                ca.config.setting(Config::Keys::Settings::END_OF_DAY),
-                               ca.calendar.time_zone,
+                               er.calendar.time_zone,
                               )).italic
         end
 
@@ -149,9 +150,10 @@ class CalendarAssistant
         end
 
         events.each do |event|
-          puts(sprintf(" • %s - %s",
-                       event.start.date_time.strftime("%-l:%M%P"),
-                       event.end.date_time.strftime("%-l:%M%P")))
+          puts(sprintf(" • %s - %s %s",
+                       event.start.date_time.strftime("%l:%M%P"),
+                       event.end.date_time.strftime("%l:%M%P %Z"),
+                       Rainbow("(" + event.duration + ")").italic))
           pp event if ca.config.options[:debug]
         end
       end
