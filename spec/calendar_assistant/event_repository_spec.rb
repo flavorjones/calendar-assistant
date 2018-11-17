@@ -8,9 +8,17 @@ describe CalendarAssistant::EventRepository do
   let(:calendar_id) { "primary" }
   let(:calendar) { GCal::Calendar.new(id: calendar_id) }
   let(:event_array) { [nine_event, nine_thirty_event] }
-  let(:nine_event) { GCal::Event.new(id: 1, start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")), end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00"))) }
-  let(:nine_thirty_event) { GCal::Event.new(id: 2, start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:30:00")), end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00"))) }
   let(:time_range) { Time.parse("2018-10-18")..Time.parse("2018-10-19") }
+  let(:nine_event) do
+    GCal::Event.new(id: 1,
+                    start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")),
+                    end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00")))
+  end
+  let(:nine_thirty_event) do
+    GCal::Event.new(id: 2,
+                    start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:30:00")),
+                    end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00")))
+  end
 
   before do
     service.insert_calendar(calendar)
@@ -30,14 +38,18 @@ describe CalendarAssistant::EventRepository do
   describe "#create and #new" do
     context "#create" do
       it "creates an event" do
-        event_repository.create({summary: "boom", start: Date.parse("2018-10-17"), end: Date.parse("2018-10-19")})
+        event_repository.create(summary: "boom",
+                                start: Date.parse("2018-10-17"),
+                                end: Date.parse("2018-10-19"))
         expect(event_repository.find(time_range).map(&:summary)).to include("boom")
       end
     end
 
     context "#new" do
       it "news an event, but does not add it to the repository" do
-        event = event_repository.new({summary: "boom", start: Date.parse("2018-10-17"), end: Date.parse("2018-10-19")})
+        event = event_repository.new(summary: "boom",
+                                     start: Date.parse("2018-10-17"),
+                                     end: Date.parse("2018-10-19"))
         expect(event_repository.find(time_range).map(&:summary)).not_to include("boom")
         expect(event).to be_a(CalendarAssistant::Event)
       end
