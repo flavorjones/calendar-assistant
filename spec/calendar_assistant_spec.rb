@@ -374,9 +374,4 @@ describe CalendarAssistant do
       end
     end
   end
-
-  describe "event formatting" do
-    describe "#event_description" do it end
-    describe "#event_date_description" do it end
-  end
 end
