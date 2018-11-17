@@ -1,8 +1,17 @@
 class CalendarAssistant
   class EventRepository
+    attr_reader :calendar, :calendar_id
+
     def initialize(service, calendar_id)
       @service = service
       @calendar_id = calendar_id
+      @calendar = @service.get_calendar @calendar_id
+    end
+
+    def in_tz &block
+      CalendarAssistant.in_tz calendar.time_zone do
+        yield
+      end
     end
 
     def find time_range

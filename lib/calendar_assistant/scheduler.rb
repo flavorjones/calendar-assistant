@@ -26,7 +26,7 @@ class CalendarAssistant
         end
 
         # iterate over the days finding free chunks of time
-        ca.in_tz(ca.config.options[Config::Keys::Options::TIMEZONE]) do
+        er.in_tz do
           date_range.inject({}) do |avail_time, date|
             avail_time[date] ||= []
             date_events = dates_events[date]

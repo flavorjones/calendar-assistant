@@ -357,7 +357,7 @@ describe CalendarAssistant do
 
       it "calls .in_tz with the default calendar's time zone" do
         expect(CalendarAssistant).to receive(:in_tz).with("a time zone id")
-        ca.in_env do ; end
+        ca.in_tz do ; end
       end
     end
 

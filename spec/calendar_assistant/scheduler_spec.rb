@@ -15,7 +15,7 @@ describe CalendarAssistant::Scheduler do
     let(:calendar) { instance_double("Calendar") }
     let(:time_zone) { ENV['TZ'] }
     let(:calendar_id) { CalendarAssistant::DEFAULT_CALENDAR_ID }
-    let(:er) { instance_double("EventRepository") }
+    let(:er) { CalendarAssistant::EventRepository.new service, calendar_id }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
@@ -353,69 +353,38 @@ describe CalendarAssistant::Scheduler do
         end
       end
 
-      describe "time zone" do
-        context "same as home time zone" do
-          let(:config_options) do
-            {
-              CalendarAssistant::Config::Keys::Options::TIMEZONE => time_zone,
-            }
-          end
+      context "EventRepository calendar is different from own time zone" do
+        let(:time_zone) { "America/New_York" }
+        let(:other_calendar) { instance_double("Calendar") }
+        let(:other_time_zone) { "America/Los_Angeles" }
 
-          let(:expected_avails) do
+        before do
+          allow(er).to receive(:calendar).and_return(other_calendar)
+          allow(other_calendar).to receive(:time_zone).and_return(other_time_zone)
+        end
+
+        let(:expected_avails) do
+          in_tz do
             {
               date => [
-                event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
                 event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
                 event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
                 event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
+                event_factory("available", Chronic.parse("6pm")..Chronic.parse("6:30pm")),
+                event_factory("available", Chronic.parse("7pm")..Chronic.parse("9pm")),
               ]
             }
           end
-
-          it "returns the free blocks for home time zone" do
-            found_avails = scheduler.available_blocks time_range
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
-          end
         end
 
-        context "different from home time zone" do
-          let(:time_zone) { "America/New_York" }
+        it "returns the free blocks in that time zone" do
+          found_avails = scheduler.available_blocks time_range
 
-          let(:config_options) do
-            {
-              CalendarAssistant::Config::Keys::Options::TIMEZONE => "America/Los_Angeles",
-            }
-          end
-
-          let(:expected_avails) do
-            in_tz do
-              {
-                date => [
-                  event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                  event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                  event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-                  event_factory("available", Chronic.parse("6pm")..Chronic.parse("6:30pm")),
-                  event_factory("available", Chronic.parse("7pm")..Chronic.parse("9pm")),
-                ]
-              }
-            end
-          end
-
-          it "returns the free blocks for home time zone" do
-            found_avails = scheduler.available_blocks time_range
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
+          expect(found_avails.keys).to eq([date])
+          expect(found_avails[date].length).to eq(expected_avails[date].length)
+          found_avails[date].each_with_index do |found_avail, j|
+            expect(found_avail.start).to eq(expected_avails[date][j].start)
+            expect(found_avail.end).to eq(expected_avails[date][j].end)
           end
         end
       end

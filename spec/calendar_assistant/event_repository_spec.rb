@@ -6,19 +6,26 @@ describe CalendarAssistant::EventRepository do
 
   let(:event_repository) { described_class.new(service, calendar_id) }
   let(:calendar_id) { "primary" }
+  let(:calendar) { GCal::Calendar.new(id: calendar_id) }
   let(:event_array) { [nine_event, nine_thirty_event] }
   let(:nine_event) { GCal::Event.new(id: 1, start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")), end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00"))) }
   let(:nine_thirty_event) { GCal::Event.new(id: 2, start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:30:00")), end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00"))) }
   let(:time_range) { Time.parse("2018-10-18")..Time.parse("2018-10-19") }
 
   before do
-    service.insert_calendar(GCal::Calendar.new(id: calendar_id))
+    service.insert_calendar(calendar)
 
     event_array.each do |event|
       service.insert_event(calendar_id, event)
     end
   end
 
+  describe "#initialize" do
+    it "fetches a Calendar for the stated id" do
+      expect(service).to receive(:get_calendar).with(calendar_id).and_return(calendar)
+      described_class.new(service, calendar_id)
+    end
+  end
 
   describe "#create and #new" do
     context "#create" do
@@ -77,6 +84,17 @@ describe CalendarAssistant::EventRepository do
 
       result = event_repository.find time_range
       expect(result[0].start.date_time).to eq DateTime.parse("1776-07-04")
+    end
+  end
+
+  describe "#in_tz" do
+    before do
+      expect(calendar).to receive(:time_zone).and_return("a time zone id")
+    end
+
+    it "calls CalendarAssistant.in_tz with the calendar's time zone" do
+      expect(CalendarAssistant).to receive(:in_tz).with("a time zone id")
+      event_repository.in_tz do ; end
     end
   end
 end
