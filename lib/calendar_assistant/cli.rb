@@ -204,11 +204,6 @@ class CalendarAssistant
            desc: sprintf("[default %s] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')",
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
            aliases: ["-e"]
-    option CalendarAssistant::Config::Keys::Options::TIMEZONE,
-           type: :string,
-           banner: "TIMEZONE",
-           desc: "[default is calendar tz] find chunks of available time in TIMEZONE (e.g., 'America/New_York')",
-           aliases: ["-z"]
     option CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE,
            type: :string,
            banner: "ATTENDEE",
