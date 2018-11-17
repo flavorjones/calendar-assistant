@@ -72,11 +72,12 @@ describe CalendarAssistant::Event do
   end
 
   describe "#all_day?" do
+    subject { described_class.new decorated_object }
+
     context "event has start and end dates" do
-      let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date: Date.today),
-                                                   end: GCal::EventDateTime.new(date: Date.today + 1)) }
-      subject do
-        described_class.new decorated_object
+      let(:decorated_object) do
+        decorated_class.new start: GCal::EventDateTime.new(date: Date.today),
+                            end: GCal::EventDateTime.new(date: Date.today + 1)
       end
 
       it { expect(subject.all_day?).to be_truthy }
@@ -84,28 +85,20 @@ describe CalendarAssistant::Event do
 
     context "event has just a start date" do
       let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date: Date.today)) }
-      subject do
-        described_class.new decorated_object
-      end
 
       it { expect(subject.all_day?).to be_truthy }
     end
 
     context "event has just an end date" do
       let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date: Date.today + 1)) }
-      subject do
-        described_class.new decorated_object
-      end
 
       it { expect(subject.all_day?).to be_truthy }
     end
 
     context "event has start and end times" do
-      let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date_time: Time.now),
-                                                   end: GCal::EventDateTime.new(date_time: Time.now + 30.minutes)) }
-
-      subject do
-        described_class.new decorated_object
+      let(:decorated_object) do
+        decorated_class.new start: GCal::EventDateTime.new(date_time: Time.now),
+                            end: GCal::EventDateTime.new(date_time: Time.now + 30.minutes)
       end
 
       it { expect(subject.all_day?).to be_falsey }
