@@ -25,16 +25,12 @@ class CalendarAssistant
       end
 
       #
-      #  Options are:
-      #  * ephemeral command-line flag settings (e.g. JOIN),
-      #  * or options whose values are determined by factors outside
-      #    of the user config file (e.g. TIMEZONE which is determined
-      #    by the profile calendar)
+      #  Options are ephemeral command-line flag settings
       #
       module Options
         COMMITMENTS = "commitments"
         JOIN = "join"
-        TIMEZONE = "timezone"
+        REQUIRED_ATTENDEE = "required"
       end
     end
 

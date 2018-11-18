@@ -13,7 +13,7 @@ class CalendarAssistant
     end
 
     def all_day?
-      !! start.to_date
+      !! (start.nil? ? self.end.to_date : start.to_date)
     end
 
     def past?
@@ -93,10 +93,39 @@ class CalendarAssistant
       end
     end
 
+    def end_time
+      if all_day?
+        self.end.to_date.beginning_of_day
+      else
+        self.end.date_time
+      end
+    end
+
+    def end_date
+      if all_day?
+        self.end.to_date
+      else
+        self.end.date_time.to_date
+      end
+    end
+
     def view_summary
       return "(private)" if private? && (summary.nil? || summary.blank?)
       return "(no title)" if summary.nil? || summary.blank?
       summary
+    end
+
+    def duration
+      if all_day?
+        days = (self.end_date - start_date).to_i
+        return "#{days}d"
+      end
+
+      p = ActiveSupport::Duration.build(self.end.date_time - start.date_time).parts
+      s = []
+      s << "#{p[:hours]}h" if p.has_key?(:hours)
+      s << "#{p[:minutes]}m" if p.has_key?(:minutes)
+      s.join(" ")
     end
   end
 end

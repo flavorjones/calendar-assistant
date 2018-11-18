@@ -26,16 +26,20 @@ describe CalendarAssistant::CLI do
     end
 
     let(:ca) { instance_double("CalendarAssistant") }
+    let(:er) { instance_double("EventRepository") }
     let(:events) { [instance_double("Event")] }
+    let(:event_set) { CalendarAssistant::EventSet.new er, events }
     let(:out) { double("STDOUT") }
     let(:time_range) { double("time range") }
     let(:config) { instance_double("CalendarAssistant::Config") }
+    let(:config_options) { Hash.new }
 
     before do
       allow(CalendarAssistant::Config).to receive(:new).with(options: {}).and_return(config)
       allow(CalendarAssistant).to receive(:new).with(config).and_return(ca)
       allow(CalendarAssistant::CLIHelpers::Out).to receive(:new).and_return(out)
       allow(ca).to receive(:in_env).and_yield
+      allow(config).to receive(:options).and_return(config_options)
     end
 
     describe "version" do
@@ -87,9 +91,9 @@ describe CalendarAssistant::CLI do
       it "calls find_events by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
         expect(ca).to receive(:find_events).
-                        with(time_range).
-                        and_return(events)
-        expect(out).to receive(:print_events).with(ca, events, anything)
+                        with(time_range, calendar_id: nil).
+                        and_return(event_set)
+        expect(out).to receive(:print_events).with(ca, event_set)
 
         CalendarAssistant::CLI.start [command]
       end
@@ -97,9 +101,9 @@ describe CalendarAssistant::CLI do
       it "calls find_events with the range returned from parse_datespec" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
         expect(ca).to receive(:find_events).
-                        with(time_range).
-                        and_return(events)
-        expect(out).to receive(:print_events).with(ca, events, anything)
+                        with(time_range, calendar_id: nil).
+                        and_return(event_set)
+        expect(out).to receive(:print_events).with(ca, event_set)
 
         CalendarAssistant::CLI.start [command, "user-datespec"]
       end
@@ -114,6 +118,25 @@ describe CalendarAssistant::CLI do
 
         CalendarAssistant::CLI.start [command, "-p", "work"]
       end
+
+      context "given another person's calendar id" do
+        let(:config_options) do
+          {
+            CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => "somebody@example.com"
+          }
+        end
+
+        it "shows another person's day" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: config_options).
+                                               and_return(config)
+          expect(ca).to receive(:find_events).
+                          with(anything, calendar_id: "somebody@example.com")
+          allow(out).to receive(:print_events)
+
+          CalendarAssistant::CLI.start [command, "-r", "somebody@example.com"]
+        end
+      end
     end
 
     describe "location" do
@@ -124,8 +147,8 @@ describe CalendarAssistant::CLI do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
         expect(ca).to receive(:find_location_events).
                         with(time_range).
-                        and_return(events)
-        expect(out).to receive(:print_events).with(ca, events, anything)
+                        and_return(event_set)
+        expect(out).to receive(:print_events).with(ca, event_set)
 
         CalendarAssistant::CLI.start [command]
       end
@@ -134,8 +157,8 @@ describe CalendarAssistant::CLI do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
         expect(ca).to receive(:find_location_events).
                         with(time_range).
-                        and_return(events)
-        expect(out).to receive(:print_events).with(ca, events, anything)
+                        and_return(event_set)
+        expect(out).to receive(:print_events).with(ca, event_set)
 
         CalendarAssistant::CLI.start [command, "user-datespec"]
       end
@@ -155,13 +178,14 @@ describe CalendarAssistant::CLI do
     describe "location-set" do
       let(:command) { "location-set" }
       it_behaves_like "a command", argc: 1, profile: ["here"]
+      let(:event_set) { CalendarAssistant::EventSet.new(er, {}) }
 
       it "calls create_location_event by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
         expect(ca).to receive("create_location_event").
                         with(time_range, "Palo Alto").
-                        and_return({})
-        expect(out).to receive(:print_events).with(ca, {}, anything)
+                        and_return(event_set)
+        expect(out).to receive(:print_events).with(ca, event_set)
 
         CalendarAssistant::CLI.start [command, "Palo Alto"]
       end
@@ -170,8 +194,8 @@ describe CalendarAssistant::CLI do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
         expect(ca).to receive("create_location_event").
                         with(time_range, "Palo Alto").
-                        and_return({})
-        expect(out).to receive(:print_events).with(ca, {}, anything)
+                        and_return(event_set)
+        expect(out).to receive(:print_events).with(ca, event_set)
 
         CalendarAssistant::CLI.start [command, "Palo Alto", "user-datespec"]
       end
@@ -181,7 +205,7 @@ describe CalendarAssistant::CLI do
                                                with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
                                                and_return(config)
 
-        allow(ca).to receive(:create_location_event).and_return({})
+        allow(ca).to receive(:create_location_event).and_return(event_set)
         allow(out).to receive(:print_events)
 
         CalendarAssistant::CLI.start [command, "-p", "work", "Palo Alto"]
@@ -189,6 +213,8 @@ describe CalendarAssistant::CLI do
     end
 
     describe "join" do
+      let(:event_set) { CalendarAssistant::EventSet.new(er) }
+
       before do
         allow(out).to receive(:puts)
         allow(out).to receive(:print_events)
@@ -202,17 +228,19 @@ describe CalendarAssistant::CLI do
 
       context "default behavior" do
         it "calls #find_events with a small time range around now" do
-          expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "now")
+          expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "now").and_return(event_set)
 
           CalendarAssistant::CLI.start [command]
         end
 
         it "uses a specified profile" do
           expect(CalendarAssistant::Config).to receive(:new).
-                                                 with(options: {CalendarAssistant::Config::Keys::Options::JOIN => true, CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
-                                                 and_return(config)
+                                                 with(options: {
+                                                        CalendarAssistant::Config::Keys::Options::JOIN => true,
+                                                        CalendarAssistant::Config::Keys::Settings::PROFILE => "work",
+                                                      }).and_return(config)
 
-          allow(ca).to receive(:find_events).and_return([])
+          allow(ca).to receive(:find_events).and_return(CalendarAssistant::EventSet.new(er, []))
 
           CalendarAssistant::CLI.start [command, "-p", "work"]
         end
@@ -220,7 +248,7 @@ describe CalendarAssistant::CLI do
 
       context "given a time" do
         it "calls #find_events with a small time range around that time" do
-          expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "five minutes from now")
+          expect(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).with(ca, "five minutes from now").and_return([event_set, ""])
 
           CalendarAssistant::CLI.start [command, "five minutes from now"]
         end
@@ -229,14 +257,15 @@ describe CalendarAssistant::CLI do
       context "when a videoconference URI is found" do
         let(:url) { "https://pivotal.zoom.us/j/123456789" }
         let(:event) { instance_double("Event") }
+        let(:event_set) { CalendarAssistant::EventSet.new er, event }
 
         before do
-          allow(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).and_return([event, url])
+          allow(CalendarAssistant::CLIHelpers).to receive(:find_av_uri).and_return([event_set, url])
           allow(out).to receive(:launch).with(url)
         end
 
         it "prints the event" do
-          expect(out).to receive(:print_events).with(ca, event, anything)
+          expect(out).to receive(:print_events).with(ca, event_set)
 
           CalendarAssistant::CLI.start [command]
         end
@@ -276,8 +305,8 @@ describe CalendarAssistant::CLI do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
         expect(ca).to receive(:availability).
                         with(time_range).
-                        and_return(events)
-        expect(out).to receive(:print_available_blocks).with(ca, events, anything)
+                        and_return(event_set)
+        expect(out).to receive(:print_available_blocks).with(ca, event_set)
 
         CalendarAssistant::CLI.start [command]
       end
@@ -286,8 +315,8 @@ describe CalendarAssistant::CLI do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
         expect(ca).to receive(:availability).
                         with(time_range).
-                        and_return(events)
-        expect(out).to receive(:print_available_blocks).with(ca, events, anything)
+                        and_return(event_set)
+        expect(out).to receive(:print_available_blocks).with(ca, event_set)
 
         CalendarAssistant::CLI.start [command, "user-datespec"]
       end
@@ -334,6 +363,17 @@ describe CalendarAssistant::CLI do
         allow(out).to receive(:print_available_blocks)
 
         CalendarAssistant::CLI.start [command, "-e", "6:30pm"]
+      end
+
+      it "looks up another person's availability" do
+        expect(CalendarAssistant::Config).to receive(:new).
+                                               with(options: {CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => "somebody@example.com"}).
+                                               and_return(config)
+
+        allow(ca).to receive(:availability)
+        allow(out).to receive(:print_available_blocks)
+
+        CalendarAssistant::CLI.start [command, "-r", "somebody@example.com"]
       end
     end
   end

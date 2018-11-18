@@ -1,8 +1,17 @@
 class CalendarAssistant
   class EventRepository
+    attr_reader :calendar, :calendar_id
+
     def initialize(service, calendar_id)
       @service = service
       @calendar_id = calendar_id
+      @calendar = @service.get_calendar @calendar_id
+    end
+
+    def in_tz &block
+      CalendarAssistant.in_tz calendar.time_zone do
+        yield
+      end
     end
 
     def find time_range
@@ -14,9 +23,9 @@ class CalendarAssistant
                                    max_results: 2000,
                                    )
       if events.nil? || events.items.nil?
-        return []
+        return CalendarAssistant::EventSet.new self, Array.new
       end
-      events.items.map { |e| CalendarAssistant::Event.new(e) }
+      CalendarAssistant::EventSet.new self, events.items.map { |e| CalendarAssistant::Event.new(e) }
     end
 
     def new event_attributes

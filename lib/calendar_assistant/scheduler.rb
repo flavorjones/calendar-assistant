@@ -1,32 +1,31 @@
 class CalendarAssistant
   class Scheduler
-    attr_reader :config, :ca
+    attr_reader :ca, :er
 
-    def initialize ca, config: Config.new
+    def initialize ca, er
       @ca = ca
-      @config = config
+      @er = er
     end
 
     def available_blocks time_range
       ca.in_env do
-        length = ChronicDuration.parse(config.setting(Config::Keys::Settings::MEETING_LENGTH))
+        length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
 
-        events = ca.find_events time_range
+        event_set = er.find time_range
         date_range = time_range.first.to_date .. time_range.last.to_date
 
         # find relevant events and map them into dates
         dates_events = date_range.inject({}) { |de, date| de[date] = [] ; de }
-        events.each do |event|
+        event_set.events.each do |event|
           if event.accepted?
             event_date = event.start.to_date!
             dates_events[event_date] ||= []
             dates_events[event_date] << event
           end
-          dates_events
         end
 
         # iterate over the days finding free chunks of time
-        ca.in_tz(config.options[Config::Keys::Options::TIMEZONE]) do
+        avail_time = er.in_tz do
           date_range.inject({}) do |avail_time, date|
             avail_time[date] ||= []
             date_events = dates_events[date]
@@ -43,20 +42,33 @@ class CalendarAssistant
               next if ! e.end.date_time.to_time.during_business_hours?
 
               if (e.start.date_time.to_time - start_time) >= length
-                avail_time[date] << CalendarAssistant.available_block(start_time.in_time_zone(ca.calendar.time_zone), e.start.date_time)
+                avail_time[date] << available_block(start_time, e.start.date_time)
               end
               start_time = e.end.date_time.to_time
               break if ! start_time.during_business_hours?
             end
 
             if end_time - start_time >= length
-              avail_time[date] << CalendarAssistant.available_block(start_time.in_time_zone(ca.calendar.time_zone), end_time.in_time_zone(ca.calendar.time_zone))
+              avail_time[date] << available_block(start_time, end_time)
             end
 
             avail_time
           end
         end
+
+        event_set.new avail_time
       end
+    end
+
+    private
+
+    def available_block start_time, end_time
+      e = Google::Apis::CalendarV3::Event.new(
+        start: Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time.in_time_zone(er.calendar.time_zone)),
+        end: Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time.in_time_zone(er.calendar.time_zone)),
+        summary: "available"
+      )
+      CalendarAssistant::Event.new e
     end
   end
 end

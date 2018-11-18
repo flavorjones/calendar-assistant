@@ -28,20 +28,20 @@ class CalendarAssistant
     def self.find_av_uri ca, timespec
       time = Chronic.parse timespec
       range = time..(time+5.minutes)
-      events = ca.find_events range
+      event_set = ca.find_events range
 
       [Google::Apis::CalendarV3::Event::Response::ACCEPTED,
        Google::Apis::CalendarV3::Event::Response::TENTATIVE,
        Google::Apis::CalendarV3::Event::Response::NEEDS_ACTION,
       ].each do |response|
-        events.reverse.select do |event|
+        event_set.events.reverse.select do |event|
           event.response_status == response
         end.each do |event|
-          return [event, event.av_uri] if event.av_uri
+          return [event_set.new(event), event.av_uri] if event.av_uri
         end
       end
 
-      nil
+      event_set.new(nil)
     end
 
     class Out
@@ -80,81 +80,127 @@ class CalendarAssistant
         return false if event.start_date != Date.today
 
         if event.start_time > Time.now
-          puts ca.event_description(CLIHelpers.now)
+          puts event_description(CLIHelpers.now)
           return true
         end
 
         false
       end
 
-      def print_events ca, events, options={}
-        unless options[:omit_title]
-          puts Rainbow("#{ca.calendar.id} (all times in #{ca.calendar.time_zone})\n").italic
-          options = options.merge(omit_title: true)
+      def print_events ca, event_set, omit_title: false
+        unless omit_title
+          er = event_set.event_repository
+          puts Rainbow("#{er.calendar.id} (all times in #{er.calendar.time_zone})\n").italic
         end
 
-        if events.is_a?(Hash)
-          events.each do |key, value|
+        if event_set.events.is_a?(Hash)
+          event_set.events.each do |key, value|
             puts Rainbow(key.to_s.capitalize + ":").bold.italic
-            print_events ca, value, options
+            print_events ca, event_set.new(value), omit_title: true
           end
           return
         end
 
-        events = Array(events)
+        events = Array(event_set.events)
         if events.empty?
           puts "No events in this time range."
           return
         end
 
         display_events = events.select do |event|
-          ! options[CalendarAssistant::Config::Keys::Options::COMMITMENTS] || event.commitment?
+          ! ca.config.options[CalendarAssistant::Config::Keys::Options::COMMITMENTS] || event.commitment?
         end
 
         printed_now = false
         display_events.each do |event|
           printed_now = print_now! ca, event, printed_now
-          puts ca.event_description(event)
-          pp event if options[:debug]
+          puts event_description(event)
+          pp event if ca.config.options[:debug]
         end
 
         puts
       end
 
-      def print_available_blocks ca, events, options={}
-        unless options[:omit_title]
-          puts Rainbow(sprintf("%s\n- all times in %s\n- looking for blocks at least %s long\n- between %s and %s in %s\n",
-                               ca.calendar.id,
-                               ca.calendar.time_zone,
+      def print_available_blocks ca, event_set, omit_title: false
+        unless omit_title
+          er = event_set.event_repository
+          puts Rainbow(sprintf("%s\n- looking for blocks at least %s long\n- between %s and %s in %s\n",
+                               er.calendar.id,
                                ChronicDuration.output(ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))),
                                ca.config.setting(Config::Keys::Settings::START_OF_DAY),
                                ca.config.setting(Config::Keys::Settings::END_OF_DAY),
-                               ca.config.setting(Config::Keys::Options::TIMEZONE) || ca.calendar.time_zone,
+                               er.calendar.time_zone,
                               )).italic
-          options = options.merge(omit_title: true)
         end
 
-        if events.is_a?(Hash)
-          events.each do |key, value|
+        if event_set.events.is_a?(Hash)
+          event_set.events.each do |key, value|
             puts(sprintf(Rainbow("Availability on %s:\n").bold,
                          key.strftime("%A, %B %-d")))
-            print_available_blocks ca, value, options
+            print_available_blocks ca, event_set.new(value), omit_title: true
             puts
           end
           return
         end
 
-        events = Array(events)
+        events = Array(event_set.events)
         if events.empty?
           puts "  (No available blocks in this time range.)"
           return
         end
 
         events.each do |event|
-          puts(sprintf(" • %s - %s",
-                       event.start.date_time.strftime("%-l:%M%P"),
-                       event.end.date_time.strftime("%-l:%M%P")))
-          pp event if options[:debug]
+          puts(sprintf(" • %s - %s %s",
+                       event.start.date_time.strftime("%l:%M%P"),
+                       event.end.date_time.strftime("%l:%M%P %Z"),
+                       Rainbow("(" + event.duration + ")").italic))
+          pp event if ca.config.options[:debug]
+        end
+      end
+
+      def event_description event
+        s = sprintf("%-25.25s", event_date_description(event))
+
+        date_ansi_codes = []
+        date_ansi_codes << :bright if event.current?
+        date_ansi_codes << :faint if event.past?
+        s = date_ansi_codes.inject(Rainbow(s)) { |text, ansi| text.send ansi }
+
+        s += Rainbow(sprintf(" | %s", event.view_summary)).bold
+
+        attributes = []
+        unless event.private?
+          attributes << "recurring" if event.recurring_event_id
+          attributes << "not-busy" unless event.busy?
+          attributes << "self" if event.human_attendees.nil? && event.visibility != "private"
+          attributes << "1:1" if event.one_on_one?
+          attributes << "awaiting" if event.awaiting?
+        end
+
+        attributes << event.visibility if event.explicit_visibility?
+
+        s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
+
+        s = Rainbow(Rainbow.uncolor(s)).faint.strike if event.declined?
+
+        s
+      end
+
+      def event_date_description event
+        if event.all_day?
+          start_date = event.start.to_date
+          end_date = event.end.to_date
+          if (end_date - start_date) <= 1
+            event.start.to_s
+          else
+            sprintf("%s - %s", start_date, end_date - 1.day)
+          end
+        else
+          if event.start.date_time.to_date == event.end.date_time.to_date
+            sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%M"), event.end.date_time.strftime("%H:%M"))
+          else
+            sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))
+          end
         end
       end
     end

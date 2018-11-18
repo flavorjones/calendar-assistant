@@ -22,10 +22,10 @@ class Google::Apis::CalendarV3::EventDateTime
     @date_time.strftime "%Y-%m-%d %H:%M"
   end
 
-  def == lhs
+  def == rhs
     if @date
-      return to_date == lhs.to_date
+      return to_date == rhs.to_date
     end
-    date_time == lhs.date_time
+    date_time == rhs.date_time
   end
 end

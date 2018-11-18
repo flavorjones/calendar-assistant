@@ -1,5 +1,7 @@
 # coding: utf-8
 describe CalendarAssistant::CLIHelpers do
+  EventSet = CalendarAssistant::EventSet
+
   describe ".parse_datespec" do
     describe "parsing" do
       context "passed a range with two dots" do
@@ -58,13 +60,15 @@ describe CalendarAssistant::CLIHelpers do
 
   describe ".find_av_uri" do
     let(:ca) { instance_double("CalendarAssistant") }
+    let(:er) { instance_double("EventRepository") }
+    let(:event_set) { EventSet.new er, [] }
 
     describe "search range" do
       freeze_time
 
       it "searches in a narrow range around the specified time" do
         range = Time.now..(Time.now+5.minutes)
-        expect(ca).to receive(:find_events).with(range).and_return([])
+        expect(ca).to receive(:find_events).with(range).and_return(event_set)
 
         subject.find_av_uri(ca, "now")
       end
@@ -108,42 +112,59 @@ describe CalendarAssistant::CLIHelpers do
       end
 
       it "prefers later meetings to earlier meetings" do
-        # reminder that #find_events returns in order of start time
-        allow(ca).to receive(:find_events).and_return([accepted_event, accepted2_event])
+        # reminder that #find_events returns an EventSet with events ordered by start time
+        event_set = EventSet.new er, [accepted_event, accepted2_event]
+        allow(ca).to receive(:find_events).and_return(event_set)
 
-        expect(subject.find_av_uri(ca, "now")).to eq([accepted2_event, "accepted2"])
+        actual_set, actual_uri = subject.find_av_uri(ca, "now")
+        expect(actual_set.events).to eq(accepted2_event)
+        expect(actual_uri).to eq("accepted2")
       end
 
       it "prefers accepted meetings to all other responses" do
-        allow(ca).to receive(:find_events).and_return([accepted_event, tentative_event, needs_action_event, declined_event])
+        event_set = EventSet.new er, [accepted_event, tentative_event, needs_action_event, declined_event]
+        allow(ca).to receive(:find_events).and_return(event_set)
 
-        expect(subject.find_av_uri(ca, "now")).to eq([accepted_event, "accepted"])
+        actual_set, actual_uri = subject.find_av_uri(ca, "now")
+        expect(actual_set.events).to eq(accepted_event)
+        expect(actual_uri).to eq("accepted")
       end
 
       it "prefers tentative meetings to needsAction and declined" do
-        allow(ca).to receive(:find_events).and_return([tentative_event, needs_action_event, declined_event])
+        event_set = EventSet.new er, [tentative_event, needs_action_event, declined_event]
+        allow(ca).to receive(:find_events).and_return(event_set)
 
-        expect(subject.find_av_uri(ca, "now")).to eq([tentative_event, "tentative"])
+        actual_set, actual_uri = subject.find_av_uri(ca, "now")
+        expect(actual_set.events).to eq(tentative_event)
+        expect(actual_uri).to eq("tentative")
       end
 
       it "prefers needsAction meetings to declined" do
-        allow(ca).to receive(:find_events).and_return([needs_action_event, declined_event])
+        event_set = EventSet.new er, [needs_action_event, declined_event]
+        allow(ca).to receive(:find_events).and_return(event_set)
 
-        expect(subject.find_av_uri(ca, "now")).to eq([needs_action_event, "needs_action"])
+        actual_set, actual_uri = subject.find_av_uri(ca, "now")
+        expect(actual_set.events).to eq(needs_action_event)
+        expect(actual_uri).to eq("needs_action")
       end
 
       it "never chooses declined meetings" do
-        allow(ca).to receive(:find_events).and_return([declined_event])
+        event_set = EventSet.new er, [declined_event]
+        allow(ca).to receive(:find_events).and_return(event_set)
 
-        expect(subject.find_av_uri(ca, "now")).to eq(nil)
+        actual_set, actual_uri = subject.find_av_uri(ca, "now")
+        expect(actual_set.events).to be_nil
+        expect(actual_uri).to be_nil
       end
 
       it "fails gracefully when the meeting has no link" do
-        allow(ca).to receive(:find_events).and_return([no_av_uri_event])
+        event_set = EventSet.new er, [no_av_uri_event]
+        allow(ca).to receive(:find_events).and_return(event_set)
 
-        expect(subject.find_av_uri(ca, "now")).to eq(nil)
+        actual_set, actual_uri = subject.find_av_uri(ca, "now")
+        expect(actual_set.events).to be_nil
+        expect(actual_uri).to be_nil
       end
-
     end
   end
 
@@ -191,7 +212,7 @@ describe CalendarAssistant::CLIHelpers do
           let(:start_time) { Time.now - 1.minute }
 
           it "does not print and returns false" do
-            expect(ca).not_to receive(:event_description)
+            expect(subject).not_to receive(:event_description)
             rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_falsey
           end
@@ -201,7 +222,7 @@ describe CalendarAssistant::CLIHelpers do
           let(:start_time) { Time.now + 1.day + 1.minute }
 
           it "does not print and returns false" do
-            expect(ca).not_to receive(:event_description)
+            expect(subject).not_to receive(:event_description)
             rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_falsey
           end
@@ -211,7 +232,7 @@ describe CalendarAssistant::CLIHelpers do
           let(:start_time) { Time.now + 1.minute }
 
           it "prints and returns true" do
-            expect(ca).to receive(:event_description).with(now)
+            expect(subject).to receive(:event_description).with(now)
             rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_truthy
           end
@@ -225,7 +246,7 @@ describe CalendarAssistant::CLIHelpers do
           let(:start_time) { Time.now + 1.minute }
 
           it "does not print and returns true" do
-            expect(ca).not_to receive(:event_description).with(now)
+            expect(subject).not_to receive(:event_description).with(now)
             rval = subject.print_now!(ca, event, printed)
             expect(rval).to be_truthy
           end
@@ -236,8 +257,12 @@ describe CalendarAssistant::CLIHelpers do
     describe "#print_events" do
       let(:calendar) { instance_double("Calendar") }
       let(:calendar_id) { "calendar-id" }
-      let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}") }
       let(:calendar_time_zone) { "calendar/time/zone" }
+      let(:er) { instance_double("EventRepository") }
+      let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}") }
+      let(:config) { CalendarAssistant::Config.new options: config_options }
+      let(:config_options) { Hash.new }
+
       let(:events) do
         [
           CalendarAssistant::Event.new(GCal::Event.new(summary: "do a thing",
@@ -249,75 +274,82 @@ describe CalendarAssistant::CLIHelpers do
       let(:event) { events.first }
 
       before do
-        allow(ca).to receive(:calendar).and_return(calendar)
+        allow(ca).to receive(:config).and_return(config)
         allow(calendar).to receive(:id).and_return(calendar_id)
         allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
-        allow(ca).to receive(:event_description)
+        allow(subject).to receive(:event_description)
         allow(stdout).to receive(:puts)
+        allow(er).to receive(:calendar).and_return(calendar)
       end
 
       context "passed a single Event" do
+        let(:event_set) { EventSet.new(er, event) }
+
         it "prints a title containing the cal id and time zone" do
           expect(stdout).to receive(:puts).with(title_regexp)
-          subject.print_events ca, event
+          subject.print_events ca, event_set
         end
 
         context "passed option omit_title:true" do
           it "does not print a title" do
             expect(stdout).not_to receive(:puts).with(title_regexp)
-            subject.print_events ca, event, omit_title: true
+            subject.print_events ca, event_set, omit_title: true
           end
         end
 
         it "prints the event description" do
-          expect(ca).to receive(:event_description).with(event).and_return("event-description")
+          expect(subject).to receive(:event_description).with(event).and_return("event-description")
           expect(stdout).to receive(:puts).with("event-description")
-          subject.print_events ca, event
+          subject.print_events ca, event_set
         end
       end
 
       context "passed an Array of Events" do
+        let(:event_set) { EventSet.new(er, events) }
+
         it "prints a title containing the cal id and time zone" do
           expect(stdout).to receive(:puts).with(title_regexp)
-          subject.print_events ca, events
+          subject.print_events ca, event_set
         end
 
         it "calls #print_now! before each event" do
           expect(subject).to receive(:print_now!).exactly(events.length).times
-          subject.print_events ca, events
+          subject.print_events ca, event_set
         end
 
         it "calls puts with event descriptions for each Event" do
           events.each do |event|
-            expect(ca).to receive(:event_description).with(event).and_return(event.summary)
+            expect(subject).to receive(:event_description).with(event).and_return(event.summary)
             expect(stdout).to receive(:puts).with(event.summary)
           end
-          subject.print_events ca, events
+          subject.print_events ca, event_set
         end
 
         context "option 'commitments'" do
+          let(:config_options) { { CalendarAssistant::Config::Keys::Options::COMMITMENTS => true } }
+
           it "omits events that are not a commitment" do
             allow(events.first).to receive(:commitment?).and_return(true)
             allow(events.last).to receive(:commitment?).and_return(false)
 
-            expect(ca).to receive(:event_description).with(events.first)
-            expect(ca).not_to receive(:event_description).with(events.last)
+            expect(subject).to receive(:event_description).with(events.first)
+            expect(subject).not_to receive(:event_description).with(events.last)
 
-            subject.print_events ca, events, CalendarAssistant::Config::Keys::Options::COMMITMENTS => true
+            subject.print_events ca, event_set
           end
         end
 
         context "the array is empty" do
           it "prints a standard message" do
             expect(stdout).to receive(:puts).with("No events in this time range.")
-            subject.print_events ca, []
+            subject.print_events ca, EventSet.new(er, [])
           end
         end
 
         context "the array is nil" do
           it "prints a standard message" do
             expect(stdout).to receive(:puts).with("No events in this time range.")
-            subject.print_events ca, nil
+            subject.print_events ca, EventSet.new(er, nil)
           end
         end
       end
@@ -325,20 +357,20 @@ describe CalendarAssistant::CLIHelpers do
       context "passed a Hash of Arrays of Events" do
         it "prints a title containing the cal id and time zone" do
           expect(stdout).to receive(:puts).with(title_regexp)
-          subject.print_events ca, {}
+          subject.print_events ca, EventSet.new(er, {})
         end
 
         it "prints each hash key capitalized" do
           expect(stdout).to receive(:puts).with(/First:/)
           expect(stdout).to receive(:puts).with(/Second:/)
-          subject.print_events ca, {first: [events.first], second: [events.second]}
+          subject.print_events ca, EventSet.new(er, {first: [events.first], second: [events.second]})
         end
 
         it "recursively calls #print_events for each hash value" do
           allow(subject).to receive(:print_events).and_call_original
-          expect(subject).to receive(:print_events).with(ca, [events.first], omit_title: true)
-          expect(subject).to receive(:print_events).with(ca, [events.second], omit_title: true)
-          subject.print_events ca, {first: [events.first], second: [events.second]}
+          expect(subject).to receive(:print_events).with(ca, EventSet.new(er, [events.first]), omit_title: true)
+          expect(subject).to receive(:print_events).with(ca, EventSet.new(er, [events.second]), omit_title: true)
+          subject.print_events ca, EventSet.new(er, {first: [events.first], second: [events.second]})
         end
       end
     end
@@ -346,17 +378,18 @@ describe CalendarAssistant::CLIHelpers do
     describe "#print_available_blocks" do
       let(:calendar) { instance_double("Calendar") }
       let(:calendar_id) { "calendar-id" }
-      let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}", Regexp::MULTILINE) }
       let(:calendar_time_zone) { "calendar/time/zone" }
       let(:config) { CalendarAssistant::Config.new }
+      let(:er) { instance_double("EventRepository") }
+      let(:event_set) { EventSet.new er, events }
 
       before do
-        allow(ca).to receive(:calendar).and_return(calendar)
+        allow(ca).to receive(:config).and_return(config)
         allow(calendar).to receive(:id).and_return(calendar_id)
         allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
-        allow(ca).to receive(:event_description)
-        allow(ca).to receive(:config).and_return(config)
+        allow(subject).to receive(:event_description)
         allow(stdout).to receive(:puts)
+        allow(er).to receive(:calendar).and_return(calendar)
       end
 
       context "passed an Array of Events" do
@@ -371,37 +404,50 @@ describe CalendarAssistant::CLIHelpers do
           ]
         end
 
-        it "prints a subtitle stating duration and intraday range"
+        it "prints a title containing the calendar id" do
+          expect(stdout).to receive(:puts).with(/#{calendar_id}/)
+          subject.print_available_blocks ca, event_set
+        end
 
-        it "prints a title containing the time zone" do
-          expect(stdout).to receive(:puts).with(title_regexp)
-          subject.print_available_blocks ca, events
+        it "prints a subtitle stating search duration" do
+          duration = ChronicDuration.output(ChronicDuration.parse(ca.config.setting(CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH)))
+          expect(stdout).to receive(:puts).with(/at least #{duration} long/)
+          subject.print_available_blocks ca, event_set
+        end
+
+        it "prints a subtitle stating intraday range and time zone" do
+          expect(stdout).to receive(:puts).with(/\b#{ca.config.setting(CalendarAssistant::Config::Keys::Settings::START_OF_DAY)}\b.*\b#{ca.config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)}\b.*\b#{calendar_time_zone}\b/)
+          subject.print_available_blocks ca, event_set
         end
 
         context "passed option omit_title:true" do
           it "does not print a title" do
-            expect(stdout).not_to receive(:puts).with(title_regexp)
-            subject.print_available_blocks ca, events, omit_title: true
+            expect(stdout).not_to receive(:puts).with(/#{calendar_id}/)
+            subject.print_available_blocks ca, event_set, omit_title: true
           end
         end
 
         it "prints out the time range of each free block" do
-          expect(stdout).to receive(:puts).with(" • 9:00am - 10:00am")
-          expect(stdout).to receive(:puts).with(" • 12:30pm - 2:00pm")
-          subject.print_available_blocks ca, events
+          expect(stdout).to receive(:puts).with(/ •  9:00am - 10:00am \+12 .*(1h)/)
+          expect(stdout).to receive(:puts).with(/ • 12:30pm -  2:00pm \+12 .*(1h 30m)/)
+          subject.print_available_blocks ca, event_set
         end
 
         context "the array is empty" do
+          let(:events) { Array.new }
+
           it "prints a standard message" do
             expect(stdout).to receive(:puts).with(/No available blocks in this time range/)
-            subject.print_available_blocks ca, []
+            subject.print_available_blocks ca, event_set
           end
         end
 
         context "the array is nil" do
+          let(:events) { nil }
+
           it "prints a standard message" do
             expect(stdout).to receive(:puts).with(/No available blocks in this time range/)
-            subject.print_available_blocks ca, nil
+            subject.print_available_blocks ca, event_set
           end
         end
       end
@@ -422,9 +468,9 @@ describe CalendarAssistant::CLIHelpers do
           }
         end
 
-        it "prints a title containing the time zone" do
-          expect(stdout).to receive(:puts).with(title_regexp)
-          subject.print_available_blocks ca, {}
+        it "prints a title containing the calendar id" do
+          expect(stdout).to receive(:puts).with(/#{calendar_id}/)
+          subject.print_available_blocks ca, event_set
         end
 
         it "assumes each hash key is a Date and prints it" do
@@ -432,16 +478,24 @@ describe CalendarAssistant::CLIHelpers do
             expect(key).to receive(:strftime).and_return(key.to_s)
             expect(stdout).to receive(:puts).with(Regexp.new(key.to_s))
           end
-          subject.print_available_blocks ca, events
+          subject.print_available_blocks ca, event_set
         end
 
         it "recursively calls #print_available_blocks for each hash value" do
           allow(subject).to receive(:print_available_blocks).and_call_original
-          expect(subject).to receive(:print_available_blocks).with(ca, events.values.first, omit_title: true)
-          expect(subject).to receive(:print_available_blocks).with(ca, events.values.second, omit_title: true)
-          subject.print_available_blocks ca, events
+          expect(subject).to receive(:print_available_blocks).with(ca, EventSet.new(er, events.values.first), omit_title: true)
+          expect(subject).to receive(:print_available_blocks).with(ca, EventSet.new(er, events.values.second), omit_title: true)
+          subject.print_available_blocks ca, event_set
         end
       end
+    end
+
+    describe "#event_description" do
+      it "needs a test"
+    end
+
+    describe "#event_date_description" do
+      it "needs a test"
     end
   end
 end

@@ -25,6 +25,32 @@ describe CalendarAssistant do
         CalendarAssistant.authorize("profile")
       end
     end
+
+    describe ".in_tz" do
+      it "sets the timezone and restores it" do
+        Time.zone = "Pacific/Fiji"
+        ENV['TZ'] = "Pacific/Fiji"
+        CalendarAssistant.in_tz "Europe/Istanbul" do
+          expect(Time.zone.name).to eq("Europe/Istanbul")
+          expect(ENV['TZ']).to eq("Europe/Istanbul")
+        end
+        expect(Time.zone.name).to eq("Pacific/Fiji")
+        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
+
+      it "exceptionally restores the timezone" do
+        Time.zone = "Pacific/Fiji"
+        ENV['TZ'] = "Pacific/Fiji"
+        begin
+          CalendarAssistant.in_tz "Europe/Istanbul" do
+            raise RuntimeError
+          end
+        rescue
+        end
+        expect(Time.zone.name).to eq("Pacific/Fiji")
+        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      end
+    end
   end
 
   describe "using the local file store" do
@@ -49,30 +75,34 @@ describe CalendarAssistant do
 
     it "reads from those events" do
       results = ca.find_events(Time.now.beginning_of_day..(Time.now + 1.day))
-      expect(results.length).to eq 3
-      expect(results.first.id).to eq "eminently beautiful"
+      expect(results.events.length).to eq 3
+      expect(results.events.first.id).to eq "eminently beautiful"
     end
   end
 
   describe "events" do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
-    let(:config) { CalendarAssistant::Config.new(options: options) }
+    let(:config) { CalendarAssistant::Config.new options: config_options }
+    let(:config_options) { Hash.new }
     let(:token_store) { instance_double("CalendarAssistant::Config::TokenStore") }
     let(:event_repository) { instance_double("EventRepository") }
-    let(:ca) { CalendarAssistant.new config, event_repository: event_repository }
+    let(:event_repository_factory) { instance_double("EventRepositoryFactory") }
+    let(:ca) { CalendarAssistant.new config, event_repository_factory: event_repository_factory }
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
     let(:authorizer) { instance_double("Authorizer") }
-    let(:options) { { } }
+    let(:event_set) { CalendarAssistant::EventSet.new(event_repository, []) }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
       allow(config).to receive(:token_store).and_return(token_store)
       allow(config).to receive(:profile_name).and_return("profile-name")
       allow(authorizer).to receive(:service).and_return(service)
-      allow(event_repository).to receive(:find).and_return([])
+      allow(event_repository).to receive(:find).and_return(event_set)
       allow(service).to receive(:get_calendar).and_return(calendar)
+      allow(event_repository_factory).to receive(:new_event_repository).and_return(event_repository)
+      allow(calendar).to receive(:time_zone).and_return("Europe/London")
     end
 
     describe "#find_events" do
@@ -86,18 +116,18 @@ describe CalendarAssistant do
 
     describe "#find_location_events" do
       let(:event_repository) { instance_double("EventRepository") }
-      let(:ca) { CalendarAssistant.new config, event_repository: event_repository }
       let(:location_event) { instance_double("Event", :location_event? => true) }
       let(:other_event) { instance_double("Event", :location_event? => false) }
       let(:events) { [location_event, other_event].shuffle }
+      let(:event_set) { CalendarAssistant::EventSet.new(event_repository, events) }
 
       it "selects location events from event repository find" do
         time = Time.now.beginning_of_day..(Time.now + 1.day).end_of_day
 
-        expect(event_repository).to receive(:find).with(time).and_return(events)
+        expect(event_repository).to receive(:find).with(time).and_return(event_set)
 
         result = ca.find_location_events time
-        expect(result).to eq([location_event])
+        expect(result.events).to eq([location_event])
       end
     end
 
@@ -132,7 +162,7 @@ describe CalendarAssistant do
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
 
           response = ca.create_location_event CalendarAssistant::CLIHelpers.parse_datespec("today"), "WFH"
-          expect(response[:created]).to eq([new_event])
+          expect(response.events[:created]).to eq([new_event])
         end
       end
 
@@ -151,7 +181,7 @@ describe CalendarAssistant do
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
 
           response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-          expect(response[:created]).to eq([new_event])
+          expect(response.events[:created]).to eq([new_event])
         end
       end
 
@@ -179,7 +209,8 @@ describe CalendarAssistant do
           }
 
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
-          expect(ca).to receive(:find_location_events).and_return([existing_event])
+          expect(ca).to receive(:find_location_events).
+                          and_return(CalendarAssistant::EventSet.new(event_repository, [existing_event]))
         end
 
         context "when the new event is entirely within the range of the pre-existing event" do
@@ -190,8 +221,8 @@ describe CalendarAssistant do
             expect(event_repository).to receive(:delete).with(existing_event)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response[:created]).to eq([new_event])
-            expect(response[:deleted]).to eq([existing_event])
+            expect(response.events[:created]).to eq([new_event])
+            expect(response.events[:deleted]).to eq([existing_event])
           end
         end
 
@@ -203,8 +234,8 @@ describe CalendarAssistant do
             expect(event_repository).to receive(:update).with(existing_event, start: existing_event_end_date)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response[:created]).to eq([new_event])
-            expect(response[:modified]).to eq([existing_event])
+            expect(response.events[:created]).to eq([new_event])
+            expect(response.events[:modified]).to eq([existing_event])
           end
         end
 
@@ -216,8 +247,8 @@ describe CalendarAssistant do
             expect(event_repository).to receive(:update).with(existing_event, end: new_event_start_date )
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response[:created]).to eq([new_event])
-            expect(response[:modified]).to eq([existing_event])
+            expect(response.events[:created]).to eq([new_event])
+            expect(response.events[:modified]).to eq([existing_event])
           end
         end
 
@@ -229,8 +260,8 @@ describe CalendarAssistant do
             expect(event_repository).to receive(:update).with(existing_event, start: existing_event_end_date)
 
             response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response[:created]).to eq([new_event])
-            expect(response[:modified]).to eq([existing_event])
+            expect(response.events[:created]).to eq([new_event])
+            expect(response.events[:modified]).to eq([existing_event])
           end
         end
       end
@@ -240,28 +271,58 @@ describe CalendarAssistant do
       let(:scheduler) { instance_double(CalendarAssistant::Scheduler) }
       let(:time_range) { instance_double("time range") }
 
-      it "creates a scheduler and invokes #available_blocks" do
-        expect(CalendarAssistant::Scheduler).to receive(:new).
-                                                  with(ca, config: config).
-                                                  and_return(scheduler)
-        expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
+      context "looking at own calendar" do
+        before do
+          expect(event_repository_factory).to receive(:new_event_repository).
+                                                with(anything, CalendarAssistant::DEFAULT_CALENDAR_ID).
+                                                and_return(event_repository)
+        end
 
-        response = ca.availability(time_range)
+        it "creates a scheduler and invokes #available_blocks" do
+          expect(CalendarAssistant::Scheduler).to receive(:new).
+                                                    with(ca, event_repository).
+                                                    and_return(scheduler)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
 
-        expect(response).to eq(events)
+          response = ca.availability(time_range)
+
+          expect(response).to eq(events)
+        end
+      end
+
+      context "looking at someone else's calendar" do
+        let(:other_calendar_id) { "somebodyelse@example.com" }
+        let(:config_options) do
+          {
+            CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => other_calendar_id,
+          }
+        end
+
+        before do
+          expect(event_repository_factory).to receive(:new_event_repository).
+                                                with(anything, other_calendar_id).
+                                                and_return(event_repository)
+        end
+
+        it "creates a scheduler and invokes #available_blocks" do
+          expect(CalendarAssistant::Scheduler).to receive(:new).
+                                                    with(ca, event_repository).
+                                                    and_return(scheduler)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
+
+          response = ca.availability(time_range)
+
+          expect(response).to eq(events)
+        end
       end
     end
 
     describe "#in_env" do
-      let(:options) do
+      let(:config_options) do
         {
-            CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
-            CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
+          CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
+          CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
         }
-      end
-
-      before do
-        allow(calendar).to receive(:time_zone).and_return("Europe/London")
       end
 
       it "sets beginning and end of workday and restores them" do
@@ -287,40 +348,33 @@ describe CalendarAssistant do
       end
 
       it "calls in_tz with the calendar timezone" do
-        expect(ca).to receive(:in_tz).with("Europe/London")
+        expect(ca).to receive(:in_tz)
         ca.in_env do ; end
       end
     end
 
     describe "#in_tz" do
-      it "sets the timezone and restores it" do
-        Time.zone = "Pacific/Fiji"
-        ENV['TZ'] = "Pacific/Fiji"
-        ca.in_tz "Europe/Istanbul" do
-          expect(Time.zone.name).to eq("Europe/Istanbul")
-          expect(ENV['TZ']).to eq("Europe/Istanbul")
-        end
-        expect(Time.zone.name).to eq("Pacific/Fiji")
-        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      before do
+        expect(calendar).to receive(:time_zone).and_return("a time zone id")
       end
 
-      it "exceptionally restores the timezone" do
-        Time.zone = "Pacific/Fiji"
-        ENV['TZ'] = "Pacific/Fiji"
-        begin
-          ca.in_tz "Europe/Istanbul" do
-            raise RuntimeError
-          end
-        rescue
-        end
-        expect(Time.zone.name).to eq("Pacific/Fiji")
-        expect(ENV['TZ']).to eq("Pacific/Fiji")
+      it "calls .in_tz with the default calendar's time zone" do
+        expect(CalendarAssistant).to receive(:in_tz).with("a time zone id")
+        ca.in_tz do ; end
       end
     end
-  end
 
-  describe "event formatting" do
-    describe "#event_description" do it end
-    describe "#event_date_description" do it end
+    describe "#event_repository" do
+      it "invokes the factory method to create a new repository" do
+        expect(event_repository_factory).to receive(:new_event_repository).with(service, "foo")
+        ca.event_repository("foo")
+      end
+
+      it "caches the result" do
+        expect(event_repository_factory).to receive(:new_event_repository).once
+        ca.event_repository("foo")
+        ca.event_repository("foo")
+      end
+    end
   end
 end

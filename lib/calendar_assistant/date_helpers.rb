@@ -5,7 +5,7 @@ class CalendarAssistant
         if value.is_a?(Time) || value.is_a?(DateTime)
           object[key] = GCal::EventDateTime.new(date_time: value)
         elsif value.is_a?(Date)
-          object[key] = GCal::EventDateTime.new(date: value)
+          object[key] = GCal::EventDateTime.new(date: value.to_s)
         else
           object[key] = value
         end
