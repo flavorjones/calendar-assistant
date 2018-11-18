@@ -171,6 +171,36 @@ describe CalendarAssistant::Scheduler do
           end
         end
       end
+
+      context "with end dates out of order" do
+        # see https://github.com/flavorjones/calendar-assistant/issues/44
+        let(:events) do
+          [
+            event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm")), :accepted? => true),
+            event_factory("first", Chronic.parse("11am")..(Chronic.parse("11:30am")), :accepted? => true),
+          ]
+        end
+
+        let(:expected_avails) do
+          {
+            date => [
+              event_factory("available", Chronic.parse("9am")..Chronic.parse("11am")),
+              event_factory("available", Chronic.parse("12pm")..Chronic.parse("6pm")),
+            ]
+          }
+        end
+
+        it "returns correct available blocks" do
+          found_avails = scheduler.available_blocks(time_range).events
+
+          expect(found_avails.keys).to eq([date])
+          expect(found_avails[date].length).to eq(expected_avails[date].length)
+          found_avails[date].each_with_index do |found_avail, j|
+            expect(found_avail.start).to eq(expected_avails[date][j].start)
+            expect(found_avail.end).to eq(expected_avails[date][j].end)
+          end
+        end
+      end
     end
 
     describe "multiple days" do

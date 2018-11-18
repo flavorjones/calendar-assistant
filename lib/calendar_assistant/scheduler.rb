@@ -44,7 +44,7 @@ class CalendarAssistant
               if (e.start.date_time.to_time - start_time) >= length
                 avail_time[date] << available_block(start_time, e.start.date_time)
               end
-              start_time = e.end.date_time.to_time
+              start_time = [e.end.date_time.to_time, start_time].max # issues/44 item 3
               break if ! start_time.during_business_hours?
             end
 
