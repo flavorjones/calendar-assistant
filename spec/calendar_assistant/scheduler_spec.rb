@@ -28,6 +28,15 @@ describe CalendarAssistant::Scheduler do
       expect(er).to receive(:find).with(time_range).and_return(event_set)
     end
 
+    def expect_to_match_expected_avails found_avails
+      expect(found_avails.keys).to eq([date])
+      expect(found_avails[date].length).to eq(expected_avails[date].length)
+      found_avails[date].each_with_index do |found_avail, j|
+        expect(found_avail.start).to eq(expected_avails[date][j].start)
+        expect(found_avail.end).to eq(expected_avails[date][j].end)
+      end
+    end
+
     context "single date" do
       let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
       let(:date) { time_range.first.to_date }
@@ -56,31 +65,12 @@ describe CalendarAssistant::Scheduler do
           }
         end
 
-        context "given an attendee calendar id" do
-          let(:calendar_id) { "foo@example.com" }
-          let(:config_options) { {CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => calendar_id} }
-
-          it "returns a hash of date => chunks-of-free-time-longer-than-min-duration" do
-            found_avails = scheduler.available_blocks(time_range).events
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
-          end
+        it "returns a hash of date => chunks-of-free-time-longer-than-min-duration" do
+          expect_to_match_expected_avails scheduler.available_blocks(time_range).events
         end
 
-        it "returns a hash of date => chunks-of-free-time-longer-than-min-duration" do
-          found_avails = scheduler.available_blocks(time_range).events
-
-          expect(found_avails.keys).to eq([date])
-          expect(found_avails[date].length).to eq(expected_avails[date].length)
-          found_avails[date].each_with_index do |found_avail, j|
-            expect(found_avail.start).to eq(expected_avails[date][j].start)
-            expect(found_avail.end).to eq(expected_avails[date][j].end)
-          end
+        it "is in the calendar's time zone" do
+          expect(scheduler.available_blocks(time_range).events[date].first.start_time.time_zone.name).to eq(time_zone)
         end
 
         context "some meetings haven't been accepted" do
@@ -99,14 +89,7 @@ describe CalendarAssistant::Scheduler do
           end
 
           it "ignores meetings that are not accepted" do
-            found_avails = scheduler.available_blocks(time_range).events
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
+            expect_to_match_expected_avails scheduler.available_blocks(time_range).events
           end
         end
       end
@@ -136,14 +119,7 @@ describe CalendarAssistant::Scheduler do
         end
 
         it "finds chunks of free time at the end of the day" do
-          found_avails = scheduler.available_blocks(time_range).events
-
-          expect(found_avails.keys).to eq([date])
-          expect(found_avails[date].length).to eq(expected_avails[date].length)
-          found_avails[date].each_with_index do |found_avail, j|
-            expect(found_avail.start).to eq(expected_avails[date][j].start)
-            expect(found_avail.end).to eq(expected_avails[date][j].end)
-          end
+          expect_to_match_expected_avails scheduler.available_blocks(time_range).events
         end
       end
 
@@ -161,14 +137,7 @@ describe CalendarAssistant::Scheduler do
         end
 
         it "returns a big fat available block" do
-          found_avails = scheduler.available_blocks(time_range).events
-
-          expect(found_avails.keys).to eq([date])
-          expect(found_avails[date].length).to eq(expected_avails[date].length)
-          found_avails[date].each_with_index do |found_avail, j|
-            expect(found_avail.start).to eq(expected_avails[date][j].start)
-            expect(found_avail.end).to eq(expected_avails[date][j].end)
-          end
+          expect_to_match_expected_avails scheduler.available_blocks(time_range).events
         end
       end
 
@@ -191,14 +160,7 @@ describe CalendarAssistant::Scheduler do
         end
 
         it "returns correct available blocks" do
-          found_avails = scheduler.available_blocks(time_range).events
-
-          expect(found_avails.keys).to eq([date])
-          expect(found_avails[date].length).to eq(expected_avails[date].length)
-          found_avails[date].each_with_index do |found_avail, j|
-            expect(found_avail.start).to eq(expected_avails[date][j].start)
-            expect(found_avail.end).to eq(expected_avails[date][j].end)
-          end
+          expect_to_match_expected_avails scheduler.available_blocks(time_range).events
         end
       end
     end
@@ -259,23 +221,12 @@ describe CalendarAssistant::Scheduler do
           end
 
           it "finds blocks of time 30m or longer" do
-            found_avails = scheduler.available_blocks(time_range).events
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
+            expect_to_match_expected_avails scheduler.available_blocks(time_range).events
           end
         end
 
         context "60m" do
-          let(:config_options) do
-            {
-              CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "60m"
-            }
-          end
+          let(:config_options) { {CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "60m"} }
 
           let(:expected_avails) do
             {
@@ -286,14 +237,7 @@ describe CalendarAssistant::Scheduler do
           end
 
           it "finds blocks of time 60m or longer" do
-            found_avails = scheduler.available_blocks(time_range).events
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
+            expect_to_match_expected_avails scheduler.available_blocks(time_range).events
           end
         end
       end
@@ -319,14 +263,7 @@ describe CalendarAssistant::Scheduler do
           end
 
           it "finds blocks of time 30m or longer" do
-            found_avails = scheduler.available_blocks(time_range).events
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
+            expect_to_match_expected_avails scheduler.available_blocks(time_range).events
           end
         end
 
@@ -352,14 +289,7 @@ describe CalendarAssistant::Scheduler do
           end
 
           it "finds blocks of time 30m or longer" do
-            found_avails = scheduler.available_blocks(time_range).events
-
-            expect(found_avails.keys).to eq([date])
-            expect(found_avails[date].length).to eq(expected_avails[date].length)
-            found_avails[date].each_with_index do |found_avail, j|
-              expect(found_avail.start).to eq(expected_avails[date][j].start)
-              expect(found_avail.end).to eq(expected_avails[date][j].end)
-            end
+            expect_to_match_expected_avails scheduler.available_blocks(time_range).events
           end
         end
       end
@@ -389,14 +319,11 @@ describe CalendarAssistant::Scheduler do
         end
 
         it "returns the free blocks in that time zone" do
-          found_avails = scheduler.available_blocks(time_range).events
+          expect_to_match_expected_avails scheduler.available_blocks(time_range).events
+        end
 
-          expect(found_avails.keys).to eq([date])
-          expect(found_avails[date].length).to eq(expected_avails[date].length)
-          found_avails[date].each_with_index do |found_avail, j|
-            expect(found_avail.start).to eq(expected_avails[date][j].start)
-            expect(found_avail.end).to eq(expected_avails[date][j].end)
-          end
+        it "is in the other calendar's time zone" do
+          expect(scheduler.available_blocks(time_range).events[date].first.start_time.time_zone.name).to eq(other_time_zone)
         end
       end
     end
