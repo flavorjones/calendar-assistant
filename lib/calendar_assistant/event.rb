@@ -1,10 +1,9 @@
 class CalendarAssistant
   class Event < SimpleDelegator
-
     LOCATION_EVENT_REGEX = /^#{CalendarAssistant::EMOJI_WORLDMAP}/
 
     def update **args
-      super
+      update!(**args)
       self
     end
 

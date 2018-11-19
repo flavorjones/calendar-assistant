@@ -29,10 +29,4 @@ class Google::Apis::CalendarV3::Event
     PUBLIC = "public"
     PRIVATE = "private"
   end
-
-  def update **args
-    # this should be in the google API classes, IMHO
-    update!(**args)
-    self
-  end
 end

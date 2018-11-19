@@ -52,6 +52,14 @@ describe CalendarAssistant::Event do
   let(:decorated_object) { decorated_class.new }
   subject { described_class.new decorated_object }
 
+  describe "#update" do
+    it "calls #update! and returns itself" do
+      expect(subject).to receive(:update!).with({:foo => 1, :bar => 2})
+      actual = subject.update :foo => 1, :bar => 2
+      expect(actual).to eq(subject)
+    end
+  end
+
   describe "#location_event?" do
     context "event summary does not begin with a worldmap emoji" do
       let(:decorated_object) { decorated_class.new(summary: "not a location event") }
