@@ -142,7 +142,7 @@ describe CalendarAssistant::Scheduler do
       end
 
       context "with end dates out of order" do
-        # see https://github.com/flavorjones/calendar-assistant/issues/44
+        # see https://github.com/flavorjones/calendar-assistant/issues/44 item 3
         let(:events) do
           [
             event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm")), :accepted? => true),
@@ -155,6 +155,29 @@ describe CalendarAssistant::Scheduler do
             date => [
               event_factory("available", Chronic.parse("9am")..Chronic.parse("11am")),
               event_factory("available", Chronic.parse("12pm")..Chronic.parse("6pm")),
+            ]
+          }
+        end
+
+        it "returns correct available blocks" do
+          expect_to_match_expected_avails scheduler.available_blocks(time_range).events
+        end
+      end
+
+      context "with an event that crosses end-of-day" do
+        # see https://github.com/flavorjones/calendar-assistant/issues/44 item 4
+        let(:events) do
+          [
+            event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm")), :accepted? => true),
+            event_factory("first", Chronic.parse("5pm")..(Chronic.parse("7pm")), :accepted? => true),
+          ]
+        end
+
+        let(:expected_avails) do
+          {
+            date => [
+              event_factory("available", Chronic.parse("9am")..Chronic.parse("11am")),
+              event_factory("available", Chronic.parse("12pm")..Chronic.parse("5pm")),
             ]
           }
         end
