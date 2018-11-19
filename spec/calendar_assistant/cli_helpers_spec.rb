@@ -78,37 +78,37 @@ describe CalendarAssistant::CLIHelpers do
       let(:accepted_event) do
         instance_double "accepted event",
                         av_uri: "accepted",
-                        response_status: GCal::Event::Response::ACCEPTED
+                        response_status: CalendarAssistant::Event::Response::ACCEPTED
       end
 
       let(:accepted2_event) do
         instance_double "accepted2 event",
                         av_uri: "accepted2",
-                        response_status: GCal::Event::Response::ACCEPTED
+                        response_status: CalendarAssistant::Event::Response::ACCEPTED
       end
 
       let(:tentative_event) do
         instance_double "tentative event",
                         av_uri: "tentative",
-                        response_status: GCal::Event::Response::TENTATIVE
+                        response_status: CalendarAssistant::Event::Response::TENTATIVE
       end
 
       let(:needs_action_event) do
         instance_double "needs_action event",
                         av_uri: "needs_action",
-                        response_status: GCal::Event::Response::NEEDS_ACTION
+                        response_status: CalendarAssistant::Event::Response::NEEDS_ACTION
       end
 
       let(:declined_event) do
         instance_double "declined event",
                         av_uri: "declined",
-                        response_status: GCal::Event::Response::DECLINED
+                        response_status: CalendarAssistant::Event::Response::DECLINED
       end
 
       let(:no_av_uri_event) do
         instance_double "no avi uri",
                         av_uri: nil,
-                        response_status: GCal::Event::Response::ACCEPTED
+                        response_status: CalendarAssistant::Event::Response::ACCEPTED
       end
 
       it "prefers later meetings to earlier meetings" do

@@ -156,7 +156,7 @@ describe CalendarAssistant do
               start: new_event_start.date,
               end: new_event_end.date,
               summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
-              transparency: GCal::Event::Transparency::TRANSPARENT
+              transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
 
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
@@ -175,7 +175,7 @@ describe CalendarAssistant do
               start: new_event_start.date,
               end: new_event_end.date,
               summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
-              transparency: GCal::Event::Transparency::TRANSPARENT
+              transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
 
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
@@ -205,7 +205,7 @@ describe CalendarAssistant do
               start: new_event_start.date,
               end: new_event_end.date,
               summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
-              transparency: GCal::Event::Transparency::TRANSPARENT
+              transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
 
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)

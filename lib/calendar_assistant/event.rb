@@ -1,7 +1,40 @@
 class CalendarAssistant
   class Event < SimpleDelegator
+    #
+    #  constants describing enumerated attribute values
+    #  see https://developers.google.com/calendar/v3/reference/events
+    #
+    module RealResponse
+      DECLINED = "declined"
+      ACCEPTED = "accepted"
+      NEEDS_ACTION = "needsAction"
+      TENTATIVE = "tentative"
+    end
+
+    module Response
+      include RealResponse
+      SELF = "self" # not part of Google's API, but useful to represent meetings-for-myself
+    end
+
+    module Transparency
+      TRANSPARENT = "transparent"
+      OPAQUE = "opaque"
+    end
+
+    module Visibility
+      DEFAULT = "default"
+      PUBLIC = "public"
+      PRIVATE = "private"
+    end
+
+    #
+    #  constants describing behavior
+    #
     LOCATION_EVENT_REGEX = /^#{CalendarAssistant::EMOJI_WORLDMAP}/
 
+    #
+    #  methods
+    #
     def update **args
       update!(**args)
       self
@@ -36,15 +69,15 @@ class CalendarAssistant
     end
 
     def accepted?
-      response_status == GCal::Event::Response::ACCEPTED
+      response_status == CalendarAssistant::Event::Response::ACCEPTED
     end
 
     def declined?
-      response_status == GCal::Event::Response::DECLINED
+      response_status == CalendarAssistant::Event::Response::DECLINED
     end
 
     def awaiting?
-      response_status == GCal::Event::Response::NEEDS_ACTION
+      response_status == CalendarAssistant::Event::Response::NEEDS_ACTION
     end
 
     def one_on_one?
@@ -55,7 +88,7 @@ class CalendarAssistant
     end
 
     def busy?
-      transparency != GCal::Event::Transparency::TRANSPARENT
+      transparency != CalendarAssistant::Event::Transparency::TRANSPARENT
     end
 
     def commitment?
@@ -65,11 +98,11 @@ class CalendarAssistant
     end
 
     def private?
-      visibility == GCal::Event::Visibility::PRIVATE
+      visibility == CalendarAssistant::Event::Visibility::PRIVATE
     end
 
     def public?
-      visibility == GCal::Event::Visibility::PUBLIC
+      visibility == CalendarAssistant::Event::Visibility::PUBLIC
     end
 
     def explicit_visibility?
@@ -140,7 +173,7 @@ class CalendarAssistant
     end
 
     def response_status
-      return GCal::Event::Response::SELF if attendees.nil?
+      return CalendarAssistant::Event::Response::SELF if attendees.nil?
       attendees.each do |attendee|
         return attendee.response_status if attendee.self
       end

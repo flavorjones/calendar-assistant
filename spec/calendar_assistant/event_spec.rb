@@ -7,41 +7,41 @@ describe CalendarAssistant::Event do
   let(:attendee_self) do
     GCal::EventAttendee.new display_name: "Attendee Self",
                             email: "attendee-self@example.com",
-                            response_status: GCal::Event::Response::ACCEPTED,
+                            response_status: CalendarAssistant::Event::Response::ACCEPTED,
                             self: true
   end
 
   let(:attendee_room_resource) do
     GCal::EventAttendee.new display_name: "Attendee Room",
                             email: "attendee-room@example.com",
-                            response_status: GCal::Event::Response::ACCEPTED,
+                            response_status: CalendarAssistant::Event::Response::ACCEPTED,
                             resource: true
   end
 
   let(:attendee_optional) do
     GCal::EventAttendee.new display_name: "Attendee Optional",
                             email: "attendee-optional@example.com",
-                            response_status: GCal::Event::Response::ACCEPTED,
+                            response_status: CalendarAssistant::Event::Response::ACCEPTED,
                             optional: true
   end
 
   let(:attendee_required) do
     GCal::EventAttendee.new display_name: "Attendee Required",
                             email: "attendee-required@example.com",
-                            response_status: GCal::Event::Response::ACCEPTED
+                            response_status: CalendarAssistant::Event::Response::ACCEPTED
   end
 
   let(:attendee_organizer) do
     GCal::EventAttendee.new display_name: "Attendee Organizer",
                             email: "attendee-organizer@example.com",
-                            response_status: GCal::Event::Response::ACCEPTED,
+                            response_status: CalendarAssistant::Event::Response::ACCEPTED,
                             organizer: true
   end
 
   let(:attendee_group) do
     GCal::EventAttendee.new display_name: "Attendee Group",
                             email: "attendee-group@example.com",
-                            response_status: GCal::Event::Response::NEEDS_ACTION
+                            response_status: CalendarAssistant::Event::Response::NEEDS_ACTION
   end
 
   let(:attendees) do
@@ -166,11 +166,11 @@ describe CalendarAssistant::Event do
     context "event with attendees including me" do
       let(:decorated_object) { decorated_class.new(attendees: attendees) }
 
-      (GCal::Event::RealResponse.constants - [:DECLINED]).each do |response_status_name|
+      (CalendarAssistant::Event::RealResponse.constants - [:DECLINED]).each do |response_status_name|
         context "response status #{response_status_name}" do
           before do
             allow(attendee_self).to receive(:response_status).
-                                      and_return(GCal::Event::Response.const_get(response_status_name))
+                                      and_return(CalendarAssistant::Event::Response.const_get(response_status_name))
           end
 
           it { expect(subject.declined?).to be_falsey }
@@ -179,7 +179,7 @@ describe CalendarAssistant::Event do
 
       context "response status DECLINED" do
         before do
-          allow(attendee_self).to receive(:response_status).and_return(GCal::Event::Response::DECLINED)
+          allow(attendee_self).to receive(:response_status).and_return(CalendarAssistant::Event::Response::DECLINED)
         end
 
         it { expect(subject.declined?).to be_truthy }
@@ -201,11 +201,11 @@ describe CalendarAssistant::Event do
     context "event with attendees including me" do
       let(:decorated_object) { decorated_class.new(attendees: attendees) }
 
-      (GCal::Event::RealResponse.constants - [:ACCEPTED]).each do |response_status_name|
+      (CalendarAssistant::Event::RealResponse.constants - [:ACCEPTED]).each do |response_status_name|
         context "response status #{response_status_name}" do
           before do
             allow(attendee_self).to receive(:response_status).
-                                      and_return(GCal::Event::Response.const_get(response_status_name))
+                                      and_return(CalendarAssistant::Event::Response.const_get(response_status_name))
           end
 
           it { expect(subject.accepted?).to be_falsey }
@@ -214,7 +214,7 @@ describe CalendarAssistant::Event do
 
       context "response status ACCEPTED" do
         before do
-          allow(attendee_self).to receive(:response_status).and_return(GCal::Event::Response::ACCEPTED)
+          allow(attendee_self).to receive(:response_status).and_return(CalendarAssistant::Event::Response::ACCEPTED)
         end
 
         it { expect(subject.accepted?).to be_truthy }
@@ -236,11 +236,11 @@ describe CalendarAssistant::Event do
     context "event with attendees including me" do
       let(:decorated_object) { decorated_class.new(attendees: attendees) }
 
-      (GCal::Event::RealResponse.constants - [:NEEDS_ACTION]).each do |response_status_name|
+      (CalendarAssistant::Event::RealResponse.constants - [:NEEDS_ACTION]).each do |response_status_name|
         context "response status #{response_status_name}" do
           before do
             allow(attendee_self).to receive(:response_status).
-                                      and_return(GCal::Event::Response.const_get(response_status_name))
+                                      and_return(CalendarAssistant::Event::Response.const_get(response_status_name))
           end
 
           it { expect(subject.awaiting?).to be_falsey }
@@ -249,7 +249,7 @@ describe CalendarAssistant::Event do
 
       context "response status NEEDS_ACTION" do
         before do
-          allow(attendee_self).to receive(:response_status).and_return(GCal::Event::Response::NEEDS_ACTION)
+          allow(attendee_self).to receive(:response_status).and_return(CalendarAssistant::Event::Response::NEEDS_ACTION)
         end
 
         it { expect(subject.awaiting?).to be_truthy }
@@ -297,20 +297,20 @@ describe CalendarAssistant::Event do
 
   describe "#busy?" do
     context "event is transparent" do
-      let(:decorated_object) { decorated_class.new(transparency: GCal::Event::Transparency::TRANSPARENT) }
+      let(:decorated_object) { decorated_class.new(transparency: CalendarAssistant::Event::Transparency::TRANSPARENT) }
 
       it { is_expected.not_to be_busy }
     end
 
     context "event is opaque" do
       context "explicitly" do
-        let(:decorated_object) { decorated_class.new(transparency: GCal::Event::Transparency::OPAQUE) }
+        let(:decorated_object) { decorated_class.new(transparency: CalendarAssistant::Event::Transparency::OPAQUE) }
 
         it { is_expected.to be_busy }
       end
 
       context "implicitly" do
-        let(:decorated_object) { decorated_class.new(transparency: GCal::Event::Transparency::OPAQUE) }
+        let(:decorated_object) { decorated_class.new(transparency: CalendarAssistant::Event::Transparency::OPAQUE) }
 
         it { is_expected.to be_busy }
       end
@@ -325,11 +325,11 @@ describe CalendarAssistant::Event do
     context "with attendees" do
       let(:decorated_object) { decorated_class.new(attendees: attendees) }
 
-      (GCal::Event::RealResponse.constants - [:DECLINED]).each do |response_status_name|
+      (CalendarAssistant::Event::RealResponse.constants - [:DECLINED]).each do |response_status_name|
         context "response is #{response_status_name}" do
           before do
             allow(attendee_self).to receive(:response_status).
-                                      and_return(GCal::Event::Response.const_get(response_status_name))
+                                      and_return(CalendarAssistant::Event::Response.const_get(response_status_name))
           end
 
           it { is_expected.to be_commitment }
@@ -339,7 +339,7 @@ describe CalendarAssistant::Event do
       context "response status DECLINED" do
         before do
           allow(attendee_self).to receive(:response_status).
-                                    and_return(GCal::Event::Response::DECLINED)
+                                    and_return(CalendarAssistant::Event::Response::DECLINED)
         end
 
         it { is_expected.not_to be_commitment }
@@ -349,7 +349,7 @@ describe CalendarAssistant::Event do
 
   describe "#public?" do
     context "visibility is private" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PRIVATE) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
       it { is_expected.not_to be_public }
     end
 
@@ -358,12 +358,12 @@ describe CalendarAssistant::Event do
     end
 
     context "visibility is default" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::DEFAULT) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::DEFAULT) }
       it { is_expected.not_to be_public }
     end
 
     context "visibility is public" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PUBLIC) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PUBLIC) }
 
       it { is_expected.to be_public }
     end
@@ -371,7 +371,7 @@ describe CalendarAssistant::Event do
 
   describe "#private?" do
     context "visibility is private" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PRIVATE) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
       it { is_expected.to be_private }
     end
 
@@ -380,29 +380,29 @@ describe CalendarAssistant::Event do
     end
 
     context "visibility is default" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::DEFAULT) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::DEFAULT) }
       it { is_expected.not_to be_private }
     end
 
     context "visibility is public" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PUBLIC) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PUBLIC) }
       it { is_expected.not_to be_private }
     end
   end
 
   describe "#explicit_visibility?" do
     context "when visibility is private" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PRIVATE) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
       it { is_expected.to be_explicit_visibility }
     end
 
     context "when visibility is public" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PUBLIC) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PUBLIC) }
       it { is_expected.to be_explicit_visibility }
     end
 
     context "when visibility is default" do
-      let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::DEFAULT) }
+      let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::DEFAULT) }
       it { is_expected.not_to be_explicit_visibility }
     end
 
@@ -547,12 +547,12 @@ describe CalendarAssistant::Event do
 
     context "event is private" do
       context "but we have access" do
-        let(:decorated_object) { decorated_class.new(summary: "don't ignore", visibility: GCal::Event::Visibility::PRIVATE) }
+        let(:decorated_object) { decorated_class.new(summary: "don't ignore", visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
         it { expect(subject.view_summary).to eq("don't ignore") }
       end
 
       context "and we do not have access" do
-        let(:decorated_object) { decorated_class.new(visibility: GCal::Event::Visibility::PRIVATE) }
+        let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
         it { expect(subject.view_summary).to eq("(private)") }
       end
     end
@@ -623,7 +623,7 @@ describe CalendarAssistant::Event do
 
   describe "#response_status" do
     context "event with no attendees (i.e. for just myself)" do
-      it { expect(subject.response_status).to eq(GCal::Event::Response::SELF) }
+      it { expect(subject.response_status).to eq(CalendarAssistant::Event::Response::SELF) }
     end
 
     context "event with attendees including me" do

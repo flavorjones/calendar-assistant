@@ -107,7 +107,7 @@ class CalendarAssistant
     deleted_events = []
     modified_events = []
 
-    event = event_repository.create(transparency: GCal::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{EMOJI_WORLDMAP}  #{location}")
+    event = event_repository.create(transparency: CalendarAssistant::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{EMOJI_WORLDMAP}  #{location}")
 
     existing_event_set.events.each do |existing_event|
       if existing_event.start_date >= event.start_date && existing_event.end_date <= event.end_date
@@ -141,7 +141,6 @@ require "calendar_assistant/cli"
 require "calendar_assistant/string_helpers"
 require "calendar_assistant/date_helpers"
 require "calendar_assistant/extensions/event_date_time_extensions"
-require "calendar_assistant/extensions/event_extensions"
 require "calendar_assistant/event"
 require "calendar_assistant/event_repository"
 require "calendar_assistant/event_repository_factory"
