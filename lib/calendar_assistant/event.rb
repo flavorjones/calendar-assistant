@@ -127,5 +127,38 @@ class CalendarAssistant
       s << "#{p[:minutes]}m" if p.has_key?(:minutes)
       s.join(" ")
     end
+
+    def human_attendees
+      return nil if attendees.nil?
+      attendees.select { |a| ! a.resource }
+    end
+
+    def attendee id
+      return nil if attendees.nil?
+      attendees.find do |attendee|
+        attendee.email == id
+      end
+    end
+
+    def response_status
+      return GCal::Event::Response::SELF if attendees.nil?
+      attendees.each do |attendee|
+        return attendee.response_status if attendee.self
+      end
+      nil
+    end
+
+    def av_uri
+      @av_uri ||= begin
+                    description_link = CalendarAssistant::StringHelpers.find_uri_for_domain(description, "zoom.us")
+                    return description_link if description_link
+
+                    location_link = CalendarAssistant::StringHelpers.find_uri_for_domain(location, "zoom.us")
+                    return location_link if location_link
+
+                    return hangout_link if hangout_link
+                    nil
+                  end
+    end
   end
 end
