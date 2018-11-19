@@ -92,6 +92,17 @@ describe CalendarAssistant::Scheduler do
             expect_to_match_expected_avails scheduler.available_blocks(time_range).events
           end
         end
+
+        context "some meetings are private" do
+          before do
+            allow(events[2]).to receive(:accepted?).and_return(false) # undo fixture setting
+            allow(events[2]).to receive(:private?).and_return(true) # apply new fixture setting
+          end
+
+          it "treats private meetings as accepted" do
+            expect_to_match_expected_avails scheduler.available_blocks(time_range).events
+          end
+        end
       end
 
       context "single date with no event at the end of the day" do
