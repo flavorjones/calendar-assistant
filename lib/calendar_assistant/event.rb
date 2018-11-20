@@ -80,6 +80,10 @@ class CalendarAssistant
       response_status == CalendarAssistant::Event::Response::NEEDS_ACTION
     end
 
+    def self?
+      response_status == CalendarAssistant::Event::Response::SELF
+    end
+
     def one_on_one?
       return false if attendees.nil?
       return false unless attendees.any? { |a| a.self }
