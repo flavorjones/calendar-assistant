@@ -105,6 +105,16 @@ describe CalendarAssistant::Scheduler do
             expect_to_match_expected_avails scheduler.available_blocks(time_range).events
           end
         end
+
+        context "some meetings are with only myself" do
+          before do
+            allow(events[2]).to receive(:response_status).and_return(CalendarAssistant::Event::Response::SELF)
+          end
+
+          it "treats self meetings as accepted" do
+            expect_to_match_expected_avails scheduler.available_blocks(time_range).events
+          end
+        end
       end
 
       context "single date with no event at the end of the day" do
