@@ -188,15 +188,15 @@ class CalendarAssistant
 
       def event_date_description event
         if event.all_day?
-          start_date = event.start.to_date
-          end_date = event.end.to_date
+          start_date = event.start_date
+          end_date = event.end_date
           if (end_date - start_date) <= 1
             event.start.to_s
           else
             sprintf("%s - %s", start_date, end_date - 1.day)
           end
         else
-          if event.start.date_time.to_date == event.end.date_time.to_date
+          if event.start_date == event.end_date
             sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%M"), event.end.date_time.strftime("%H:%M"))
           else
             sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))

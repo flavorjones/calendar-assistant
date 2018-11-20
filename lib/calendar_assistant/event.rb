@@ -45,14 +45,14 @@ class CalendarAssistant
     end
 
     def all_day?
-      !! (start.nil? ? self.end.to_date : start.to_date)
+      start.try(:date) || self.end.try(:date)
     end
 
     def past?
       if all_day?
-        Date.today >= self.end.to_date
+        Date.today >= end_date
       else
-        Time.now >= self.end.date_time
+        Time.now >= end_time
       end
     end
 
@@ -62,9 +62,9 @@ class CalendarAssistant
 
     def future?
       if all_day?
-        self.start.to_date > Date.today
+        start_date > Date.today
       else
-        self.start.date_time > Time.now
+        start_time > Time.now
       end
     end
 
@@ -115,7 +115,7 @@ class CalendarAssistant
 
     def start_time
       if all_day?
-        start.to_date.beginning_of_day
+        start_date.beginning_of_day
       else
         start.date_time
       end
@@ -125,13 +125,13 @@ class CalendarAssistant
       if all_day?
         start.to_date
       else
-        start.date_time.to_date
+        start_time.to_date
       end
     end
 
     def end_time
       if all_day?
-        self.end.to_date.beginning_of_day
+        end_date.beginning_of_day
       else
         self.end.date_time
       end
@@ -141,7 +141,7 @@ class CalendarAssistant
       if all_day?
         self.end.to_date
       else
-        self.end.date_time.to_date
+        end_time.to_date
       end
     end
 
@@ -153,11 +153,11 @@ class CalendarAssistant
 
     def duration
       if all_day?
-        days = (self.end_date - start_date).to_i
+        days = (end_date - start_date).to_i
         return "#{days}d"
       end
 
-      p = ActiveSupport::Duration.build(self.end.date_time - start.date_time).parts
+      p = ActiveSupport::Duration.build(end_time - start_time).parts
       s = []
       s << "#{p[:hours]}h" if p.has_key?(:hours)
       s << "#{p[:minutes]}m" if p.has_key?(:minutes)
