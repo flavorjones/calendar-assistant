@@ -8,6 +8,7 @@ class CalendarAssistant
     class AccessingHashAsScalar < CalendarAssistant::BaseException ; end
 
     CONFIG_FILE_PATH = File.join ENV["HOME"], ".calendar-assistant"
+    DEFAULT_CALENDAR_ID = "primary"
 
     module Keys
       TOKENS = "tokens"

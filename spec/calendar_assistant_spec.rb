@@ -272,7 +272,7 @@ describe CalendarAssistant do
       context "looking at own calendar" do
         before do
           expect(event_repository_factory).to receive(:new_event_repository).
-                                                with(anything, CalendarAssistant::DEFAULT_CALENDAR_ID).
+                                                with(anything, CalendarAssistant::Config::DEFAULT_CALENDAR_ID).
                                                 and_return(event_repository)
         end
 
