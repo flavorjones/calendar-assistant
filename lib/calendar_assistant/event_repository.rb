@@ -29,7 +29,7 @@ class CalendarAssistant
     end
 
     def new event_attributes
-      event = GCal::Event.new DateHelpers.cast_dates(event_attributes)
+      event = Google::Apis::CalendarV3::Event.new DateHelpers.cast_dates(event_attributes)
       CalendarAssistant::Event.new(event)
     end
 

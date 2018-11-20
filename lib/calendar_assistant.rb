@@ -9,8 +9,6 @@ require "set"
 require "calendar_assistant/version"
 
 class CalendarAssistant
-  GCal = Google::Apis::CalendarV3
-
   class BaseException < RuntimeError ; end
 
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
