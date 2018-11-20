@@ -126,10 +126,8 @@ class CalendarAssistant
       return if handle_help_args
       config = CalendarAssistant::Config.new(options: options)
       ca = CalendarAssistant.new config
-      calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE]
-
       ca.in_env do
-        event_set = ca.find_events CLIHelpers.parse_datespec(datespec), calendar_id: calendar_id
+        event_set = ca.find_events CLIHelpers.parse_datespec(datespec)
         out.print_events ca, event_set
       end
     end
