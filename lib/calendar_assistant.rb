@@ -51,7 +51,7 @@ class CalendarAssistant
                  event_repository_factory: EventRepositoryFactory
     @config = config
 
-    if filename = config.options[:local_store]
+    if filename = config.options[Config::Keys::Options::LOCAL_STORE]
       @service = CalendarAssistant::LocalService.new(file: filename)
     else
       @service = Authorizer.new(config.profile_name, config.token_store).service

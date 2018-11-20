@@ -7,18 +7,19 @@ require "calendar_assistant/cli_helpers"
 
 class CalendarAssistant
   class CLI < Thor
-    def self.supports_profile_option
+    def self.will_create_a_service
       option CalendarAssistant::Config::Keys::Settings::PROFILE,
              type: :string,
              desc: "the profile you'd like to use (if different from default)",
              aliases: ["-p"]
+
+      option CalendarAssistant::Config::Keys::Options::LOCAL_STORE,
+             type: :string,
+             banner: "FILENAME",
+             desc: "Load events from a local file instead of Google Calendar"
     end
 
     default_config = CalendarAssistant::Config.new options: options # used in option descriptions
-
-    class_option :local_store,
-                 type: :string,
-                 desc: "filename of local store"
 
     class_option :help,
                  type: :boolean,
@@ -120,7 +121,7 @@ class CalendarAssistant
            banner: "ATTENDEE",
            desc: "Show events from someone else's calendar",
            aliases: ["-r"]
-    supports_profile_option
+    will_create_a_service
     def show datespec="today"
       return if handle_help_args
       config = CalendarAssistant::Config.new(options: options)
@@ -139,7 +140,7 @@ class CalendarAssistant
     option CalendarAssistant::Config::Keys::Options::JOIN,
            type: :boolean, default: true,
            desc: "launch a browser to join the video call URL"
-    supports_profile_option
+    will_create_a_service
     def join timespec="now"
       return if handle_help_args
       ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
@@ -158,7 +159,7 @@ class CalendarAssistant
 
     desc "location [DATE | DATERANGE]",
          "Show your location for a date or range of dates (default 'today')"
-    supports_profile_option
+    will_create_a_service
     def location datespec="today"
       return if handle_help_args
       ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
@@ -171,7 +172,7 @@ class CalendarAssistant
 
     desc "location-set LOCATION [DATE | DATERANGE]",
          "Set your location to LOCATION for a date or range of dates (default 'today')"
-    supports_profile_option
+    will_create_a_service
     def location_set location=nil, datespec="today"
       return if handle_help_args
       return help! if location.nil?
@@ -209,7 +210,7 @@ class CalendarAssistant
            banner: "ATTENDEE",
            desc: "Find availability for someone else",
            aliases: ["-r"]
-    supports_profile_option
+    will_create_a_service
     def availability datespec="today"
       return if handle_help_args
       ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)

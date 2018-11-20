@@ -56,10 +56,11 @@ describe CalendarAssistant do
   describe "using the local file store" do
     with_temp_file("filestore", :temp_filestore_file)
 
-    let(:config) { instance_double(CalendarAssistant::Config, profile_name: double, token_store: double) }
     let(:ca) { CalendarAssistant.new config }
     let(:local_service) { CalendarAssistant::LocalService.new(file: filename) }
     let(:filename) { temp_filestore_file.path }
+    let(:config) { CalendarAssistant::Config.new options: config_options }
+    let(:config_options) { {CalendarAssistant::Config::Keys::Options::LOCAL_STORE => filename} }
 
     before do
       event_list_factory(file: filename, calendar_id: "primary") do
@@ -69,8 +70,6 @@ describe CalendarAssistant do
             {start: "10:00", end: "11:00", summary: "test", options: [:recurring, :one_on_one]}
         ]
       end
-
-      allow(config).to receive(:options).and_return({local_store: filename})
     end
 
     it "reads from those events" do

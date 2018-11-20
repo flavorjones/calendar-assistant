@@ -31,6 +31,7 @@ class CalendarAssistant
         COMMITMENTS = "commitments"
         JOIN = "join"
         REQUIRED_ATTENDEE = "required"
+        LOCAL_STORE = "local-store"
       end
     end
 
