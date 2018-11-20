@@ -153,14 +153,19 @@ Some examples:
 
 <pre>
 <b>$</b> calendar-assistant join
-2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
-https://pivotal.zoom.us/j/ABC90210
-<i># ... and opens the URL, which is associated with an event happening now</i>
+<i>me@example.com</i>
+
+2018-10-01  11:30 - 12:00<b> | Facilitate customized web-readiness </b><i> (1:1, recurring)</i>
+
+https://pivotal.zoom.us/j/ABC90210 <i># ... and opens the videoconference URL</i>
+
 
 <b>$</b> calendar-assistant join work 11:30 --no-join 
-2018-09-28  11:30 - 12:00 | Status Meeting (recurring)
-https://pivotal.zoom.us/j/ABC90210
-<i># ... and does not open the URL</i>
+<i>me@example.com</i>
+
+2018-10-01  11:30 - 12:00<b> | Facilitate customized web-readiness </b><i> (1:1, recurring)</i>
+
+https://pivotal.zoom.us/j/ABC90210 <i># ... and does not open the URL</i>
 </pre>
 
 
@@ -301,7 +306,7 @@ For example:
 <i>me@example.com (all times in America/New_York)
 </i>
 2018-09-24 - 2018-09-27  <b> | 🗺 Dorwinion </b><i> (not-busy, self)</i>
-2018-09-28               <b> | 🗺 Bree </b><i> (not-busy, self)</i>
+2018-09-28               <b> | 🗺 Withered Heath </b><i> (not-busy, self)</i>
 </pre>
 
 
@@ -328,30 +333,30 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show --profile=work 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01               <b> | 🗺 Mirkwood </b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | Incubate cross-media architectures </strike>
-<strike>2018-10-01  07:30 - 08:30 | Incubate bricks-and-clicks e-markets </strike>
-<strike>2018-10-01  07:30 - 08:30 | Incentivize out-of-the-box portals </strike>
-2018-10-01  08:00 - 09:00<b> | Morph world-class models </b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | Empower collaborative markets </b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Architect b2b eyeballs </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Unleash dynamic applications </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Facilitate customized web-readiness </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Synthesize back-end solutions </strike>
-2018-10-01  12:00 - 12:30<b> | Whiteboard 24/365 vortals </b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Optimize extensible users </strike>
-<strike>2018-10-01  12:30 - 13:30 | Whiteboard plug-and-play channels </strike>
-2018-10-01  12:30 - 13:30<b> | Engineer next-generation platforms </b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Transition revolutionary e-markets </b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Implement killer functionalities </strike>
-2018-10-01  15:00 - 15:30<b> | Exploit robust supply-chains </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Strategize e-business convergence </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Grow vertical technologies </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Implement enterprise vortals </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Morph front-end markets </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Deliver dot-com supply-chains </strike>
-<strike>2018-10-01  18:30 - 19:00 | Target extensible networks </strike>
-<strike>2018-10-01  19:00 - 19:30 | Strategize dot-com supply-chains </strike>
+2018-10-01               <b> | 🗺 Country Round </b><i> (not-busy, self)</i>
+<strike>2018-10-01  03:30 - 05:00 | Enable turn-key channels </strike>
+<strike>2018-10-01  07:30 - 08:30 | Engineer sticky bandwidth </strike>
+<strike>2018-10-01  07:30 - 08:30 | Engage plug-and-play schemas </strike>
+2018-10-01  08:00 - 09:00<b> | Incubate synergistic infrastructures </b><i> (recurring, self)</i>
+2018-10-01  09:00 - 10:30<b> | Facilitate cutting-edge networks </b><i> (self)</i>
+2018-10-01  10:30 - 10:55<b> | Deliver vertical communities </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Visualize ubiquitous relationships </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Harness customized action-items </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Synergize holistic functionalities </strike>
+2018-10-01  12:00 - 12:30<b> | Exploit viral platforms </b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Implement user-centric partnerships </strike>
+<strike>2018-10-01  12:30 - 13:30 | Strategize turn-key applications </strike>
+2018-10-01  12:30 - 13:30<b> | Revolutionize web-enabled e-services </b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Generate cutting-edge methodologies </b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Deliver bricks-and-clicks infomediaries </strike>
+2018-10-01  15:00 - 15:30<b> | Empower b2b users </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Facilitate magnetic relationships </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Envisioneer clicks-and-mortar paradigms </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Drive real-time schemas </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Enable wireless synergies </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Maximize web-enabled infomediaries </strike>
+<strike>2018-10-01  18:30 - 19:00 | Brand innovative paradigms </strike>
+<strike>2018-10-01  19:00 - 19:30 | Reintermediate compelling interfaces </strike>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -360,15 +365,15 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Aggregate seamless networks </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Syndicate wireless experiences </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Drive cross-media e-markets </b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Harness intuitive e-tailers </b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Architect wireless vortals </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Engage enterprise metrics </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Recontextualize cross-media interfaces </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Synthesize front-end channels </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Reintermediate end-to-end deliverables </b><i> (1:1, recurring)</i>
+2018-10-01  10:30 - 10:55<b> | Scale frictionless synergies </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Repurpose compelling mindshare </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Integrate web-enabled portals </b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Harness rich experiences </b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Enable integrated channels </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Envisioneer value-added web-readiness </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Brand back-end e-services </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Revolutionize b2c interfaces </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Strategize granular users </b><i> (1:1, recurring)</i>
 </pre>
 
 
