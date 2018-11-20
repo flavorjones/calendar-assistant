@@ -30,9 +30,9 @@ class CalendarAssistant
       range = time..(time+5.minutes)
       event_set = ca.find_events range
 
-      [Google::Apis::CalendarV3::Event::Response::ACCEPTED,
-       Google::Apis::CalendarV3::Event::Response::TENTATIVE,
-       Google::Apis::CalendarV3::Event::Response::NEEDS_ACTION,
+      [CalendarAssistant::Event::Response::ACCEPTED,
+       CalendarAssistant::Event::Response::TENTATIVE,
+       CalendarAssistant::Event::Response::NEEDS_ACTION,
       ].each do |response|
         event_set.events.reverse.select do |event|
           event.response_status == response

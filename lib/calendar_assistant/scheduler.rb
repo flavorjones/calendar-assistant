@@ -17,7 +17,7 @@ class CalendarAssistant
         # find relevant events and map them into dates
         dates_events = date_range.inject({}) { |de, date| de[date] = [] ; de }
         event_set.events.each do |event|
-          if event.accepted?
+          if event.private? || event.accepted? || event.self?
             event_date = event.start.to_date!
             dates_events[event_date] ||= []
             dates_events[event_date] << event
@@ -39,12 +39,14 @@ class CalendarAssistant
                        BusinessTime::Config.end_of_workday.min.minutes
 
             date_events.each do |e|
-              next if ! e.end.date_time.to_time.during_business_hours?
+              # ignore events that are outside my business day
+              next if Time.before_business_hours?(e.end_time.to_time)
+              next if Time.after_business_hours?(e.start_time.to_time)
 
-              if (e.start.date_time.to_time - start_time) >= length
-                avail_time[date] << available_block(start_time, e.start.date_time)
+              if (e.start_time.to_time - start_time) >= length
+                avail_time[date] << available_block(start_time, e.start_time)
               end
-              start_time = e.end.date_time.to_time
+              start_time = [e.end_time.to_time, start_time].max
               break if ! start_time.during_business_hours?
             end
 
