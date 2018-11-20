@@ -30,11 +30,10 @@ class CalendarAssistant
             avail_time[date] ||= []
             date_events = dates_events[date]
 
-            start_time = date.to_time +
+            start_time = date.to_time.to_datetime +
                          BusinessTime::Config.beginning_of_workday.hour.hours +
                          BusinessTime::Config.beginning_of_workday.min.minutes
-
-            end_time = date.to_time +
+            end_time = date.to_time.to_datetime +
                        BusinessTime::Config.end_of_workday.hour.hours +
                        BusinessTime::Config.end_of_workday.min.minutes
 
@@ -43,14 +42,14 @@ class CalendarAssistant
               next if Time.before_business_hours?(e.end_time.to_time)
               next if Time.after_business_hours?(e.start_time.to_time)
 
-              if (e.start_time.to_time - start_time) >= length
+              if (e.start_time - start_time).days.to_i >= length
                 avail_time[date] << available_block(start_time, e.start_time)
               end
-              start_time = [e.end_time.to_time, start_time].max
+              start_time = [e.end_time, start_time].max
               break if ! start_time.during_business_hours?
             end
 
-            if end_time - start_time >= length
+            if (end_time - start_time).days.to_i >= length
               avail_time[date] << available_block(start_time, end_time)
             end
 

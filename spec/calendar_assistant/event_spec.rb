@@ -464,93 +464,89 @@ describe CalendarAssistant::Event do
 
   describe "#start_time" do
     context "all day event" do
-      let(:start_date) { Date.today }
-
-      context "containing a Date" do
-        let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date: start_date)) }
-        it { expect(subject.start_time).to eq(start_date.beginning_of_day) }
-      end
-
-      context "containing a String" do
-        let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date: start_date.to_s)) }
-        it { expect(subject.start_time).to eq(start_date.beginning_of_day) }
+      # test Date and String
+      [Date.today, Date.today.to_s].each do |date|
+        context "containing a #{date.class}" do
+          let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date: date)) }
+          it { expect(subject.start_time).to eq(Date.today.beginning_of_day) }
+        end
       end
     end
 
     context "intraday event" do
-      let(:start_time) { Time.now }
-
-      let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date_time: start_time)) }
-      it { expect(subject.start_time).to eq(start_time) }
+      # test Time and DateTime
+      [Time.now, DateTime.now].each do |time|
+        context "containing a #{time.class}" do
+          let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date_time: time)) }
+          it { expect(subject.start_time).to eq(time) }
+        end
+      end
     end
   end
 
   describe "#start_date" do
     context "all day event" do
-      let(:start_date) { Date.today }
-
-      context "containing a Date" do
-        let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date: start_date)) }
-        it { expect(subject.start_date).to eq(start_date) }
-      end
-
-      context "containing a String" do
-        let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date: start_date.to_s)) }
-        it { expect(subject.start_date).to eq(start_date) }
+      # test Date and String
+      [Date.today, Date.today.to_s].each do |date|
+        context "containing a #{date.class}" do
+          let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date: date)) }
+          it { expect(subject.start_date).to eq(Date.today) }
+        end
       end
     end
 
     context "intraday event" do
-      let(:start_time) { Time.now }
-
-      let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date_time: start_time)) }
-      it { expect(subject.start_date).to eq(start_time.to_date) }
+      # test Time and DateTime
+      [Time.now, DateTime.now].each do |time|
+        context "containing a #{time.class}" do
+          let(:decorated_object) { decorated_class.new(start: GCal::EventDateTime.new(date_time: time)) }
+          it { expect(subject.start_date).to eq(time.to_date) }
+        end
+      end
     end
   end
 
   describe "#end_time" do
     context "all day event" do
-      let(:end_date) { Date.today }
-
-      context "containing a Date" do
-        let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date: end_date)) }
-        it { expect(subject.end_time).to eq(end_date.beginning_of_day) }
-      end
-
-      context "containing a String" do
-        let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date: end_date.to_s)) }
-        it { expect(subject.end_time).to eq(end_date.beginning_of_day) }
+      # test Date and String
+      [Date.today, Date.today.to_s].each do |date|
+        context "containing a #{date.class}" do
+          let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date: date)) }
+          it { expect(subject.end_time).to eq(Date.today.beginning_of_day) }
+        end
       end
     end
 
     context "intraday event" do
-      let(:end_time) { Time.now }
-
-      let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date_time: end_time)) }
-      it { expect(subject.end_time).to eq(end_time) }
+      # test Time and DateTime
+      [Time.now, DateTime.now].each do |time|
+        context "containing a #{time.class}" do
+          let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date_time: time)) }
+          it { expect(subject.end_time).to eq(time) }
+        end
+      end
     end
   end
 
   describe "#end_date" do
     context "all day event" do
-      let(:end_date) { Date.today }
-
-      context "containing a Date" do
-        let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date: end_date)) }
-        it { expect(subject.end_date).to eq(end_date) }
-      end
-
-      context "containing a String" do
-        let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date: end_date.to_s)) }
-        it { expect(subject.end_date).to eq(end_date) }
+      # test Date and String
+      [Date.today, Date.today.to_s].each do |date|
+        context "containing a #{date.class}" do
+          let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date: date)) }
+          it { expect(subject.end_date).to eq(Date.today) }
+        end
       end
     end
 
     context "intraday event" do
-      let(:end_time) { Time.now }
-
-      let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date_time: end_time)) }
-      it { expect(subject.end_date).to eq(end_time.to_date) }
+      # test Time and DateTime
+      [Time.now, DateTime.now].each do |time|
+        context "containing a #{time.class}" do
+          let(:decorated_object) { decorated_class.new(end: GCal::EventDateTime.new(date_time: time)) }
+          it { expect(subject.end_date).to eq(time.to_date) }
+        end
+      end
     end
   end
 

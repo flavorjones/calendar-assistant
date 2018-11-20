@@ -31,11 +31,11 @@ describe CalendarAssistant::Scheduler do
     def expect_to_match_expected_avails found_avails
       expect(found_avails.keys).to eq(expected_avails.keys)
       found_avails.keys.each do |date|
+        expect(found_avails[date].length).to eq(expected_avails[date].length)
         found_avails[date].each_with_index do |found_avail, j|
           expect(found_avail.start).to eq(expected_avails[date][j].start)
           expect(found_avail.end).to eq(expected_avails[date][j].end)
         end
-        expect(found_avails[date].length).to eq(expected_avails[date].length)
       end
     end
 
