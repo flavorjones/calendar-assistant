@@ -46,13 +46,13 @@ describe CalendarAssistant::Scheduler do
       context "with an event at the end of the day and other events later" do
         let(:events) do
           [
-            event_factory("zeroth", Chronic.parse("7:30am")..(Chronic.parse("8am")), :accepted? => true),
-            event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am")), :accepted? => true),
-            event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm")), :accepted? => true),
-            event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm")), :accepted? => true),
-            event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm")), :accepted? => true),
-            event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm")), :accepted? => true),
-            event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm")), :accepted? => true),
+            event_factory("zeroth", Chronic.parse("7:30am")..(Chronic.parse("8am")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("sixth", Chronic.parse("6:30pm")..(Chronic.parse("7pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
           ]
         end
 
@@ -77,7 +77,7 @@ describe CalendarAssistant::Scheduler do
 
         context "some meetings haven't been accepted" do
           before do
-            allow(events[2]).to receive(:accepted?).and_return(false)
+            allow(events[2]).to receive(:response_status).and_return(CalendarAssistant::Event::Response::DECLINED)
           end
 
           let(:expected_avails) do
@@ -97,7 +97,7 @@ describe CalendarAssistant::Scheduler do
 
         context "some meetings are private" do
           before do
-            allow(events[2]).to receive(:accepted?).and_return(false) # undo fixture setting
+            allow(events[2]).to receive(:response_status).and_return(CalendarAssistant::Event::Response::DECLINED) # undo fixture setting
             allow(events[2]).to receive(:private?).and_return(true) # apply new fixture setting
           end
 
@@ -113,10 +113,10 @@ describe CalendarAssistant::Scheduler do
 
         let(:events) do
           [
-            event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am")), :accepted? => true),
-            event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm")), :accepted? => true),
-            event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm")), :accepted? => true),
-            event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm")), :accepted? => true),
+            event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
           ]
         end
 
@@ -158,8 +158,8 @@ describe CalendarAssistant::Scheduler do
         # see https://github.com/flavorjones/calendar-assistant/issues/44 item 3
         let(:events) do
           [
-            event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm")), :accepted? => true),
-            event_factory("first", Chronic.parse("11am")..(Chronic.parse("11:30am")), :accepted? => true),
+            event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("first", Chronic.parse("11am")..(Chronic.parse("11:30am")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
           ]
         end
 
@@ -181,8 +181,8 @@ describe CalendarAssistant::Scheduler do
         # see https://github.com/flavorjones/calendar-assistant/issues/44 item 4
         let(:events) do
           [
-            event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm")), :accepted? => true),
-            event_factory("first", Chronic.parse("5pm")..(Chronic.parse("7pm")), :accepted? => true),
+            event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("first", Chronic.parse("5pm")..(Chronic.parse("7pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
           ]
         end
 
@@ -226,12 +226,12 @@ describe CalendarAssistant::Scheduler do
       let(:events) do
         in_tz do
           [
-            event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am")), :accepted? => true),
-            event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm")), :accepted? => true),
-            event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm")), :accepted? => true),
-            event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm")), :accepted? => true),
-            event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm")), :accepted? => true),
-            event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm")), :accepted? => true),
+            event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
+            event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm")), :response_status => CalendarAssistant::Event::Response::ACCEPTED),
           ]
         end
       end
