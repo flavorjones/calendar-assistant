@@ -81,8 +81,8 @@ class CalendarAssistant
     end
   end
 
-  def find_events time_range, calendar_id: nil
-    calendar_id ||= DEFAULT_CALENDAR_ID
+  def find_events time_range
+    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || DEFAULT_CALENDAR_ID
     event_repository(calendar_id).find(time_range)
   end
 
