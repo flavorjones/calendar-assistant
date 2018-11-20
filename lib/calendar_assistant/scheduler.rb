@@ -18,7 +18,7 @@ class CalendarAssistant
         dates_events = date_range.inject({}) { |de, date| de[date] = [] ; de }
         event_set.events.each do |event|
           if event.private? || event.accepted? || event.self?
-            event_date = event.start.to_date!
+            event_date = event.start_date
             dates_events[event_date] ||= []
             dates_events[event_date] << event
           end
