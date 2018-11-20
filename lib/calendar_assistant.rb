@@ -78,13 +78,19 @@ class CalendarAssistant
   end
 
   def find_events time_range
-    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || Config::DEFAULT_CALENDAR_ID
-    event_repository(calendar_id).find(time_range)
+    calendar_ids = config.attendees
+    if calendar_ids.length > 1
+      raise "CalendarAssistant#find_events only supports one person (for now)"
+    end
+    event_repository(calendar_ids.first).find(time_range)
   end
 
   def availability time_range
-    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || Config::DEFAULT_CALENDAR_ID
-    er = event_repository(calendar_id)
+    calendar_ids = config.attendees
+    if calendar_ids.length > 1
+      raise "CalendarAssistant#availability only supports one person (for now)"
+    end
+    er = event_repository(calendar_ids.first)
     Scheduler.new(self, er).available_blocks(time_range)
   end
 

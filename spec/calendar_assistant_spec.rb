@@ -293,7 +293,7 @@ describe CalendarAssistant do
         let(:other_calendar_id) { "somebodyelse@example.com" }
         let(:config_options) do
           {
-            CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => other_calendar_id,
+            CalendarAssistant::Config::Keys::Options::ATTENDEES => other_calendar_id,
           }
         end
 

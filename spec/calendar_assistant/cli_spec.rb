@@ -122,7 +122,7 @@ describe CalendarAssistant::CLI do
       context "given another person's calendar id" do
         let(:config_options) do
           {
-            CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => "somebody@example.com"
+            CalendarAssistant::Config::Keys::Options::ATTENDEES => "somebody@example.com"
           }
         end
 
@@ -133,7 +133,7 @@ describe CalendarAssistant::CLI do
           allow(ca).to receive(:find_events)
           allow(out).to receive(:print_events)
 
-          CalendarAssistant::CLI.start [command, "-r", "somebody@example.com"]
+          CalendarAssistant::CLI.start [command, "-a", "somebody@example.com"]
         end
       end
     end
@@ -366,13 +366,13 @@ describe CalendarAssistant::CLI do
 
       it "looks up another person's availability" do
         expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => "somebody@example.com"}).
+                                               with(options: {CalendarAssistant::Config::Keys::Options::ATTENDEES => "somebody@example.com"}).
                                                and_return(config)
 
         allow(ca).to receive(:availability)
         allow(out).to receive(:print_available_blocks)
 
-        CalendarAssistant::CLI.start [command, "-r", "somebody@example.com"]
+        CalendarAssistant::CLI.start [command, "-a", "somebody@example.com"]
       end
     end
   end
