@@ -19,27 +19,29 @@ class CalendarAssistant
       #  and which can be overridden by entries in the user config file
       #
       module Settings
-        PROFILE = "profile"
-        MEETING_LENGTH = "meeting-length"
-        START_OF_DAY = "start-of-day"
-        END_OF_DAY = "end-of-day"
+        PROFILE = "profile"               # string
+        MEETING_LENGTH = "meeting-length" # ChronicDuration
+        START_OF_DAY = "start-of-day"     # BusinessTime
+        END_OF_DAY = "end-of-day"         # BusinessTime
       end
 
       #
-      #  Options are ephemeral command-line flag settings
+      #  Options are ephemeral command-line flag settings which _may_
+      #  have a value in DEFAULT_SETTINGS below
       #
       module Options
-        COMMITMENTS = "commitments"
-        JOIN = "join"
-        REQUIRED_ATTENDEE = "required"
-        LOCAL_STORE = "local-store"
+        COMMITMENTS = "commitments" # bool
+        JOIN = "join"               # bool
+        ATTENDEES = "attendees"     # array of calendar ids (comma-delimited)
+        LOCAL_STORE = "local-store" # filename
       end
     end
 
     DEFAULT_SETTINGS = {
-      Keys::Settings::MEETING_LENGTH => "30m", # ChronicDuration
-      Keys::Settings::START_OF_DAY => "9am", # BusinessTime
-      Keys::Settings::END_OF_DAY => "6pm", # BusinessTime
+      Keys::Settings::MEETING_LENGTH => "30m",            # ChronicDuration
+      Keys::Settings::START_OF_DAY => "9am",              # BusinessTime
+      Keys::Settings::END_OF_DAY => "6pm",                # BusinessTime
+      Keys::Options::ATTENDEES => [DEFAULT_CALENDAR_ID],  # array of calendar ids
     }
 
     attr_reader :config_file_path, :user_config, :options, :defaults
@@ -106,6 +108,10 @@ class CalendarAssistant
       Config.set_in_hash user_config, keypath, value
     end
 
+    #
+    #  note that, despite the name, this method returns both options
+    #  and settings
+    #
     def setting setting_name
       Config.find_in_hash(options, setting_name) ||
         Config.find_in_hash(user_config, [Keys::SETTINGS, setting_name]) ||
@@ -141,6 +147,17 @@ class CalendarAssistant
       File.open(config_file_path, "w") do |f|
         f.write content
       end
+    end
+
+    #
+    #  helper method for Keys::Options::ATTENDEES
+    #
+    def attendees
+      a = setting(Keys::Options::ATTENDEES)
+      if a.is_a?(String)
+        a = a.split(",")
+      end
+      a
     end
 
     private
