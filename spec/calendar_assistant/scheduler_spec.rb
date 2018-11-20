@@ -29,11 +29,13 @@ describe CalendarAssistant::Scheduler do
     end
 
     def expect_to_match_expected_avails found_avails
-      expect(found_avails.keys).to eq([date])
-      expect(found_avails[date].length).to eq(expected_avails[date].length)
-      found_avails[date].each_with_index do |found_avail, j|
-        expect(found_avail.start).to eq(expected_avails[date][j].start)
-        expect(found_avail.end).to eq(expected_avails[date][j].end)
+      expect(found_avails.keys).to eq(expected_avails.keys)
+      found_avails.keys.each do |date|
+        found_avails[date].each_with_index do |found_avail, j|
+          expect(found_avail.start).to eq(expected_avails[date][j].start)
+          expect(found_avail.end).to eq(expected_avails[date][j].end)
+        end
+        expect(found_avails[date].length).to eq(expected_avails[date].length)
       end
     end
 
@@ -213,12 +215,7 @@ describe CalendarAssistant::Scheduler do
       it "returns a hash of all dates" do
         found_avails = scheduler.available_blocks(time_range).events
 
-        expect(found_avails.keys).to eq(expected_avails.keys)
-        expected_avails.keys.each do |date|
-          expect(found_avails[date].length).to eq(1)
-          expect(found_avails[date].first.start).to eq(expected_avails[date].first.start)
-          expect(found_avails[date].first.end).to eq(expected_avails[date].first.end)
-        end
+        expect_to_match_expected_avails found_avails
       end
     end
 
