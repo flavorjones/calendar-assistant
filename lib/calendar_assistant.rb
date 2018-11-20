@@ -17,8 +17,6 @@ class CalendarAssistant
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
   EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
 
-  DEFAULT_CALENDAR_ID = "primary"
-
   attr_reader :service, :calendar, :config
 
   def self.authorize profile_name
@@ -47,7 +45,7 @@ class CalendarAssistant
   end
 
 
-  def initialize config=CalendarAssistant::Config.new,
+  def initialize config=Config.new,
                  event_repository_factory: EventRepositoryFactory
     @config = config
 
@@ -56,7 +54,7 @@ class CalendarAssistant
     else
       @service = Authorizer.new(config.profile_name, config.token_store).service
     end
-    @calendar = service.get_calendar DEFAULT_CALENDAR_ID
+    @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
     @event_repositories = {} # calendar_id → event_repository
   end
@@ -82,12 +80,12 @@ class CalendarAssistant
   end
 
   def find_events time_range
-    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || DEFAULT_CALENDAR_ID
+    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || Config::DEFAULT_CALENDAR_ID
     event_repository(calendar_id).find(time_range)
   end
 
   def availability time_range
-    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || DEFAULT_CALENDAR_ID
+    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || Config::DEFAULT_CALENDAR_ID
     er = event_repository(calendar_id)
     Scheduler.new(self, er).available_blocks(time_range)
   end
@@ -129,7 +127,7 @@ class CalendarAssistant
     existing_event_set.new response
   end
 
-  def event_repository calendar_id=DEFAULT_CALENDAR_ID
+  def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
     @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id)
   end
 

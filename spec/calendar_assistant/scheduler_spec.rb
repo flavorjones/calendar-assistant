@@ -14,7 +14,7 @@ describe CalendarAssistant::Scheduler do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
     let(:time_zone) { ENV['TZ'] }
-    let(:calendar_id) { CalendarAssistant::DEFAULT_CALENDAR_ID }
+    let(:calendar_id) { CalendarAssistant::Config::DEFAULT_CALENDAR_ID }
     let(:er) { CalendarAssistant::EventRepository.new service, calendar_id }
     let(:event_set) { CalendarAssistant::EventSet.new er, events }
 
