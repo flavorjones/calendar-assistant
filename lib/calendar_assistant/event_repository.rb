@@ -48,5 +48,14 @@ class CalendarAssistant
       updated_event = @service.update_event @calendar_id, event.id, event
       CalendarAssistant::Event.new(updated_event)
     end
+
+    def available_block start_time, end_time
+      e = Google::Apis::CalendarV3::Event.new(
+        start: Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time.in_time_zone(calendar.time_zone)),
+        end: Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time.in_time_zone(calendar.time_zone)),
+        summary: "available"
+      )
+      CalendarAssistant::Event.new e
+    end
   end
 end

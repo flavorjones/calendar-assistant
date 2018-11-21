@@ -43,14 +43,14 @@ class CalendarAssistant
               next if Time.after_business_hours?(e.start_time.to_time)
 
               if (e.start_time - start_time).days.to_i >= length
-                avail_time[date] << available_block(start_time, e.start_time)
+                avail_time[date] << er.available_block(start_time, e.start_time)
               end
               start_time = [e.end_time, start_time].max
               break if ! start_time.during_business_hours?
             end
 
             if (end_time - start_time).days.to_i >= length
-              avail_time[date] << available_block(start_time, end_time)
+              avail_time[date] << er.available_block(start_time, end_time)
             end
 
             avail_time
@@ -59,17 +59,6 @@ class CalendarAssistant
 
         event_set.new avail_time
       end
-    end
-
-    private
-
-    def available_block start_time, end_time
-      e = Google::Apis::CalendarV3::Event.new(
-        start: Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time.in_time_zone(er.calendar.time_zone)),
-        end: Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time.in_time_zone(er.calendar.time_zone)),
-        summary: "available"
-      )
-      CalendarAssistant::Event.new e
     end
   end
 end
