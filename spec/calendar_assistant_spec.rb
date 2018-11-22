@@ -317,33 +317,12 @@ describe CalendarAssistant do
     end
 
     describe "#in_env" do
-      let(:config_options) do
-        {
-          CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
-          CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
-        }
-      end
+      let(:subject) { CalendarAssistant.new config }
+      let(:config) { CalendarAssistant::Config.new }
 
-      it "sets beginning and end of workday and restores them" do
-        BusinessTime::Config.beginning_of_workday = "6am"
-        BusinessTime::Config.end_of_workday = "2pm"
-        ca.in_env do
-          expect(BusinessTime::Config.beginning_of_workday.hour).to eq(7)
-          expect(BusinessTime::Config.end_of_workday.hour).to eq(15)
-        end
-        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
-        expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
-      end
-
-      it "exceptionally restores beginning and end of workday" do
-        BusinessTime::Config.beginning_of_workday = "6am"
-        BusinessTime::Config.end_of_workday = "2pm"
-        ca.in_env do
-          raise RuntimeError
-        rescue
-        end
-        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
-        expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+      it "calls Config#in_env" do
+        expect(config).to receive(:in_env)
+        ca.in_env do ; end
       end
 
       it "calls in_tz with the calendar timezone" do

@@ -68,6 +68,38 @@ describe CalendarAssistant::Config do
     end
   end
 
+  describe "#in_env" do
+    subject { described_class.new options: config_options }
+    let(:config_options) do
+      {
+        CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
+        CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
+      }
+    end
+
+    it "sets beginning and end of workday and restores them" do
+      BusinessTime::Config.beginning_of_workday = "6am"
+      BusinessTime::Config.end_of_workday = "2pm"
+      subject.in_env do
+        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(7)
+        expect(BusinessTime::Config.end_of_workday.hour).to eq(15)
+      end
+      expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
+      expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+    end
+
+    it "exceptionally restores beginning and end of workday" do
+      BusinessTime::Config.beginning_of_workday = "6am"
+      BusinessTime::Config.end_of_workday = "2pm"
+      subject.in_env do
+        raise RuntimeError
+      rescue
+      end
+      expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
+      expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+    end
+  end
+
   describe "#profile_name" do
     let(:options) { Hash.new }
     subject { described_class.new(options: options, config_file_path: temp_config_file.path) }

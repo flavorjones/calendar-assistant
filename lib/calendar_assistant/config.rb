@@ -75,6 +75,20 @@ class CalendarAssistant
       @options = options
     end
 
+    def in_env &block
+      # this is totally not thread-safe
+      orig_b_o_d = BusinessTime::Config.beginning_of_workday
+      orig_e_o_d = BusinessTime::Config.end_of_workday
+      begin
+        BusinessTime::Config.beginning_of_workday = setting(Config::Keys::Settings::START_OF_DAY)
+        BusinessTime::Config.end_of_workday = setting(Config::Keys::Settings::END_OF_DAY)
+        yield
+      ensure
+        BusinessTime::Config.beginning_of_workday = orig_b_o_d
+        BusinessTime::Config.end_of_workday = orig_e_o_d
+      end
+    end
+
     def profile_name
       # CLI option takes precedence
       return options[Keys::Settings::PROFILE] if options[Keys::Settings::PROFILE]
