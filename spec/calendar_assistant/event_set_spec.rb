@@ -159,6 +159,20 @@ describe CalendarAssistant::EventSet do
         it "is in the calendar's time zone" do
           expect(subject.available_blocks.events[date].first.start_time.time_zone.name).to eq(time_zone)
         end
+
+        context "a meeting length is passed" do
+          let(:expected_avails) do
+            {
+              date => [
+                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
+              ]
+            }
+          end
+
+          it "ignores available blocks shorter than that length" do
+            expect_to_match_expected_avails subject.available_blocks(length: 31.minutes).events
+          end
+        end
       end
 
       context "single date with no event at the end of the day" do
