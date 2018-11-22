@@ -2,62 +2,38 @@ class CalendarAssistant
   class Scheduler
     attr_reader :ca, :er
 
-    def initialize ca, er
-      @ca = ca
-      @er = er
+    #
+    #  class methods
+    #
+    def self.select_busy_events event_set
+      dates_events = Hash.new
+      event_set.events.each do |event|
+        if event.private? || event.accepted? || event.self?
+          date = event.start_date
+          dates_events[date] ||= []
+          dates_events[date] << event
+        end
+      end
+      event_set.new dates_events
+    end
+
+
+    #
+    #  instance methods
+    #
+    def initialize calendar_assistant, event_repository
+      @ca = calendar_assistant
+      @er = event_repository
     end
 
     def available_blocks time_range
+      event_set = er.find time_range # array
+      event_set = Scheduler.select_busy_events event_set # hash
+      event_set.ensure_dates_as_keys time_range.first.to_date .. time_range.last.to_date
+
+      length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
       ca.in_env do
-        length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
-
-        event_set = er.find time_range
-        date_range = time_range.first.to_date .. time_range.last.to_date
-
-        # find relevant events and map them into dates
-        dates_events = date_range.inject({}) { |de, date| de[date] = [] ; de }
-        event_set.events.each do |event|
-          if event.private? || event.accepted? || event.self?
-            event_date = event.start_date
-            dates_events[event_date] ||= []
-            dates_events[event_date] << event
-          end
-        end
-
-        # iterate over the days finding free chunks of time
-        avail_time = er.in_tz do
-          date_range.inject({}) do |avail_time, date|
-            avail_time[date] ||= []
-            date_events = dates_events[date]
-
-            start_time = date.to_time.to_datetime +
-                         BusinessTime::Config.beginning_of_workday.hour.hours +
-                         BusinessTime::Config.beginning_of_workday.min.minutes
-            end_time = date.to_time.to_datetime +
-                       BusinessTime::Config.end_of_workday.hour.hours +
-                       BusinessTime::Config.end_of_workday.min.minutes
-
-            date_events.each do |e|
-              # ignore events that are outside my business day
-              next if Time.before_business_hours?(e.end_time.to_time)
-              next if Time.after_business_hours?(e.start_time.to_time)
-
-              if (e.start_time - start_time).days.to_i >= length
-                avail_time[date] << er.available_block(start_time, e.start_time)
-              end
-              start_time = [e.end_time, start_time].max
-              break if ! start_time.during_business_hours?
-            end
-
-            if (end_time - start_time).days.to_i >= length
-              avail_time[date] << er.available_block(start_time, end_time)
-            end
-
-            avail_time
-          end
-        end
-
-        event_set.new avail_time
+        event_set.available_blocks length: length
       end
     end
   end
