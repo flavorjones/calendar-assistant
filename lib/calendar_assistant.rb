@@ -59,15 +59,10 @@ class CalendarAssistant
 
   def in_env &block
     # this is totally not thread-safe
-    orig_b_o_d = BusinessTime::Config.beginning_of_workday
-    orig_e_o_d = BusinessTime::Config.end_of_workday
-    begin
-      BusinessTime::Config.beginning_of_workday = config.setting(Config::Keys::Settings::START_OF_DAY)
-      BusinessTime::Config.end_of_workday = config.setting(Config::Keys::Settings::END_OF_DAY)
-      in_tz { yield }
-    ensure
-      BusinessTime::Config.beginning_of_workday = orig_b_o_d
-      BusinessTime::Config.end_of_workday = orig_e_o_d
+    config.in_env do
+      in_tz do
+        yield
+      end
     end
   end
 
