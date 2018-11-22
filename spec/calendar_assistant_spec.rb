@@ -280,11 +280,11 @@ describe CalendarAssistant do
           expect(CalendarAssistant::Scheduler).to receive(:new).
                                                     with(ca, event_repository).
                                                     and_return(scheduler)
-          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
           response = ca.availability(time_range)
 
-          expect(response).to eq(events)
+          expect(response).to eq(event_set)
         end
       end
 
@@ -306,11 +306,11 @@ describe CalendarAssistant do
           expect(CalendarAssistant::Scheduler).to receive(:new).
                                                     with(ca, event_repository).
                                                     and_return(scheduler)
-          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
           response = ca.availability(time_range)
 
-          expect(response).to eq(events)
+          expect(response).to eq(event_set)
         end
       end
     end
