@@ -1,23 +1,23 @@
 describe CalendarAssistant::EventSet do
-  let(:er) { instance_double "EventRepository" }
+  let(:event_repository) { instance_double "EventRepository" }
   let(:events) { [instance_double("Event1"), instance_double("Event2")] }
 
   describe "#initialize" do
-    it "sets `er` and `events` attributes" do
-      event_set = described_class.new er, events
-      expect(event_set.event_repository).to eq(er)
+    it "sets `event_repository` and `events` attributes" do
+      event_set = described_class.new event_repository, events
+      expect(event_set.event_repository).to eq(event_repository)
       expect(event_set.events).to eq(events)
     end
 
     it "default events to nil" do
-      event_set = described_class.new er
-      expect(event_set.event_repository).to eq(er)
+      event_set = described_class.new event_repository
+      expect(event_set.event_repository).to eq(event_repository)
       expect(event_set.events).to be_nil
     end
   end
 
   describe "#empty?" do
-    let(:event_set) { described_class.new er, events }
+    let(:event_set) { described_class.new event_repository, events }
 
     context "`events` is an empty hash" do
       let(:events) { Hash.new }
@@ -58,17 +58,17 @@ describe CalendarAssistant::EventSet do
     end
 
     context "events are different" do
-      let(:er) { instance_double("EventRepository") }
-      let(:lhs) { described_class.new er, [instance_double("Event1")] }
-      let(:rhs) { described_class.new er, [instance_double("Event2")] }
+      let(:event_repository) { instance_double("EventRepository") }
+      let(:lhs) { described_class.new event_repository, [instance_double("Event1")] }
+      let(:rhs) { described_class.new event_repository, [instance_double("Event2")] }
       it { expect(lhs == rhs).to be false }
     end
 
     context "event repositories are same and events are equal" do
-      let(:er) { instance_double("EventRepository") }
+      let(:event_repository) { instance_double("EventRepository") }
       let(:events) { [instance_double("Event")] }
-      let(:lhs) { described_class.new er, events }
-      let(:rhs) { described_class.new er, events }
+      let(:lhs) { described_class.new event_repository, events }
+      let(:rhs) { described_class.new event_repository, events }
       it { expect(lhs == rhs).to be true }
     end
   end
@@ -77,8 +77,8 @@ describe CalendarAssistant::EventSet do
     let(:other_events) { [instance_double("Event3"), instance_double("Event4")] }
 
     it "creates a new EventSet with the same EventRepository but different values" do
-      original = described_class.new er, events
-      expected = described_class.new er, other_events
+      original = described_class.new event_repository, events
+      expected = described_class.new event_repository, other_events
       actual = original.new other_events
       expect(actual).to eq(expected)
     end
