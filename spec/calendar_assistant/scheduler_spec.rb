@@ -101,7 +101,7 @@ describe CalendarAssistant::Scheduler do
       before do
         allow(er).to receive(:find).and_return(event_set)
         allow(described_class).to receive(:select_busy_events).and_return(event_set_hash)
-        allow(event_set_hash).to receive(:ensure_dates_as_keys)
+        allow(event_set_hash).to receive(:ensure_keys)
       end
 
       it "calls EventRepository#find with the right time range" do
@@ -116,7 +116,7 @@ describe CalendarAssistant::Scheduler do
 
       it "fills in empty dates in the event set" do
         date_range = time_range.first.to_date .. time_range.last.to_date
-        expect(event_set_hash).to receive(:ensure_dates_as_keys).with(date_range)
+        expect(event_set_hash).to receive(:ensure_keys).with(date_range)
         scheduler.available_blocks(time_range)
       end
 

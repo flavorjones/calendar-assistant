@@ -29,7 +29,7 @@ class CalendarAssistant
     def available_blocks time_range
       event_set = er.find time_range # array
       event_set = Scheduler.select_busy_events event_set # hash
-      event_set.ensure_dates_as_keys time_range.first.to_date .. time_range.last.to_date
+      event_set.ensure_keys time_range.first.to_date .. time_range.last.to_date
 
       length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
       ca.in_env do

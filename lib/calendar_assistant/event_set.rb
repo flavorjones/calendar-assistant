@@ -42,9 +42,9 @@ class CalendarAssistant
     end
 
     class Hash < EventSet::Base
-      def ensure_dates_as_keys dates
-        dates.each do |date|
-          events[date] = [] unless events.has_key?(date)
+      def ensure_keys keys
+        keys.each do |key|
+          events[key] = [] unless events.has_key?(key)
         end
       end
 
