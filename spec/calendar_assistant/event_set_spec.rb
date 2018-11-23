@@ -85,9 +85,21 @@ describe CalendarAssistant::EventSet do
   end
 
   describe "#ensure_dates_as_keys" do
-    it "needs a test for Array arg"
-    it "needs a test for Range arg"
-    it "needs a test for exception when called on an EventSet storing an Array"
+    subject { described_class.new event_repository, Hash.new }
+
+    context "Array arg" do
+      it "creates a key for each array value" do
+        subject.ensure_dates_as_keys ["a", "b", "c"]
+        expect(subject.events.keys).to eq(["a", "b", "c"])
+      end
+    end
+
+    context "Range arg" do
+      it "creates a key for each value of the Range" do
+        subject.ensure_dates_as_keys "a" .. "c"
+        expect(subject.events.keys).to eq(["a", "b", "c"])
+      end
+    end
   end
 
   describe "#available_blocks" do
