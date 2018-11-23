@@ -84,20 +84,22 @@ describe CalendarAssistant::EventSet do
     end
   end
 
-  describe "#ensure_dates_as_keys" do
+  describe "#ensure_keys" do
     subject { described_class.new event_repository, Hash.new }
 
     context "Array arg" do
       it "creates a key for each array value" do
-        subject.ensure_dates_as_keys ["a", "b", "c"]
+        subject.ensure_keys ["a", "b", "c"]
         expect(subject.events.keys).to eq(["a", "b", "c"])
+        expect(subject.events["a"]).to eq([])
       end
     end
 
     context "Range arg" do
       it "creates a key for each value of the Range" do
-        subject.ensure_dates_as_keys "a" .. "c"
+        subject.ensure_keys "a" .. "c"
         expect(subject.events.keys).to eq(["a", "b", "c"])
+        expect(subject.events["a"]).to eq([])
       end
     end
   end
