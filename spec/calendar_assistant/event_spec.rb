@@ -719,4 +719,8 @@ describe CalendarAssistant::Event do
       end
     end
   end
+
+  describe "#contains?" do
+    it "needs tests, covering times in different time zones"
+  end
 end
