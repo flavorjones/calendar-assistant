@@ -2,6 +2,20 @@ describe CalendarAssistant::EventSet do
   let(:event_repository) { instance_double "EventRepository" }
   let(:events) { [instance_double("Event1"), instance_double("Event2")] }
 
+  def expect_to_match_expected_events found_avails
+    expect(found_avails.keys).to eq(expected_events.keys)
+    found_avails.keys.each do |date|
+      expect(found_avails[date].length).to(
+        eq(expected_events[date].length),
+        sprintf("for date %s: expected %d got %d", date, expected_events[date].length, found_avails[date].length)
+      )
+      found_avails[date].each_with_index do |found_avail, j|
+        expect(found_avail.start).to eq(expected_events[date][j].start)
+        expect(found_avail.end).to eq(expected_events[date][j].end)
+      end
+    end
+  end
+
   describe "#initialize" do
     it "sets `event_repository` and `events` attributes" do
       event_set = described_class.new event_repository, events
@@ -125,17 +139,6 @@ describe CalendarAssistant::EventSet do
       config.in_env { example.run }
     end
 
-    def expect_to_match_expected_avails found_avails
-      expect(found_avails.keys).to eq(expected_avails.keys)
-      found_avails.keys.each do |date|
-        expect(found_avails[date].length).to eq(expected_avails[date].length)
-        found_avails[date].each_with_index do |found_avail, j|
-          expect(found_avail.start).to eq(expected_avails[date][j].start)
-          expect(found_avail.end).to eq(expected_avails[date][j].end)
-        end
-      end
-    end
-
     context "single date" do
       let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
       let(:date) { time_range.first.to_date }
@@ -155,7 +158,7 @@ describe CalendarAssistant::EventSet do
           }
         end
 
-        let(:expected_avails) do
+        let(:expected_events) do
           {
             date => [
               event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
@@ -167,7 +170,7 @@ describe CalendarAssistant::EventSet do
         end
 
         it "returns an EventSet storing a hash of available blocks on each date" do
-          expect_to_match_expected_avails subject.available_blocks.events
+          expect_to_match_expected_events subject.available_blocks.events
         end
 
         it "is in the calendar's time zone" do
@@ -175,7 +178,7 @@ describe CalendarAssistant::EventSet do
         end
 
         context "a meeting length is passed" do
-          let(:expected_avails) do
+          let(:expected_events) do
             {
               date => [
                 event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
@@ -184,7 +187,7 @@ describe CalendarAssistant::EventSet do
           end
 
           it "ignores available blocks shorter than that length" do
-            expect_to_match_expected_avails subject.available_blocks(length: 31.minutes).events
+            expect_to_match_expected_events subject.available_blocks(length: 31.minutes).events
           end
         end
       end
@@ -204,7 +207,7 @@ describe CalendarAssistant::EventSet do
           }
         end
 
-        let(:expected_avails) do
+        let(:expected_events) do
           {
             date => [
               event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
@@ -216,7 +219,7 @@ describe CalendarAssistant::EventSet do
         end
 
         it "finds chunks of free time at the end of the day" do
-          expect_to_match_expected_avails subject.available_blocks.events
+          expect_to_match_expected_events subject.available_blocks.events
         end
       end
 
@@ -225,7 +228,7 @@ describe CalendarAssistant::EventSet do
         let(:date) { time_range.first.to_date }
 
         let(:events) { { date => [] } }
-        let(:expected_avails) do
+        let(:expected_events) do
           {
             date => [
               event_factory("available", Chronic.parse("9am")..Chronic.parse("6pm")),
@@ -234,7 +237,7 @@ describe CalendarAssistant::EventSet do
         end
 
         it "returns a big fat available block" do
-          expect_to_match_expected_avails subject.available_blocks.events
+          expect_to_match_expected_events subject.available_blocks.events
         end
       end
 
@@ -249,7 +252,7 @@ describe CalendarAssistant::EventSet do
           }
         end
 
-        let(:expected_avails) do
+        let(:expected_events) do
           {
             date => [
               event_factory("available", Chronic.parse("9am")..Chronic.parse("11am")),
@@ -259,7 +262,7 @@ describe CalendarAssistant::EventSet do
         end
 
         it "returns correct available blocks" do
-          expect_to_match_expected_avails subject.available_blocks.events
+          expect_to_match_expected_events subject.available_blocks.events
         end
       end
 
@@ -274,7 +277,7 @@ describe CalendarAssistant::EventSet do
           }
         end
 
-        let(:expected_avails) do
+        let(:expected_events) do
           {
             date => [
               event_factory("available", Chronic.parse("9am")..Chronic.parse("11am")),
@@ -284,7 +287,7 @@ describe CalendarAssistant::EventSet do
         end
 
         it "returns correct available blocks" do
-          expect_to_match_expected_avails subject.available_blocks.events
+          expect_to_match_expected_events subject.available_blocks.events
         end
       end
     end
@@ -298,7 +301,7 @@ describe CalendarAssistant::EventSet do
           Date.parse("2018-01-03") => [],
         }
       end
-      let(:expected_avails) do
+      let(:expected_events) do
         {
           Date.parse("2018-01-01") => [event_factory("available", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 6pm"))],
           Date.parse("2018-01-02") => [event_factory("available", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 6pm"))],
@@ -307,7 +310,7 @@ describe CalendarAssistant::EventSet do
       end
 
       it "returns a hash of all dates" do
-        expect_to_match_expected_avails subject.available_blocks.events
+        expect_to_match_expected_events subject.available_blocks.events
       end
     end
 
@@ -339,7 +342,7 @@ describe CalendarAssistant::EventSet do
             }
           end
 
-          let(:expected_avails) do
+          let(:expected_events) do
             {
               date => [
                 event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
@@ -351,7 +354,7 @@ describe CalendarAssistant::EventSet do
           end
 
           it "finds blocks of time 30m or longer" do
-            expect_to_match_expected_avails subject.available_blocks.events
+            expect_to_match_expected_events subject.available_blocks.events
           end
         end
 
@@ -363,7 +366,7 @@ describe CalendarAssistant::EventSet do
             }
           end
 
-          let(:expected_avails) do
+          let(:expected_events) do
             {
               date => [
                 event_factory("available", Chronic.parse("8am")..Chronic.parse("8:30am")),
@@ -377,7 +380,7 @@ describe CalendarAssistant::EventSet do
           end
 
           it "finds blocks of time 30m or longer" do
-            expect_to_match_expected_avails subject.available_blocks.events
+            expect_to_match_expected_events subject.available_blocks.events
           end
         end
       end
@@ -392,7 +395,7 @@ describe CalendarAssistant::EventSet do
           allow(other_calendar).to receive(:time_zone).and_return(other_time_zone)
         end
 
-        let(:expected_avails) do
+        let(:expected_events) do
           in_tz do
             {
               date => [
@@ -407,12 +410,197 @@ describe CalendarAssistant::EventSet do
         end
 
         it "returns the free blocks in that time zone" do
-          expect_to_match_expected_avails subject.available_blocks.events
+          expect_to_match_expected_events subject.available_blocks.events
         end
 
         it "is in the other calendar's time zone" do
           expect(subject.available_blocks.events[date].first.start_time.time_zone.name).to eq(other_time_zone)
         end
+      end
+    end
+  end
+
+  describe "#intersection" do
+    let(:service) { instance_double("CalendarService") }
+    let(:calendar_id1) { "foo@example.com" }
+    let(:calendar_id2) { "bar@example.com" }
+    let(:calendar1) { instance_double("Calendar") }
+    let(:calendar2) { instance_double("Calendar") }
+    let(:time_zone1) { ENV['TZ'] }
+    let(:time_zone2) { time_zone1 }
+
+    let(:er1) { CalendarAssistant::EventRepository.new service, calendar_id1 }
+    let(:set1) { CalendarAssistant::EventSet.new er1, events1 }
+    let(:er2) { CalendarAssistant::EventRepository.new service, calendar_id2 }
+    let(:set2) { CalendarAssistant::EventSet.new er2, events2 }
+
+    before do
+      allow(service).to receive(:get_calendar).with(calendar_id1).and_return(calendar1)
+      allow(service).to receive(:get_calendar).with(calendar_id2).and_return(calendar2)
+      allow(calendar1).to receive(:time_zone).and_return(time_zone1)
+      allow(calendar2).to receive(:time_zone).and_return(time_zone2)
+    end
+
+    context "non-intersecting sets" do
+      let(:events1)  do
+        {
+          Date.parse("2018-01-01") => [
+            event_factory("1:0", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 11am")),
+          ]
+        }
+      end
+
+      let(:events2)  do
+        {
+          Date.parse("2018-01-01") => [
+            event_factory("1:0", Chronic.parse("2018-01-01 11am")..Chronic.parse("2018-01-01 2pm")),
+          ]
+        }
+      end
+
+      let(:expected_events)  do
+        {
+          Date.parse("2018-01-01") => []
+        }
+      end
+
+      it { expect_to_match_expected_events set1.intersection(set2).events }
+      it { expect_to_match_expected_events set2.intersection(set1).events }
+    end
+
+    context "overlapping events" do
+      let(:events1)  do
+        {
+          Date.parse("2018-01-01") => [
+            event_factory("1:0", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 11am")),
+          ],
+          Date.parse("2018-01-02") => [
+            event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 12pm")),
+          ],
+        }
+      end
+
+      let(:events2)  do
+        {
+          Date.parse("2018-01-01") => [
+            event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 12pm")),
+          ],
+          Date.parse("2018-01-02") => [
+            event_factory("1:1", Chronic.parse("2018-01-02 9:15am")..Chronic.parse("2018-01-02 9:45am")),
+            event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
+            event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
+            event_factory("1:1", Chronic.parse("2018-01-02 12:15pm")..Chronic.parse("2018-01-02 1pm")),
+          ],
+        }
+      end
+
+      let(:expected_events)  do
+        {
+          Date.parse("2018-01-01") => [
+            event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 11am")),
+          ],
+          Date.parse("2018-01-02") => [
+            event_factory("1:1", Chronic.parse("2018-01-02 9:15am")..Chronic.parse("2018-01-02 9:45am")),
+            event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
+            event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
+          ],
+        }
+      end
+
+      it { expect_to_match_expected_events set1.intersection(set2).events }
+      it { expect_to_match_expected_events set2.intersection(set1).events }
+    end
+
+    context "both sets have the same time zone" do
+      let(:events1) do
+        {
+          Date.parse("2018-01-01") => [
+            event_factory("1:0", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 11am")),
+            event_factory("1:1", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 3pm")),
+            event_factory("1:2", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 7pm")),
+          ]
+        }
+      end
+      let(:events2) do
+        {
+          Date.parse("2018-01-01") => [
+            event_factory("2:0", Chronic.parse("2018-01-01 8am")..Chronic.parse("2018-01-01 10am")),
+            event_factory("2:1", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 2pm")),
+            event_factory("2:2", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 6pm")),
+          ]
+        }
+      end
+
+      let(:expected_events) do
+        {
+          Date.parse("2018-01-01") => [
+            event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
+            event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
+            event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),
+          ]
+        }
+      end
+
+      it { expect_to_match_expected_events set1.intersection(set2).events }
+      it { expect_to_match_expected_events set2.intersection(set1).events }
+    end
+
+    context "sets in different time zones" do
+      let(:time_zone1) { "America/New_York" }
+      let(:time_zone2) { "America/Los_Angeles" }
+
+      let(:events1) do
+        in_tz time_zone1 do
+          {
+            Date.parse("2018-01-01") => [
+              event_factory("1:0", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 2pm")),
+              event_factory("1:1", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 6pm")),
+              event_factory("1:2", Chronic.parse("2018-01-01 8pm")..Chronic.parse("2018-01-01 10pm")),
+            ]
+          }
+        end
+      end
+      let(:events2) do
+        in_tz time_zone2 do
+          {
+            Date.parse("2018-01-01") => [
+              event_factory("2:0", Chronic.parse("2018-01-01 8am")..Chronic.parse("2018-01-01 10am")),
+              event_factory("2:1", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 2pm")),
+              event_factory("2:2", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 6pm")),
+            ]
+          }
+        end
+      end
+
+      context "from the POV of calendar 1" do
+        let(:expected_events) do
+          in_tz time_zone1 do
+            {
+              Date.parse("2018-01-01") => [
+                event_factory("", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 1pm")),
+                event_factory("", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 5pm")),
+                event_factory("", Chronic.parse("2018-01-01 8pm")..Chronic.parse("2018-01-01 9pm")),
+              ]
+            }
+          end
+        end
+        it { expect_to_match_expected_events set1.intersection(set2).events }
+      end
+
+      context "from the POV of calendar 2" do
+        let(:expected_events) do
+          in_tz time_zone2 do
+            {
+              Date.parse("2018-01-01") => [
+                event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
+                event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
+                event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),
+              ]
+            }
+          end
+        end
+
+        it { expect_to_match_expected_events set2.intersection(set1).events }
       end
     end
   end

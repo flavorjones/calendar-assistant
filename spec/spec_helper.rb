@@ -58,13 +58,13 @@ module RspecDescribeHelpers
 end
 
 module RspecExampleHelpers
-  def in_tz &block
+  def in_tz tz=time_zone, &block
     # this is totally not thread-safe
     orig_time_tz = Time.zone
     orig_env_tz = ENV['TZ']
     begin
-      Time.zone = time_zone
-      ENV['TZ'] = time_zone
+      Time.zone = tz
+      ENV['TZ'] = tz
       yield
     ensure
       Time.zone = orig_time_tz
