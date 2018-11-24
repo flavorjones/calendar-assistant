@@ -477,6 +477,14 @@ describe CalendarAssistant::EventSet do
           Date.parse("2018-01-02") => [
             event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 12pm")),
           ],
+          Date.parse("2018-01-03") => [
+            event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
+          ],
+          Date.parse("2018-01-04") => [
+            event_factory("2:0", Chronic.parse("2018-01-01 8am")..Chronic.parse("2018-01-01 10am")),
+            event_factory("2:1", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 2pm")),
+            event_factory("2:2", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 6pm")),
+          ]
         }
       end
 
@@ -491,6 +499,14 @@ describe CalendarAssistant::EventSet do
             event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
             event_factory("1:1", Chronic.parse("2018-01-02 12:15pm")..Chronic.parse("2018-01-02 1pm")),
           ],
+          Date.parse("2018-01-03") => [
+            event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
+          ],
+          Date.parse("2018-01-04") => [
+            event_factory("1:0", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 11am")),
+            event_factory("1:1", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 3pm")),
+            event_factory("1:2", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 7pm")),
+          ]
         }
       end
 
@@ -504,36 +520,10 @@ describe CalendarAssistant::EventSet do
             event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
             event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
           ],
-        }
-      end
-
-      it { expect_to_match_expected_events set1.intersection(set2).events }
-      it { expect_to_match_expected_events set2.intersection(set1).events }
-    end
-
-    context "both sets have the same time zone" do
-      let(:events1) do
-        {
-          Date.parse("2018-01-01") => [
-            event_factory("1:0", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 11am")),
-            event_factory("1:1", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 3pm")),
-            event_factory("1:2", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 7pm")),
-          ]
-        }
-      end
-      let(:events2) do
-        {
-          Date.parse("2018-01-01") => [
-            event_factory("2:0", Chronic.parse("2018-01-01 8am")..Chronic.parse("2018-01-01 10am")),
-            event_factory("2:1", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 2pm")),
-            event_factory("2:2", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 6pm")),
-          ]
-        }
-      end
-
-      let(:expected_events) do
-        {
-          Date.parse("2018-01-01") => [
+          Date.parse("2018-01-03") => [
+            event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
+          ],
+          Date.parse("2018-01-04") => [
             event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
             event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
             event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),

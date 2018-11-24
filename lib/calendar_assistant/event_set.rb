@@ -94,9 +94,9 @@ class CalendarAssistant
           events[date].each do |event_a|
             other.events[date].each do |event_b|
               if event_a.contains?(event_b.start_time) ||
-                 event_a.contains?(event_b.end_time) ||
+                 event_a.contains?(event_b.end_time-1) ||
                  event_b.contains?(event_a.start_time) ||
-                 event_b.contains?(event_a.end_time)
+                 event_b.contains?(event_a.end_time-1)
                 start_time = [event_a.start_time, event_b.start_time].max
                 end_time   = [event_a.end_time,   event_b.end_time  ].min
                 set.events[date] << event_repository.available_block(start_time, end_time)
