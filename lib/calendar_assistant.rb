@@ -82,11 +82,10 @@ class CalendarAssistant
 
   def availability time_range
     calendar_ids = config.attendees
-    if calendar_ids.length > 1
-      raise "CalendarAssistant#availability only supports one person (for now)"
+    ers = calendar_ids.map do |calendar_id|
+      event_repository calendar_id
     end
-    er = event_repository(calendar_ids.first)
-    Scheduler.new(self, er).available_blocks(time_range)
+    Scheduler.new(self, ers).available_blocks(time_range)
   end
 
   def find_location_events time_range

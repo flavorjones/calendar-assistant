@@ -279,7 +279,7 @@ describe CalendarAssistant do
 
         it "creates a scheduler and invokes #available_blocks" do
           expect(CalendarAssistant::Scheduler).to receive(:new).
-                                                    with(ca, event_repository).
+                                                    with(ca, [event_repository]).
                                                     and_return(scheduler)
           expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
@@ -305,7 +305,37 @@ describe CalendarAssistant do
 
         it "creates a scheduler and invokes #available_blocks" do
           expect(CalendarAssistant::Scheduler).to receive(:new).
-                                                    with(ca, event_repository).
+                                                    with(ca, [event_repository]).
+                                                    and_return(scheduler)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
+
+          response = ca.availability(time_range)
+
+          expect(response).to eq(event_set)
+        end
+      end
+
+      context "looking at multiple calendars" do
+        let(:event_repository2) { instance_double("EventRepository") }
+
+        let(:config_options) do
+          {
+            CalendarAssistant::Config::Keys::Options::ATTENDEES => "someone@example.com,somebodyelse@example.com",
+          }
+        end
+
+        before do
+          expect(event_repository_factory).to receive(:new_event_repository).
+                                                with(anything, "someone@example.com").
+                                                and_return(event_repository)
+          expect(event_repository_factory).to receive(:new_event_repository).
+                                                with(anything, "somebodyelse@example.com").
+                                                and_return(event_repository2)
+        end
+
+        it "creates a scheduler with multiple EventRepositories" do
+          expect(CalendarAssistant::Scheduler).to receive(:new).
+                                                    with(ca, [event_repository, event_repository2]).
                                                     and_return(scheduler)
           expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
