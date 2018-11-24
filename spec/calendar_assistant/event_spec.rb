@@ -721,6 +721,79 @@ describe CalendarAssistant::Event do
   end
 
   describe "#contains?" do
-    it "needs tests, covering times in different time zones"
+    freeze_time
+    let(:time_zone) { ENV['TZ'] }
+
+    context "all-day event" do
+      let(:decorated_object) do
+        in_tz do
+          decorated_class.new start: GCal::EventDateTime.new(date: Date.today),
+                              end: GCal::EventDateTime.new(date: Date.today + 1)
+        end
+      end
+
+      context "time in same time zone" do
+        it { expect(subject.contains?(Chronic.parse("#{(Date.today-1).to_s} 11:59pm"))).to be_falsey }
+        it { expect(subject.contains?(Chronic.parse("#{Date.today.to_s} 12am"))).to be_truthy }
+        it { expect(subject.contains?(Chronic.parse("#{Date.today.to_s} 10am"))).to be_truthy }
+        it { expect(subject.contains?(Chronic.parse("#{Date.today.to_s} 11:59pm"))).to be_truthy }
+        it { expect(subject.contains?(Chronic.parse("#{(Date.today+1).to_s} 12am"))).to be_falsey }
+      end
+
+      context "time in a different time zone" do
+        let(:time_zone) { "America/Los_Angeles" }
+
+        it do
+          date = in_tz("America/New_York") { Chronic.parse("#{Date.today} 2:59am") }
+          in_tz { expect(subject.contains?(date)).to be_falsey }
+        end
+
+        it do
+          date = in_tz("America/New_York") { Chronic.parse("#{Date.today} 3am") }
+          in_tz { expect(subject.contains?(date)).to be_truthy }
+        end
+      end
+    end
+
+    context "intraday event" do
+      let(:decorated_object) do
+        in_tz do
+          decorated_class.new start: GCal::EventDateTime.new(date_time: Chronic.parse("9am")),
+                              end: GCal::EventDateTime.new(date_time: Chronic.parse("9pm"))
+        end
+      end
+
+      context "time in same time zone" do
+        it { expect(subject.contains?(Chronic.parse("8:59am"))).to be_falsey }
+        it { expect(subject.contains?(Chronic.parse("9am"))).to be_truthy }
+        it { expect(subject.contains?(Chronic.parse("10am"))).to be_truthy }
+        it { expect(subject.contains?(Chronic.parse("8:59pm"))).to be_truthy }
+        it { expect(subject.contains?(Chronic.parse("9pm"))).to be_falsey }
+      end
+
+      context "time in a different time zone" do
+        let(:time_zone) { "America/Los_Angeles" }
+
+        it do
+          date = in_tz("America/New_York") { Chronic.parse("11:59am") }
+          expect(subject.contains?(date)).to be_falsey
+        end
+
+        it do
+          date = in_tz("America/New_York") { Chronic.parse("12pm") }
+          expect(subject.contains?(date)).to be_truthy
+        end
+
+        it do
+          date = in_tz("America/New_York") { Chronic.parse("11:59pm") }
+          expect(subject.contains?(date)).to be_truthy
+        end
+
+        it do
+          date = in_tz("America/New_York") { Chronic.parse("#{Date.today+1} 12am") }
+          expect(subject.contains?(date)).to be_falsey
+        end
+      end
+    end
   end
 end
