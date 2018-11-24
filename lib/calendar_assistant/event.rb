@@ -196,5 +196,9 @@ class CalendarAssistant
                     nil
                   end
     end
+
+    def contains? time
+      start_time < time && time < end_time
+    end
   end
 end
