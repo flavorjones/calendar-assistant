@@ -1,6 +1,6 @@
 class CalendarAssistant
   class Scheduler
-    attr_reader :ca, :er
+    attr_reader :ca, :ers
 
     #
     #  class methods
@@ -21,20 +21,25 @@ class CalendarAssistant
     #
     #  instance methods
     #
-    def initialize calendar_assistant, event_repository
+    def initialize calendar_assistant, event_repositories
       @ca = calendar_assistant
-      @er = event_repository
+      @ers = Array(event_repositories)
     end
 
     def available_blocks time_range
-      event_set = er.find time_range # array
-      event_set = Scheduler.select_busy_events event_set # hash
-      event_set.ensure_keys time_range.first.to_date .. time_range.last.to_date
+      avail = nil
+      ers.each do |er|
+        event_set = er.find time_range # array
+        event_set = Scheduler.select_busy_events event_set # hash
+        event_set.ensure_keys time_range.first.to_date .. time_range.last.to_date
 
-      length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
-      ca.in_env do
-        event_set.available_blocks length: length
+        length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
+        ca.in_env do
+          set_avail = event_set.available_blocks(length: length)
+          avail = avail ? avail.intersection(set_avail) : set_avail
+        end
       end
+      avail
     end
   end
 end
