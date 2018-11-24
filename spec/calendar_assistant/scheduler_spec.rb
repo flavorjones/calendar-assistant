@@ -75,6 +75,7 @@ describe CalendarAssistant::Scheduler do
     let(:time_zone) { ENV['TZ'] }
     let(:calendar_id) { "foo@example.com" }
     let(:er) { CalendarAssistant::EventRepository.new service, calendar_id }
+    let(:er2) { CalendarAssistant::EventRepository.new service, calendar_id }
     let(:event_set) { CalendarAssistant::EventSet.new er, events }
     let(:events) { [] }
     let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "2018-01-01..2018-01-03" }
@@ -91,7 +92,13 @@ describe CalendarAssistant::Scheduler do
       it "accepts a CalendarAssistant and EventRepository as arguments" do
         scheduler = described_class.new ca, er
         expect(scheduler.ca).to eq(ca)
-        expect(scheduler.er).to eq(er)
+        expect(scheduler.ers).to eq([er])
+      end
+
+      it "accepts a CalendarAssistant and EventRepositories as arguments" do
+        scheduler = described_class.new ca, [er, er2]
+        expect(scheduler.ca).to eq(ca)
+        expect(scheduler.ers).to eq([er, er2])
       end
     end
 
@@ -146,6 +153,28 @@ describe CalendarAssistant::Scheduler do
             expect(event_set_hash).to receive(:available_blocks).with(length: 60 * 60)
             scheduler.available_blocks(time_range)
           end
+        end
+      end
+
+      context "multiple calendars" do
+        let(:scheduler) { described_class.new ca, [er, er2] }
+
+        before do
+          allow(er2).to receive(:find).and_return(event_set)
+        end
+
+        it "calls EventRepository#find with the right time range" do
+          expect(er).to receive(:find).with(time_range).and_return(event_set)
+          expect(er2).to receive(:find).with(time_range).and_return(event_set)
+          scheduler.available_blocks(time_range)
+        end
+
+        it "returns the intersection of the available blocks" do
+          available_blocks = instance_double "EventSet(available)"
+          allow(event_set_hash).to receive(:available_blocks).and_return(available_blocks)
+          expect(available_blocks).to receive(:intersection).with(available_blocks).and_return(available_blocks)
+          result = scheduler.available_blocks(time_range)
+          expect(result).to eq(available_blocks)
         end
       end
     end
