@@ -378,8 +378,9 @@ describe CalendarAssistant::CLIHelpers do
     describe "#print_available_blocks" do
       let(:calendar) { instance_double("Calendar") }
       let(:calendar_id) { "calendar-id" }
-      let(:calendar_time_zone) { "calendar/time/zone" }
-      let(:config) { CalendarAssistant::Config.new }
+      let(:calendar_time_zone) { ENV['TZ'] }
+      let(:config) { CalendarAssistant::Config.new options: config_options }
+      let(:config_options) { Hash.new }
       let(:er) { instance_double("EventRepository") }
       let(:event_set) { EventSet.new er, events }
 
@@ -390,18 +391,21 @@ describe CalendarAssistant::CLIHelpers do
         allow(subject).to receive(:event_description)
         allow(stdout).to receive(:puts)
         allow(er).to receive(:calendar).and_return(calendar)
+        allow(ca).to receive(:event_repository).and_return(er)
       end
 
       context "passed an Array of Events" do
         let(:events) do
-          [
-            CalendarAssistant::Event.new(GCal::Event.new(summary: "do a thing",
-                            start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")),
-                            end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00")))),
-            CalendarAssistant::Event.new(GCal::Event.new(summary: "do another thing",
-                            start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 12:30:00")),
-                            end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 14:00:00")))),
-          ]
+          in_tz calendar_time_zone do
+            [
+              CalendarAssistant::Event.new(GCal::Event.new(summary: "do a thing",
+                                                           start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 09:00:00")),
+                                                           end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:00:00")))),
+              CalendarAssistant::Event.new(GCal::Event.new(summary: "do another thing",
+                                                           start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 12:30:00")),
+                                                           end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 14:00:00")))),
+            ]
+          end
         end
 
         it "prints a title containing the calendar id" do
@@ -428,8 +432,8 @@ describe CalendarAssistant::CLIHelpers do
         end
 
         it "prints out the time range of each free block" do
-          expect(stdout).to receive(:puts).with(/ •  9:00am - 10:00am \+12 .*(1h)/)
-          expect(stdout).to receive(:puts).with(/ • 12:30pm -  2:00pm \+12 .*(1h 30m)/)
+          expect(stdout).to receive(:puts).with(/ •  9:00am - 10:00am \+12.*(1h)/)
+          expect(stdout).to receive(:puts).with(/ • 12:30pm -  2:00pm \+12.*(1h 30m)/)
           subject.print_available_blocks ca, event_set
         end
 
@@ -447,6 +451,42 @@ describe CalendarAssistant::CLIHelpers do
 
           it "prints a standard message" do
             expect(stdout).to receive(:puts).with(/No available blocks in this time range/)
+            subject.print_available_blocks ca, event_set
+          end
+        end
+
+        context "run with multiple attendees" do
+          let(:config_options) { {CalendarAssistant::Config::Keys::Options::ATTENDEES => "foo@example.com,bar@example.com"} }
+          let(:calendar_time_zone) { "America/Los_Angeles" }
+          let(:calendar2) { instance_double("Calendar(2)") }
+          let(:er2) { instance_double("EventRepository(2)") }
+
+          before do
+            allow(calendar).to receive(:id).and_return("foo@example.com")
+            allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
+            allow(er).to receive(:calendar).and_return(calendar)
+            allow(ca).to receive(:event_repository).with("foo@example.com").and_return(er)
+
+            allow(calendar2).to receive(:id).and_return("bar@example.com")
+            allow(calendar2).to receive(:time_zone).and_return("America/New_York")
+            allow(er2).to receive(:calendar).and_return(calendar2)
+            allow(ca).to receive(:event_repository).with("bar@example.com").and_return(er2)
+          end
+
+          it "prints a title containing the calendar id" do
+            expect(stdout).to receive(:puts).with(/foo@example.com, bar@example.com/)
+            subject.print_available_blocks ca, event_set
+          end
+
+          it "prints a subtitle stating intraday range and time zone for each time zone" do
+            expect(stdout).to receive(:puts).with(/\b#{ca.config.setting(CalendarAssistant::Config::Keys::Settings::START_OF_DAY)}\b.*\b#{ca.config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)}\b.*\b#{calendar.time_zone}\b/)
+            expect(stdout).to receive(:puts).with(/\b#{ca.config.setting(CalendarAssistant::Config::Keys::Settings::START_OF_DAY)}\b.*\b#{ca.config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)}\b.*\b#{calendar2.time_zone}\b/)
+            subject.print_available_blocks ca, event_set
+          end
+
+          it "prints out the time range of each free block for each time zone" do
+            expect(stdout).to receive(:puts).with(/ •  9:00am - 10:00am PDT.*12:00pm -  1:00pm EDT.*(1h)/)
+            expect(stdout).to receive(:puts).with(/ • 12:30pm -  2:00pm PDT.* 3:30pm -  5:00pm EDT.*(1h 30m)/)
             subject.print_available_blocks ca, event_set
           end
         end
