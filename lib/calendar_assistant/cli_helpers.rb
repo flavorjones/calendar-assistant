@@ -117,7 +117,7 @@ class CalendarAssistant
         display_events.each do |event|
           printed_now = print_now! ca, event, printed_now
           puts event_description(event)
-          pp event if ca.config.options[:debug]
+          pp event if ca.config.debug?
         end
 
         puts
@@ -156,7 +156,7 @@ class CalendarAssistant
                        event.start.date_time.strftime("%l:%M%P"),
                        event.end.date_time.strftime("%l:%M%P %Z"),
                        Rainbow("(" + event.duration + ")").italic))
-          pp event if ca.config.options[:debug]
+          pp event if ca.config.debug?
         end
       end
 
