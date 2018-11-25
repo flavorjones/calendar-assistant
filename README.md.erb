@@ -90,7 +90,7 @@ Install the gem: `gem install calendar-assistant`.
 </pre>
 
 
-### Join a video call attached to a meeting
+### `join`: Join a video call attached to a meeting
 
 <pre>
 <%= run "help join" %>
@@ -116,7 +116,7 @@ https://pivotal.zoom.us/j/ABC90210 <i># ... and does not open the URL</i>
 </pre>
 
 
-### Find your availability for meetings
+### `availability`: Find people's availability for meetings
 
 This is useful for emailing people your availability. It only considers `accepted` meetings when determining busy/free.
 
@@ -146,7 +146,7 @@ You can also set start and end times for the search, which is useful when lookin
 </pre>
 
 
-### Tell people where you are at in the world
+### `location-set`: Tell people where you are in the world
 
 Declare your location as an all-day non-busy event:
 
@@ -181,7 +181,7 @@ Some examples:
 </pre>
 
 
-### Look up where you're going to be
+### `location`: View where you're going to be in the world
 
 <pre>
 <%= run "help location" %>
@@ -194,7 +194,7 @@ For example:
 </pre>
 
 
-### Display your calendar events
+### `show`: View your calendar events
 
 <pre>
 <%= run "help show" %>
@@ -213,7 +213,7 @@ Display _only_ the commitments I have to other people using the `-c` option:
 </pre>
 
 
-### View your configuration parameters
+### `config`: View your configuration parameters
 
 Calendar Assistant has intelligent defaults, which can be overridden in the TOML file `~/.calendar-assistant`, and further overridden via command-line parameters. Sometimes it's nice to be able to see what defaults Calendar Assistant is using:
 
