@@ -32,7 +32,7 @@ class CalendarAssistant
     class_option :help,
                  type: :boolean,
                  aliases: ["-h", "-?"]
-    class_option :debug,
+    class_option CalendarAssistant::Config::Keys::Options::DEBUG,
                  type: :boolean,
                  desc: "how dare you suggest there are bugs"
 

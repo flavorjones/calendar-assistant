@@ -341,25 +341,6 @@ describe CalendarAssistant::Config do
     end
   end
 
-  describe "#persist!" do
-    with_temp_config_file do
-      <<~EOC
-        [settings]
-        start-of-day = "8am"
-        end-of-day = "5:30pm"
-      EOC
-    end
-
-    subject { described_class.new(config_file_path: temp_config_file.path) }
-
-    it "persists the config to file" do
-      subject.set "settings.size", "medium"
-      subject.persist!
-      new_config = described_class.new(config_file_path: temp_config_file.path)
-      expect(new_config.get("settings.size")).to eq("medium")
-    end
-  end
-
   describe "#tokens" do
     context "there are tokens configured in user_config" do
       let(:config) do
@@ -402,6 +383,58 @@ describe CalendarAssistant::Config do
 
       expect(subject.token_store).to respond_to(:store)
       expect(subject.token_store.method(:store).arity).to eq(2)
+    end
+  end
+
+  describe "#persist!" do
+    with_temp_config_file do
+      <<~EOC
+        [settings]
+        start-of-day = "8am"
+        end-of-day = "5:30pm"
+      EOC
+    end
+
+    subject { described_class.new(config_file_path: temp_config_file.path) }
+
+    it "persists the config to file" do
+      subject.set "settings.size", "medium"
+      subject.persist!
+      new_config = described_class.new(config_file_path: temp_config_file.path)
+      expect(new_config.get("settings.size")).to eq("medium")
+    end
+  end
+
+  describe "#attendees" do
+    subject { described_class.new options: config_options }
+
+    context "by default" do
+      let(:config_options) { Hash.new }
+      it { expect(subject.attendees).to eq([CalendarAssistant::Config::DEFAULT_CALENDAR_ID]) }
+    end
+
+    context "passed a single attendee" do
+      let(:config_options) { {CalendarAssistant::Config::Keys::Options::ATTENDEES => "foo@example.com"} }
+      it { expect(subject.attendees).to eq(["foo@example.com"]) }
+    end
+
+    context "passed multiple attendees" do
+      let(:config_options) { {CalendarAssistant::Config::Keys::Options::ATTENDEES => "foo@example.com,bar@example.com"} }
+      it { expect(subject.attendees).to eq(["foo@example.com", "bar@example.com"]) }
+    end
+  end
+
+  describe "#debug?" do
+    subject { described_class.new options: config_options }
+
+    context "by default" do
+      let(:config_options) { Hash.new }
+      it { expect(subject.debug?).to be_falsey }
+    end
+
+    context "when set" do
+      let(:config_options) { {CalendarAssistant::Config::Keys::Options::DEBUG => true} }
+      it { expect(subject.debug?).to be_truthy }
     end
   end
 end

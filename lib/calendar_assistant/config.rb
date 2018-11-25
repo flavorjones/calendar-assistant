@@ -34,6 +34,7 @@ class CalendarAssistant
         JOIN = "join"               # bool
         ATTENDEES = "attendees"     # array of calendar ids (comma-delimited)
         LOCAL_STORE = "local-store" # filename
+        DEBUG = "debug"             # bool
       end
     end
 
@@ -172,6 +173,10 @@ class CalendarAssistant
         a = a.split(",")
       end
       a
+    end
+
+    def debug?
+      setting(Keys::Options::DEBUG)
     end
 
     private
