@@ -95,7 +95,7 @@ class CalendarAssistant
           puts Rainbow("#{er.calendar.id} (all times in #{er.calendar.time_zone})\n").italic
         end
 
-        if event_set.events.is_a?(Hash)
+        if event_set.is_a?(EventSet::Hash)
           event_set.events.each do |key, value|
             puts Rainbow(key.to_s.capitalize + ":").bold.italic
             print_events ca, event_set.new(value), omit_title: true
@@ -135,7 +135,7 @@ class CalendarAssistant
                               )).italic
         end
 
-        if event_set.events.is_a?(Hash)
+        if event_set.is_a?(EventSet::Hash)
           event_set.events.each do |key, value|
             puts(sprintf(Rainbow("Availability on %s:\n").bold,
                          key.strftime("%A, %B %-d")))
