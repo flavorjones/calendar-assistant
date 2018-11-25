@@ -4,8 +4,9 @@ require "faker"
 EMAIL_REGEX = /[a-z]+@[a-z]+\.[a-z]+/
 
 def obfuscate line
-  return line.gsub(EMAIL_REGEX, "me@example.com") if line =~ EMAIL_REGEX
-  if line =~ /🗺/
+  if line =~ EMAIL_REGEX
+    line.gsub(EMAIL_REGEX) { |match| Faker::Internet.email }
+  elsif line =~ /🗺/
     line.gsub(/\|.*?</, "| 🗺 #{Faker::Hobbit.location} <")
   else
     line.gsub(/\|.*?</, "| #{Faker::Company.bs.capitalize} <")
@@ -132,6 +133,13 @@ For example: show me my available time over a chunk of time:
 
 <pre>
 <%= run "avail 2018-11-05..2018-11-07" %>
+</pre>
+
+
+You can also find times when multiple people are available:
+
+<pre>
+<%= run "avail 2018-11-19 -a mdalessio@pivotal.io,mkocher@pivotal.io" %>
 </pre>
 
 

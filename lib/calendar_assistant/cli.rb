@@ -22,7 +22,7 @@ class CalendarAssistant
     def self.has_attendees
       option CalendarAssistant::Config::Keys::Options::ATTENDEES,
              type: :string,
-             banner: "ATTENDEE1[,ATTENDEE2[,ATTENDEE3]]",
+             banner: "ATTENDEE1[,ATTENDEE2[,...]]",
              desc: "[default 'me'] people (email IDs) to whom this command will be applied",
              aliases: ["-a"]
     end
