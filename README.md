@@ -23,12 +23,12 @@ A command-line tool to help you manage your Google Calendar.
   * [Set up a Google Cloud Project with API access](#set-up-a-google-cloud-project-with-api-access)
   * [Authorize access to your Google Calendar](#authorize-access-to-your-google-calendar)
 - [Commands](#commands)
-  * [Join a video call attached to a meeting](#join-a-video-call-attached-to-a-meeting)
-  * [Find your availability for meetings](#find-your-availability-for-meetings)
-  * [Tell people where you are at in the world](#tell-people-where-you-are-at-in-the-world)
-  * [Look up where you're going to be](#look-up-where-youre-going-to-be)
-  * [Display your calendar events](#display-your-calendar-events)
-  * [View your configuration parameters](#view-your-configuration-parameters)
+  * [`join`: Join a video call attached to a meeting](#join-join-a-video-call-attached-to-a-meeting)
+  * [`availability`: Find people's availability for meetings](#availability-find-peoples-availability-for-meetings)
+  * [`location-set`: Tell people where you are in the world](#location-set-tell-people-where-you-are-in-the-world)
+  * [`location`: View where you're going to be in the world](#location-view-where-youre-going-to-be-in-the-world)
+  * [`show`: View your calendar events](#show-view-your-calendar-events)
+  * [`config`: View your configuration parameters](#config-view-your-configuration-parameters)
 - [References](#references)
 - [License](#license)
 
@@ -100,7 +100,7 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
-  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your
+  Create and authorize a named profile (e.g., "work", "home", "marylnkeeling@schumm.name") to access your
   calendar.
 
   When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and
@@ -132,7 +132,7 @@ Options:
 </pre>
 
 
-### Join a video call attached to a meeting
+### `join`: Join a video call attached to a meeting
 
 <pre>
 Usage:
@@ -169,7 +169,7 @@ https://pivotal.zoom.us/j/ABC90210 <i># ... and does not open the URL</i>
 </pre>
 
 
-### Find your availability for meetings
+### `availability`: Find people's availability for meetings
 
 This is useful for emailing people your availability. It only considers `accepted` meetings when determining busy/free.
 
@@ -178,14 +178,14 @@ Usage:
   calendar-assistant availability [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -l, [--meeting-length=LENGTH]     # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
-  -s, [--start-of-day=TIME]         # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
-  -e, [--end-of-day=TIME]           # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
-  -r, [--required=ATTENDEE]         # Find availability for someone else
-  -p, [--profile=PROFILE]           # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]  # Load events from a local file instead of Google Calendar
-  -h, -?, [--help], [--no-help]     
-          [--debug], [--no-debug]   # how dare you suggest there are bugs
+  -l, [--meeting-length=LENGTH]                  # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
+  -s, [--start-of-day=TIME]                      # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
+  -e, [--end-of-day=TIME]                        # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
+  -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
+  -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
+  -h, -?, [--help], [--no-help]                  
+          [--debug], [--no-debug]                # how dare you suggest there are bugs
 
 Show your availability for a date or range of dates (default 'today')
 </pre>
@@ -195,23 +195,39 @@ For example: show me my available time over a chunk of time:
 
 <pre>
 <b>$</b> calendar-assistant avail 2018-11-05..2018-11-07
-<i>me@example.com
-- looking for blocks at least 30 mins long
-- between 9am and 6pm in America/New_York
-</i>
+<i>vanna@gulgowski.net</i>
+<i>- looking for blocks at least 30 mins long</i>
+<i>- between 9am and 6pm in America/New_York</i>
+
 <b>Availability on Monday, November 5:
 </b>
- •  2:35pm -  4:45pm EST <i>(2h 10m)</i>
- •  5:00pm -  5:30pm EST <i>(30m)</i>
+ •  2:35pm -  4:45pm EST<i> (2h 10m)</i>
+ •  5:00pm -  5:30pm EST<i> (30m)</i>
 
 <b>Availability on Tuesday, November 6:
 </b>
- •  1:00pm -  3:00pm EST <i>(2h)</i>
- •  5:30pm -  6:00pm EST <i>(30m)</i>
+ •  1:00pm -  3:00pm EST<i> (2h)</i>
+ •  5:30pm -  6:00pm EST<i> (30m)</i>
 
 <b>Availability on Wednesday, November 7:
 </b>
- • 11:30am - 12:30pm EST <i>(1h)</i>
+ • 11:30am - 12:30pm EST<i> (1h)</i>
+</pre>
+
+
+You can also find times when multiple people are available:
+
+<pre>
+<b>$</b> calendar-assistant avail 2018-11-19 -a fae@kuvalisbayer.com,abekohler@kilback.org
+<i>aleta@legros.io, lincolnklein@padbergwelch.biz</i>
+<i>- looking for blocks at least 30 mins long</i>
+<i>- between 9am and 6pm in America/New_York</i>
+<i>- between 9am and 6pm in America/Los_Angeles</i>
+
+<b>Availability on Monday, November 19:
+</b>
+ • 12:00pm - 12:30pm EST /  9:00am -  9:30am PST<i> (30m)</i>
+ •  1:30pm -  2:30pm EST / 10:30am - 11:30am PST<i> (1h)</i>
 </pre>
 
 
@@ -219,28 +235,28 @@ You can also set start and end times for the search, which is useful when lookin
 
 <pre>
 <b>$</b> calendar-assistant avail 2018-11-05..2018-11-07 -s 12pm -e 7pm
-<i>me@example.com
-- looking for blocks at least 30 mins long
-- between 12pm and 7pm in America/New_York
-</i>
+<i>arronblick@braun.com</i>
+<i>- looking for blocks at least 30 mins long</i>
+<i>- between 12pm and 7pm in America/New_York</i>
+
 <b>Availability on Monday, November 5:
 </b>
- •  2:35pm -  4:45pm EST <i>(2h 10m)</i>
- •  5:00pm -  5:30pm EST <i>(30m)</i>
- •  6:30pm -  7:00pm EST <i>(30m)</i>
+ •  2:35pm -  4:45pm EST<i> (2h 10m)</i>
+ •  5:00pm -  5:30pm EST<i> (30m)</i>
+ •  6:30pm -  7:00pm EST<i> (30m)</i>
 
 <b>Availability on Tuesday, November 6:
 </b>
- •  1:00pm -  3:00pm EST <i>(2h)</i>
- •  5:30pm -  7:00pm EST <i>(1h 30m)</i>
+ •  1:00pm -  3:00pm EST<i> (2h)</i>
+ •  5:30pm -  7:00pm EST<i> (1h 30m)</i>
 
 <b>Availability on Wednesday, November 7:
 </b>
- • 12:00pm - 12:30pm EST <i>(30m)</i>
+ • 12:00pm - 12:30pm EST<i> (30m)</i>
 </pre>
 
 
-### Tell people where you are at in the world
+### `location-set`: Tell people where you are in the world
 
 Declare your location as an all-day non-busy event:
 
@@ -284,7 +300,7 @@ Some examples:
 </pre>
 
 
-### Look up where you're going to be
+### `location`: View where you're going to be in the world
 
 <pre>
 Usage:
@@ -303,26 +319,26 @@ For example:
 
 <pre>
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
-<i>me@example.com (all times in America/New_York)
+<i>kerry@cremin.biz (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-27  <b> | 🗺 Dorwinion </b><i> (not-busy, self)</i>
-2018-09-28               <b> | 🗺 Withered Heath </b><i> (not-busy, self)</i>
+2018-09-24 - 2018-09-27  <b> | 🗺 Erebor </b><i> (not-busy, self)</i>
+2018-09-28               <b> | 🗺 River Running </b><i> (not-busy, self)</i>
 </pre>
 
 
-### Display your calendar events
+### `show`: View your calendar events
 
 <pre>
 Usage:
   calendar-assistant show [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -c, [--commitments], [--no-commitments]  # only show events that you've accepted with another person
-  -r, [--required=ATTENDEE]                # Show events from someone else's calendar
-  -p, [--profile=PROFILE]                  # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]         # Load events from a local file instead of Google Calendar
-  -h, -?, [--help], [--no-help]            
-          [--debug], [--no-debug]          # how dare you suggest there are bugs
+  -c, [--commitments], [--no-commitments]        # only show events that you've accepted with another person
+  -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
+  -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
+  -h, -?, [--help], [--no-help]                  
+          [--debug], [--no-debug]                # how dare you suggest there are bugs
 
 Show your events for a date or range of dates (default 'today')
 </pre>
@@ -331,53 +347,53 @@ For example: display all events scheduled for tomorrow:
 
 <pre>
 <b>$</b> calendar-assistant show --profile=work 2018-10-01
-<i>me@example.com (all times in America/New_York)
+<i>roderickreinger@leannoncrooks.net (all times in America/New_York)
 </i>
-2018-10-01               <b> | 🗺 Country Round </b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | Enable turn-key channels </strike>
-<strike>2018-10-01  07:30 - 08:30 | Engineer sticky bandwidth </strike>
-<strike>2018-10-01  07:30 - 08:30 | Engage plug-and-play schemas </strike>
-2018-10-01  08:00 - 09:00<b> | Incubate synergistic infrastructures </b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | Facilitate cutting-edge networks </b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Deliver vertical communities </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Visualize ubiquitous relationships </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Harness customized action-items </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Synergize holistic functionalities </strike>
-2018-10-01  12:00 - 12:30<b> | Exploit viral platforms </b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Implement user-centric partnerships </strike>
-<strike>2018-10-01  12:30 - 13:30 | Strategize turn-key applications </strike>
-2018-10-01  12:30 - 13:30<b> | Revolutionize web-enabled e-services </b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Generate cutting-edge methodologies </b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Deliver bricks-and-clicks infomediaries </strike>
-2018-10-01  15:00 - 15:30<b> | Empower b2b users </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Facilitate magnetic relationships </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Envisioneer clicks-and-mortar paradigms </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Drive real-time schemas </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Enable wireless synergies </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Maximize web-enabled infomediaries </strike>
-<strike>2018-10-01  18:30 - 19:00 | Brand innovative paradigms </strike>
-<strike>2018-10-01  19:00 - 19:30 | Reintermediate compelling interfaces </strike>
+2018-10-01               <b> | 🗺 Mount Gundabad </b><i> (not-busy, self)</i>
+<strike>2018-10-01  03:30 - 05:00 | Target open-source paradigms </strike>
+<strike>2018-10-01  07:30 - 08:30 | Productize world-class e-services </strike>
+<strike>2018-10-01  07:30 - 08:30 | Productize front-end communities </strike>
+2018-10-01  08:00 - 09:00<b> | Productize extensible mindshare </b><i> (recurring, self)</i>
+2018-10-01  09:00 - 10:30<b> | Revolutionize intuitive experiences </b><i> (self)</i>
+2018-10-01  10:30 - 10:55<b> | Morph value-added synergies </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Engage clicks-and-mortar models </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Seize strategic partnerships </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Maximize cutting-edge synergies </strike>
+2018-10-01  12:00 - 12:30<b> | Synthesize intuitive e-markets </b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Morph collaborative systems </strike>
+<strike>2018-10-01  12:30 - 13:30 | Expedite virtual solutions </strike>
+2018-10-01  12:30 - 13:30<b> | Aggregate efficient markets </b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Incentivize best-of-breed initiatives </b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Embrace turn-key solutions </strike>
+2018-10-01  15:00 - 15:30<b> | Maximize virtual action-items </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Syndicate integrated paradigms </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Matrix cross-media e-tailers </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Scale next-generation users </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Empower vertical content </b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Enhance seamless channels </strike>
+<strike>2018-10-01  18:30 - 19:00 | Drive e-business interfaces </strike>
+<strike>2018-10-01  19:00 - 19:30 | Facilitate cross-platform eyeballs </strike>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
 
 <pre>
 <b>$</b> calendar-assistant show -c 2018-10-01
-<i>me@example.com (all times in America/New_York)
+<i>neal@gislasonaufderhar.net (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Scale frictionless synergies </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Repurpose compelling mindshare </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Integrate web-enabled portals </b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Harness rich experiences </b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Enable integrated channels </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Envisioneer value-added web-readiness </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Brand back-end e-services </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Revolutionize b2c interfaces </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Strategize granular users </b><i> (1:1, recurring)</i>
+2018-10-01  10:30 - 10:55<b> | Streamline viral e-services </b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Revolutionize cross-media infrastructures </b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Embrace plug-and-play partnerships </b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Revolutionize efficient solutions </b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Synergize sexy solutions </b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Redefine robust paradigms </b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Evolve transparent functionalities </b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Evolve sexy convergence </b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Generate clicks-and-mortar infomediaries </b><i> (1:1, recurring)</i>
 </pre>
 
 
-### View your configuration parameters
+### `config`: View your configuration parameters
 
 Calendar Assistant has intelligent defaults, which can be overridden in the TOML file `~/.calendar-assistant`, and further overridden via command-line parameters. Sometimes it's nice to be able to see what defaults Calendar Assistant is using:
 
