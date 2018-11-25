@@ -3,8 +3,9 @@
 LOCAL_STORE_OPTION = " --local-store=fixtures.yml"
 
 def obfuscate line
- obs = line.gsub(LOCAL_STORE_OPTION, "")
- obs.gsub(/#{ENV["HOME"]}/, "/home/user")
+  line.
+    gsub(LOCAL_STORE_OPTION, "").
+    gsub(/#{ENV["HOME"]}/, "/home/user")
 end
 
 def run args
@@ -128,6 +129,13 @@ For example: show me my available time over a chunk of time:
 
 <pre>
 <%= run "avail 2018-11-05..2018-11-07" %>
+</pre>
+
+
+You can also find times when multiple people are available:
+
+<pre>
+<%= run "avail 2018-11-05..2018-11-07 -a me@example.com,other@example.com" %>
 </pre>
 
 
