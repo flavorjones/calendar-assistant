@@ -57,7 +57,6 @@ describe CalendarAssistant do
     with_temp_file("filestore", :temp_filestore_file)
 
     let(:ca) { CalendarAssistant.new config }
-    let(:local_service) { CalendarAssistant::LocalService.new(file: filename) }
     let(:filename) { temp_filestore_file.path }
     let(:config) { CalendarAssistant::Config.new options: config_options }
     let(:config_options) { {CalendarAssistant::Config::Keys::Options::LOCAL_STORE => filename} }
