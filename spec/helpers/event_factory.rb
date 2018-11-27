@@ -1,6 +1,4 @@
-require 'faker'
 require 'securerandom'
-
 class EventFactory
   def initialize(service:, calendar_id: "primary")
     @event_repository = CalendarAssistant::EventRepository.new(service, calendar_id)
