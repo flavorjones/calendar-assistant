@@ -1,6 +1,6 @@
 require 'securerandom'
 class EventFactory
-  def initialize(service:, calendar_id: "primary")
+  def initialize(service: CalendarAssistant::LocalService.new, calendar_id: "primary")
     @event_repository = CalendarAssistant::EventRepository.new(service, calendar_id)
   end
 
