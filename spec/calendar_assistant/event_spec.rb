@@ -396,6 +396,18 @@ describe CalendarAssistant::Event do
     end
   end
 
+  describe "#recurring?" do
+    context "when the meeting has a recurring id" do
+      let(:decorated_object) { decorated_class.new(recurring_event_id: "12345") }
+      it { is_expected.to be_recurring }
+    end
+
+    context "when the meeting does not have a recurring id" do
+      let(:decorated_object) { decorated_class.new() }
+      it { is_expected.not_to be_recurring }
+    end
+  end
+
   describe "#private?" do
     context "visibility is private" do
       let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PRIVATE) }

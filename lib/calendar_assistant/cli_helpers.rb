@@ -170,7 +170,7 @@ class CalendarAssistant
 
         attributes = []
         unless event.private?
-          attributes << "recurring" if event.recurring_event_id
+          attributes << "recurring" if event.recurring?
           attributes << "not-busy" unless event.busy?
           attributes << "self" if event.human_attendees.nil? && event.visibility != "private"
           attributes << "1:1" if event.one_on_one?

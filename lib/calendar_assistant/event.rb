@@ -113,6 +113,10 @@ class CalendarAssistant
       private? || public?
     end
 
+    def recurring?
+      !!recurring_event_id
+    end
+
     def start_time
       if all_day?
         start_date.beginning_of_day
