@@ -172,7 +172,7 @@ class CalendarAssistant
         unless event.private?
           attributes << "recurring" if event.recurring?
           attributes << "not-busy" unless event.busy?
-          attributes << "self" if event.self?
+          attributes << "self" if event.self? && !event.private?
           attributes << "1:1" if event.one_on_one?
           attributes << "awaiting" if event.awaiting?
         end
