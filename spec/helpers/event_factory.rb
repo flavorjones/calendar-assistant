@@ -4,10 +4,11 @@ class EventFactory
     @event_repository = CalendarAssistant::EventRepository.new(service, calendar_id)
   end
 
-  def for(date = Time.now)
+  def for(date: Time.now, **default_attributes)
     now = date.is_a?(String) ? Chronic.parse(date) : date
     Array.wrap(yield).map do |event_attributes|
-      attrs = event_attributes.dup
+      attrs = call_values(default_attributes).merge(event_attributes)
+
       attrs[:start] = date_parse(attrs[:start], now)
       attrs[:end] = date_parse(attrs[:end], now)
       attrs[:id] = SecureRandom.uuid unless attrs.has_key?(:id)
@@ -31,6 +32,13 @@ class EventFactory
   end
 
   private
+
+  def call_values(attributes)
+    attributes
+      .each_with_object({}) do |(key, value), hsh|
+      hsh[key] = value.respond_to?(:call) ? value.call : value
+    end
+  end
 
   def date_parse(attr, now)
     Chronic.parse(attr, now: now)
