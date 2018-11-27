@@ -12,7 +12,6 @@ class EventFactory
       attrs = event_attributes.dup
       attrs[:start] = date_parse(attrs[:start], now)
       attrs[:end] = date_parse(attrs[:end], now)
-      attrs[:summary] = Faker::Company.bs.capitalize unless attrs.has_key?(:summary)
       attrs[:id] = SecureRandom.uuid unless attrs.has_key?(:id)
 
       (event_attributes[:options] || []).each do |option|
