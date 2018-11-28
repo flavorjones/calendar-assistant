@@ -9,15 +9,14 @@ require './lib/calendar_assistant'
 require './spec/helpers/event_factory'
 
 service = CalendarAssistant::LocalService.new(file: "fixtures.yml", load_events: false)
-Time.zone = "America/New_York" 
-calendar = Google::Apis::CalendarV3::Calendar.new(id: "me@example.com", "time_zone": Time.zone.name)
 
-service.insert_calendar(calendar)
+CalendarAssistant.in_tz "America/New_York"  do
+  calendar = Google::Apis::CalendarV3::Calendar.new(id: "me@example.com", "time_zone": Time.zone.name)
+  service.insert_calendar(calendar)
+  event_factory = EventFactory.new(service: service, calendar_id: calendar.id)
 
-event_factory = EventFactory.new(service: service, calendar_id: calendar.id)
-
-event_factory.for(date: "2018-10-01", summary: -> { Faker::Company.bs.capitalize }) do
-  [
+  event_factory.for(date: "2018-10-01", summary: -> { Faker::Company.bs.capitalize }) do
+    [
       {start: "03:30 AM", end: "05:00 AM", options: :declined},
       {start: "07:30 AM", end: "08:30 AM", options: :declined},
       {start: "07:30 AM", end: "08:30 AM", options: :declined},
@@ -41,41 +40,74 @@ event_factory.for(date: "2018-10-01", summary: -> { Faker::Company.bs.capitalize
       {start: "18:00", end: "20:30", options: :declined},
       {start: "18:30", end: "19:00", options: :declined},
       {start: "19:00", end: "19:30", options: :declined},
-  ]
-end
+    ]
+  end
 
-# Events for demonstrating availability
+  # Events for demonstrating availability
 
-event_factory.for(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
-  [
+  event_factory.for(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
+    [
       {start: "10:00", end: "13:30"},
       {start: "14:30", end: "15:30"},
       {start: "17:00", end: "17:30"}
-  ]
-end
+    ]
+  end
 
-event_factory.for(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
-  [
+  event_factory.for(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
+    [
       {start: "09:00", end: "12:00"},
       {start: "16:30", end: "16:50"},
-  ]
-end
+    ]
+  end
 
-event_factory.for(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
-  [
+  event_factory.for(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
+    [
       {start: "08:30", end: "09:30"},
       {start: "14:30", end: "15:30"},
       {start: "15:00", end: "17:30"},
       {start: "10:00", end: "10:15"},
-  ]
-end
+    ]
+  end
 
-# Location Events
+  # Location Events
 
-event_factory.for(summary: -> { Faker::Hobbit.location }) do
-  [
+  event_factory.for(summary: -> { Faker::Hobbit.location }) do
+    [
       {start: "2018-10-01", options: :location_event},
       {start: "2018-09-24", end: "2018-09-28", options: :location_event},
       {start: "2018-09-28", options: :location_event},
-  ]
+    ]
+  end
+end
+
+CalendarAssistant.in_tz "America/Los_Angeles"  do
+  calendar = Google::Apis::CalendarV3::Calendar.new(id: "other@example.com", "time_zone": Time.zone.name)
+  service.insert_calendar(calendar)
+  event_factory = EventFactory.new(service: service, calendar_id: calendar.id)
+
+  # Events for demonstrating availability
+
+  event_factory.for(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
+    [
+      {start: "10:00", end: "13:30"},
+      {start: "14:30", end: "15:30"},
+      {start: "17:00", end: "17:30"}
+    ]
+  end
+
+  event_factory.for(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
+    [
+      {start: "09:00", end: "12:00"},
+      {start: "16:30", end: "16:50"},
+    ]
+  end
+
+  event_factory.for(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
+    [
+      {start: "08:30", end: "09:30"},
+      {start: "14:30", end: "15:30"},
+      {start: "15:00", end: "17:30"},
+      {start: "10:00", end: "10:15"},
+    ]
+  end
 end
