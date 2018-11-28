@@ -91,7 +91,7 @@ describe CalendarAssistant::CLI do
       it "calls find_events by default for today" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("today").and_return(time_range)
         expect(ca).to receive(:find_events).
-                        with(time_range, calendar_id: nil).
+                        with(time_range).
                         and_return(event_set)
         expect(out).to receive(:print_events).with(ca, event_set)
 
@@ -101,7 +101,7 @@ describe CalendarAssistant::CLI do
       it "calls find_events with the range returned from parse_datespec" do
         expect(CalendarAssistant::CLIHelpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
         expect(ca).to receive(:find_events).
-                        with(time_range, calendar_id: nil).
+                        with(time_range).
                         and_return(event_set)
         expect(out).to receive(:print_events).with(ca, event_set)
 
@@ -122,19 +122,18 @@ describe CalendarAssistant::CLI do
       context "given another person's calendar id" do
         let(:config_options) do
           {
-            CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => "somebody@example.com"
+            CalendarAssistant::Config::Keys::Options::ATTENDEES => "somebody@example.com"
           }
         end
 
         it "shows another person's day" do
-        expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: config_options).
-                                               and_return(config)
-          expect(ca).to receive(:find_events).
-                          with(anything, calendar_id: "somebody@example.com")
+          expect(CalendarAssistant::Config).to receive(:new).
+                                                 with(options: config_options).
+                                                 and_return(config)
+          allow(ca).to receive(:find_events)
           allow(out).to receive(:print_events)
 
-          CalendarAssistant::CLI.start [command, "-r", "somebody@example.com"]
+          CalendarAssistant::CLI.start [command, "-a", "somebody@example.com"]
         end
       end
     end
@@ -367,13 +366,13 @@ describe CalendarAssistant::CLI do
 
       it "looks up another person's availability" do
         expect(CalendarAssistant::Config).to receive(:new).
-                                               with(options: {CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => "somebody@example.com"}).
+                                               with(options: {CalendarAssistant::Config::Keys::Options::ATTENDEES => "somebody@example.com"}).
                                                and_return(config)
 
         allow(ca).to receive(:availability)
         allow(out).to receive(:print_available_blocks)
 
-        CalendarAssistant::CLI.start [command, "-r", "somebody@example.com"]
+        CalendarAssistant::CLI.start [command, "-a", "somebody@example.com"]
       end
     end
   end

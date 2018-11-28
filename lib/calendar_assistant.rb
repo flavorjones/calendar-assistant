@@ -9,15 +9,11 @@ require "set"
 require "calendar_assistant/version"
 
 class CalendarAssistant
-  GCal = Google::Apis::CalendarV3
-
   class BaseException < RuntimeError ; end
 
   EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
   EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
-
-  DEFAULT_CALENDAR_ID = "primary"
 
   attr_reader :service, :calendar, :config
 
@@ -47,7 +43,7 @@ class CalendarAssistant
   end
 
 
-  def initialize config=CalendarAssistant::Config.new,
+  def initialize config=Config.new,
                  event_repository_factory: EventRepositoryFactory
     @config = config
 
@@ -56,22 +52,17 @@ class CalendarAssistant
     else
       @service = Authorizer.new(config.profile_name, config.token_store).service
     end
-    @calendar = service.get_calendar DEFAULT_CALENDAR_ID
+    @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
     @event_repositories = {} # calendar_id → event_repository
   end
 
   def in_env &block
     # this is totally not thread-safe
-    orig_b_o_d = BusinessTime::Config.beginning_of_workday
-    orig_e_o_d = BusinessTime::Config.end_of_workday
-    begin
-      BusinessTime::Config.beginning_of_workday = config.setting(Config::Keys::Settings::START_OF_DAY)
-      BusinessTime::Config.end_of_workday = config.setting(Config::Keys::Settings::END_OF_DAY)
-      in_tz { yield }
-    ensure
-      BusinessTime::Config.beginning_of_workday = orig_b_o_d
-      BusinessTime::Config.end_of_workday = orig_e_o_d
+    config.in_env do
+      in_tz do
+        yield
+      end
     end
   end
 
@@ -81,15 +72,20 @@ class CalendarAssistant
     end
   end
 
-  def find_events time_range, calendar_id: nil
-    calendar_id ||= DEFAULT_CALENDAR_ID
-    event_repository(calendar_id).find(time_range)
+  def find_events time_range
+    calendar_ids = config.attendees
+    if calendar_ids.length > 1
+      raise "CalendarAssistant#find_events only supports one person (for now)"
+    end
+    event_repository(calendar_ids.first).find(time_range)
   end
 
   def availability time_range
-    calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE] || DEFAULT_CALENDAR_ID
-    er = event_repository(calendar_id)
-    Scheduler.new(self, er).available_blocks(time_range)
+    calendar_ids = config.attendees
+    ers = calendar_ids.map do |calendar_id|
+      event_repository calendar_id
+    end
+    Scheduler.new(self, ers).available_blocks(time_range)
   end
 
   def find_location_events time_range
@@ -129,7 +125,7 @@ class CalendarAssistant
     existing_event_set.new response
   end
 
-  def event_repository calendar_id=DEFAULT_CALENDAR_ID
+  def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
     @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id)
   end
 

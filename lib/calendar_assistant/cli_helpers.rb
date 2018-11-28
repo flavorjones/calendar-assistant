@@ -20,9 +20,11 @@ class CalendarAssistant
     end
 
     def self.now
-      CalendarAssistant::Event.new(GCal::Event.new start: GCal::EventDateTime.new(date_time: Time.now),
-                      end: GCal::EventDateTime.new(date_time: Time.now),
-                      summary: Rainbow("          now          ").inverse.faint)
+      CalendarAssistant::Event.new(
+        Google::Apis::CalendarV3::Event.new(start: Google::Apis::CalendarV3::EventDateTime.new(date_time: Time.now),
+                                            end: Google::Apis::CalendarV3::EventDateTime.new(date_time: Time.now),
+                                            summary: Rainbow("          now          ").inverse.faint)
+      )
     end
 
     def self.find_av_uri ca, timespec
@@ -93,7 +95,7 @@ class CalendarAssistant
           puts Rainbow("#{er.calendar.id} (all times in #{er.calendar.time_zone})\n").italic
         end
 
-        if event_set.events.is_a?(Hash)
+        if event_set.is_a?(EventSet::Hash)
           event_set.events.each do |key, value|
             puts Rainbow(key.to_s.capitalize + ":").bold.italic
             print_events ca, event_set.new(value), omit_title: true
@@ -115,25 +117,33 @@ class CalendarAssistant
         display_events.each do |event|
           printed_now = print_now! ca, event, printed_now
           puts event_description(event)
-          pp event if ca.config.options[:debug]
+          pp event if ca.config.debug?
         end
 
         puts
       end
 
       def print_available_blocks ca, event_set, omit_title: false
+        ers = ca.config.attendees.map { |calendar_id| ca.event_repository calendar_id }
+        time_zones = ers.map { |er| er.calendar.time_zone }.uniq
+
         unless omit_title
-          er = event_set.event_repository
-          puts Rainbow(sprintf("%s\n- looking for blocks at least %s long\n- between %s and %s in %s\n",
-                               er.calendar.id,
-                               ChronicDuration.output(ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))),
-                               ca.config.setting(Config::Keys::Settings::START_OF_DAY),
-                               ca.config.setting(Config::Keys::Settings::END_OF_DAY),
-                               er.calendar.time_zone,
-                              )).italic
+          puts Rainbow(ers.map { |er| er.calendar.id }.join(", ")).italic
+          puts Rainbow(sprintf("- looking for blocks at least %s long",
+                               ChronicDuration.output(
+                                 ChronicDuration.parse(
+                                   ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))))).italic
+          time_zones.each do |time_zone|
+            puts Rainbow(sprintf("- between %s and %s in %s",
+                                 ca.config.setting(Config::Keys::Settings::START_OF_DAY),
+                                 ca.config.setting(Config::Keys::Settings::END_OF_DAY),
+                                 time_zone,
+                                )).italic
+          end
+          puts
         end
 
-        if event_set.events.is_a?(Hash)
+        if event_set.is_a?(EventSet::Hash)
           event_set.events.each do |key, value|
             puts(sprintf(Rainbow("Availability on %s:\n").bold,
                          key.strftime("%A, %B %-d")))
@@ -150,11 +160,14 @@ class CalendarAssistant
         end
 
         events.each do |event|
-          puts(sprintf(" • %s - %s %s",
-                       event.start.date_time.strftime("%l:%M%P"),
-                       event.end.date_time.strftime("%l:%M%P %Z"),
-                       Rainbow("(" + event.duration + ")").italic))
-          pp event if ca.config.options[:debug]
+          line = []
+          time_zones.each do |time_zone|
+            line << sprintf("%s - %s",
+                            event.start_time.in_time_zone(time_zone).strftime("%l:%M%P"),
+                            event.end_time.in_time_zone(time_zone).strftime("%l:%M%P %Z"))
+          end
+          puts " • " + line.join(" / ") + Rainbow(" (" + event.duration + ")").italic
+          pp event if ca.config.debug?
         end
       end
 

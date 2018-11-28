@@ -8,6 +8,7 @@ class CalendarAssistant
     class AccessingHashAsScalar < CalendarAssistant::BaseException ; end
 
     CONFIG_FILE_PATH = File.join ENV["HOME"], ".calendar-assistant"
+    DEFAULT_CALENDAR_ID = "primary"
 
     module Keys
       TOKENS = "tokens"
@@ -18,27 +19,30 @@ class CalendarAssistant
       #  and which can be overridden by entries in the user config file
       #
       module Settings
-        PROFILE = "profile"
-        MEETING_LENGTH = "meeting-length"
-        START_OF_DAY = "start-of-day"
-        END_OF_DAY = "end-of-day"
+        PROFILE = "profile"               # string
+        MEETING_LENGTH = "meeting-length" # ChronicDuration
+        START_OF_DAY = "start-of-day"     # BusinessTime
+        END_OF_DAY = "end-of-day"         # BusinessTime
       end
 
       #
-      #  Options are ephemeral command-line flag settings
+      #  Options are ephemeral command-line flag settings which _may_
+      #  have a value in DEFAULT_SETTINGS below
       #
       module Options
-        COMMITMENTS = "commitments"
-        JOIN = "join"
-        REQUIRED_ATTENDEE = "required"
-        LOCAL_STORE = "local-store"
+        COMMITMENTS = "commitments" # bool
+        JOIN = "join"               # bool
+        ATTENDEES = "attendees"     # array of calendar ids (comma-delimited)
+        LOCAL_STORE = "local-store" # filename
+        DEBUG = "debug"             # bool
       end
     end
 
     DEFAULT_SETTINGS = {
-      Keys::Settings::MEETING_LENGTH => "30m", # ChronicDuration
-      Keys::Settings::START_OF_DAY => "9am", # BusinessTime
-      Keys::Settings::END_OF_DAY => "6pm", # BusinessTime
+      Keys::Settings::MEETING_LENGTH => "30m",            # ChronicDuration
+      Keys::Settings::START_OF_DAY => "9am",              # BusinessTime
+      Keys::Settings::END_OF_DAY => "6pm",                # BusinessTime
+      Keys::Options::ATTENDEES => [DEFAULT_CALENDAR_ID],  # array of calendar ids
     }
 
     attr_reader :config_file_path, :user_config, :options, :defaults
@@ -70,6 +74,20 @@ class CalendarAssistant
 
       @defaults = defaults
       @options = options
+    end
+
+    def in_env &block
+      # this is totally not thread-safe
+      orig_b_o_d = BusinessTime::Config.beginning_of_workday
+      orig_e_o_d = BusinessTime::Config.end_of_workday
+      begin
+        BusinessTime::Config.beginning_of_workday = setting(Config::Keys::Settings::START_OF_DAY)
+        BusinessTime::Config.end_of_workday = setting(Config::Keys::Settings::END_OF_DAY)
+        yield
+      ensure
+        BusinessTime::Config.beginning_of_workday = orig_b_o_d
+        BusinessTime::Config.end_of_workday = orig_e_o_d
+      end
     end
 
     def profile_name
@@ -105,6 +123,10 @@ class CalendarAssistant
       Config.set_in_hash user_config, keypath, value
     end
 
+    #
+    #  note that, despite the name, this method returns both options
+    #  and settings
+    #
     def setting setting_name
       Config.find_in_hash(options, setting_name) ||
         Config.find_in_hash(user_config, [Keys::SETTINGS, setting_name]) ||
@@ -140,6 +162,21 @@ class CalendarAssistant
       File.open(config_file_path, "w") do |f|
         f.write content
       end
+    end
+
+    #
+    #  helper method for Keys::Options::ATTENDEES
+    #
+    def attendees
+      a = setting(Keys::Options::ATTENDEES)
+      if a.is_a?(String)
+        a = a.split(",")
+      end
+      a
+    end
+
+    def debug?
+      setting(Keys::Options::DEBUG)
     end
 
     private

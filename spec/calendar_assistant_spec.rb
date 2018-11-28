@@ -272,19 +272,19 @@ describe CalendarAssistant do
       context "looking at own calendar" do
         before do
           expect(event_repository_factory).to receive(:new_event_repository).
-                                                with(anything, CalendarAssistant::DEFAULT_CALENDAR_ID).
+                                                with(anything, CalendarAssistant::Config::DEFAULT_CALENDAR_ID).
                                                 and_return(event_repository)
         end
 
         it "creates a scheduler and invokes #available_blocks" do
           expect(CalendarAssistant::Scheduler).to receive(:new).
-                                                    with(ca, event_repository).
+                                                    with(ca, [event_repository]).
                                                     and_return(scheduler)
-          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
           response = ca.availability(time_range)
 
-          expect(response).to eq(events)
+          expect(response).to eq(event_set)
         end
       end
 
@@ -292,7 +292,7 @@ describe CalendarAssistant do
         let(:other_calendar_id) { "somebodyelse@example.com" }
         let(:config_options) do
           {
-            CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE => other_calendar_id,
+            CalendarAssistant::Config::Keys::Options::ATTENDEES => other_calendar_id,
           }
         end
 
@@ -304,45 +304,54 @@ describe CalendarAssistant do
 
         it "creates a scheduler and invokes #available_blocks" do
           expect(CalendarAssistant::Scheduler).to receive(:new).
-                                                    with(ca, event_repository).
+                                                    with(ca, [event_repository]).
                                                     and_return(scheduler)
-          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(events)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
           response = ca.availability(time_range)
 
-          expect(response).to eq(events)
+          expect(response).to eq(event_set)
+        end
+      end
+
+      context "looking at multiple calendars" do
+        let(:event_repository2) { instance_double("EventRepository") }
+
+        let(:config_options) do
+          {
+            CalendarAssistant::Config::Keys::Options::ATTENDEES => "someone@example.com,somebodyelse@example.com",
+          }
+        end
+
+        before do
+          expect(event_repository_factory).to receive(:new_event_repository).
+                                                with(anything, "someone@example.com").
+                                                and_return(event_repository)
+          expect(event_repository_factory).to receive(:new_event_repository).
+                                                with(anything, "somebodyelse@example.com").
+                                                and_return(event_repository2)
+        end
+
+        it "creates a scheduler with multiple EventRepositories" do
+          expect(CalendarAssistant::Scheduler).to receive(:new).
+                                                    with(ca, [event_repository, event_repository2]).
+                                                    and_return(scheduler)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
+
+          response = ca.availability(time_range)
+
+          expect(response).to eq(event_set)
         end
       end
     end
 
     describe "#in_env" do
-      let(:config_options) do
-        {
-          CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
-          CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
-        }
-      end
+      let(:subject) { CalendarAssistant.new config }
+      let(:config) { CalendarAssistant::Config.new }
 
-      it "sets beginning and end of workday and restores them" do
-        BusinessTime::Config.beginning_of_workday = "6am"
-        BusinessTime::Config.end_of_workday = "2pm"
-        ca.in_env do
-          expect(BusinessTime::Config.beginning_of_workday.hour).to eq(7)
-          expect(BusinessTime::Config.end_of_workday.hour).to eq(15)
-        end
-        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
-        expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
-      end
-
-      it "exceptionally restores beginning and end of workday" do
-        BusinessTime::Config.beginning_of_workday = "6am"
-        BusinessTime::Config.end_of_workday = "2pm"
-        ca.in_env do
-          raise RuntimeError
-        rescue
-        end
-        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
-        expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+      it "calls Config#in_env" do
+        expect(config).to receive(:in_env)
+        ca.in_env do ; end
       end
 
       it "calls in_tz with the calendar timezone" do

@@ -68,6 +68,38 @@ describe CalendarAssistant::Config do
     end
   end
 
+  describe "#in_env" do
+    subject { described_class.new options: config_options }
+    let(:config_options) do
+      {
+        CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "7am",
+        CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "3pm",
+      }
+    end
+
+    it "sets beginning and end of workday and restores them" do
+      BusinessTime::Config.beginning_of_workday = "6am"
+      BusinessTime::Config.end_of_workday = "2pm"
+      subject.in_env do
+        expect(BusinessTime::Config.beginning_of_workday.hour).to eq(7)
+        expect(BusinessTime::Config.end_of_workday.hour).to eq(15)
+      end
+      expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
+      expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+    end
+
+    it "exceptionally restores beginning and end of workday" do
+      BusinessTime::Config.beginning_of_workday = "6am"
+      BusinessTime::Config.end_of_workday = "2pm"
+      subject.in_env do
+        raise RuntimeError
+      rescue
+      end
+      expect(BusinessTime::Config.beginning_of_workday.hour).to eq(6)
+      expect(BusinessTime::Config.end_of_workday.hour).to eq(14)
+    end
+  end
+
   describe "#profile_name" do
     let(:options) { Hash.new }
     subject { described_class.new(options: options, config_file_path: temp_config_file.path) }
@@ -309,25 +341,6 @@ describe CalendarAssistant::Config do
     end
   end
 
-  describe "#persist!" do
-    with_temp_config_file do
-      <<~EOC
-        [settings]
-        start-of-day = "8am"
-        end-of-day = "5:30pm"
-      EOC
-    end
-
-    subject { described_class.new(config_file_path: temp_config_file.path) }
-
-    it "persists the config to file" do
-      subject.set "settings.size", "medium"
-      subject.persist!
-      new_config = described_class.new(config_file_path: temp_config_file.path)
-      expect(new_config.get("settings.size")).to eq("medium")
-    end
-  end
-
   describe "#tokens" do
     context "there are tokens configured in user_config" do
       let(:config) do
@@ -370,6 +383,58 @@ describe CalendarAssistant::Config do
 
       expect(subject.token_store).to respond_to(:store)
       expect(subject.token_store.method(:store).arity).to eq(2)
+    end
+  end
+
+  describe "#persist!" do
+    with_temp_config_file do
+      <<~EOC
+        [settings]
+        start-of-day = "8am"
+        end-of-day = "5:30pm"
+      EOC
+    end
+
+    subject { described_class.new(config_file_path: temp_config_file.path) }
+
+    it "persists the config to file" do
+      subject.set "settings.size", "medium"
+      subject.persist!
+      new_config = described_class.new(config_file_path: temp_config_file.path)
+      expect(new_config.get("settings.size")).to eq("medium")
+    end
+  end
+
+  describe "#attendees" do
+    subject { described_class.new options: config_options }
+
+    context "by default" do
+      let(:config_options) { Hash.new }
+      it { expect(subject.attendees).to eq([CalendarAssistant::Config::DEFAULT_CALENDAR_ID]) }
+    end
+
+    context "passed a single attendee" do
+      let(:config_options) { {CalendarAssistant::Config::Keys::Options::ATTENDEES => "foo@example.com"} }
+      it { expect(subject.attendees).to eq(["foo@example.com"]) }
+    end
+
+    context "passed multiple attendees" do
+      let(:config_options) { {CalendarAssistant::Config::Keys::Options::ATTENDEES => "foo@example.com,bar@example.com"} }
+      it { expect(subject.attendees).to eq(["foo@example.com", "bar@example.com"]) }
+    end
+  end
+
+  describe "#debug?" do
+    subject { described_class.new options: config_options }
+
+    context "by default" do
+      let(:config_options) { Hash.new }
+      it { expect(subject.debug?).to be_falsey }
+    end
+
+    context "when set" do
+      let(:config_options) { {CalendarAssistant::Config::Keys::Options::DEBUG => true} }
+      it { expect(subject.debug?).to be_truthy }
     end
   end
 end

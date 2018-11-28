@@ -19,12 +19,20 @@ class CalendarAssistant
              desc: "Load events from a local file instead of Google Calendar"
     end
 
+    def self.has_attendees
+      option CalendarAssistant::Config::Keys::Options::ATTENDEES,
+             type: :string,
+             banner: "ATTENDEE1[,ATTENDEE2[,...]]",
+             desc: "[default 'me'] people (email IDs) to whom this command will be applied",
+             aliases: ["-a"]
+    end
+
     default_config = CalendarAssistant::Config.new options: options # used in option descriptions
 
     class_option :help,
                  type: :boolean,
                  aliases: ["-h", "-?"]
-    class_option :debug,
+    class_option CalendarAssistant::Config::Keys::Options::DEBUG,
                  type: :boolean,
                  desc: "how dare you suggest there are bugs"
 
@@ -116,20 +124,14 @@ class CalendarAssistant
            type: :boolean,
            desc: "only show events that you've accepted with another person",
            aliases: ["-c"]
-    option CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE,
-           type: :string,
-           banner: "ATTENDEE",
-           desc: "Show events from someone else's calendar",
-           aliases: ["-r"]
     will_create_a_service
+    has_attendees
     def show datespec="today"
       return if handle_help_args
       config = CalendarAssistant::Config.new(options: options)
       ca = CalendarAssistant.new config
-      calendar_id = config.options[Config::Keys::Options::REQUIRED_ATTENDEE]
-
       ca.in_env do
-        event_set = ca.find_events CLIHelpers.parse_datespec(datespec), calendar_id: calendar_id
+        event_set = ca.find_events CLIHelpers.parse_datespec(datespec)
         out.print_events ca, event_set
       end
     end
@@ -205,11 +207,7 @@ class CalendarAssistant
            desc: sprintf("[default %s] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')",
                          default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
            aliases: ["-e"]
-    option CalendarAssistant::Config::Keys::Options::REQUIRED_ATTENDEE,
-           type: :string,
-           banner: "ATTENDEE",
-           desc: "Find availability for someone else",
-           aliases: ["-r"]
+    has_attendees
     will_create_a_service
     def availability datespec="today"
       return if handle_help_args

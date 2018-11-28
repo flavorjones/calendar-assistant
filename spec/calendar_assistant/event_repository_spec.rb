@@ -110,4 +110,8 @@ describe CalendarAssistant::EventRepository do
       event_repository.in_tz do ; end
     end
   end
+
+  describe "#available_block" do
+    it "needs a test"
+  end
 end
