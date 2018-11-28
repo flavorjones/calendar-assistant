@@ -57,8 +57,9 @@ class CalendarAssistant
     end
 
     def get_calendar(calendar_id)
-      raise Google::Apis::ClientError.new("notFound") unless @store.has_key?(calendar_id)
-      @store[calendar_id][:calendar]
+      return @store[calendar_id][:calendar] if @store.has_key?(calendar_id)
+      return @store.first[1][:calendar] if @store.length > 0
+      raise Google::Apis::ClientError.new("notFound")
     end
 
     private

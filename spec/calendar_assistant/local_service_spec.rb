@@ -29,6 +29,34 @@ describe CalendarAssistant::LocalService do
         expect { service.get_event(calendar_id, "args") }.to raise_error(Google::Apis::ClientError)
       end
     end
+
+    describe "primary calendars" do
+      context "when a calendar exists called 'primary'" do
+        it "returns primary calendar" do
+          primary = GCal::Calendar.new(id: "primary")
+          service.insert_calendar(GCal::Calendar.new(id: "secondary"))
+          service.insert_calendar(primary)
+          expect(service.get_calendar("primary")).to eq primary
+        end
+      end
+
+      context "when a calendar does not exist called primary" do
+        context "and there are no calendars" do
+          it "raises an error" do
+            expect { service.get_calendar("primary") }.to raise_error(Google::Apis::ClientError)
+          end
+        end
+
+        context "and there are some calendars" do
+          it "returns the first calendar" do
+            primary = GCal::Calendar.new(id: "flippity")
+            service.insert_calendar(primary)
+            service.insert_calendar(GCal::Calendar.new(id: "floopity"))
+            expect(service.get_calendar("primary")).to eq primary
+          end
+        end
+      end
+    end
   end
 
   describe "events" do
