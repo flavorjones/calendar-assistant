@@ -53,6 +53,7 @@ describe CalendarAssistant::LocalService do
             service.insert_calendar(primary)
             service.insert_calendar(GCal::Calendar.new(id: "floopity"))
             expect(service.get_calendar("primary")).to eq primary
+            expect { service.get_event(calendar_id, "args") }.not_to raise_error
           end
         end
       end
