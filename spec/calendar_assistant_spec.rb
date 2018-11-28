@@ -62,7 +62,7 @@ describe CalendarAssistant do
     let(:config_options) { {CalendarAssistant::Config::Keys::Options::LOCAL_STORE => filename} }
 
     before do
-      event_list_factory(file: filename, calendar_id: "primary") do
+      event_list_factory(file: filename, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID) do
         [
             {start: "10:00", end: "11:00", options: [:recurring, :self], id: "eminently beautiful"},
             {start: "10:00", end: "11:00", options: [:recurring]},

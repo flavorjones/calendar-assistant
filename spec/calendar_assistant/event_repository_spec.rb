@@ -5,7 +5,7 @@ describe CalendarAssistant::EventRepository do
   let(:service) { CalendarAssistant::LocalService.new }
 
   let(:event_repository) { described_class.new(service, calendar_id) }
-  let(:calendar_id) { "primary" }
+  let(:calendar_id) { CalendarAssistant::Config::DEFAULT_CALENDAR_ID }
   let(:calendar) { GCal::Calendar.new(id: calendar_id) }
   let(:event_array) { [nine_event, nine_thirty_event] }
   let(:event_set) { CalendarAssistant::EventSet.new event_repository, event_array }

@@ -1,6 +1,7 @@
 require 'securerandom'
 class EventFactory
-  def initialize(service: CalendarAssistant::LocalService.new, calendar_id: "primary")
+  def initialize service: CalendarAssistant::LocalService.new,
+                 calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID
     begin
       service.get_calendar(calendar_id)
     rescue
