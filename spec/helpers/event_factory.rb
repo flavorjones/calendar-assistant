@@ -18,18 +18,9 @@ class EventFactory
       Array.wrap(yield).map do |event_attributes|
         self_attendee = Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true, response_status: CalendarAssistant::Event::Response::ACCEPTED)
         attrs = call_values(default_attributes).merge(event_attributes)
+        attrs[:attendees] = [self_attendee]
 
-        attrs[:attendees] = [ self_attendee ]
-        attrs[:start] = date_parse(attrs[:start], now)
-
-        # Jiggery pokery that copies CLI Helpers logic
-
-        if(attrs[:end])
-          attrs[:end] = date_parse(attrs[:end], now)
-        elsif(attrs[:start])
-          attrs[:end] = attrs[:start].end_of_day
-          attrs[:start] = attrs[:start].beginning_of_day
-        end
+        attrs[:start], attrs[:end] = set_dates(attrs[:start], attrs[:end], now)
 
         (attrs[:options] || []).each do |option|
           case option
@@ -54,8 +45,8 @@ class EventFactory
 
         if ((attrs[:options] || []) & [:self, :one_on_one]).empty?
           attrs[:attendees] += [
-            Google::Apis::CalendarV3::EventAttendee.new(id: 3),
-            Google::Apis::CalendarV3::EventAttendee.new(id: 4)
+              Google::Apis::CalendarV3::EventAttendee.new(id: 3),
+              Google::Apis::CalendarV3::EventAttendee.new(id: 4)
           ]
         end
 
@@ -68,6 +59,17 @@ class EventFactory
 
   private
 
+  def set_dates(start_time, end_time, now)
+    # Jiggery pokery that copies CLI Helpers logic
+    parsed_start =  date_parse(start_time, now)
+
+    if (end_time && start_time)
+      return parsed_start, date_parse(end_time, now)
+    elsif (parsed_start)
+      return parsed_start.beginning_of_day, parsed_start.end_of_day
+    end
+  end
+
   def set_chronic_tz
     old_class = Chronic.time_class
     Chronic.time_class = Time.zone if Time.respond_to?(:zone) && Time.zone
@@ -78,7 +80,7 @@ class EventFactory
 
   def call_values(attributes)
     attributes
-      .each_with_object({}) do |(key, value), hsh|
+        .each_with_object({}) do |(key, value), hsh|
       hsh[key] = value.respond_to?(:call) ? value.call : value
     end
   end
