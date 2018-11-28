@@ -29,6 +29,9 @@ A command-line tool to help you manage your Google Calendar.
   * [Look up where you're going to be](#look-up-where-youre-going-to-be)
   * [Display your calendar events](#display-your-calendar-events)
   * [View your configuration parameters](#view-your-configuration-parameters)
+- [Development](#development)
+  * [Tests](#tests)
+  * [Generate README](#generate-readme)
 - [References](#references)
 - [License](#license)
 
@@ -81,11 +84,11 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
-  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar
+  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar 
   API, and saving the credentials necessary to access the API on behalf of users.
 
-  If you already have downloaded client credentials, you don't need to run this command. Instead,
-  rename the downloaded JSON file to `/home/flavorjones/.calendar-assistant.client`
+  If you already have downloaded client credentials, you don't need to run this command. Instead, 
+  rename the downloaded JSON file to `/home/user/.calendar-assistant.client`
 </pre>
 
 
@@ -100,13 +103,13 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
-  Create and authorize a named profile (e.g., "work", "home", "me@example.com") to access your
-  calendar.
+  Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access 
+  your calendar.
 
-  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and
-  generate and persist an access token.
+  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, 
+  and generate and persist an access token.
 
-  In order for this to work, you'll need to have set up your API client credentials. Run
+  In order for this to work, you'll need to have set up your API client credentials. Run 
   `calendar-assistant help setup` for instructions.
 </pre>
 
@@ -160,7 +163,7 @@ Some examples:
 https://pivotal.zoom.us/j/ABC90210 <i># ... and opens the videoconference URL</i>
 
 
-<b>$</b> calendar-assistant join work 11:30 --no-join 
+<b>$</b> calendar-assistant join work 11:30 --no-join
 <i>me@example.com</i>
 
 2018-10-01  11:30 - 12:00<b> | Facilitate customized web-readiness </b><i> (1:1, recurring)</i>
@@ -201,17 +204,20 @@ For example: show me my available time over a chunk of time:
 </i>
 <b>Availability on Monday, November 5:
 </b>
- •  2:35pm -  4:45pm EST <i>(2h 10m)</i>
- •  5:00pm -  5:30pm EST <i>(30m)</i>
+ •  9:00am - 10:00am EST <i>(1h)</i>
+ •  1:30pm -  2:30pm EST <i>(1h)</i>
+ •  3:30pm -  5:00pm EST <i>(1h 30m)</i>
+ •  5:30pm -  6:00pm EST <i>(30m)</i>
 
 <b>Availability on Tuesday, November 6:
 </b>
- •  1:00pm -  3:00pm EST <i>(2h)</i>
- •  5:30pm -  6:00pm EST <i>(30m)</i>
+ •  9:00am -  4:30pm EST <i>(7h 30m)</i>
+ •  4:50pm -  6:00pm EST <i>(1h 10m)</i>
 
 <b>Availability on Wednesday, November 7:
 </b>
- • 11:30am - 12:30pm EST <i>(1h)</i>
+ •  9:00am -  2:30pm EST <i>(5h 30m)</i>
+ •  5:30pm -  6:00pm EST <i>(30m)</i>
 </pre>
 
 
@@ -225,18 +231,19 @@ You can also set start and end times for the search, which is useful when lookin
 </i>
 <b>Availability on Monday, November 5:
 </b>
- •  2:35pm -  4:45pm EST <i>(2h 10m)</i>
- •  5:00pm -  5:30pm EST <i>(30m)</i>
- •  6:30pm -  7:00pm EST <i>(30m)</i>
+ •  1:30pm -  2:30pm EST <i>(1h)</i>
+ •  3:30pm -  5:00pm EST <i>(1h 30m)</i>
+ •  5:30pm -  7:00pm EST <i>(1h 30m)</i>
 
 <b>Availability on Tuesday, November 6:
 </b>
- •  1:00pm -  3:00pm EST <i>(2h)</i>
- •  5:30pm -  7:00pm EST <i>(1h 30m)</i>
+ • 12:00pm -  4:30pm EST <i>(4h 30m)</i>
+ •  4:50pm -  7:00pm EST <i>(2h 10m)</i>
 
 <b>Availability on Wednesday, November 7:
 </b>
- • 12:00pm - 12:30pm EST <i>(30m)</i>
+ • 12:00pm -  2:30pm EST <i>(2h 30m)</i>
+ •  5:30pm -  7:00pm EST <i>(1h 30m)</i>
 </pre>
 
 
@@ -305,8 +312,8 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-27  <b> | 🗺 Dorwinion </b><i> (not-busy, self)</i>
-2018-09-28               <b> | 🗺 Withered Heath </b><i> (not-busy, self)</i>
+2018-09-24 - 2018-09-28  <b> | 🗺 Iron Hills</b><i> (not-busy)</i>
+2018-09-28               <b> | 🗺 The Great Mill</b><i> (not-busy)</i>
 </pre>
 
 
@@ -330,33 +337,31 @@ Show your events for a date or range of dates (default 'today')
 For example: display all events scheduled for tomorrow:
 
 <pre>
-<b>$</b> calendar-assistant show --profile=work 2018-10-01
+<b>$</b> calendar-assistant show 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01               <b> | 🗺 Country Round </b><i> (not-busy, self)</i>
-<strike>2018-10-01  03:30 - 05:00 | Enable turn-key channels </strike>
-<strike>2018-10-01  07:30 - 08:30 | Engineer sticky bandwidth </strike>
-<strike>2018-10-01  07:30 - 08:30 | Engage plug-and-play schemas </strike>
-2018-10-01  08:00 - 09:00<b> | Incubate synergistic infrastructures </b><i> (recurring, self)</i>
-2018-10-01  09:00 - 10:30<b> | Facilitate cutting-edge networks </b><i> (self)</i>
-2018-10-01  10:30 - 10:55<b> | Deliver vertical communities </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Visualize ubiquitous relationships </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Harness customized action-items </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Synergize holistic functionalities </strike>
-2018-10-01  12:00 - 12:30<b> | Exploit viral platforms </b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Implement user-centric partnerships </strike>
-<strike>2018-10-01  12:30 - 13:30 | Strategize turn-key applications </strike>
-2018-10-01  12:30 - 13:30<b> | Revolutionize web-enabled e-services </b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Generate cutting-edge methodologies </b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Deliver bricks-and-clicks infomediaries </strike>
-2018-10-01  15:00 - 15:30<b> | Empower b2b users </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Facilitate magnetic relationships </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Envisioneer clicks-and-mortar paradigms </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Drive real-time schemas </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Enable wireless synergies </b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Maximize web-enabled infomediaries </strike>
-<strike>2018-10-01  18:30 - 19:00 | Brand innovative paradigms </strike>
-<strike>2018-10-01  19:00 - 19:30 | Reintermediate compelling interfaces </strike>
+<strike>2018-10-01  03:30 - 05:00 | Strategize out-of-the-box e-commerce</strike>
+<strike>2018-10-01  07:30 - 08:30 | Scale dot-com e-tailers</strike>
+<strike>2018-10-01  07:30 - 08:30 | Synthesize 24/365 functionalities</strike>
+2018-10-01  10:30 - 10:55<b> | Leverage sticky convergence</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Incentivize b2b convergence</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Implement killer e-markets</b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Empower cross-platform interfaces</strike>
+2018-10-01  12:00 - 12:30<b> | Monetize efficient vortals</b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Aggregate web-enabled platforms</strike>
+<strike>2018-10-01  12:30 - 13:30 | Reinvent rich bandwidth</strike>
+2018-10-01  12:30 - 13:30<b> | Leverage compelling bandwidth</b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Utilize granular experiences</b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Implement robust platforms</strike>
+2018-10-01  15:00 - 15:30<b> | Benchmark impactful systems</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Synergize seamless markets</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Syndicate robust action-items</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Recontextualize viral architectures</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Whiteboard strategic markets</b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | E-enable sexy web-readiness</strike>
+<strike>2018-10-01  18:30 - 19:00 | Deliver end-to-end deliverables</strike>
+<strike>2018-10-01  19:00 - 19:30 | Mesh sticky systems</strike>
+2018-10-01               <b> | 🗺 Mines of Moria</b><i> (not-busy)</i>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -365,15 +370,16 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Scale frictionless synergies </b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Repurpose compelling mindshare </b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Integrate web-enabled portals </b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Harness rich experiences </b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Enable integrated channels </b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Envisioneer value-added web-readiness </b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Brand back-end e-services </b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Revolutionize b2c interfaces </b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Strategize granular users </b><i> (1:1, recurring)</i>
+2018-10-01  10:30 - 10:55<b> | Leverage sticky convergence</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Incentivize b2b convergence</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Implement killer e-markets</b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Leverage compelling bandwidth</b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Benchmark impactful systems</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Synergize seamless markets</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Syndicate robust action-items</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Recontextualize viral architectures</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Whiteboard strategic markets</b><i> (1:1, recurring)</i>
+2018-10-01               <b> | 🗺 Mines of Moria</b><i> (not-busy)</i>
 </pre>
 
 
@@ -389,7 +395,7 @@ Options:
   -h, -?, [--help], [--no-help]    
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
-Dump your configuration parameters (merge of defaults and overrides from /home/flavorjones/.calendar-assistant)
+Dump your configuration parameters (merge of defaults and overrides from /home/user/.calendar-assistant)
 </pre>
 
 The output is TOML, which is suitable for dumping into `~/.calendar-assistant` and editing.
@@ -404,6 +410,25 @@ profile = "work"
 start-of-day = "9am"
 </pre>
 
+## Development
+
+### Tests
+
+```bash
+gem install bundler
+bundle install
+
+rake spec
+```
+
+### Generate README
+
+* Requires npm to be installed
+* Will use a fixture file rather than connecting to a remote calendar. Fixtures can be updated/regenerated in [generate-fixtures](generate-fixtures) script
+
+```bash
+./generate-readme
+```
 
 ## References
 

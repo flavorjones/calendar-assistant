@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+require 'faker'
+
+libdir = File.join(File.dirname(__FILE__), "lib")
+$LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
+
+require './lib/calendar_assistant'
+require './spec/helpers/event_factory'
+
+service = CalendarAssistant::LocalService.new(file: "fixtures.yml", load_events: false)
+Time.zone = "America/New_York" 
+calendar = Google::Apis::CalendarV3::Calendar.new(id: "me@example.com", "time_zone": Time.zone.name)
+
+service.insert_calendar(calendar)
+
+event_factory = EventFactory.new(service: service, calendar_id: calendar.id)
+
+event_factory.for(date: "2018-10-01", summary: -> { Faker::Company.bs.capitalize }) do
+  [
+      {start: "03:30 AM", end: "05:00 AM", options: :declined},
+      {start: "07:30 AM", end: "08:30 AM", options: :declined},
+      {start: "07:30 AM", end: "08:30 AM", options: :declined},
+      {start: "08:00", end: "09:00", options: [:recurring, :self]},
+      {start: "09:00", end: "10:30", options: :self},
+      {start: "10:30", end: "10:55", options: [:one_on_one, :recurring]},
+      {start: "11:00", end: "11:30", options: :recurring},
+      {start: "11:30", end: "12:00", options: [:one_on_one, :recurring]},
+      {start: "11:50", end: "12:00", options: :declined},
+      {start: "12:00", end: "12:30", options: :self},
+      {start: "12:15", end: "12:30", options: :declined},
+      {start: "12:30", end: "13:30", options: :declined},
+      {start: "12:30", end: "13:30", options: :recurring},
+      {start: "13:30", end: "14:50", options: :self},
+      {start: "13:30", end: "14:30", options: :declined},
+      {start: "15:00", end: "15:30", options: :one_on_one},
+      {start: "16:00", end: "17:00", options: [:one_on_one, :recurring]},
+      {start: "16:45", end: "17:00", options: :recurring},
+      {start: "17:00", end: "17:30", options: :recurring},
+      {start: "17:30", end: "17:55", options: [:one_on_one, :recurring]},
+      {start: "18:00", end: "20:30", options: :declined},
+      {start: "18:30", end: "19:00", options: :declined},
+      {start: "19:00", end: "19:30", options: :declined},
+  ]
+end
+
+# Events for demonstrating availability
+
+event_factory.for(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
+  [
+      {start: "10:00", end: "13:30"},
+      {start: "14:30", end: "15:30"},
+      {start: "17:00", end: "17:30"}
+  ]
+end
+
+event_factory.for(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
+  [
+      {start: "09:00", end: "12:00"},
+      {start: "16:30", end: "16:50"},
+  ]
+end
+
+event_factory.for(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
+  [
+      {start: "08:30", end: "09:30"},
+      {start: "14:30", end: "15:30"},
+      {start: "15:00", end: "17:30"},
+      {start: "10:00", end: "10:15"},
+  ]
+end
+
+# Location Events
+
+event_factory.for(summary: -> { Faker::Hobbit.location }) do
+  [
+      {start: "2018-10-01", options: :location_event},
+      {start: "2018-09-24", end: "2018-09-28", options: :location_event},
+      {start: "2018-09-28", options: :location_event},
+  ]
+end

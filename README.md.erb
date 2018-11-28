@@ -1,20 +1,16 @@
 <%
-require "faker"
 
-EMAIL_REGEX = /[a-z]+@[a-z]+\.[a-z]+/
+LOCAL_STORE_OPTION = " --local-store=fixtures.yml"
 
 def obfuscate line
-  return line.gsub(EMAIL_REGEX, "me@example.com") if line =~ EMAIL_REGEX
-  if line =~ /🗺/
-    line.gsub(/\|.*?</, "| 🗺 #{Faker::Hobbit.location} <")
-  else
-    line.gsub(/\|.*?</, "| #{Faker::Company.bs.capitalize} <")
-  end
+ obs = line.gsub(LOCAL_STORE_OPTION, "")
+ obs.gsub(/#{ENV["HOME"]}/, "/home/user")
 end
 
 def run args
   output = []
   output << "<b>$</b> calendar-assistant #{args}" unless args =~ /\bhelp\b/
+  args += LOCAL_STORE_OPTION unless args =~ /\bconfig|help\b/
   output += `ruby -Ilib bin/calendar-assistant #{args} | node_modules/.bin/ansi-to-html`.split("\n")
   output.map {|line| obfuscate line }.join("\n")
 end
@@ -110,7 +106,7 @@ Some examples:
 https://pivotal.zoom.us/j/ABC90210 <i># ... and opens the videoconference URL</i>
 
 
-<b>$</b> calendar-assistant join work 11:30 --no-join 
+<b>$</b> calendar-assistant join work 11:30 --no-join
 <i>me@example.com</i>
 
 2018-10-01  11:30 - 12:00<b> | Facilitate customized web-readiness </b><i> (1:1, recurring)</i>
@@ -223,6 +219,25 @@ The output is TOML, which is suitable for dumping into `~/.calendar-assistant` a
 <%= run "config" %>
 </pre>
 
+## Development
+
+### Tests
+
+```bash
+gem install bundler
+bundle install
+
+rake spec
+```
+
+### Generate README
+
+* Requires npm to be installed
+* Will use a fixture file rather than connecting to a remote calendar. Fixtures can be updated/regenerated in [generate-fixtures](generate-fixtures) script
+
+```bash
+./generate-readme
+```
 
 ## References
 
