@@ -12,17 +12,21 @@ class EventFactory
   end
 
   def for(date: Time.now, **default_attributes)
+    raise ArgumentError unless block_given?
+
     set_chronic_tz do
       now = date.is_a?(String) ? Chronic.parse(date) : date
 
-      Array.wrap(yield).map do |event_attributes|
+      wrap(yield).map do |event_attributes|
         self_attendee = Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true, response_status: CalendarAssistant::Event::Response::ACCEPTED)
         attrs = call_values(default_attributes).merge(event_attributes)
+        options = wrap(attrs[:options])
+
         attrs[:attendees] = [self_attendee]
 
         attrs[:start], attrs[:end] = set_dates(attrs[:start], attrs[:end], now)
 
-        (attrs[:options] || []).each do |option|
+        (options).each do |option|
           case option
           when :recurring
             attrs[:recurring_event_id] = true
@@ -43,10 +47,10 @@ class EventFactory
           end
         end
 
-        if ((attrs[:options] || []) & [:self, :one_on_one]).empty?
+        if (options & [:self, :one_on_one]).empty?
           attrs[:attendees] += [
-              Google::Apis::CalendarV3::EventAttendee.new(id: 3),
-              Google::Apis::CalendarV3::EventAttendee.new(id: 4)
+            Google::Apis::CalendarV3::EventAttendee.new(id: 3),
+            Google::Apis::CalendarV3::EventAttendee.new(id: 4)
           ]
         end
 
@@ -80,7 +84,7 @@ class EventFactory
 
   def call_values(attributes)
     attributes
-        .each_with_object({}) do |(key, value), hsh|
+      .each_with_object({}) do |(key, value), hsh|
       hsh[key] = value.respond_to?(:call) ? value.call : value
     end
   end
@@ -89,5 +93,15 @@ class EventFactory
     parsed = Chronic.parse(attr, now: now)
     return parsed.to_datetime if parsed.respond_to?(:to_datetime)
     parsed
+  end
+
+  def wrap(object)
+    if object.nil?
+      []
+    elsif object.respond_to?(:to_ary)
+      object.to_ary || [object]
+    else
+      [object]
+    end
   end
 end
