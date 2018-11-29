@@ -99,21 +99,57 @@ describe CalendarAssistant::EventSet do
   end
 
   describe "#ensure_keys" do
-    subject { described_class.new event_repository, Hash.new }
+    subject { described_class.new event_repository, {"z" => 1} }
 
     context "Array arg" do
-      it "creates a key for each array value" do
-        subject.ensure_keys ["a", "b", "c"]
-        expect(subject.events.keys).to eq(["a", "b", "c"])
-        expect(subject.events["a"]).to eq([])
+      context "with only: true" do
+        it "creates a key for each Array value and removes non-matching keys" do
+          subject.ensure_keys ["a", "b", "c"], only: true
+          expect(subject.events.keys).to eq(["a", "b", "c"])
+          expect(subject.events["a"]).to eq([])
+        end
+      end
+
+      context "with only: false" do
+        it "creates a key for each Array value" do
+          subject.ensure_keys ["a", "b", "c"], only: false
+          expect(subject.events.keys).to eq(["z", "a", "b", "c"])
+          expect(subject.events["a"]).to eq([])
+        end
+      end
+
+      context "default only value" do
+        it "creates a key for each Array value" do
+          subject.ensure_keys ["a", "b", "c"]
+          expect(subject.events.keys).to eq(["z", "a", "b", "c"])
+          expect(subject.events["a"]).to eq([])
+        end
       end
     end
 
     context "Range arg" do
-      it "creates a key for each value of the Range" do
-        subject.ensure_keys "a" .. "c"
-        expect(subject.events.keys).to eq(["a", "b", "c"])
-        expect(subject.events["a"]).to eq([])
+      context "with only: true" do
+        it "creates a key for each Range value and removes non-matching keys" do
+          subject.ensure_keys "a" .. "c", only: true
+          expect(subject.events.keys).to eq(["a", "b", "c"])
+          expect(subject.events["a"]).to eq([])
+        end
+      end
+
+      context "with only: false" do
+        it "creates a key for each Range value" do
+          subject.ensure_keys "a" .. "c", only: false
+          expect(subject.events.keys).to eq(["z", "a", "b", "c"])
+          expect(subject.events["a"]).to eq([])
+        end
+      end
+
+      context "default only value" do
+        it "creates a key for each Range value" do
+          subject.ensure_keys "a" .. "c"
+          expect(subject.events.keys).to eq(["z", "a", "b", "c"])
+          expect(subject.events["a"]).to eq([])
+        end
       end
     end
   end

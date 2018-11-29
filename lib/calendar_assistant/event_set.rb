@@ -42,9 +42,16 @@ class CalendarAssistant
     end
 
     class Hash < EventSet::Base
-      def ensure_keys keys
+      def ensure_keys keys, only: false
         keys.each do |key|
           events[key] = [] unless events.has_key?(key)
+        end
+        if only
+          events.keys.each do |key|
+            if ! keys.include? key
+              events.delete(key)
+            end
+          end
         end
       end
 
