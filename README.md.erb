@@ -9,6 +9,7 @@ def obfuscate line
 end
 
 def run args
+  STDERR.puts "→ calendar-assistant #{args}"
   output = []
   output << "<b>$</b> calendar-assistant #{args}" unless args =~ /\bhelp\b/
   args += LOCAL_STORE_OPTION unless args =~ /\bconfig|help\b/
