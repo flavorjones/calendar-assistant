@@ -1,9 +1,8 @@
 #
 #  this file extends the Google::EventDateTime class found in the "google_calendar" rubygem
 #
-
+autoload :Auth, "googleauth"
 require "google/apis/calendar_v3"
-require "time"
 
 class Google::Apis::CalendarV3::EventDateTime
   def to_date

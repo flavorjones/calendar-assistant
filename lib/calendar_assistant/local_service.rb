@@ -1,5 +1,3 @@
-require 'yaml'
-
 class CalendarAssistant
   class LocalService
     Result = Struct.new(:items)

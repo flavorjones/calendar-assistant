@@ -1,8 +1,3 @@
-require "thor"
-require "chronic"
-require "chronic_duration"
-require "launchy"
-
 require "calendar_assistant/cli_helpers"
 
 class CalendarAssistant
