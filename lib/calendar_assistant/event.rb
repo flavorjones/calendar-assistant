@@ -33,7 +33,14 @@ class CalendarAssistant
     LOCATION_EVENT_REGEX = /^#{CalendarAssistant::EMOJI_WORLDMAP}/
 
     #
-    #  methods
+    #  class methods
+    #
+    def self.duration_in_seconds start_time, end_time
+      (end_time.to_datetime - start_time.to_datetime).days.to_i
+    end
+
+    #
+    #  instance methods
     #
     def update **args
       update!(**args)
@@ -161,11 +168,16 @@ class CalendarAssistant
         return "#{days}d"
       end
 
-      p = ActiveSupport::Duration.build(end_time - start_time).parts
+      p = ActiveSupport::Duration.build(duration_in_seconds).parts
       s = []
       s << "#{p[:hours]}h" if p.has_key?(:hours)
       s << "#{p[:minutes]}m" if p.has_key?(:minutes)
       s.join(" ")
+    end
+
+
+    def duration_in_seconds
+      Event.duration_in_seconds start_time, end_time
     end
 
     def human_attendees

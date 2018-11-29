@@ -76,14 +76,14 @@ class CalendarAssistant
               next if Time.before_business_hours?(e.end_time.to_time)
               next if Time.after_business_hours?(e.start_time.to_time)
 
-              if (e.start_time - start_time).days.to_i >= length
+              if Event.duration_in_seconds(start_time, e.start_time) >= length
                 avail_time[date] << event_repository.available_block(start_time, e.start_time)
               end
               start_time = [e.end_time, start_time].max
               break if ! start_time.during_business_hours?
             end
 
-            if (end_time - start_time).days.to_i >= length
+            if Event.duration_in_seconds(start_time, end_time) >= length
               avail_time[date] << event_repository.available_block(start_time, end_time)
             end
 
@@ -94,7 +94,7 @@ class CalendarAssistant
         end
       end
 
-      def intersection other
+      def intersection other, length: 1
         set = new({})
         set.ensure_keys(events.keys + other.events.keys)
         set.events.keys.each do |date|
@@ -106,7 +106,9 @@ class CalendarAssistant
                  event_b.contains?(event_a.end_time-1)
                 start_time = [event_a.start_time, event_b.start_time].max
                 end_time   = [event_a.end_time,   event_b.end_time  ].min
-                set.events[date] << event_repository.available_block(start_time, end_time)
+                if Event.duration_in_seconds(start_time, end_time) >= length
+                  set.events[date] << event_repository.available_block(start_time, end_time)
+                end
               end
             end
           end
