@@ -4,8 +4,14 @@
 
 Features:
 
-- "availability" can now look for meetings while you're traveling outside of your home timezone.
-- "version" command will output the version of calendar-assistant
+- `availability` shows the intersection of available time for multiple calendars. [#46]
+- `version` command will output the version of calendar-assistant
+- can read events from a local file [#33]
+- much improved README
+
+Bugfixes:
+
+- `availability`: Better handling of edge cases (events at start and end of day, multiple-all-day events, etc.)
 
 
 ## v0.2.1 / 2018-10-31
