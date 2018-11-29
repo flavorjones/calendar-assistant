@@ -210,7 +210,8 @@ describe CalendarAssistant::EventSet do
         end
 
         it "is in the calendar's time zone" do
-          expect(subject.available_blocks.events[date].first.start_time.time_zone.name).to eq(time_zone)
+          expected_tz = in_tz(time_zone) { Time.zone.now.to_datetime.strftime("%Z") }
+          expect(subject.available_blocks.events[date].first.start_time.strftime("%Z")).to eq(expected_tz)
         end
 
         context "a meeting length is passed" do
@@ -450,7 +451,8 @@ describe CalendarAssistant::EventSet do
         end
 
         it "is in the other calendar's time zone" do
-          expect(subject.available_blocks.events[date].first.start_time.time_zone.name).to eq(other_time_zone)
+          expected_tz = in_tz(other_time_zone) { Time.zone.now.to_datetime.strftime("%Z") }
+          expect(subject.available_blocks.events[date].first.start_time.strftime("%Z")).to eq(expected_tz)
         end
       end
     end
