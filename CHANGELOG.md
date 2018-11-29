@@ -1,5 +1,12 @@
 # Changelog for Calendar Assistant
 
+## next / unreleased
+
+Bugfixes:
+
+- `availability` against multiple calendars may have returned blocks shorter than the minimum requested length [#55]
+
+
 ## v0.3.0 / 2018-11-29
 
 Features:
