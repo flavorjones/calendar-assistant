@@ -166,6 +166,7 @@ class CalendarAssistant
                             event.start_time.in_time_zone(time_zone).strftime("%l:%M%P"),
                             event.end_time.in_time_zone(time_zone).strftime("%l:%M%P %Z"))
           end
+          line.uniq!
           puts " • " + line.join(" / ") + Rainbow(" (" + event.duration + ")").italic
           pp event if ca.config.debug?
         end

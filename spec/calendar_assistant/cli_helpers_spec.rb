@@ -485,9 +485,23 @@ describe CalendarAssistant::CLIHelpers do
           end
 
           it "prints out the time range of each free block for each time zone" do
-            expect(stdout).to receive(:puts).with(/ •  9:00am - 10:00am PDT.*12:00pm -  1:00pm EDT.*(1h)/)
-            expect(stdout).to receive(:puts).with(/ • 12:30pm -  2:00pm PDT.* 3:30pm -  5:00pm EDT.*(1h 30m)/)
+            expect(stdout).to receive(:puts).with(" •  9:00am - 10:00am PDT / 12:00pm -  1:00pm EDT#{Rainbow(" (1h)").italic}")
+            expect(stdout).to receive(:puts).with(" • 12:30pm -  2:00pm PDT /  3:30pm -  5:00pm EDT#{Rainbow(" (1h 30m)").italic}")
             subject.print_available_blocks ca, event_set
+          end
+
+          context "but the attendees are in the same time zone" do
+            let(:calendar_time_zone) { "America/New_York" }
+
+            before do
+              allow(calendar2).to receive(:time_zone).and_return("America/Toronto")
+            end
+
+            it "prints out the time range just for each unique time zone" do
+              expect(stdout).to receive(:puts).with(" •  9:00am - 10:00am EDT#{Rainbow(" (1h)").italic}")
+              expect(stdout).to receive(:puts).with(" • 12:30pm -  2:00pm EDT#{Rainbow(" (1h 30m)").italic}")
+              subject.print_available_blocks ca, event_set
+            end
           end
         end
       end
