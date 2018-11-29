@@ -1,6 +1,6 @@
 # Changelog for Calendar Assistant
 
-## v0.3.0 / unreleased
+## v0.3.0 / 2018-11-29
 
 Features:
 
