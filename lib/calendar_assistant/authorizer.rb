@@ -17,9 +17,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'googleauth'
-require 'rainbow'
-
 class CalendarAssistant
   class Authorizer
     class NoCredentials < CalendarAssistant::BaseException ; end

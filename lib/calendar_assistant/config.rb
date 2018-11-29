@@ -1,7 +1,7 @@
-require "toml"
-
 class CalendarAssistant
   class Config
+    autoload :TokenStore, "calendar_assistant/config/token_store"
+
     class TomlParseFailure < CalendarAssistant::BaseException ; end
     class NoConfigFileToPersist < CalendarAssistant::BaseException ; end
     class NoTokensAuthorized < CalendarAssistant::BaseException ; end
@@ -211,5 +211,3 @@ class CalendarAssistant
     end
   end
 end
-
-require "calendar_assistant/config/token_store"

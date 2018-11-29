@@ -1,5 +1,3 @@
-require "uri"
-
 class CalendarAssistant
   module StringHelpers
     def self.find_uri_for_domain string, domain
