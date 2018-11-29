@@ -169,12 +169,30 @@ describe CalendarAssistant::Scheduler do
           scheduler.available_blocks(time_range)
         end
 
-        it "returns the intersection of the available blocks" do
-          available_blocks = instance_double "EventSet(available)"
-          allow(event_set_hash).to receive(:available_blocks).and_return(available_blocks)
-          expect(available_blocks).to receive(:intersection).with(available_blocks).and_return(available_blocks)
-          result = scheduler.available_blocks(time_range)
-          expect(result).to eq(available_blocks)
+        describe "meeting length" do
+          context "by default" do
+            let(:length) { ChronicDuration.parse(CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH]) }
+
+            it "returns the intersection of the available blocks" do
+              available_blocks = instance_double "EventSet(available)"
+              allow(event_set_hash).to receive(:available_blocks).and_return(available_blocks)
+              expect(available_blocks).to receive(:intersection).with(available_blocks, length: length).and_return(available_blocks)
+              result = scheduler.available_blocks(time_range)
+              expect(result).to eq(available_blocks)
+            end
+          end
+
+          context "when configured" do
+            let(:config_options) { {CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "60m"} }
+
+            it "returns the intersection of the available blocks" do
+              available_blocks = instance_double "EventSet(available)"
+              allow(event_set_hash).to receive(:available_blocks).and_return(available_blocks)
+              expect(available_blocks).to receive(:intersection).with(available_blocks, length: 60*60).and_return(available_blocks)
+              result = scheduler.available_blocks(time_range)
+              expect(result).to eq(available_blocks)
+            end
+          end
         end
       end
     end

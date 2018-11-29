@@ -36,7 +36,7 @@ class CalendarAssistant
         length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
         ca.in_env do
           set_avail = event_set.available_blocks(length: length)
-          avail = avail ? avail.intersection(set_avail) : set_avail
+          avail = avail ? avail.intersection(set_avail, length: length) : set_avail
         end
       end
       avail

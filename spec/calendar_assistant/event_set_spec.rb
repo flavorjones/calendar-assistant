@@ -532,7 +532,7 @@ describe CalendarAssistant::EventSet do
             event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 12pm")),
           ],
           Date.parse("2018-01-02") => [
-            event_factory("1:1", Chronic.parse("2018-01-02 9:15am")..Chronic.parse("2018-01-02 9:45am")),
+            event_factory("1:1", Chronic.parse("2018-01-02 9:15am")..Chronic.parse("2018-01-02 9:30am")),
             event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
             event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
             event_factory("1:1", Chronic.parse("2018-01-02 12:15pm")..Chronic.parse("2018-01-02 1pm")),
@@ -548,29 +548,55 @@ describe CalendarAssistant::EventSet do
         }
       end
 
-      let(:expected_events)  do
-        {
-          Date.parse("2018-01-01") => [
-            event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 11am")),
-          ],
-          Date.parse("2018-01-02") => [
-            event_factory("1:1", Chronic.parse("2018-01-02 9:15am")..Chronic.parse("2018-01-02 9:45am")),
-            event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
-            event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
-          ],
-          Date.parse("2018-01-03") => [
-            event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
-          ],
-          Date.parse("2018-01-04") => [
-            event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
-            event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
-            event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),
-          ]
-        }
+      context "with no min-length specified" do
+        let(:expected_events)  do
+          {
+            Date.parse("2018-01-01") => [
+              event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 11am")),
+            ],
+            Date.parse("2018-01-02") => [
+              event_factory("1:1", Chronic.parse("2018-01-02 9:15am")..Chronic.parse("2018-01-02 9:30am")),
+              event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
+              event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
+            ],
+            Date.parse("2018-01-03") => [
+              event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
+            ],
+            Date.parse("2018-01-04") => [
+              event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
+              event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
+              event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),
+            ]
+          }
+        end
+
+        it { expect_to_match_expected_events set1.intersection(set2).events }
+        it { expect_to_match_expected_events set2.intersection(set1).events }
       end
 
-      it { expect_to_match_expected_events set1.intersection(set2).events }
-      it { expect_to_match_expected_events set2.intersection(set1).events }
+      context "with a min-length specified" do
+        let(:expected_events)  do
+          {
+            Date.parse("2018-01-01") => [
+              event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 11am")),
+            ],
+            Date.parse("2018-01-02") => [
+              event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
+            ],
+            Date.parse("2018-01-03") => [
+              event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
+            ],
+            Date.parse("2018-01-04") => [
+              event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
+              event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
+              event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),
+            ]
+          }
+        end
+
+        it { expect_to_match_expected_events set1.intersection(set2, length: 31.minutes).events }
+        it { expect_to_match_expected_events set2.intersection(set1, length: 31.minutes).events }
+      end
     end
 
     context "sets in different time zones" do
