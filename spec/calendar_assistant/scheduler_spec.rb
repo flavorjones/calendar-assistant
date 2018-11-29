@@ -123,7 +123,7 @@ describe CalendarAssistant::Scheduler do
 
       it "fills in empty dates in the event set" do
         date_range = time_range.first.to_date .. time_range.last.to_date
-        expect(event_set_hash).to receive(:ensure_keys).with(date_range)
+        expect(event_set_hash).to receive(:ensure_keys).with(date_range, only: true)
         scheduler.available_blocks(time_range)
       end
 
