@@ -1,6 +1,10 @@
 # Changelog for Calendar Assistant
 
-## next / unreleased
+## v0.4.0 / 2018-11-30
+
+Features:
+
+- `show` displays when a meeting has been responded to with "tentative" (a.k.a. "maybe" in the web UI)
 
 Bugfixes:
 
