@@ -66,7 +66,7 @@ class CalendarAssistant
   def find_events time_range
     calendar_ids = config.attendees
     if calendar_ids.length > 1
-      raise "CalendarAssistant#find_events only supports one person (for now)"
+      raise BaseException, "CalendarAssistant#find_events only supports one person (for now)"
     end
     event_repository(calendar_ids.first).find(time_range)
   end

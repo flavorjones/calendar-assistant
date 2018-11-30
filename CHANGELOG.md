@@ -1,5 +1,12 @@
 # Changelog for Calendar Assistant
 
+## next / unreleased
+
+Features:
+
+- Chronic parse errors are now more user-friendly.
+
+
 ## v0.4.0 / 2018-11-30
 
 Features:
