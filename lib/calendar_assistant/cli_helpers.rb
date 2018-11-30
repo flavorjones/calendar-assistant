@@ -189,6 +189,7 @@ class CalendarAssistant
           attributes << "self" if event.self? && !event.private?
           attributes << "1:1" if event.one_on_one?
           attributes << "awaiting" if event.awaiting?
+          attributes << "tentative" if event.tentative?
         end
 
         attributes << event.visibility if event.explicit_visibility?
