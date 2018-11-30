@@ -278,6 +278,41 @@ describe CalendarAssistant::Event do
       end
     end
 
+    describe "#tentative?" do
+      context "event with no attendees" do
+        it { is_expected.not_to be_tentative }
+      end
+
+      context "event with attendees including me" do
+        let(:decorated_object) { decorated_class.new(attendees: attendees) }
+
+        (CalendarAssistant::Event::RealResponse.constants - [:TENTATIVE]).each do |response_status_name|
+          context "response status #{response_status_name}" do
+            before do
+              allow(attendee_self).to receive(:response_status).
+                                        and_return(CalendarAssistant::Event::Response.const_get(response_status_name))
+            end
+
+            it { expect(subject.tentative?).to be_falsey }
+          end
+        end
+
+        context "response status TENTATIVE" do
+          before do
+            allow(attendee_self).to receive(:response_status).and_return(CalendarAssistant::Event::Response::TENTATIVE)
+          end
+
+          it { expect(subject.tentative?).to be_truthy }
+        end
+      end
+
+      context "event with attendees but not me" do
+        let(:decorated_object) { decorated_class.new(attendees: attendees - [attendee_self]) }
+
+        it { expect(subject.tentative?).to be_falsey }
+      end
+    end
+
     describe "#self?" do
       context "event with no attendees" do
         it { is_expected.to be_self }

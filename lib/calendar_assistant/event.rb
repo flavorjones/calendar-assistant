@@ -87,6 +87,10 @@ class CalendarAssistant
       response_status == CalendarAssistant::Event::Response::NEEDS_ACTION
     end
 
+    def tentative?
+      response_status == CalendarAssistant::Event::Response::TENTATIVE
+    end
+
     def self?
       response_status == CalendarAssistant::Event::Response::SELF
     end
