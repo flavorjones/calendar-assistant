@@ -17,6 +17,7 @@ autoload :Launchy, "launchy"
 autoload :TOML, "toml"
 autoload :Thor, "thor"
 require "calendar_assistant/extensions/rainbow_extensions" # Rainbow() doesn't trigger autoload
+require "active_support/time" # Time doesn't trigger autoload
 
 #
 #  CalendarAssistant and associated classes

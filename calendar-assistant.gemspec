@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rainbow", "~> 3.0"
   spec.add_dependency "launchy", "~> 2.4"
   spec.add_dependency "toml", "~> 0.2.0"
+  spec.add_dependency "activesupport", "~> 5.2.1"
 
   spec.add_development_dependency "concourse"
   spec.add_development_dependency "bundler", "~> 1.16"
