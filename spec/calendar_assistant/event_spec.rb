@@ -246,6 +246,7 @@ describe CalendarAssistant::Event do
     describe "#awaiting?" do
       context "event with no attendees" do
         it { is_expected.not_to be_awaiting }
+        it { is_expected.not_to be_needs_action }
       end
 
       context "event with attendees including me" do
@@ -259,6 +260,7 @@ describe CalendarAssistant::Event do
             end
 
             it { expect(subject.awaiting?).to be_falsey }
+            it { expect(subject.needs_action?).to be_falsey }
           end
         end
 
@@ -268,6 +270,7 @@ describe CalendarAssistant::Event do
           end
 
           it { expect(subject.awaiting?).to be_truthy }
+          it { expect(subject.needs_action?).to be_truthy }
         end
       end
 
@@ -275,6 +278,7 @@ describe CalendarAssistant::Event do
         let(:decorated_object) { decorated_class.new(attendees: attendees - [attendee_self]) }
 
         it { expect(subject.awaiting?).to be_falsey }
+        it { expect(subject.needs_action?).to be_falsey }
       end
     end
 

@@ -87,6 +87,8 @@ class CalendarAssistant
       response_status == CalendarAssistant::Event::Response::NEEDS_ACTION
     end
 
+    alias_method :needs_action?, :awaiting?
+
     def tentative?
       response_status == CalendarAssistant::Event::Response::TENTATIVE
     end
