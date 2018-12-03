@@ -72,10 +72,14 @@ module RspecExampleHelpers
     end
   end
 
-  def event_list_factory(date: Time.now, file: nil, calendar_id:, &block)
+  def event_list_factory_in_hash(**parameters, &block)
+    event_list_factory(event_factory_method: :for_in_hash, **parameters, &block)
+  end
+
+  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, event_factory_method: :for, &block)
     service = CalendarAssistant::LocalService.new(file: file, load_events: false)
     service.insert_calendar(GCal::Calendar.new(id: calendar_id))
-    EventFactory.new(service: service, calendar_id: calendar_id).for(date: date, &block)
+    EventFactory.new(service: service, calendar_id: calendar_id).public_send(event_factory_method, date: date, &block)
   end
 
   def event_factory summary, time_range, stub={}

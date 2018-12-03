@@ -12,6 +12,12 @@ class EventFactory
     @event_repository = CalendarAssistant::EventRepository.new(service, calendar_id)
   end
 
+  def for_in_hash(**default_attributes)
+    yield.each_with_object({}) do |(key, values), hsh|
+      hsh[key] = self.for(**default_attributes, &->() { values })
+    end
+  end
+
   def for(date: Time.now, **default_attributes)
     raise ArgumentError unless block_given?
 
@@ -19,7 +25,7 @@ class EventFactory
       now = date.is_a?(String) ? Chronic.parse(date) : date
 
       wrap(yield).map do |event_attributes|
-        self_attendee = Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true, response_status: CalendarAssistant::Event::Response::ACCEPTED)
+        self_attendee = Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true)
         attrs = call_values(default_attributes).merge(event_attributes)
         options = wrap(attrs[:options])
 
@@ -37,6 +43,14 @@ class EventFactory
             attrs[:attendees].push Google::Apis::CalendarV3::EventAttendee.new(id: 2)
           when :declined
             self_attendee.response_status = CalendarAssistant::Event::Response::DECLINED
+          when :accepted
+            self_attendee.response_status = CalendarAssistant::Event::Response::ACCEPTED
+          when :needs_action
+            self_attendee.response_status = CalendarAssistant::Event::Response::NEEDS_ACTION
+          when :tentative
+            self_attendee.response_status = CalendarAssistant::Event::Response::TENTATIVE
+          when :private
+            attrs[:visibility] = CalendarAssistant::Event::Visibility::PRIVATE
           when :location_event
             attrs[:summary] = "#{CalendarAssistant::EMOJI_WORLDMAP} #{ attrs[:summary] || "Zanzibar" }"
             attrs[:transparency] = CalendarAssistant::Event::Transparency::TRANSPARENT
@@ -44,14 +58,14 @@ class EventFactory
             attrs[:start] = new_dates.first
             attrs[:end] = new_dates.last
           else
-            raise
+            raise "no factory option for: #{option}"
           end
         end
 
         if (options & [:self, :one_on_one]).empty?
           attrs[:attendees] += [
-            Google::Apis::CalendarV3::EventAttendee.new(id: 3),
-            Google::Apis::CalendarV3::EventAttendee.new(id: 4)
+              Google::Apis::CalendarV3::EventAttendee.new(id: 3),
+              Google::Apis::CalendarV3::EventAttendee.new(id: 4)
           ]
         end
 
@@ -66,7 +80,7 @@ class EventFactory
 
   def set_dates(start_time, end_time, now)
     # Jiggery pokery that copies CLI Helpers logic
-    parsed_start =  date_parse(start_time, now)
+    parsed_start = date_parse(start_time, now)
 
     if (end_time && start_time)
       return parsed_start, date_parse(end_time, now)
@@ -85,7 +99,7 @@ class EventFactory
 
   def call_values(attributes)
     attributes
-      .each_with_object({}) do |(key, value), hsh|
+        .each_with_object({}) do |(key, value), hsh|
       hsh[key] = value.respond_to?(:call) ? value.call : value
     end
   end

@@ -4,6 +4,20 @@ describe EventFactory do
   let(:event_factory) { EventFactory.new }
   let(:default_attributes) { {} }
 
+  describe "#for_in_hash" do
+    it "retains the original structure" do
+      events = event_factory.for_in_hash(default_attributes) do
+        {
+            "key 1" => {id: "funky"},
+            "key 2" => [{id: "cold"}, {id: "medina"}]
+        }
+      end
+
+      expect(events.keys).to match_array(["key 1", "key 2"])
+      expect(events["key 2"].map(&:id)).to match_array(["cold", "medina"])
+    end
+  end
+
   describe "#for" do
     describe "passing attributes as a block" do
       context "when no block is passed" do
@@ -14,10 +28,12 @@ describe EventFactory do
 
       context "when a block is passed" do
         it "does not raise an ArgumentError" do
-          expect { event_factory.for(default_attributes) { { } } }.not_to raise_error
+          expect { event_factory.for(default_attributes) { {} } }.not_to raise_error
         end
       end
     end
+
+
 
     let(:events) { event_factory.for(default_attributes) { attributes } }
 
@@ -61,7 +77,7 @@ describe EventFactory do
 
       describe "options" do
         describe "passing multiple options" do
-          let(:attributes) { { start: Time.now.to_s, options: [ :recurring, :self ] }}
+          let(:attributes) { {start: Time.now.to_s, options: [:recurring, :self]} }
 
           it { is_expected.to be_recurring }
           it { is_expected.to be_self }
@@ -101,6 +117,30 @@ describe EventFactory do
           describe "declined" do
             it_behaves_like "an option that translates to a predicate" do
               let(:option) { :declined }
+            end
+          end
+
+          describe "accepted" do
+            it_behaves_like "an option that translates to a predicate" do
+              let(:option) { :accepted }
+            end
+          end
+
+          describe "needs_action" do
+            it_behaves_like "an option that translates to a predicate" do
+              let(:option) { :needs_action }
+            end
+          end
+
+          describe "tentative" do
+            it_behaves_like "an option that translates to a predicate" do
+              let(:option) { :tentative }
+            end
+          end
+
+          describe "private" do
+            it_behaves_like "an option that translates to a predicate" do
+              let(:option) { :private }
             end
           end
 

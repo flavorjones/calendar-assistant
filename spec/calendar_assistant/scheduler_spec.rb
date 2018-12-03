@@ -2,43 +2,37 @@ describe CalendarAssistant::Scheduler do
   describe "class methods" do
     describe ".select_busy_events" do
       let(:raw_events) do
-        [
-          event_factory("accepted", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                        :response_status => CalendarAssistant::Event::Response::ACCEPTED),
-          event_factory("self", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                        :response_status => CalendarAssistant::Event::Response::SELF),
-          event_factory("declined", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                        :response_status => CalendarAssistant::Event::Response::DECLINED),
-          event_factory("maybe", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                        :response_status => CalendarAssistant::Event::Response::TENTATIVE),
-          event_factory("needs action", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                        :response_status => CalendarAssistant::Event::Response::NEEDS_ACTION),
-          event_factory("private", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                        :private? => true),
-          event_factory("yeah", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
-          event_factory("sure", Chronic.parse("2018-01-03 9am")..Chronic.parse("2018-01-03 10am")),
-          event_factory("ignore this date", Chronic.parse("2018-01-04 9am")..Chronic.parse("2018-01-04 10am"),
-                        :response_status => CalendarAssistant::Event::Response::DECLINED),
-        ]
+        event_list_factory do
+          [
+              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted},
+              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "self", options: :self},
+              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "declined", options: :declined},
+              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "maybe", options: :tentative},
+              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "needs action", options: :needs_action},
+              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "private", options: :private},
+              {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "yeah", options: :self},
+              {start: "2018-01-03 9am", end: "2018-01-03 10am", summary: "sure", options: :self},
+              {start: "2018-01-04 9am", end: "2018-01-04 10am", summary: "ignore this date", options: :declined}
+          ]
+        end
       end
 
       let(:cooked_events) do
-        {
-          Date.parse("2018-01-01") => [
-            event_factory("accepted", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                          :response_status => CalendarAssistant::Event::Response::ACCEPTED),
-            event_factory("self", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                          :response_status => CalendarAssistant::Event::Response::SELF),
-            event_factory("private", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am"),
-                          :private? => true),
-          ],
-          Date.parse("2018-01-02") => [
-            event_factory("yeah", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am"))
-          ],
-          Date.parse("2018-01-03") => [
-            event_factory("sure", Chronic.parse("2018-01-03 9am")..Chronic.parse("2018-01-03 10am"))
-          ],
-        }
+        event_list_factory_in_hash do
+          {
+              Date.parse("2018-01-01") => [
+                  {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted},
+                  {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "self", options: :self},
+                  {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "private", options: :private}
+              ],
+              Date.parse("2018-01-02") => [
+                  {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "yeah", options: :self}
+              ],
+              Date.parse("2018-01-03") => [
+                  {start: "2018-01-03 9am", end: "2018-01-03 10am", summary: "sure", options: :self}
+              ]
+          }
+        end
       end
 
       def expect_event_equalish e1, e2
@@ -59,7 +53,7 @@ describe CalendarAssistant::Scheduler do
       it "selects relevant events into a new event set" do
         raw_event_set = CalendarAssistant::EventSet.new instance_double("er"), raw_events
         cooked_event_set = described_class.select_busy_events raw_event_set
-        expect_event_set_hash_equalish cooked_events, cooked_event_set.events
+        expect_event_set_hash_equalish CalendarAssistant::EventSet.new(instance_double("er"),cooked_events).events, cooked_event_set.events
       end
     end
   end
