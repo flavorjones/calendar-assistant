@@ -31,7 +31,8 @@ class EventFactory
 
         attrs[:attendees] = [self_attendee]
 
-        attrs[:start], attrs[:end] = set_dates(attrs[:start], attrs[:end], now)
+        attrs[:start], attrs[:end] = set_dates(attrs[:start], attrs[:end], now, options.delete(:all_day))
+
 
         (options).each do |option|
           case option
@@ -82,15 +83,18 @@ class EventFactory
 
   private
 
-  def set_dates(start_time, end_time, now)
+  def set_dates(start_time, end_time, now, all_day = false)
     # Jiggery pokery that copies CLI Helpers logic
     parsed_start = date_parse(start_time, now)
 
     if (end_time && start_time)
-      return parsed_start, date_parse(end_time, now)
+      dates = parsed_start, date_parse(end_time, now)
     elsif (parsed_start)
-      return parsed_start.beginning_of_day, parsed_start.end_of_day
+      dates = parsed_start.beginning_of_day, parsed_start.end_of_day
     end
+
+    return dates.map(&:to_date) if all_day
+    dates
   end
 
   def set_chronic_tz
