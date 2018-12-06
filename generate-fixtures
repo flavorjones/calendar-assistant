@@ -47,25 +47,25 @@ CalendarAssistant.in_tz "America/New_York"  do
 
   event_factory.for(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
     [
-      {start: "10:00", end: "13:30"},
-      {start: "14:30", end: "15:30"},
-      {start: "17:00", end: "17:30"}
+      {start: "10:00", end: "13:30", options: :accepted},
+      {start: "14:30", end: "15:30", options: :accepted},
+      {start: "17:00", end: "17:30", options: :accepted}
     ]
   end
 
   event_factory.for(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
     [
-      {start: "09:00", end: "12:00"},
-      {start: "16:30", end: "16:50"},
+      {start: "09:00", end: "12:00", options: :accepted},
+      {start: "16:30", end: "16:50", options: :accepted},
     ]
   end
 
   event_factory.for(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
     [
-      {start: "08:30", end: "09:30"},
-      {start: "14:30", end: "15:30"},
-      {start: "15:00", end: "17:30"},
-      {start: "10:00", end: "10:15"},
+      {start: "08:30", end: "09:30", options: :accepted},
+      {start: "14:30", end: "15:30", options: :accepted},
+      {start: "15:00", end: "17:30", options: :accepted},
+      {start: "10:00", end: "10:15", options: :accepted},
     ]
   end
 
@@ -89,25 +89,25 @@ CalendarAssistant.in_tz "America/Los_Angeles"  do
 
   event_factory.for(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
     [
-      {start: "10:00", end: "13:30"},
-      {start: "14:30", end: "15:30"},
-      {start: "17:00", end: "17:30"}
+      {start: "10:00", end: "13:30", options: :accepted},
+      {start: "14:30", end: "15:30", options: :accepted},
+      {start: "17:00", end: "17:30", options: :accepted}
     ]
   end
 
   event_factory.for(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
     [
-      {start: "09:00", end: "12:00"},
-      {start: "16:30", end: "16:50"},
+      {start: "09:00", end: "12:00", options: :accepted},
+      {start: "16:30", end: "16:50", options: :accepted},
     ]
   end
 
   event_factory.for(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
     [
-      {start: "08:30", end: "09:30"},
-      {start: "14:30", end: "15:30"},
-      {start: "15:00", end: "17:30"},
-      {start: "10:00", end: "10:15"},
+      {start: "08:30", end: "09:30", options: :accepted},
+      {start: "14:30", end: "15:30", options: :accepted},
+      {start: "15:00", end: "17:30", options: :accepted},
+      {start: "10:00", end: "10:15", options: :accepted},
     ]
   end
 end

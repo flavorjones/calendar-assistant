@@ -84,10 +84,10 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
-  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar
+  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar 
   API, and saving the credentials necessary to access the API on behalf of users.
 
-  If you already have downloaded client credentials, you don't need to run this command. Instead,
+  If you already have downloaded client credentials, you don't need to run this command. Instead, 
   rename the downloaded JSON file to `/home/user/.calendar-assistant.client`
 </pre>
 
@@ -103,13 +103,13 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
 
 Description:
-  Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your
-  calendar.
+  Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access 
+  your calendar.
 
-  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and
-  generate and persist an access token.
+  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, 
+  and generate and persist an access token.
 
-  In order for this to work, you'll need to have set up your API client credentials. Run
+  In order for this to work, you'll need to have set up your API client credentials. Run 
   `calendar-assistant help setup` for instructions.
 </pre>
 
@@ -336,8 +336,8 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-28  <b> | 🗺 Rivendell</b><i> (not-busy)</i>
-2018-09-28               <b> | 🗺 Bywater</b><i> (not-busy)</i>
+2018-09-24 - 2018-09-28  <b> | 🗺 Esgaroth</b><i> (not-busy)</i>
+2018-09-28               <b> | 🗺 Wilderland</b><i> (not-busy)</i>
 </pre>
 
 
@@ -364,28 +364,28 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-<strike>2018-10-01  03:30 - 05:00 | Maximize open-source markets</strike>
-<strike>2018-10-01  07:30 - 08:30 | Incentivize innovative web services</strike>
-<strike>2018-10-01  07:30 - 08:30 | Reinvent 24/7 niches</strike>
-2018-10-01  10:30 - 10:55<b> | Engineer collaborative roi</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Implement one-to-one schemas</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Empower extensible vortals</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Synthesize web-enabled niches</strike>
-2018-10-01  12:00 - 12:30<b> | Facilitate open-source infomediaries</b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Iterate scalable partnerships</strike>
-<strike>2018-10-01  12:30 - 13:30 | Unleash web-enabled content</strike>
-2018-10-01  12:30 - 13:30<b> | Exploit collaborative web services</b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Streamline back-end deliverables</b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Innovate dot-com architectures</strike>
-2018-10-01  15:00 - 15:30<b> | Optimize robust paradigms</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Brand 24/365 web services</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Extend vertical applications</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Monetize one-to-one roi</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Target transparent e-tailers</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Maximize value-added vortals</strike>
-<strike>2018-10-01  18:30 - 19:00 | Whiteboard rich applications</strike>
-<strike>2018-10-01  19:00 - 19:30 | Scale cross-platform portals</strike>
-2018-10-01               <b> | 🗺 Wilderland</b><i> (not-busy)</i>
+<strike>2018-10-01  03:30 - 05:00 | Deliver frictionless users</strike>
+<strike>2018-10-01  07:30 - 08:30 | Target wireless web services</strike>
+<strike>2018-10-01  07:30 - 08:30 | Aggregate killer infomediaries</strike>
+2018-10-01  10:30 - 10:55<b> | Benchmark web-enabled communities</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Harness wireless technologies</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Revolutionize extensible e-tailers</b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Generate ubiquitous systems</strike>
+2018-10-01  12:00 - 12:30<b> | Generate front-end infomediaries</b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Envisioneer collaborative infomediaries</strike>
+<strike>2018-10-01  12:30 - 13:30 | Embrace sticky infomediaries</strike>
+2018-10-01  12:30 - 13:30<b> | Matrix cutting-edge applications</b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Orchestrate revolutionary web services</b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Matrix mission-critical initiatives</strike>
+2018-10-01  15:00 - 15:30<b> | Matrix magnetic applications</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Recontextualize killer applications</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Transform enterprise communities</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Redefine enterprise initiatives</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Synergize open-source users</b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Morph frictionless e-services</strike>
+<strike>2018-10-01  18:30 - 19:00 | Enable user-centric applications</strike>
+<strike>2018-10-01  19:00 - 19:30 | Streamline 24/7 e-services</strike>
+2018-10-01               <b> | 🗺 Long Lake</b><i> (not-busy)</i>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -394,16 +394,16 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Engineer collaborative roi</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Implement one-to-one schemas</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Empower extensible vortals</b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Exploit collaborative web services</b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Optimize robust paradigms</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Brand 24/365 web services</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Extend vertical applications</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Monetize one-to-one roi</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Target transparent e-tailers</b><i> (1:1, recurring)</i>
-2018-10-01               <b> | 🗺 Wilderland</b><i> (not-busy)</i>
+2018-10-01  10:30 - 10:55<b> | Benchmark web-enabled communities</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Harness wireless technologies</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Revolutionize extensible e-tailers</b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Matrix cutting-edge applications</b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Matrix magnetic applications</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Recontextualize killer applications</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Transform enterprise communities</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Redefine enterprise initiatives</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Synergize open-source users</b><i> (1:1, recurring)</i>
+2018-10-01               <b> | 🗺 Long Lake</b><i> (not-busy)</i>
 </pre>
 
 
