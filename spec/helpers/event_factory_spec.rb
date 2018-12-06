@@ -157,9 +157,14 @@ describe EventFactory do
           end
 
           describe "location event" do
-            it_behaves_like "an option that translates to a predicate" do
-              let(:option) { :location_event }
-            end
+            let(:option) { :location_event }
+
+            subject { events.first }
+            it_behaves_like "an option that translates to a predicate"
+
+            let(:attributes) { {start: Time.now.to_s, options: option} }
+
+            it { is_expected.to_not be_busy }
           end
 
           describe "not self and not one_on_one" do
