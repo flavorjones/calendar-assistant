@@ -35,36 +35,7 @@ class EventFactory
 
 
         (options).each do |option|
-          case option
-          when :recurring
-            attrs[:recurring_event_id] = true
-          when :self
-            attrs[:attendees] = nil
-          when :one_on_one
-            attrs[:attendees].push Google::Apis::CalendarV3::EventAttendee.new(id: 2)
-          when :declined
-            self_attendee.response_status = CalendarAssistant::Event::Response::DECLINED
-          when :accepted
-            self_attendee.response_status = CalendarAssistant::Event::Response::ACCEPTED
-          when :needs_action
-            self_attendee.response_status = CalendarAssistant::Event::Response::NEEDS_ACTION
-          when :tentative
-            self_attendee.response_status = CalendarAssistant::Event::Response::TENTATIVE
-          when :private
-            attrs[:visibility] = CalendarAssistant::Event::Visibility::PRIVATE
-          when :free
-            attrs[:transparency] =  CalendarAssistant::Event::Transparency::TRANSPARENT
-          when :busy
-            attrs[:transparency] =  CalendarAssistant::Event::Transparency::OPAQUE
-          when :location_event
-            attrs[:summary] = "#{CalendarAssistant::EMOJI_WORLDMAP} #{ attrs[:summary] || "Zanzibar" }"
-            attrs[:transparency] = CalendarAssistant::Event::Transparency::TRANSPARENT
-            new_dates = CalendarAssistant.date_range_cast(attrs[:start]..attrs[:end])
-            attrs[:start] = new_dates.first
-            attrs[:end] = new_dates.last
-          else
-            raise "no factory option for: #{option}"
-          end
+          set_option(attrs, self_attendee, option)
         end
 
         if (options & [:self, :one_on_one]).empty?
@@ -82,6 +53,39 @@ class EventFactory
   end
 
   private
+
+  def set_option(attrs, self_attendee, option)
+    case option
+    when :recurring
+      attrs[:recurring_event_id] = true
+    when :self
+      attrs[:attendees] = nil
+    when :one_on_one
+      attrs[:attendees].push Google::Apis::CalendarV3::EventAttendee.new(id: 2)
+    when :declined
+      self_attendee.response_status = CalendarAssistant::Event::Response::DECLINED
+    when :accepted
+      self_attendee.response_status = CalendarAssistant::Event::Response::ACCEPTED
+    when :needs_action
+      self_attendee.response_status = CalendarAssistant::Event::Response::NEEDS_ACTION
+    when :tentative
+      self_attendee.response_status = CalendarAssistant::Event::Response::TENTATIVE
+    when :private
+      attrs[:visibility] = CalendarAssistant::Event::Visibility::PRIVATE
+    when :free
+      attrs[:transparency] =  CalendarAssistant::Event::Transparency::TRANSPARENT
+    when :busy
+      attrs[:transparency] =  CalendarAssistant::Event::Transparency::OPAQUE
+    when :location_event
+      attrs[:summary] = "#{CalendarAssistant::EMOJI_WORLDMAP} #{ attrs[:summary] || "Zanzibar" }"
+      new_dates = CalendarAssistant.date_range_cast(attrs[:start]..attrs[:end])
+      set_option(attrs, self_attendee, :free)
+      attrs[:start] = new_dates.first
+      attrs[:end] = new_dates.last
+    else
+      raise "no factory option for: #{option}"
+    end
+  end
 
   def set_dates(start_time, end_time, now, all_day = false)
     # Jiggery pokery that copies CLI Helpers logic
