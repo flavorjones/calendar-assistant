@@ -336,8 +336,8 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-28  <b> | 🗺 Esgaroth</b><i> (not-busy)</i>
-2018-09-28               <b> | 🗺 Wilderland</b><i> (not-busy)</i>
+2018-09-24 - 2018-09-28  <b> | 🗺 Ravenhill</b><i> (not-busy)</i>
+2018-09-28               <b> | 🗺 Ravenhill</b><i> (not-busy)</i>
 </pre>
 
 
@@ -364,28 +364,28 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-<strike>2018-10-01  03:30 - 05:00 | Deliver frictionless users</strike>
-<strike>2018-10-01  07:30 - 08:30 | Target wireless web services</strike>
-<strike>2018-10-01  07:30 - 08:30 | Aggregate killer infomediaries</strike>
-2018-10-01  10:30 - 10:55<b> | Benchmark web-enabled communities</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Harness wireless technologies</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Revolutionize extensible e-tailers</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Generate ubiquitous systems</strike>
-2018-10-01  12:00 - 12:30<b> | Generate front-end infomediaries</b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Envisioneer collaborative infomediaries</strike>
-<strike>2018-10-01  12:30 - 13:30 | Embrace sticky infomediaries</strike>
-2018-10-01  12:30 - 13:30<b> | Matrix cutting-edge applications</b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Orchestrate revolutionary web services</b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Matrix mission-critical initiatives</strike>
-2018-10-01  15:00 - 15:30<b> | Matrix magnetic applications</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Recontextualize killer applications</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Transform enterprise communities</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Redefine enterprise initiatives</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Synergize open-source users</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Morph frictionless e-services</strike>
-<strike>2018-10-01  18:30 - 19:00 | Enable user-centric applications</strike>
-<strike>2018-10-01  19:00 - 19:30 | Streamline 24/7 e-services</strike>
-2018-10-01               <b> | 🗺 Long Lake</b><i> (not-busy)</i>
+<strike>2018-10-01  03:30 - 05:00 | Incubate front-end bandwidth</strike>
+<strike>2018-10-01  07:30 - 08:30 | Cultivate dot-com vortals</strike>
+<strike>2018-10-01  07:30 - 08:30 | Monetize next-generation eyeballs</strike>
+2018-10-01  10:30 - 10:55<b> | Facilitate out-of-the-box deliverables</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Syndicate plug-and-play systems</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Facilitate bricks-and-clicks methodologies</b><i> (1:1, recurring)</i>
+<strike>2018-10-01  11:50 - 12:00 | Deliver back-end experiences</strike>
+2018-10-01  12:00 - 12:30<b> | Unleash impactful models</b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Iterate magnetic supply-chains</strike>
+<strike>2018-10-01  12:30 - 13:30 | Recontextualize collaborative solutions</strike>
+2018-10-01  12:30 - 13:30<b> | Harness wireless deliverables</b><i> (recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Repurpose virtual channels</b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Harness front-end infrastructures</strike>
+2018-10-01  15:00 - 15:30<b> | Incentivize best-of-breed e-business</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Expedite cross-media users</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Leverage proactive channels</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Empower back-end mindshare</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Drive user-centric markets</b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Generate bleeding-edge supply-chains</strike>
+<strike>2018-10-01  18:30 - 19:00 | Redefine bricks-and-clicks e-services</strike>
+<strike>2018-10-01  19:00 - 19:30 | Implement enterprise infrastructures</strike>
+2018-10-01               <b> | 🗺 High Pass</b><i> (not-busy)</i>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -394,16 +394,15 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Benchmark web-enabled communities</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Harness wireless technologies</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Revolutionize extensible e-tailers</b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Matrix cutting-edge applications</b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Matrix magnetic applications</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Recontextualize killer applications</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Transform enterprise communities</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Redefine enterprise initiatives</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Synergize open-source users</b><i> (1:1, recurring)</i>
-2018-10-01               <b> | 🗺 Long Lake</b><i> (not-busy)</i>
+2018-10-01  10:30 - 10:55<b> | Facilitate out-of-the-box deliverables</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Syndicate plug-and-play systems</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Facilitate bricks-and-clicks methodologies</b><i> (1:1, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Harness wireless deliverables</b><i> (recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Incentivize best-of-breed e-business</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Expedite cross-media users</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Leverage proactive channels</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Empower back-end mindshare</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Drive user-centric markets</b><i> (1:1, recurring)</i>
 </pre>
 
 

@@ -4,7 +4,7 @@ me@example.com:
     id: me@example.com
     time_zone: America/New_York
   :events:
-    8d6f849a-2012-474f-99e5-03c8aea1ef4e: !ruby/object:Google::Apis::CalendarV3::Event
+    6972e5c0-e00e-4e46-9874-2e8592f10cb1: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -16,11 +16,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 05:00:00.000000000 -04:00
-      id: 8d6f849a-2012-474f-99e5-03c8aea1ef4e
+      id: 6972e5c0-e00e-4e46-9874-2e8592f10cb1
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 03:30:00.000000000 -04:00
-      summary: Deliver frictionless users
-    fea05d4b-9d83-43d5-9663-ef8cd9247cf5: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Incubate front-end bandwidth
+    b9a31179-39fb-4032-9cc6-0bced3d917c1: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -32,11 +32,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 08:30:00.000000000 -04:00
-      id: fea05d4b-9d83-43d5-9663-ef8cd9247cf5
+      id: b9a31179-39fb-4032-9cc6-0bced3d917c1
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 07:30:00.000000000 -04:00
-      summary: Target wireless web services
-    3c6dd3e1-3ec4-4699-a7a1-d85eacc85765: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Cultivate dot-com vortals
+    e6716a7a-6714-4ba1-b074-47b10aa1ea17: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -48,28 +48,28 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 08:30:00.000000000 -04:00
-      id: 3c6dd3e1-3ec4-4699-a7a1-d85eacc85765
+      id: e6716a7a-6714-4ba1-b074-47b10aa1ea17
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 07:30:00.000000000 -04:00
-      summary: Aggregate killer infomediaries
-    a9f93700-dc06-46b3-b017-83bf85685a44: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Monetize next-generation eyeballs
+    c4d0ea4f-5314-49ea-a9cc-70ab2ad627d2: !ruby/object:Google::Apis::CalendarV3::Event
       attendees: 
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-02 09:00:00.000000000 -04:00
-      id: a9f93700-dc06-46b3-b017-83bf85685a44
+      id: c4d0ea4f-5314-49ea-a9cc-70ab2ad627d2
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-02 08:00:00.000000000 -04:00
-      summary: Harness synergistic channels
+      summary: Syndicate impactful users
       recurring_event_id: true
-    5d02b80d-e631-4768-95ac-a3dbe04ab4e9: !ruby/object:Google::Apis::CalendarV3::Event
+    fc2fbbd4-b237-4e26-992d-4318f7392d4f: !ruby/object:Google::Apis::CalendarV3::Event
       attendees: 
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 10:30:00.000000000 -04:00
-      id: 5d02b80d-e631-4768-95ac-a3dbe04ab4e9
+      id: fc2fbbd4-b237-4e26-992d-4318f7392d4f
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-02 09:00:00.000000000 -04:00
-      summary: E-enable user-centric niches
-    29215475-12c6-4e84-b1ed-ff6d39567b03: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Streamline best-of-breed infomediaries
+    b7dbc48c-af9d-40d4-85aa-274d3fde4b3b: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -78,12 +78,12 @@ me@example.com:
         id: 2
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 10:55:00.000000000 -04:00
-      id: 29215475-12c6-4e84-b1ed-ff6d39567b03
+      id: b7dbc48c-af9d-40d4-85aa-274d3fde4b3b
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 10:30:00.000000000 -04:00
-      summary: Benchmark web-enabled communities
+      summary: Facilitate out-of-the-box deliverables
       recurring_event_id: true
-    72555cad-6bb1-42c7-92a1-b886d6806bc0: !ruby/object:Google::Apis::CalendarV3::Event
+    dfe9b7a8-3507-4a78-9aeb-a7a3c9f08254: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -94,12 +94,12 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 11:30:00.000000000 -04:00
-      id: 72555cad-6bb1-42c7-92a1-b886d6806bc0
+      id: dfe9b7a8-3507-4a78-9aeb-a7a3c9f08254
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 11:00:00.000000000 -04:00
-      summary: Harness wireless technologies
+      summary: Syndicate plug-and-play systems
       recurring_event_id: true
-    e6c7a680-b45e-487c-b3ed-7507489a10e9: !ruby/object:Google::Apis::CalendarV3::Event
+    3ce63983-444e-4d66-a7a6-54e0d7e59c1f: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -108,12 +108,12 @@ me@example.com:
         id: 2
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 12:00:00.000000000 -04:00
-      id: e6c7a680-b45e-487c-b3ed-7507489a10e9
+      id: 3ce63983-444e-4d66-a7a6-54e0d7e59c1f
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 11:30:00.000000000 -04:00
-      summary: Revolutionize extensible e-tailers
+      summary: Facilitate bricks-and-clicks methodologies
       recurring_event_id: true
-    c2dd2e52-115b-4a6a-aa20-749a0dcfb166: !ruby/object:Google::Apis::CalendarV3::Event
+    c89b70db-c613-4b32-83f8-71b1be4c3071: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -125,19 +125,19 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 12:00:00.000000000 -04:00
-      id: c2dd2e52-115b-4a6a-aa20-749a0dcfb166
+      id: c89b70db-c613-4b32-83f8-71b1be4c3071
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 11:50:00.000000000 -04:00
-      summary: Generate ubiquitous systems
-    124d7af2-0815-4835-9cca-b4b243cfb8f1: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Deliver back-end experiences
+    f75d13a9-1529-4af9-a805-80b5e9105224: !ruby/object:Google::Apis::CalendarV3::Event
       attendees: 
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 12:30:00.000000000 -04:00
-      id: 124d7af2-0815-4835-9cca-b4b243cfb8f1
+      id: f75d13a9-1529-4af9-a805-80b5e9105224
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 12:00:00.000000000 -04:00
-      summary: Generate front-end infomediaries
-    c2a0e94d-218d-4a10-8a9a-339ef15225ad: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Unleash impactful models
+    aa0c7f5d-12b1-4df0-bb8c-0b10d27027fa: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -149,11 +149,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 12:30:00.000000000 -04:00
-      id: c2a0e94d-218d-4a10-8a9a-339ef15225ad
+      id: aa0c7f5d-12b1-4df0-bb8c-0b10d27027fa
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 12:15:00.000000000 -04:00
-      summary: Envisioneer collaborative infomediaries
-    9b42fecb-1e28-44b0-82b8-ebc3eec2e716: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Iterate magnetic supply-chains
+    7f76f80e-067f-4e15-8489-0a4c0a9e9cb0: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -165,11 +165,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 13:30:00.000000000 -04:00
-      id: 9b42fecb-1e28-44b0-82b8-ebc3eec2e716
+      id: 7f76f80e-067f-4e15-8489-0a4c0a9e9cb0
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 12:30:00.000000000 -04:00
-      summary: Embrace sticky infomediaries
-    ca723187-a4ba-4276-8df6-4018ec4ad22d: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Recontextualize collaborative solutions
+    d9c170a3-06ba-45c7-bb43-9561d628db5d: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -180,20 +180,20 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 13:30:00.000000000 -04:00
-      id: ca723187-a4ba-4276-8df6-4018ec4ad22d
+      id: d9c170a3-06ba-45c7-bb43-9561d628db5d
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 12:30:00.000000000 -04:00
-      summary: Matrix cutting-edge applications
+      summary: Harness wireless deliverables
       recurring_event_id: true
-    1b19c3e5-49ed-4b92-829d-cde9bacc5aab: !ruby/object:Google::Apis::CalendarV3::Event
+    39b97db9-546e-49fd-91db-97e81ed2318d: !ruby/object:Google::Apis::CalendarV3::Event
       attendees: 
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 14:50:00.000000000 -04:00
-      id: 1b19c3e5-49ed-4b92-829d-cde9bacc5aab
+      id: 39b97db9-546e-49fd-91db-97e81ed2318d
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 13:30:00.000000000 -04:00
-      summary: Orchestrate revolutionary web services
-    ed0b4c87-7c2a-4cf3-8737-2cc32d77a8db: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Repurpose virtual channels
+    611a1933-521a-46e6-9185-1811474d3f03: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -205,11 +205,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 14:30:00.000000000 -04:00
-      id: ed0b4c87-7c2a-4cf3-8737-2cc32d77a8db
+      id: 611a1933-521a-46e6-9185-1811474d3f03
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 13:30:00.000000000 -04:00
-      summary: Matrix mission-critical initiatives
-    580e28ce-615f-4801-937a-2c264978e821: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Harness front-end infrastructures
+    27ffc3f2-89b5-48f4-9762-56d9fec2708a: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -218,11 +218,11 @@ me@example.com:
         id: 2
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 15:30:00.000000000 -04:00
-      id: 580e28ce-615f-4801-937a-2c264978e821
+      id: 27ffc3f2-89b5-48f4-9762-56d9fec2708a
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 15:00:00.000000000 -04:00
-      summary: Matrix magnetic applications
-    82eb8fdc-0b2f-4295-9602-4239f79d4782: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Incentivize best-of-breed e-business
+    a29e6898-25bd-44fc-b5b1-c7fd27f72b01: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -231,12 +231,12 @@ me@example.com:
         id: 2
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 17:00:00.000000000 -04:00
-      id: 82eb8fdc-0b2f-4295-9602-4239f79d4782
+      id: a29e6898-25bd-44fc-b5b1-c7fd27f72b01
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 16:00:00.000000000 -04:00
-      summary: Recontextualize killer applications
+      summary: Expedite cross-media users
       recurring_event_id: true
-    41e94782-1d1f-4be3-9fb8-080138e08a52: !ruby/object:Google::Apis::CalendarV3::Event
+    12fb1879-c024-4bc4-a034-fc59cf05bf06: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -247,12 +247,12 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 17:00:00.000000000 -04:00
-      id: 41e94782-1d1f-4be3-9fb8-080138e08a52
+      id: 12fb1879-c024-4bc4-a034-fc59cf05bf06
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 16:45:00.000000000 -04:00
-      summary: Transform enterprise communities
+      summary: Leverage proactive channels
       recurring_event_id: true
-    649a6ae0-9b0c-4ea3-8eba-2d42d0a0fb51: !ruby/object:Google::Apis::CalendarV3::Event
+    e875c74f-a60c-4545-aed0-74b1e47a39c7: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -263,12 +263,12 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 17:30:00.000000000 -04:00
-      id: 649a6ae0-9b0c-4ea3-8eba-2d42d0a0fb51
+      id: e875c74f-a60c-4545-aed0-74b1e47a39c7
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 17:00:00.000000000 -04:00
-      summary: Redefine enterprise initiatives
+      summary: Empower back-end mindshare
       recurring_event_id: true
-    7dab410a-837a-421a-a8bc-1716a478eca2: !ruby/object:Google::Apis::CalendarV3::Event
+    f67538f6-3bca-448a-86f1-bf4375380e3d: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -277,12 +277,12 @@ me@example.com:
         id: 2
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 17:55:00.000000000 -04:00
-      id: 7dab410a-837a-421a-a8bc-1716a478eca2
+      id: f67538f6-3bca-448a-86f1-bf4375380e3d
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 17:30:00.000000000 -04:00
-      summary: Synergize open-source users
+      summary: Drive user-centric markets
       recurring_event_id: true
-    d6ceca2e-69a8-441b-9420-36943c73ea63: !ruby/object:Google::Apis::CalendarV3::Event
+    edad0779-b5b0-4a3e-a0a6-64e274ecef3d: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -294,11 +294,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 20:30:00.000000000 -04:00
-      id: d6ceca2e-69a8-441b-9420-36943c73ea63
+      id: edad0779-b5b0-4a3e-a0a6-64e274ecef3d
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 18:00:00.000000000 -04:00
-      summary: Morph frictionless e-services
-    a2e00b95-141c-413e-b3be-a624f782b4e9: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Generate bleeding-edge supply-chains
+    dc8986b5-d160-4a81-88ca-af5643c9cfce: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -310,11 +310,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 19:00:00.000000000 -04:00
-      id: a2e00b95-141c-413e-b3be-a624f782b4e9
+      id: dc8986b5-d160-4a81-88ca-af5643c9cfce
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 18:30:00.000000000 -04:00
-      summary: Enable user-centric applications
-    d9842ae3-b79c-4004-9c54-230a7adf34e7: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Redefine bricks-and-clicks e-services
+    04f0c852-5932-420d-9e54-3e6821fc5cf0: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -326,11 +326,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 19:30:00.000000000 -04:00
-      id: d9842ae3-b79c-4004-9c54-230a7adf34e7
+      id: 04f0c852-5932-420d-9e54-3e6821fc5cf0
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-10-01 19:00:00.000000000 -04:00
-      summary: Streamline 24/7 e-services
-    a058d3f5-7ad6-475b-b200-a1541d27af59: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Implement enterprise infrastructures
+    79124893-e1ae-46bb-8dcb-33d855cb434e: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -342,11 +342,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 13:30:00.000000000 -05:00
-      id: a058d3f5-7ad6-475b-b200-a1541d27af59
+      id: 79124893-e1ae-46bb-8dcb-33d855cb434e
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 10:00:00.000000000 -05:00
-      summary: Syndicate dot-com supply-chains
-    ae901b67-1677-4604-bf18-6aaadcc309e6: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Leverage cross-platform networks
+    ff5df751-4f2c-4697-902e-947b9698ef38: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -358,11 +358,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 15:30:00.000000000 -05:00
-      id: ae901b67-1677-4604-bf18-6aaadcc309e6
+      id: ff5df751-4f2c-4697-902e-947b9698ef38
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 14:30:00.000000000 -05:00
-      summary: Streamline cross-platform users
-    5e014452-72b7-41e0-a3dd-0870d9493ce1: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Empower global solutions
+    c904955c-4bf1-47d4-9b13-ade209e5a18d: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -374,11 +374,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 17:30:00.000000000 -05:00
-      id: 5e014452-72b7-41e0-a3dd-0870d9493ce1
+      id: c904955c-4bf1-47d4-9b13-ade209e5a18d
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 17:00:00.000000000 -05:00
-      summary: Transform revolutionary models
-    ded17c2c-f083-40de-94a1-d91f635764d5: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Whiteboard compelling synergies
+    89d1872b-237a-4156-be1f-898bbf793c46: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -390,11 +390,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-06 12:00:00.000000000 -05:00
-      id: ded17c2c-f083-40de-94a1-d91f635764d5
+      id: 89d1872b-237a-4156-be1f-898bbf793c46
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 09:00:00.000000000 -05:00
-      summary: Architect killer networks
-    1d9576ce-3c63-4785-8728-d8eedf46cd6d: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Iterate wireless mindshare
+    0e44cc9f-050f-4630-8c22-b25f2d756d7f: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -406,11 +406,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-06 16:50:00.000000000 -05:00
-      id: 1d9576ce-3c63-4785-8728-d8eedf46cd6d
+      id: 0e44cc9f-050f-4630-8c22-b25f2d756d7f
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-06 16:30:00.000000000 -05:00
-      summary: Aggregate robust e-business
-    2a4420c2-25d7-47c7-bcc8-258994b4a074: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Optimize visionary e-commerce
+    d40d9151-f625-4718-833c-2aadcd971a67: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -422,11 +422,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-08 09:30:00.000000000 -05:00
-      id: 2a4420c2-25d7-47c7-bcc8-258994b4a074
+      id: d40d9151-f625-4718-833c-2aadcd971a67
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-08 08:30:00.000000000 -05:00
-      summary: Revolutionize sexy vortals
-    5ec5bda8-7825-47bd-9df3-5e5e5fd9d4cd: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Brand dynamic e-tailers
+    8e3fa4b5-194d-47e8-b025-142019110342: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -438,11 +438,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 15:30:00.000000000 -05:00
-      id: 5ec5bda8-7825-47bd-9df3-5e5e5fd9d4cd
+      id: 8e3fa4b5-194d-47e8-b025-142019110342
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 14:30:00.000000000 -05:00
-      summary: Transform strategic metrics
-    4e83a982-e463-44df-a102-02528201ded8: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Enhance turn-key bandwidth
+    04a66176-9314-46ae-8ba6-2183ea23b085: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -454,11 +454,11 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 17:30:00.000000000 -05:00
-      id: 4e83a982-e463-44df-a102-02528201ded8
+      id: 04a66176-9314-46ae-8ba6-2183ea23b085
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 15:00:00.000000000 -05:00
-      summary: Maximize bricks-and-clicks mindshare
-    e9b4d948-b300-4e8d-bfb9-51a439bbf524: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Drive synergistic bandwidth
+    '009cba0c-446c-4f9a-9817-188cb051f074': !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -470,64 +470,52 @@ me@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 10:15:00.000000000 -05:00
-      id: e9b4d948-b300-4e8d-bfb9-51a439bbf524
+      id: '009cba0c-446c-4f9a-9817-188cb051f074'
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 10:00:00.000000000 -05:00
-      summary: Leverage interactive relationships
-    bea4a86b-43da-4745-af95-1c457651ed5a: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Recontextualize virtual metrics
+    7e064bbf-eaa5-40f1-95fd-db0680b799dd: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
         self: true
-      - !ruby/object:Google::Apis::CalendarV3::EventAttendee
-        id: 3
-      - !ruby/object:Google::Apis::CalendarV3::EventAttendee
-        id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date: '2018-10-02'
-      id: bea4a86b-43da-4745-af95-1c457651ed5a
+      id: 7e064bbf-eaa5-40f1-95fd-db0680b799dd
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date: '2018-10-01'
-      summary: "\U0001F5FA Long Lake"
+      summary: "\U0001F5FA High Pass"
       transparency: transparent
-    fe3d711d-8b1c-4fa1-801d-bf630ba76d41: !ruby/object:Google::Apis::CalendarV3::Event
+    82971de9-eab1-4268-8148-ded494b87b2c: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
         self: true
-      - !ruby/object:Google::Apis::CalendarV3::EventAttendee
-        id: 3
-      - !ruby/object:Google::Apis::CalendarV3::EventAttendee
-        id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date: '2018-09-29'
-      id: fe3d711d-8b1c-4fa1-801d-bf630ba76d41
+      id: 82971de9-eab1-4268-8148-ded494b87b2c
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date: '2018-09-24'
-      summary: "\U0001F5FA Esgaroth"
+      summary: "\U0001F5FA Ravenhill"
       transparency: transparent
-    a38b561f-28a5-4aae-b0bd-8ffb778bbf1a: !ruby/object:Google::Apis::CalendarV3::Event
+    03e912d1-5b9a-42c4-95dc-abd2427b10ae: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
         self: true
-      - !ruby/object:Google::Apis::CalendarV3::EventAttendee
-        id: 3
-      - !ruby/object:Google::Apis::CalendarV3::EventAttendee
-        id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date: '2018-09-29'
-      id: a38b561f-28a5-4aae-b0bd-8ffb778bbf1a
+      id: 03e912d1-5b9a-42c4-95dc-abd2427b10ae
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date: '2018-09-28'
-      summary: "\U0001F5FA Wilderland"
+      summary: "\U0001F5FA Ravenhill"
       transparency: transparent
 other@example.com:
   :calendar: !ruby/object:Google::Apis::CalendarV3::Calendar
     id: other@example.com
     time_zone: America/Los_Angeles
   :events:
-    c0c7880c-4308-49b4-86c7-5af3dfb8e4c8: !ruby/object:Google::Apis::CalendarV3::Event
+    f747ea19-febb-426e-a1b8-d9a0bc2cab7c: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -539,11 +527,11 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 13:30:00.000000000 -08:00
-      id: c0c7880c-4308-49b4-86c7-5af3dfb8e4c8
+      id: f747ea19-febb-426e-a1b8-d9a0bc2cab7c
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 10:00:00.000000000 -08:00
-      summary: Morph efficient functionalities
-    75d66145-4a3b-45f6-93e3-25c7af0c2dd6: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Deploy cutting-edge infrastructures
+    f0457a48-4ace-4331-8a31-590ddc2153e1: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -555,11 +543,11 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 15:30:00.000000000 -08:00
-      id: 75d66145-4a3b-45f6-93e3-25c7af0c2dd6
+      id: f0457a48-4ace-4331-8a31-590ddc2153e1
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 14:30:00.000000000 -08:00
-      summary: Scale revolutionary networks
-    a37a2fa9-9edc-404f-ae49-d2c97b493ffe: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Implement 24/7 schemas
+    152df7c1-771f-4549-b67a-0cda17571699: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -571,11 +559,11 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 17:30:00.000000000 -08:00
-      id: a37a2fa9-9edc-404f-ae49-d2c97b493ffe
+      id: 152df7c1-771f-4549-b67a-0cda17571699
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-05 17:00:00.000000000 -08:00
-      summary: Engineer web-enabled experiences
-    cbcd4dd7-97ec-429a-bfe7-76d5c223a11c: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Implement integrated infomediaries
+    f11ff141-530a-4122-be30-81271fea33ce: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -587,11 +575,11 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-06 12:00:00.000000000 -08:00
-      id: cbcd4dd7-97ec-429a-bfe7-76d5c223a11c
+      id: f11ff141-530a-4122-be30-81271fea33ce
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 09:00:00.000000000 -08:00
-      summary: Transition plug-and-play synergies
-    bc0610e6-2855-468f-97df-a8d733f3b8d6: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Evolve 24/365 e-services
+    c3f82093-1b37-456d-af3e-75593d84ee74: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -603,11 +591,11 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-06 16:50:00.000000000 -08:00
-      id: bc0610e6-2855-468f-97df-a8d733f3b8d6
+      id: c3f82093-1b37-456d-af3e-75593d84ee74
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-06 16:30:00.000000000 -08:00
-      summary: Facilitate collaborative e-commerce
-    b6646da5-eb3e-47bb-a5e8-b1832c903092: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Productize dot-com partnerships
+    4fdcf25a-c45b-4c16-8e89-5072950b8e8b: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -619,11 +607,11 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-08 09:30:00.000000000 -08:00
-      id: b6646da5-eb3e-47bb-a5e8-b1832c903092
+      id: 4fdcf25a-c45b-4c16-8e89-5072950b8e8b
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-08 08:30:00.000000000 -08:00
-      summary: Drive interactive infomediaries
-    baef85bf-a79d-4a38-a819-52fffb3f8b72: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Strategize intuitive deliverables
+    d591cdf6-e99e-4b7a-8c47-a682d2c1158b: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -635,11 +623,11 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 15:30:00.000000000 -08:00
-      id: baef85bf-a79d-4a38-a819-52fffb3f8b72
+      id: d591cdf6-e99e-4b7a-8c47-a682d2c1158b
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 14:30:00.000000000 -08:00
-      summary: Whiteboard integrated metrics
-    a9b54ecd-0ca5-439a-933b-3ecfb97e9c7f: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Integrate customized niches
+    5844aba9-a82d-4d65-9183-82253a0234af: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -651,11 +639,11 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 17:30:00.000000000 -08:00
-      id: a9b54ecd-0ca5-439a-933b-3ecfb97e9c7f
+      id: 5844aba9-a82d-4d65-9183-82253a0234af
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 15:00:00.000000000 -08:00
-      summary: Morph mission-critical convergence
-    1d660575-d53c-49c2-8f57-6480596eefd1: !ruby/object:Google::Apis::CalendarV3::Event
+      summary: Engage dot-com functionalities
+    42b38177-d833-4ea7-8f9d-ebc63120a109: !ruby/object:Google::Apis::CalendarV3::Event
       attendees:
       - !ruby/object:Google::Apis::CalendarV3::EventAttendee
         id: 1
@@ -667,7 +655,7 @@ other@example.com:
         id: 4
       end: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 10:15:00.000000000 -08:00
-      id: 1d660575-d53c-49c2-8f57-6480596eefd1
+      id: 42b38177-d833-4ea7-8f9d-ebc63120a109
       start: !ruby/object:Google::Apis::CalendarV3::EventDateTime
         date_time: !ruby/object:DateTime 2018-11-07 10:00:00.000000000 -08:00
-      summary: Deliver ubiquitous roi
+      summary: Whiteboard mission-critical initiatives

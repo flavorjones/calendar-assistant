@@ -165,6 +165,10 @@ describe EventFactory do
             let(:attributes) { {start: Time.now.to_s, options: option} }
 
             it { is_expected.to_not be_busy }
+            it 'has only one attendee, the self' do
+              expect(subject.attendees.length).to eq 1
+              expect(subject.attendees[0].self).to be_truthy
+            end
           end
 
           describe "not self and not one_on_one" do

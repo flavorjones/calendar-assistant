@@ -38,7 +38,7 @@ class EventFactory
           set_option(attrs, self_attendee, option)
         end
 
-        if (options & [:self, :one_on_one]).empty?
+        if (options & [:self, :one_on_one, :location_event]).empty?
           attrs[:attendees] += [
               Google::Apis::CalendarV3::EventAttendee.new(id: 3),
               Google::Apis::CalendarV3::EventAttendee.new(id: 4)
