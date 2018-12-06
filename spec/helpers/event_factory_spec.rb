@@ -144,6 +144,18 @@ describe EventFactory do
             end
           end
 
+          describe "busy" do
+            context "when set" do
+              let(:attributes) { {start: Time.now.to_s, options: :busy} }
+              it { is_expected.to be_busy }
+            end
+
+            context "when deliberately not set" do
+              let(:attributes) { {start: Time.now.to_s, options: :free} }
+              it { is_expected.not_to be_busy }
+            end
+          end
+
           describe "location event" do
             it_behaves_like "an option that translates to a predicate" do
               let(:option) { :location_event }

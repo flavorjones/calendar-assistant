@@ -51,6 +51,10 @@ class EventFactory
             self_attendee.response_status = CalendarAssistant::Event::Response::TENTATIVE
           when :private
             attrs[:visibility] = CalendarAssistant::Event::Visibility::PRIVATE
+          when :free
+            attrs[:transparency] =  CalendarAssistant::Event::Transparency::TRANSPARENT
+          when :busy
+            attrs[:transparency] =  CalendarAssistant::Event::Transparency::OPAQUE
           when :location_event
             attrs[:summary] = "#{CalendarAssistant::EMOJI_WORLDMAP} #{ attrs[:summary] || "Zanzibar" }"
             attrs[:transparency] = CalendarAssistant::Event::Transparency::TRANSPARENT
