@@ -160,12 +160,12 @@ describe EventFactory do
             it_behaves_like "an option that translates to a predicate" do
               let(:option) { :location_event }
             end
+          end
 
-            describe "not self and not one_on_one" do
-              let(:attributes) { {} }
-              it "should have more than 2 attendees" do
-                expect(subject.attendees.length).to be > 2
-              end
+          describe "not self and not one_on_one" do
+            let(:attributes) { {} }
+            it "should have more than 2 attendees" do
+              expect(subject.attendees.length).to be > 2
             end
           end
         end
