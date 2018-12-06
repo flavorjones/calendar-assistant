@@ -8,7 +8,7 @@ class CalendarAssistant
     def self.select_busy_events event_set
       dates_events = Hash.new
       event_set.events.each do |event|
-        if event.private? || event.accepted? || event.self?
+        if event.private? || event.accepted? || event.self? || (event.all_day? && event.busy?)
           date = event.start_date
           dates_events[date] ||= []
           dates_events[date] << event

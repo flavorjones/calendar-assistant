@@ -12,7 +12,8 @@ describe CalendarAssistant::Scheduler do
               {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "private", options: :private},
               {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "yeah", options: :self},
               {start: "2018-01-03 9am", end: "2018-01-03 10am", summary: "sure", options: :self},
-              {start: "2018-01-04 9am", end: "2018-01-04 10am", summary: "ignore this date", options: :declined}
+              {start: "2018-01-04 9am", end: "2018-01-04 10am", summary: "ignore this date", options: :declined},
+              {start: "2018-01-07", end: "2018-01-09", summary: "this is an all day busy event", options: [:all_day, :busy] }
           ]
         end
       end
@@ -30,7 +31,11 @@ describe CalendarAssistant::Scheduler do
               ],
               Date.parse("2018-01-03") => [
                   {start: "2018-01-03 9am", end: "2018-01-03 10am", summary: "sure", options: :self}
+              ],
+              Date.parse("2018-01-07") => [
+                  {start: "2018-01-07", end: "2018-01-09", summary: "this is an all day busy event", options: [:all_day, :busy] }
               ]
+
           }
         end
       end
