@@ -432,8 +432,8 @@ describe CalendarAssistant::CLIHelpers do
         end
 
         it "prints out the time range of each free block" do
-          expect(stdout).to receive(:puts).with(/ •  9:00am - 10:00am \+12.*(1h)/)
-          expect(stdout).to receive(:puts).with(/ • 12:30pm -  2:00pm \+12.*(1h 30m)/)
+          expect(stdout).to receive(:puts).with(/ •  9:00am - 10:00am.*(1h)/)
+          expect(stdout).to receive(:puts).with(/ • 12:30pm -  2:00pm.*(1h 30m)/)
           subject.print_available_blocks ca, event_set
         end
 
