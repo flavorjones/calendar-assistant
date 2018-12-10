@@ -151,6 +151,11 @@ describe EventFactory do
             end
 
             context "when deliberately not set" do
+              let(:attributes) { {start: Time.now.to_s} }
+              it { is_expected.to be_busy }
+            end
+
+            context "when set to free" do
               let(:attributes) { {start: Time.now.to_s, options: :free} }
               it { is_expected.not_to be_busy }
             end
