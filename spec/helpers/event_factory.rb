@@ -118,8 +118,8 @@ class EventFactory
 
   def date_parse(attr, now)
     parsed = Chronic.parse(attr, now: now)
-    return parsed.to_datetime if parsed.respond_to?(:to_datetime)
-    parsed
+    return nil if parsed.nil?
+    parsed.to_datetime
   end
 
   def wrap(object)
