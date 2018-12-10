@@ -33,8 +33,6 @@ describe EventFactory do
       end
     end
 
-
-
     let(:events) { event_factory.for(default_attributes) { attributes } }
 
     describe "id" do
@@ -163,14 +161,13 @@ describe EventFactory do
 
           describe "location event" do
             let(:option) { :location_event }
-
-            subject { events.first }
-            it_behaves_like "an option that translates to a predicate"
-
             let(:attributes) { {start: Time.now.to_s, options: option} }
 
+            it_behaves_like "an option that translates to a predicate"
+
             it { is_expected.to_not be_busy }
-            it 'has only one attendee, the self' do
+
+            it "has only one attendee, the self" do
               expect(subject.attendees.length).to eq 1
               expect(subject.attendees[0].self).to be_truthy
             end
