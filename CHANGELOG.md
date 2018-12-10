@@ -1,10 +1,11 @@
 # Changelog for Calendar Assistant
 
-## next / unreleased
+## v0.5.0 / 2018-12-10
 
 Features:
 
 - Chronic parse errors are now more user-friendly.
+- "availability": All-day events that show time as "busy" will be considered "unavailable time". [#54]
 
 
 ## v0.4.0 / 2018-11-30
