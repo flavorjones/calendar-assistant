@@ -58,7 +58,7 @@ describe CalendarAssistant::Scheduler do
       it "selects relevant events into a new event set" do
         raw_event_set = CalendarAssistant::EventSet.new instance_double("er"), raw_events
         cooked_event_set = described_class.select_busy_events raw_event_set
-        expect_event_set_hash_equalish CalendarAssistant::EventSet.new(instance_double("er"),cooked_events).events, cooked_event_set.events
+        expect_event_set_hash_equalish cooked_events, cooked_event_set.events
       end
     end
   end
