@@ -139,6 +139,11 @@ class CalendarAssistant
       return true
     end
 
+    def visible_guestlist?
+      gcsog = guests_can_see_other_guests?
+      gcsog.nil? ? true : !!gcsog
+    end
+
     def start_time
       if all_day?
         start_date.beginning_of_day

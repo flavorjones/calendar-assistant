@@ -580,6 +580,24 @@ describe CalendarAssistant::Event do
       end
     end
 
+    describe "#visible_guestlist?" do
+      context "is true" do
+        before { allow(subject).to receive(:guests_can_see_other_guests?).and_return(true) }
+
+        it { is_expected.to be_visible_guestlist }
+      end
+
+      context "is false" do
+        before { allow(subject).to receive(:guests_can_see_other_guests?).and_return(false) }
+
+        it { is_expected.to_not be_visible_guestlist }
+      end
+
+      context "by default" do
+        it { is_expected.to be_visible_guestlist }
+      end
+    end
+
     describe "#start_time" do
       context "all day event" do
         # test Date and String
