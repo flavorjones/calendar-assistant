@@ -349,6 +349,16 @@ describe CalendarAssistant::Event do
         it { is_expected.to_not be_abandoned }
       end
 
+      context "event with non-visible guestlist" do
+        let(:decorated_object) { decorated_class.new(attendees: [attendee_self]) }
+
+        before do
+          allow(subject).to receive(:visible_guestlist?).and_return(false)
+        end
+
+        it { is_expected.to_not be_abandoned }
+      end
+
       context "event with attendees including me" do
         let(:decorated_object) { decorated_class.new(attendees: attendees) }
 

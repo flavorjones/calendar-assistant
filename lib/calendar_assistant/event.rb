@@ -131,7 +131,7 @@ class CalendarAssistant
     end
 
     def abandoned?
-      return false if declined? || self? || response_status.nil?
+      return false if declined? || self? || response_status.nil? || !visible_guestlist?
       human_attendees.each do |attendee|
         next if attendee.self
         return false if attendee.response_status != CalendarAssistant::Event::Response::DECLINED
