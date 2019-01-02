@@ -49,6 +49,8 @@ class CalendarAssistant
     end
 
     class Out
+      EMOJI_WARN = "⚠"
+
       attr_reader :io
 
       def initialize io=STDOUT
@@ -192,6 +194,7 @@ class CalendarAssistant
           attributes << "1:1" if event.one_on_one?
           attributes << "awaiting" if event.awaiting?
           attributes << "tentative" if event.tentative?
+          attributes << Rainbow(sprintf(" %s abandoned %s ", EMOJI_WARN, EMOJI_WARN)).red.bold.inverse if event.abandoned?
         end
 
         attributes << event.visibility if event.explicit_visibility?

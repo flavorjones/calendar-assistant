@@ -130,6 +130,15 @@ class CalendarAssistant
       !!recurring_event_id
     end
 
+    def abandoned?
+      return false if declined? || self? || response_status.nil?
+      human_attendees.each do |attendee|
+        next if attendee.self
+        return false if attendee.response_status != CalendarAssistant::Event::Response::DECLINED
+      end
+      return true
+    end
+
     def start_time
       if all_day?
         start_date.beginning_of_day

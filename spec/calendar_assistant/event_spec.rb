@@ -344,6 +344,58 @@ describe CalendarAssistant::Event do
       end
     end
 
+    describe "#abandoned?" do
+      context "event with no attendees" do
+        it { is_expected.to_not be_abandoned }
+      end
+
+      context "event with attendees including me" do
+        let(:decorated_object) { decorated_class.new(attendees: attendees) }
+
+        (CalendarAssistant::Event::RealResponse.constants).each do |response_status_name|
+          context "others' response status is #{response_status_name}" do
+            before do
+              attendees.each do |attendee|
+                next if attendee == attendee_self
+                allow(attendee).to receive(:response_status).
+                                     and_return(CalendarAssistant::Event::Response.const_get(response_status_name))
+              end
+            end
+
+            (CalendarAssistant::Event::RealResponse.constants).each do |my_response_status_name|
+              context "my response status is #{my_response_status_name}" do
+                before do
+                  allow(attendee_self).to receive(:response_status).
+                                            and_return(CalendarAssistant::Event::Response.const_get(my_response_status_name))
+                end
+
+                if CalendarAssistant::Event::Response.const_get(my_response_status_name) == CalendarAssistant::Event::RealResponse::DECLINED
+                  it { is_expected.to_not be_abandoned }
+                elsif CalendarAssistant::Event::Response.const_get(response_status_name) == CalendarAssistant::Event::RealResponse::DECLINED
+                  it { is_expected.to be_abandoned }
+                else
+                  it { is_expected.to_not be_abandoned }
+                end
+              end
+            end
+          end
+        end
+      end
+
+      context "event without me but with attendees who all declined" do
+        let(:decorated_object) { decorated_class.new(attendees: attendees - [attendee_self]) }
+
+        before do
+          decorated_object.attendees.each do |attendee|
+            allow(attendee).to receive(:response_status).
+                                 and_return(CalendarAssistant::Event::RealResponse::DECLINED)
+          end
+        end
+
+        it { is_expected.to_not be_abandoned }
+      end
+    end
+
     describe "#one_on_one?" do
       context "event with no attendees" do
         it { is_expected.not_to be_one_on_one }
