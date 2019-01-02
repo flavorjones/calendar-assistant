@@ -545,25 +545,25 @@ describe CalendarAssistant::Event do
       end
     end
 
-    describe "#explicit_visibility?" do
+    describe "#explicitly_visible?" do
       context "when visibility is private" do
         let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
-        it { is_expected.to be_explicit_visibility }
+        it { is_expected.to be_explicitly_visible }
       end
 
       context "when visibility is public" do
         let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PUBLIC) }
-        it { is_expected.to be_explicit_visibility }
+        it { is_expected.to be_explicitly_visible }
       end
 
       context "when visibility is default" do
         let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::DEFAULT) }
-        it { is_expected.not_to be_explicit_visibility }
+        it { is_expected.not_to be_explicitly_visible }
       end
 
       context "when visibility is nil" do
         let(:decorated_object) { decorated_class.new(visibility: nil) }
-        it { is_expected.not_to be_explicit_visibility }
+        it { is_expected.not_to be_explicitly_visible }
       end
     end
 

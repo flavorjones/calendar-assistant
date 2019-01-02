@@ -197,7 +197,7 @@ class CalendarAssistant
           attributes << Rainbow(sprintf(" %s abandoned %s ", EMOJI_WARN, EMOJI_WARN)).red.bold.inverse if event.abandoned?
         end
 
-        attributes << event.visibility if event.explicit_visibility?
+        attributes << event.visibility if event.explicitly_visible?
 
         s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
 

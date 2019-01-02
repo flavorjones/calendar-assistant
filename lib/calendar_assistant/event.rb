@@ -122,7 +122,7 @@ class CalendarAssistant
       visibility == CalendarAssistant::Event::Visibility::PUBLIC
     end
 
-    def explicit_visibility?
+    def explicitly_visible?
       private? || public?
     end
 
