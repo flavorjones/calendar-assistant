@@ -1,5 +1,12 @@
 # Changelog for Calendar Assistant
 
+## v0.6.0 / 2019-01-01
+
+Features:
+
+- "show": highlights events which have been declined by everybody but you ("abandoned")
+
+
 ## v0.5.0 / 2018-12-10
 
 Features:
