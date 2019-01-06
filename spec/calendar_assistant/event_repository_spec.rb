@@ -30,9 +30,31 @@ describe CalendarAssistant::EventRepository do
   end
 
   describe "#initialize" do
-    it "fetches a Calendar for the stated id" do
-      expect(service).to receive(:get_calendar).with(calendar_id).and_return(calendar)
-      described_class.new(service, calendar_id)
+    context "when the calendar id exists" do
+      it "fetches a Calendar for the stated id" do
+        expect(service).to receive(:get_calendar).with(calendar_id).and_return(calendar)
+        described_class.new(service, calendar_id)
+      end
+    end
+
+    context "when a client error occurs" do
+      let(:exception) { Google::Apis::ClientError.new("bleep bloop", status_code: status_code) }
+
+      context "and its that the calendar does not exist" do
+        let(:status_code) { 404 }
+        it "raises a CalendarAssistant::BaseException" do
+          expect(service).to receive(:get_calendar).with(calendar_id).and_raise(exception)
+          expect {described_class.new(service, calendar_id)}.to raise_error(CalendarAssistant::BaseException)
+        end
+      end
+
+      context "when some other client error occurs" do
+        let(:status_code) { 401 }
+        it "raises the original ClientError" do
+          expect(service).to receive(:get_calendar).with(calendar_id).and_raise(exception)
+          expect {described_class.new(service, calendar_id)}.to raise_error(exception)
+        end
+      end
     end
   end
 

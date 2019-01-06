@@ -6,6 +6,9 @@ class CalendarAssistant
       @service = service
       @calendar_id = calendar_id
       @calendar = @service.get_calendar @calendar_id
+    rescue Google::Apis::ClientError => e
+      raise BaseException, "Calendar for #{@calendar_id} not found" if e.status_code == 404
+      raise
     end
 
     def in_tz &block
