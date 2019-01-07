@@ -10,6 +10,7 @@ A command-line tool to help you manage your Google Calendar.
 
 [![Concourse CI](https://ci.nokogiri.org/api/v1/teams/calendar-assistants/pipelines/calendar-assistant/jobs/rake-spec/badge)](https://ci.nokogiri.org/teams/calendar-assistants/pipelines/calendar-assistant)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/maintainability)](https://codeclimate.com/github/flavorjones/calendar-assistant/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/test_coverage)](https://codeclimate.com/github/flavorjones/calendar-assistant/test_coverage)
 
 <!-- toc -->
 
