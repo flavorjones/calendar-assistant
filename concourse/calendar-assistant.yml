@@ -86,6 +86,7 @@ jobs:
             - name: calendar-assistant
           params:
             CC_TEST_REPORTER_ID: {{code_climate_reporter_id}}
+            GIT_BRANCH: master
           run:
             path: ci/concourse/tasks/rake-spec/run.sh
     on_failure: *notify_failure_to_slack
