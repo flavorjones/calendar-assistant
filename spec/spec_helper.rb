@@ -1,9 +1,13 @@
+require 'simplecov'
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
 require_relative "../lib/calendar_assistant"
 require_relative "./helpers/event_factory"
 
 require "timecop"
 require "securerandom"
-require 'simplecov'
 
 ENV["THOR_DEBUG"] = "1" # UGH THOR
 
@@ -138,5 +142,3 @@ RSpec::Matchers.define :event_date_time do |options|
     raise "only supports dates right now"
   end
 end
-
-SimpleCov.start
