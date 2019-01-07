@@ -19,10 +19,6 @@
 CC_CLI_URI="https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64"
 CC_CLI=$(basename ${CC_CLI_URI})
 
-function concourse-build-url {
-  echo "${ATC_EXTERNAL_URL}/teams/${BUILD_TEAM_NAME}/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
-}
-
 function code-climate-setup {
   if [ -z "${CC_TEST_REPORTER_ID:-}" ] ; then
     echo "WARNING: code-climate-setup: CC_TEST_REPORTER_ID is not set, skipping."
@@ -34,10 +30,6 @@ function code-climate-setup {
 
   export CI_NAME="concourse"
 
-  if [ ! -z "${BUILD_ID:-}" ] ; then
-    export CI_BUILD_ID="${BUILD_ID}"
-    export CI_BUILD_URL=$(concourse-build-url)
-  fi
   ./${CC_CLI} env
   ./${CC_CLI} before-build
 }
