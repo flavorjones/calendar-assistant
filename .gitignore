@@ -1,5 +1,5 @@
-credentials.json
 Gemfile.lock
+concourse/calendar-assistant.final.yml
+credentials.json
 node_modules
 package-lock.json
-concourse/calendar-assistant.final.yml

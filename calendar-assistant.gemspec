@@ -24,21 +24,21 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "google-api-client", "~> 0.24.0"
+  spec.add_dependency "activesupport", "~> 5.2.1"
+  spec.add_dependency "business_time", "~> 0.9.0"
   spec.add_dependency "chronic", "~> 0.10.0"
   spec.add_dependency "chronic_duration", "~> 0.10.0"
-  spec.add_dependency "thor", "~> 0.20.0"
-  spec.add_dependency "business_time", "~> 0.9.0"
-  spec.add_dependency "rainbow", "~> 3.0"
+  spec.add_dependency "google-api-client", "~> 0.24.0"
   spec.add_dependency "launchy", "~> 2.4"
+  spec.add_dependency "rainbow", "~> 3.0"
+  spec.add_dependency "thor", "~> 0.20.0"
   spec.add_dependency "toml", "~> 0.2.0"
-  spec.add_dependency "activesupport", "~> 5.2.1"
 
-  spec.add_development_dependency "concourse"
   spec.add_development_dependency "bundler", "~> 1.16"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "concourse"
   spec.add_development_dependency "faker", "~> 1.9.1"
+  spec.add_development_dependency "license_finder", "~> 5.5.0"
+  spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "timecop", "~> 0.9.0"
-  spec.add_development_dependency "license_finder", "~> 5.5.0"
 end
