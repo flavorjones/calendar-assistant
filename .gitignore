@@ -1,4 +1,5 @@
 Gemfile.lock
+coverage
 concourse/calendar-assistant.final.yml
 credentials.json
 node_modules
