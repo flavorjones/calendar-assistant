@@ -67,8 +67,7 @@ describe CalendarAssistant::Scheduler do
     let(:scheduler) { described_class.new ca, er }
     let(:config) { CalendarAssistant::Config.new options: config_options }
     let(:config_options) { Hash.new }
-    let(:ca) { CalendarAssistant.new config }
-    let(:authorizer) { instance_double("Authorizer") }
+    let(:ca) { CalendarAssistant.new config, service: service }
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
     let(:time_zone) { ENV['TZ'] }
@@ -80,8 +79,6 @@ describe CalendarAssistant::Scheduler do
     let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "2018-01-01..2018-01-03" }
 
     before do
-      allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
-      allow(authorizer).to receive(:service).and_return(service)
       allow(service).to receive(:get_calendar).and_return(calendar)
       allow(calendar).to receive(:time_zone).and_return(time_zone)
       allow(config).to receive(:profile_name).and_return("profile-name")

@@ -8,11 +8,6 @@ class CalendarAssistant
 
   attr_reader :service, :calendar, :config
 
-  def self.authorize profile_name
-    config = CalendarAssistant::Config.new
-    Authorizer.new(profile_name, config.token_store).authorize
-  end
-
   def self.date_range_cast time_range
     time_range.first.to_date..(time_range.last + 1.day).to_date
   end
@@ -35,14 +30,11 @@ class CalendarAssistant
 
 
   def initialize config=Config.new,
-                 event_repository_factory: EventRepositoryFactory
+                 event_repository_factory: EventRepositoryFactory,
+                 service:
     @config = config
+    @service = service
 
-    if filename = config.setting(Config::Keys::Options::LOCAL_STORE)
-      @service = CalendarAssistant::LocalService.new(file: filename)
-    else
-      @service = Authorizer.new(config.profile_name, config.token_store).service
-    end
     @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
     @event_repositories = {} # calendar_id → event_repository

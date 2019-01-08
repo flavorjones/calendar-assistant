@@ -30,15 +30,23 @@ describe CalendarAssistant::CLI::Commands do
   let(:event_set) {CalendarAssistant::EventSet.new er, events}
   let(:out) {double("STDOUT")}
   let(:time_range) {double("time range")}
-  let(:config) {instance_double("CalendarAssistant::Config")}
+  let(:config) {CalendarAssistant::Config.new options: config_options}
   let(:config_options) {Hash.new}
 
+  let(:service) {instance_double("CalendarService")}
+  let(:token_store) {instance_double("CalendarAssistant::Config::TokenStore")}
+  let(:authorizer) {instance_double("Authorizer")}
+
   before do
+    allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
+    allow(config).to receive(:token_store).and_return(token_store)
+    allow(config).to receive(:profile_name).and_return("profile-name")
+    allow(authorizer).to receive(:service).and_return(service)
+
     allow(CalendarAssistant::Config).to receive(:new).with(options: {}).and_return(config)
-    allow(CalendarAssistant).to receive(:new).with(config).and_return(ca)
+    allow(CalendarAssistant).to receive(:new).with(config, service: service).and_return(ca)
     allow(CalendarAssistant::CLI::Printer).to receive(:new).and_return(out)
     allow(ca).to receive(:in_env).and_yield
-    allow(config).to receive(:options).and_return(config_options)
   end
 
   describe "version" do
@@ -236,7 +244,7 @@ describe CalendarAssistant::CLI::Commands do
             with(options: {
                 CalendarAssistant::Config::Keys::Options::JOIN => true,
                 CalendarAssistant::Config::Keys::Settings::PROFILE => "work",
-            }).and_return(config)
+            }).at_least(:once).and_return(config)
 
         allow(ca).to receive(:find_events).and_return(CalendarAssistant::EventSet.new(er, []))
 
@@ -286,6 +294,7 @@ describe CalendarAssistant::CLI::Commands do
         it "does not launch the meeting URL in your browser" do
           expect(CalendarAssistant::Config).to receive(:new).
               with(options: {CalendarAssistant::Config::Keys::Options::JOIN => false}).
+              at_least(:once).
               and_return(config)
           expect(out).not_to receive(:launch).with(url)
 

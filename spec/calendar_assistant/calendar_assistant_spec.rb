@@ -12,20 +12,6 @@ describe CalendarAssistant do
       end
     end
 
-    describe ".authorize" do
-      let(:authorizer) { instance_double("Authorizer") }
-
-      it "calls through to the Authorize class" do
-        expect(CalendarAssistant::Authorizer).to(
-          receive(:new).
-            with("profile", instance_of(CalendarAssistant::Config::TokenStore)).
-            and_return(authorizer)
-        )
-        expect(authorizer).to receive(:authorize)
-        CalendarAssistant.authorize("profile")
-      end
-    end
-
     describe ".in_tz" do
       it "sets the timezone and restores it" do
         Time.zone = "Pacific/Fiji"
@@ -53,50 +39,19 @@ describe CalendarAssistant do
     end
   end
 
-  describe "using the local file store" do
-    with_temp_file("filestore", :temp_filestore_file)
-
-    let(:ca) { CalendarAssistant.new config }
-    let(:filename) { temp_filestore_file.path }
-    let(:config) { CalendarAssistant::Config.new options: config_options }
-    let(:config_options) { {CalendarAssistant::Config::Keys::Options::LOCAL_STORE => filename} }
-
-    before do
-      event_list_factory(file: filename, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID) do
-        [
-            {start: "10:00", end: "11:00", options: [:recurring, :self], id: "eminently beautiful"},
-            {start: "10:00", end: "11:00", options: [:recurring]},
-            {start: "10:00", end: "11:00", summary: "test", options: [:recurring, :one_on_one]}
-        ]
-      end
-    end
-
-    it "reads from those events" do
-      results = ca.find_events(Time.now.beginning_of_day..(Time.now + 1.day))
-      expect(results.events.length).to eq 3
-      expect(results.events.first.id).to eq "eminently beautiful"
-    end
-  end
-
   describe "events" do
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
     let(:config) { CalendarAssistant::Config.new options: config_options }
     let(:config_options) { Hash.new }
-    let(:token_store) { instance_double("CalendarAssistant::Config::TokenStore") }
     let(:event_repository) { instance_double("EventRepository") }
     let(:event_repository_factory) { instance_double("EventRepositoryFactory") }
-    let(:ca) { CalendarAssistant.new config, event_repository_factory: event_repository_factory }
+    let(:ca) { CalendarAssistant.new config, service: service, event_repository_factory: event_repository_factory }
     let(:event_array) { [instance_double("Event"), instance_double("Event")] }
     let(:events) { instance_double("Events", :items => event_array ) }
-    let(:authorizer) { instance_double("Authorizer") }
     let(:event_set) { CalendarAssistant::EventSet.new(event_repository, []) }
 
     before do
-      allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
-      allow(config).to receive(:token_store).and_return(token_store)
-      allow(config).to receive(:profile_name).and_return("profile-name")
-      allow(authorizer).to receive(:service).and_return(service)
       allow(event_repository).to receive(:find).and_return(event_set)
       allow(service).to receive(:get_calendar).and_return(calendar)
       allow(event_repository_factory).to receive(:new_event_repository).and_return(event_repository)

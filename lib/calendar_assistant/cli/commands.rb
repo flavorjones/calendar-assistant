@@ -113,7 +113,7 @@ class CalendarAssistant
         return if handle_help_args
         return help! if profile_name.nil?
 
-        CalendarAssistant.authorize profile_name
+        get_authorizer(profile_name: profile_name)
         puts "\nYou're authorized!\n\n"
       end
 
@@ -144,7 +144,7 @@ class CalendarAssistant
 
       def join timespec = "now"
         return if handle_help_args
-        ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+        ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options), service: service
         ca.in_env do
           event_set, url = CalendarAssistant::CLI::Helpers.find_av_uri ca, timespec
           if !event_set.empty?
@@ -216,12 +216,31 @@ class CalendarAssistant
 
       private
 
+      def service
+        @service ||= begin
+          if filename = get_config.setting(Config::Keys::Options::LOCAL_STORE)
+            CalendarAssistant::LocalService.new(file: filename)
+          else
+            get_authorizer.service
+          end
+        end
+      end
+
+      def get_authorizer(profile_name: get_config.profile_name, token_store: get_config.token_store)
+        @authorizer ||= {}
+        @authorizer[profile_name] ||= Authorizer.new(profile_name, token_store)
+      end
+
       def calendar_assistant datespec = "today"
         return if handle_help_args
-        ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+        ca = CalendarAssistant.new(get_config, service: service)
         ca.in_env do
           yield(ca, CalendarAssistant::CLI::Helpers.parse_datespec(datespec))
         end
+      end
+
+      def get_config
+        @config ||= CalendarAssistant::Config.new(options: options)
       end
 
       def out
