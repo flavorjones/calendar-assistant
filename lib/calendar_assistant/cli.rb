@@ -122,11 +122,8 @@ class CalendarAssistant
     will_create_a_service
     has_attendees
     def show datespec="today"
-      return if handle_help_args
-      config = CalendarAssistant::Config.new(options: options)
-      ca = CalendarAssistant.new config
-      ca.in_env do
-        event_set = ca.find_events CLIHelpers.parse_datespec(datespec)
+      calendar_assistant(datespec) do |ca, date|
+        event_set = ca.find_events date
         out.print_events ca, event_set
       end
     end
@@ -158,10 +155,8 @@ class CalendarAssistant
          "Show your location for a date or range of dates (default 'today')"
     will_create_a_service
     def location datespec="today"
-      return if handle_help_args
-      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
-      ca.in_env do
-        event_set = ca.find_location_events CLIHelpers.parse_datespec(datespec)
+      calendar_assistant(datespec) do |ca, date|
+        event_set = ca.find_location_events date
         out.print_events ca, event_set
       end
     end
@@ -171,12 +166,10 @@ class CalendarAssistant
          "Set your location to LOCATION for a date or range of dates (default 'today')"
     will_create_a_service
     def location_set location=nil, datespec="today"
-      return if handle_help_args
       return help! if location.nil?
 
-      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
-      ca.in_env do
-        event_set = ca.create_location_event CLIHelpers.parse_datespec(datespec), location
+      calendar_assistant(datespec) do |ca, date|
+        event_set = ca.create_location_event date, location
         out.print_events ca, event_set
       end
     end
@@ -205,15 +198,21 @@ class CalendarAssistant
     has_attendees
     will_create_a_service
     def availability datespec="today"
-      return if handle_help_args
-      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
-      ca.in_env do
-        event_set = ca.availability CLIHelpers.parse_datespec(datespec)
+      calendar_assistant(datespec) do |ca, date|
+        event_set = ca.availability date
         out.print_available_blocks ca, event_set
       end
     end
 
     private
+
+    def calendar_assistant datespec="today"
+      return if handle_help_args
+      ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options)
+      ca.in_env do
+        yield(ca, CLIHelpers.parse_datespec(datespec))
+      end
+    end
 
     def out
       @out ||= CLIHelpers::Out.new
