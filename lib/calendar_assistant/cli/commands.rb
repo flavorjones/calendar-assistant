@@ -61,15 +61,15 @@ class CalendarAssistant
 
       If you already have downloaded client credentials, you don't
       need to run this command. Instead, rename the downloaded JSON
-      file to `#{CalendarAssistant::Authorizer::CREDENTIALS_PATH}`
+      file to `#{CalendarAssistant::CLI::Authorizer::CREDENTIALS_PATH}`
       EOD
 
       def setup
         # TODO ugh see #34 for advice on how to clean this up
         return if handle_help_args
-        if File.exist? CalendarAssistant::Authorizer::CREDENTIALS_PATH
+        if File.exist? CalendarAssistant::CLI::Authorizer::CREDENTIALS_PATH
           out.puts sprintf("Credentials already exist in %s",
-                           CalendarAssistant::Authorizer::CREDENTIALS_PATH)
+                           CalendarAssistant::CLI::Authorizer::CREDENTIALS_PATH)
           return
         end
 
@@ -86,10 +86,10 @@ class CalendarAssistant
         EOT
 
         json = out.prompt "Paste JSON here"
-        File.open(CalendarAssistant::Authorizer::CREDENTIALS_PATH, "w") do |f|
+        File.open(CalendarAssistant::CLI::Authorizer::CREDENTIALS_PATH, "w") do |f|
           f.write json
         end
-        FileUtils.chmod 0600, CalendarAssistant::Authorizer::CREDENTIALS_PATH
+        FileUtils.chmod 0600, CalendarAssistant::CLI::Authorizer::CREDENTIALS_PATH
 
         out.puts "\nOK! Your next step is to run `calendar-assistant authorize`."
       end

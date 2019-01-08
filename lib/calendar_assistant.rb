@@ -27,7 +27,6 @@ require "calendar_assistant/calendar_assistant"
 class CalendarAssistant
   autoload :VERSION,                "calendar_assistant/version"
   autoload :Config,                 "calendar_assistant/config"
-  autoload :Authorizer,             "calendar_assistant/authorizer"
   autoload :StringHelpers,          "calendar_assistant/string_helpers"
   autoload :DateHelpers,            "calendar_assistant/date_helpers"
   autoload :Event,                  "calendar_assistant/event"

@@ -38,7 +38,7 @@ describe CalendarAssistant::CLI::Commands do
   let(:authorizer) {instance_double("Authorizer")}
 
   before do
-    allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)
+    allow(CalendarAssistant::CLI::Authorizer).to receive(:new).and_return(authorizer)
     allow(config).to receive(:token_store).and_return(token_store)
     allow(config).to receive(:profile_name).and_return("profile-name")
     allow(authorizer).to receive(:service).and_return(service)
