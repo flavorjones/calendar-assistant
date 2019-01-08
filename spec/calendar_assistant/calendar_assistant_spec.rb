@@ -159,7 +159,7 @@ describe CalendarAssistant do
 
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
 
-          response = ca.create_location_event CalendarAssistant::CLIHelpers.parse_datespec("today"), "WFH"
+          response = ca.create_location_event CalendarAssistant::CLI::Helpers.parse_datespec("today"), "WFH"
           expect(response.events[:created]).to eq([new_event])
         end
       end

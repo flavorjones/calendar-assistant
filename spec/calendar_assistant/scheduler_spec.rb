@@ -77,7 +77,7 @@ describe CalendarAssistant::Scheduler do
     let(:er2) { CalendarAssistant::EventRepository.new service, calendar_id }
     let(:event_set) { CalendarAssistant::EventSet.new er, events }
     let(:events) { [] }
-    let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "2018-01-01..2018-01-03" }
+    let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "2018-01-01..2018-01-03" }
 
     before do
       allow(CalendarAssistant::Authorizer).to receive(:new).and_return(authorizer)

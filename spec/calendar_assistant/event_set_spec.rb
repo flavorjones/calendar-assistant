@@ -176,7 +176,7 @@ describe CalendarAssistant::EventSet do
     end
 
     context "single date" do
-      let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
+      let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "today" }
       let(:date) { time_range.first.to_date }
 
       context "with an event at the end of the day and other events later" do
@@ -230,7 +230,7 @@ describe CalendarAssistant::EventSet do
       end
 
       context "single date with no event at the end of the day" do
-        let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
+        let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "today" }
         let(:date) { time_range.first.to_date }
 
         let(:events) do
@@ -261,7 +261,7 @@ describe CalendarAssistant::EventSet do
       end
 
       context "completely free day with no events" do
-        let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "today" }
+        let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "today" }
         let(:date) { time_range.first.to_date }
 
         let(:events) { { date => [] } }
@@ -330,7 +330,7 @@ describe CalendarAssistant::EventSet do
     end
 
     describe "multiple days" do
-      let(:time_range) { CalendarAssistant::CLIHelpers.parse_datespec "2018-01-01..2018-01-03" }
+      let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "2018-01-01..2018-01-03" }
       let(:events) do
         {
           Date.parse("2018-01-01") => [],
@@ -352,7 +352,7 @@ describe CalendarAssistant::EventSet do
     end
 
     describe "configurable parameters" do
-      let(:time_range) { in_tz { CalendarAssistant::CLIHelpers.parse_datespec "today" } }
+      let(:time_range) { in_tz { CalendarAssistant::CLI::Helpers.parse_datespec "today" } }
       let(:date) { in_tz { time_range.first.to_date } }
 
       let(:events) do

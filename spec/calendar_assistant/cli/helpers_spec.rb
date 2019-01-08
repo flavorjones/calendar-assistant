@@ -1,5 +1,5 @@
 # coding: utf-8
-describe CalendarAssistant::CLIHelpers do
+describe CalendarAssistant::CLI::Helpers do
   EventSet = CalendarAssistant::EventSet
 
   describe ".parse_datespec" do
@@ -168,7 +168,7 @@ describe CalendarAssistant::CLIHelpers do
     end
   end
 
-  describe CalendarAssistant::CLIHelpers::Out do
+  describe CalendarAssistant::CLI::Helpers::Out do
     let(:stdout) { StringIO.new }
     let(:ca) { instance_double("CalendarAssistant") }
     subject { described_class.new(stdout) }
@@ -202,7 +202,7 @@ describe CalendarAssistant::CLIHelpers do
       let(:now) { instance_double("Event<now>") }
 
       before do
-        allow(CalendarAssistant::CLIHelpers).to receive(:now).and_return(now)
+        allow(CalendarAssistant::CLI::Helpers).to receive(:now).and_return(now)
       end
 
       context "having not printed yet" do
