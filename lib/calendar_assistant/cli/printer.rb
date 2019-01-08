@@ -33,7 +33,7 @@ class CalendarAssistant
         end
       end
 
-      def print_now! ca, event, printed_now
+      def print_now! event, printed_now
         return true if printed_now
         return false if event.start_date != Date.today
 
@@ -71,7 +71,7 @@ class CalendarAssistant
 
         printed_now = false
         display_events.each do |event|
-          printed_now = print_now! ca, event, printed_now
+          printed_now = print_now! event, printed_now
           puts event_description(event)
           pp event if ca.config.debug?
         end

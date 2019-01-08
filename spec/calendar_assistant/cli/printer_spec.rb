@@ -43,7 +43,7 @@ describe CalendarAssistant::CLI::Printer do
 
         it "does not print and returns false" do
           expect(subject).not_to receive(:event_description)
-          rval = subject.print_now!(ca, event, printed)
+          rval = subject.print_now!(event, printed)
           expect(rval).to be_falsey
         end
       end
@@ -53,7 +53,7 @@ describe CalendarAssistant::CLI::Printer do
 
         it "does not print and returns false" do
           expect(subject).not_to receive(:event_description)
-          rval = subject.print_now!(ca, event, printed)
+          rval = subject.print_now!(event, printed)
           expect(rval).to be_falsey
         end
       end
@@ -63,7 +63,7 @@ describe CalendarAssistant::CLI::Printer do
 
         it "prints and returns true" do
           expect(subject).to receive(:event_description).with(now)
-          rval = subject.print_now!(ca, event, printed)
+          rval = subject.print_now!(event, printed)
           expect(rval).to be_truthy
         end
       end
@@ -77,7 +77,7 @@ describe CalendarAssistant::CLI::Printer do
 
         it "does not print and returns true" do
           expect(subject).not_to receive(:event_description).with(now)
-          rval = subject.print_now!(ca, event, printed)
+          rval = subject.print_now!(event, printed)
           expect(rval).to be_truthy
         end
       end
