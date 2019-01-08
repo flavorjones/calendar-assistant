@@ -225,7 +225,7 @@ class CalendarAssistant
       end
 
       def out
-        @out ||= CalendarAssistant::CLI::Helpers::Out.new
+        @out ||= CalendarAssistant::CLI::Printer.new
       end
 
       def help!

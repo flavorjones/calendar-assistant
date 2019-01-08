@@ -36,7 +36,7 @@ describe CalendarAssistant::CLI::Commands do
   before do
     allow(CalendarAssistant::Config).to receive(:new).with(options: {}).and_return(config)
     allow(CalendarAssistant).to receive(:new).with(config).and_return(ca)
-    allow(CalendarAssistant::CLI::Helpers::Out).to receive(:new).and_return(out)
+    allow(CalendarAssistant::CLI::Printer).to receive(:new).and_return(out)
     allow(ca).to receive(:in_env).and_yield
     allow(config).to receive(:options).and_return(config_options)
   end
