@@ -18,7 +18,7 @@ class CalendarAssistant
         attributes = []
           attributes << "recurring" if recurring?
           attributes << "not-busy" unless busy?
-          attributes << "self" if self? && !private?
+          attributes << "self" if self?
           attributes << "1:1" if one_on_one?
           attributes << "awaiting" if awaiting?
           attributes << "tentative" if tentative?
