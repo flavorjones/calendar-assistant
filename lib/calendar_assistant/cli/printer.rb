@@ -32,50 +32,8 @@ class CalendarAssistant
         end
       end
 
-      def print_now! event, printed_now, presenter_class: CLI::EventPresenter
-        return true if printed_now
-        return false if event.start_date != Date.today
-
-        if event.start_time > Time.now
-          puts presenter_class.new(CalendarAssistant::CLI::Helpers.now).description
-
-          return true
-        end
-
-        false
-      end
-
-      def print_events ca, event_set, omit_title: false, presenter_class: CLI::EventPresenter
-        unless omit_title
-          er = event_set.event_repository
-          puts Rainbow("#{er.calendar.id} (all times in #{er.calendar.time_zone})\n").italic
-        end
-
-        if event_set.is_a?(EventSet::Hash)
-          event_set.events.each do |key, value|
-            puts Rainbow(key.to_s.capitalize + ":").bold.italic
-            print_events ca, event_set.new(value), omit_title: true, presenter_class: presenter_class
-          end
-          return
-        end
-
-        events = Array(event_set.events)
-        if events.empty?
-          puts "No events in this time range."
-          return
-        end
-
-        display_events = events.select do |event|
-          !ca.config.setting(CalendarAssistant::Config::Keys::Options::COMMITMENTS) || event.commitment?
-        end
-
-        printed_now = false
-        display_events.each do |event|
-          printed_now = print_now! event, printed_now, presenter_class: presenter_class
-          puts presenter_class.new(event).description
-          pp event if ca.config.debug?
-        end
-
+      def print_events ca, event_set, omit_title: false, presenter_class: CLI::EventSetPresenter
+        puts presenter_class.new(event_set, config: ca.config).to_s
         puts
       end
 
