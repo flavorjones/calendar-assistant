@@ -33,19 +33,20 @@ class CalendarAssistant
         end
       end
 
-      def print_now! event, printed_now
+      def print_now! event, printed_now, presenter_class: CLI::EventPresenter
         return true if printed_now
         return false if event.start_date != Date.today
 
         if event.start_time > Time.now
-          puts event_description(CalendarAssistant::CLI::Helpers.now)
+          puts presenter_class.new(CalendarAssistant::CLI::Helpers.now).description
+
           return true
         end
 
         false
       end
 
-      def print_events ca, event_set, omit_title: false
+      def print_events ca, event_set, omit_title: false, presenter_class: CLI::EventPresenter
         unless omit_title
           er = event_set.event_repository
           puts Rainbow("#{er.calendar.id} (all times in #{er.calendar.time_zone})\n").italic
@@ -54,7 +55,7 @@ class CalendarAssistant
         if event_set.is_a?(EventSet::Hash)
           event_set.events.each do |key, value|
             puts Rainbow(key.to_s.capitalize + ":").bold.italic
-            print_events ca, event_set.new(value), omit_title: true
+            print_events ca, event_set.new(value), omit_title: true, presenter_class: presenter_class
           end
           return
         end
@@ -71,8 +72,8 @@ class CalendarAssistant
 
         printed_now = false
         display_events.each do |event|
-          printed_now = print_now! event, printed_now
-          puts event_description(event)
+          printed_now = print_now! event, printed_now, presenter_class: presenter_class
+          puts presenter_class.new(event).description
           pp event if ca.config.debug?
         end
 
@@ -125,54 +126,6 @@ class CalendarAssistant
           line.uniq!
           puts " • " + line.join(" / ") + Rainbow(" (" + event.duration + ")").italic
           pp event if ca.config.debug?
-        end
-      end
-
-      def event_description event
-        s = sprintf("%-25.25s", event_date_description(event))
-
-        date_ansi_codes = []
-        date_ansi_codes << :bright if event.current?
-        date_ansi_codes << :faint if event.past?
-        s = date_ansi_codes.inject(Rainbow(s)) {|text, ansi| text.send ansi}
-
-        s += Rainbow(sprintf(" | %s", event.view_summary)).bold
-
-        attributes = []
-        unless event.private?
-          attributes << "recurring" if event.recurring?
-          attributes << "not-busy" unless event.busy?
-          attributes << "self" if event.self? && !event.private?
-          attributes << "1:1" if event.one_on_one?
-          attributes << "awaiting" if event.awaiting?
-          attributes << "tentative" if event.tentative?
-          attributes << Rainbow(sprintf(" %s abandoned %s ", EMOJI_WARN, EMOJI_WARN)).red.bold.inverse if event.abandoned?
-        end
-
-        attributes << event.visibility if event.explicitly_visible?
-
-        s += Rainbow(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
-
-        s = Rainbow(Rainbow.uncolor(s)).faint.strike if event.declined?
-
-        s
-      end
-
-      def event_date_description event
-        if event.all_day?
-          start_date = event.start_date
-          end_date = event.end_date
-          if (end_date - start_date) <= 1
-            event.start.to_s
-          else
-            sprintf("%s - %s", start_date, end_date - 1.day)
-          end
-        else
-          if event.start_date == event.end_date
-            sprintf("%s - %s", event.start.date_time.strftime("%Y-%m-%d  %H:%M"), event.end.date_time.strftime("%H:%M"))
-          else
-            sprintf("%s  -  %s", event.start.date_time.strftime("%Y-%m-%d %H:%M"), event.end.date_time.strftime("%Y-%m-%d %H:%M"))
-          end
         end
       end
     end

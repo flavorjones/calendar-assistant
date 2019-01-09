@@ -1,6 +1,12 @@
 describe CalendarAssistant::CLI::Printer do
   let(:stdout) { StringIO.new }
   let(:ca) { instance_double("CalendarAssistant") }
+  let(:presenter_class) { double(:presenter_class) }
+  let(:presenter) { double(:presenter, description: "event-description") }
+
+  before do
+    allow(presenter_class).to receive(:new).and_return(presenter)
+  end
   subject { described_class.new(stdout) }
 
   describe "#launch" do
@@ -42,8 +48,8 @@ describe CalendarAssistant::CLI::Printer do
         let(:start_time) { Time.now - 1.minute }
 
         it "does not print and returns false" do
-          expect(subject).not_to receive(:event_description)
-          rval = subject.print_now!(event, printed)
+          expect(presenter).not_to receive(:description)
+          rval = subject.print_now!(event, printed, presenter_class: presenter_class)
           expect(rval).to be_falsey
         end
       end
@@ -52,8 +58,8 @@ describe CalendarAssistant::CLI::Printer do
         let(:start_time) { Time.now + 1.day + 1.minute }
 
         it "does not print and returns false" do
-          expect(subject).not_to receive(:event_description)
-          rval = subject.print_now!(event, printed)
+          expect(presenter).not_to receive(:description)
+          rval = subject.print_now!(event, printed, presenter_class: presenter_class)
           expect(rval).to be_falsey
         end
       end
@@ -62,8 +68,9 @@ describe CalendarAssistant::CLI::Printer do
         let(:start_time) { Time.now + 1.minute }
 
         it "prints and returns true" do
-          expect(subject).to receive(:event_description).with(now)
-          rval = subject.print_now!(event, printed)
+          expect(presenter_class).to receive(:new).with(now).and_return(presenter)
+          expect(presenter).to receive(:description)
+          rval = subject.print_now!(event, printed, presenter_class: presenter_class)
           expect(rval).to be_truthy
         end
       end
@@ -76,8 +83,8 @@ describe CalendarAssistant::CLI::Printer do
         let(:start_time) { Time.now + 1.minute }
 
         it "does not print and returns true" do
-          expect(subject).not_to receive(:event_description).with(now)
-          rval = subject.print_now!(event, printed)
+          expect(presenter_class).not_to receive(:new).with(now)
+          rval = subject.print_now!(event, printed, presenter_class: presenter_class)
           expect(rval).to be_truthy
         end
       end
@@ -107,52 +114,52 @@ describe CalendarAssistant::CLI::Printer do
       allow(ca).to receive(:config).and_return(config)
       allow(calendar).to receive(:id).and_return(calendar_id)
       allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
-      allow(subject).to receive(:event_description)
       allow(stdout).to receive(:puts)
       allow(er).to receive(:calendar).and_return(calendar)
     end
 
     context "passed a single Event" do
-      let(:event_set) { EventSet.new(er, event) }
+      let(:event_set) { CalendarAssistant::EventSet.new(er, event) }
 
       it "prints a title containing the cal id and time zone" do
         expect(stdout).to receive(:puts).with(title_regexp)
-        subject.print_events ca, event_set
+        subject.print_events ca, event_set, presenter_class: presenter_class
       end
 
       context "passed option omit_title:true" do
         it "does not print a title" do
           expect(stdout).not_to receive(:puts).with(title_regexp)
-          subject.print_events ca, event_set, omit_title: true
+          subject.print_events ca, event_set, omit_title: true, presenter_class: presenter_class
         end
       end
 
       it "prints the event description" do
-        expect(subject).to receive(:event_description).with(event).and_return("event-description")
+        expect(presenter_class).to receive(:new).and_return(presenter)
         expect(stdout).to receive(:puts).with("event-description")
-        subject.print_events ca, event_set
+        subject.print_events ca, event_set, presenter_class: presenter_class
       end
     end
 
     context "passed an Array of Events" do
-      let(:event_set) { EventSet.new(er, events) }
+      let(:event_set) { CalendarAssistant::EventSet.new(er, events) }
 
       it "prints a title containing the cal id and time zone" do
         expect(stdout).to receive(:puts).with(title_regexp)
-        subject.print_events ca, event_set
+        subject.print_events ca, event_set, presenter_class: presenter_class
       end
 
       it "calls #print_now! before each event" do
         expect(subject).to receive(:print_now!).exactly(events.length).times
-        subject.print_events ca, event_set
+        subject.print_events ca, event_set, presenter_class: presenter_class
       end
 
       it "calls puts with event descriptions for each Event" do
         events.each do |event|
-          expect(subject).to receive(:event_description).with(event).and_return(event.summary)
+          expect(presenter_class).to receive(:new).and_return(event).and_return(presenter)
+          expect(presenter).to receive(:description).and_return(event.summary)
           expect(stdout).to receive(:puts).with(event.summary)
         end
-        subject.print_events ca, event_set
+        subject.print_events ca, event_set, presenter_class: presenter_class
       end
 
       context "option 'commitments'" do
@@ -162,24 +169,24 @@ describe CalendarAssistant::CLI::Printer do
           allow(events.first).to receive(:commitment?).and_return(true)
           allow(events.last).to receive(:commitment?).and_return(false)
 
-          expect(subject).to receive(:event_description).with(events.first)
-          expect(subject).not_to receive(:event_description).with(events.last)
+          expect(presenter_class).to receive(:new).with(events.first)
+          expect(presenter_class).not_to receive(:new).with(events.last)
 
-          subject.print_events ca, event_set
+          subject.print_events ca, event_set, presenter_class: presenter_class
         end
       end
 
       context "the array is empty" do
         it "prints a standard message" do
           expect(stdout).to receive(:puts).with("No events in this time range.")
-          subject.print_events ca, EventSet.new(er, [])
+          subject.print_events ca, CalendarAssistant::EventSet.new(er, []), presenter_class: presenter_class
         end
       end
 
       context "the array is nil" do
         it "prints a standard message" do
           expect(stdout).to receive(:puts).with("No events in this time range.")
-          subject.print_events ca, EventSet.new(er, nil)
+          subject.print_events ca, CalendarAssistant::EventSet.new(er, nil), presenter_class: presenter_class
         end
       end
     end
@@ -187,20 +194,20 @@ describe CalendarAssistant::CLI::Printer do
     context "passed a Hash of Arrays of Events" do
       it "prints a title containing the cal id and time zone" do
         expect(stdout).to receive(:puts).with(title_regexp)
-        subject.print_events ca, EventSet.new(er, {})
+        subject.print_events ca, CalendarAssistant::EventSet.new(er, {}), presenter_class: presenter_class
       end
 
       it "prints each hash key capitalized" do
         expect(stdout).to receive(:puts).with(/First:/)
         expect(stdout).to receive(:puts).with(/Second:/)
-        subject.print_events ca, EventSet.new(er, {first: [events.first], second: [events.second]})
+        subject.print_events ca, CalendarAssistant::EventSet.new(er, {first: [events.first], second: [events.second]}), presenter_class: presenter_class
       end
 
       it "recursively calls #print_events for each hash value" do
         allow(subject).to receive(:print_events).and_call_original
-        expect(subject).to receive(:print_events).with(ca, EventSet.new(er, [events.first]), omit_title: true)
-        expect(subject).to receive(:print_events).with(ca, EventSet.new(er, [events.second]), omit_title: true)
-        subject.print_events ca, EventSet.new(er, {first: [events.first], second: [events.second]})
+        expect(subject).to receive(:print_events).with(ca, CalendarAssistant::EventSet.new(er, [events.first]), omit_title: true, presenter_class: presenter_class)
+        expect(subject).to receive(:print_events).with(ca, CalendarAssistant::EventSet.new(er, [events.second]), omit_title: true, presenter_class: presenter_class)
+        subject.print_events ca, CalendarAssistant::EventSet.new(er, {first: [events.first], second: [events.second]}), presenter_class: presenter_class
       end
     end
   end
@@ -212,13 +219,12 @@ describe CalendarAssistant::CLI::Printer do
     let(:config) { CalendarAssistant::Config.new options: config_options }
     let(:config_options) { Hash.new }
     let(:er) { instance_double("EventRepository") }
-    let(:event_set) { EventSet.new er, events }
+    let(:event_set) { CalendarAssistant::EventSet.new er, events }
 
     before do
       allow(ca).to receive(:config).and_return(config)
       allow(calendar).to receive(:id).and_return(calendar_id)
       allow(calendar).to receive(:time_zone).and_return(calendar_time_zone)
-      allow(subject).to receive(:event_description)
       allow(stdout).to receive(:puts)
       allow(er).to receive(:calendar).and_return(calendar)
       allow(ca).to receive(:event_repository).and_return(er)
@@ -367,18 +373,10 @@ describe CalendarAssistant::CLI::Printer do
 
       it "recursively calls #print_available_blocks for each hash value" do
         allow(subject).to receive(:print_available_blocks).and_call_original
-        expect(subject).to receive(:print_available_blocks).with(ca, EventSet.new(er, events.values.first), omit_title: true)
-        expect(subject).to receive(:print_available_blocks).with(ca, EventSet.new(er, events.values.second), omit_title: true)
+        expect(subject).to receive(:print_available_blocks).with(ca, CalendarAssistant::EventSet.new(er, events.values.first), omit_title: true)
+        expect(subject).to receive(:print_available_blocks).with(ca, CalendarAssistant::EventSet.new(er, events.values.second), omit_title: true)
         subject.print_available_blocks ca, event_set
       end
     end
-  end
-
-  describe "#event_description" do
-    it "needs a test"
-  end
-
-  describe "#event_date_description" do
-    it "needs a test"
   end
 end
