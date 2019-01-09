@@ -4,43 +4,45 @@ class CalendarAssistant
       EMOJI_WARN = "⚠"
 
       def description
-        s = sprintf("%-25.25s", event_date_description)
-
-        date_ansi_codes = []
-        date_ansi_codes << :bright if current?
-        date_ansi_codes << :faint if past?
-
-        s = date_ansi_codes.inject(rainbow.wrap(s)) {|text, ansi| text.send ansi}
-
+        s = formatted_event_date
         s += rainbow.wrap(sprintf(" | %s", view_summary)).bold
-
-        unless private?
-        attributes = []
-          attributes << "recurring" if recurring?
-          attributes << "not-busy" unless busy?
-          attributes << "self" if self?
-          attributes << "1:1" if one_on_one?
-          attributes << "awaiting" if awaiting?
-          attributes << "tentative" if tentative?
-          attributes << rainbow.wrap(sprintf(" %s abandoned %s ", EMOJI_WARN, EMOJI_WARN)).red.bold.inverse if abandoned?
-
-          attributes << visibility if explicitly_visible?
-        end
-
-        s += rainbow.wrap(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
-
+        s += event_attributes unless private?
         s = rainbow.wrap(Rainbow.uncolor(s)).faint.strike if declined?
-
         s
       end
 
       private
 
+      def event_attributes
+        attributes = []
+
+        attributes << "recurring" if recurring?
+        attributes << "not-busy" unless busy?
+        attributes << "self" if self?
+        attributes << "1:1" if one_on_one?
+        attributes << "awaiting" if awaiting?
+        attributes << "tentative" if tentative?
+        attributes << rainbow.wrap(sprintf(" %s abandoned %s ", EMOJI_WARN, EMOJI_WARN)).red.bold.inverse if abandoned?
+
+        attributes << visibility if explicitly_visible?
+
+        attributes.empty? ? "" : rainbow.wrap(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic
+      end
       def rainbow
         @rainbow ||= Rainbow.global
       end
 
-      def event_date_description
+      def formatted_event_date
+        date = sprintf("%-25.25s", event_date)
+
+        date_ansi_codes = []
+        date_ansi_codes << :bright if current?
+        date_ansi_codes << :faint if past?
+
+        date_ansi_codes.inject(rainbow.wrap(date)) {|text, ansi| text.send ansi}
+      end
+
+      def event_date
         if all_day?
           start_date = __getobj__.start_date
           end_date = __getobj__.end_date
