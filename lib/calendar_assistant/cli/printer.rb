@@ -1,7 +1,6 @@
 class CalendarAssistant
   module CLI
     class Printer
-      EMOJI_WARN = "⚠"
 
       attr_reader :io
 

@@ -1,6 +1,8 @@
 class CalendarAssistant
   module CLI
     class EventPresenter < SimpleDelegator
+      EMOJI_WARN = "⚠"
+
       def description
         s = sprintf("%-25.25s", event_date_description)
 
