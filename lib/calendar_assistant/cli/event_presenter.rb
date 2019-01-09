@@ -14,8 +14,8 @@ class CalendarAssistant
 
         s += rainbow.wrap(sprintf(" | %s", view_summary)).bold
 
-        attributes = []
         unless private?
+        attributes = []
           attributes << "recurring" if recurring?
           attributes << "not-busy" unless busy?
           attributes << "self" if self? && !private?
@@ -23,9 +23,9 @@ class CalendarAssistant
           attributes << "awaiting" if awaiting?
           attributes << "tentative" if tentative?
           attributes << rainbow.wrap(sprintf(" %s abandoned %s ", EMOJI_WARN, EMOJI_WARN)).red.bold.inverse if abandoned?
-        end
 
-        attributes << visibility if explicitly_visible?
+          attributes << visibility if explicitly_visible?
+        end
 
         s += rainbow.wrap(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic unless attributes.empty?
 
