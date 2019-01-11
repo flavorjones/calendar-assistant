@@ -30,7 +30,7 @@ describe CalendarAssistant::CLI::Commands do
   let(:event_set) {CalendarAssistant::EventSet.new er, events}
   let(:out) {double("STDOUT")}
   let(:time_range) {double("time range")}
-  let(:config) {CalendarAssistant::Config.new options: config_options}
+  let(:config) {CalendarAssistant::Config.new options: config_options }
   let(:config_options) {Hash.new}
 
   let(:service) {instance_double("CalendarService")}
@@ -43,7 +43,7 @@ describe CalendarAssistant::CLI::Commands do
     allow(config).to receive(:profile_name).and_return("profile-name")
     allow(authorizer).to receive(:service).and_return(service)
 
-    allow(CalendarAssistant::Config).to receive(:new).with(options: {}).and_return(config)
+    allow(CalendarAssistant::Config).to receive(:new).with(options: { formatting: true }).and_return(config)
     allow(CalendarAssistant).to receive(:new).with(config, service: service).and_return(ca)
     allow(CalendarAssistant::CLI::Printer).to receive(:new).and_return(out)
     allow(ca).to receive(:in_env).and_yield
@@ -117,7 +117,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "uses a specified profile" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Settings::PROFILE => "work")).
           and_return(config)
 
       allow(ca).to receive(:find_events)
@@ -135,7 +135,7 @@ describe CalendarAssistant::CLI::Commands do
 
       it "shows another person's day" do
         expect(CalendarAssistant::Config).to receive(:new).
-            with(options: config_options).
+            with(options: hash_including(config_options)).
             and_return(config)
         allow(ca).to receive(:find_events)
         allow(out).to receive(:print_events)
@@ -171,7 +171,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "uses a specified profile" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Settings::PROFILE => "work")).
           and_return(config)
 
       allow(ca).to receive(:find_location_events)
@@ -208,7 +208,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "uses a specified profile" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Settings::PROFILE => "work")).
           and_return(config)
 
       allow(ca).to receive(:create_location_event).and_return(event_set)
@@ -225,7 +225,7 @@ describe CalendarAssistant::CLI::Commands do
       allow(out).to receive(:puts)
       allow(out).to receive(:print_events)
       allow(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Options::JOIN => true}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Options::JOIN => true)).
           and_return(config)
     end
 
@@ -241,10 +241,10 @@ describe CalendarAssistant::CLI::Commands do
 
       it "uses a specified profile" do
         expect(CalendarAssistant::Config).to receive(:new).
-            with(options: {
+            with(options: hash_including({
                 CalendarAssistant::Config::Keys::Options::JOIN => true,
                 CalendarAssistant::Config::Keys::Settings::PROFILE => "work",
-            }).at_least(:once).and_return(config)
+            })).at_least(:once).and_return(config)
 
         allow(ca).to receive(:find_events).and_return(CalendarAssistant::EventSet.new(er, []))
 
@@ -293,7 +293,7 @@ describe CalendarAssistant::CLI::Commands do
       context "with --no-join" do
         it "does not launch the meeting URL in your browser" do
           expect(CalendarAssistant::Config).to receive(:new).
-              with(options: {CalendarAssistant::Config::Keys::Options::JOIN => false}).
+              with(options: hash_including(CalendarAssistant::Config::Keys::Options::JOIN => false)).
               at_least(:once).
               and_return(config)
           expect(out).not_to receive(:launch).with(url)
@@ -330,7 +330,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "uses a specified profile" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Settings::PROFILE => "work"}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Settings::PROFILE => "work")).
           and_return(config)
 
       allow(ca).to receive(:availability)
@@ -341,7 +341,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "uses a specified duration" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "30min"}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "30min")).
           and_return(config)
 
       allow(ca).to receive(:availability)
@@ -352,7 +352,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "uses a specified start time" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "8:30am"}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Settings::START_OF_DAY => "8:30am")).
           and_return(config)
 
       allow(ca).to receive(:availability)
@@ -363,7 +363,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "uses a specified end time" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "6:30pm"}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Settings::END_OF_DAY => "6:30pm")).
           and_return(config)
 
       allow(ca).to receive(:availability)
@@ -374,7 +374,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "looks up another person's availability" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: {CalendarAssistant::Config::Keys::Options::ATTENDEES => "somebody@example.com"}).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Options::ATTENDEES => "somebody@example.com")).
           and_return(config)
 
       allow(ca).to receive(:availability)
