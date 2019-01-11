@@ -51,7 +51,7 @@ class CalendarAssistant
         return false if event.start_date != Date.today
 
         if event.start_time > Time.now
-          out.puts presenter_class.new(CalendarAssistant::CLI::Helpers.now).description
+          out << presenter_class.new(CalendarAssistant::CLI::Helpers.now).description
 
           return true
         end
