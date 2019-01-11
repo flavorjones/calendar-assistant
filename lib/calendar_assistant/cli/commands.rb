@@ -32,6 +32,10 @@ class CalendarAssistant
                    type: :boolean,
                    desc: "how dare you suggest there are bugs"
 
+      class_option CalendarAssistant::Config::Keys::Options::FORMATTING,
+                   type: :boolean,
+                   desc: "Enable Text Formatting",
+                   default: CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Options::FORMATTING]
 
       desc "version",
            "Display the version of calendar-assistant"
@@ -144,6 +148,7 @@ class CalendarAssistant
 
       def join timespec = "now"
         return if handle_help_args
+        set_formatting
         ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options), service: service
         ca.in_env do
           event_set, url = CalendarAssistant::CLI::Helpers.find_av_uri ca, timespec
@@ -216,6 +221,10 @@ class CalendarAssistant
 
       private
 
+      def set_formatting
+        Rainbow.enabled = !!options[:formatting]
+      end
+
       def service
         @service ||= begin
           if filename = get_config.setting(Config::Keys::Options::LOCAL_STORE)
@@ -233,6 +242,7 @@ class CalendarAssistant
 
       def calendar_assistant datespec = "today"
         return if handle_help_args
+        set_formatting
         ca = CalendarAssistant.new(get_config, service: service)
         ca.in_env do
           yield(ca, CalendarAssistant::CLI::Helpers.parse_datespec(datespec))

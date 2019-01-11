@@ -35,6 +35,7 @@ class CalendarAssistant
         ATTENDEES = "attendees"     # array of calendar ids (comma-delimited)
         LOCAL_STORE = "local-store" # filename
         DEBUG = "debug"             # bool
+        FORMATTING = "formatting"   # Rainbow
       end
     end
 
@@ -43,6 +44,7 @@ class CalendarAssistant
       Keys::Settings::START_OF_DAY => "9am",              # BusinessTime
       Keys::Settings::END_OF_DAY => "6pm",                # BusinessTime
       Keys::Options::ATTENDEES => [DEFAULT_CALENDAR_ID],  # array of calendar ids
+      Keys::Options::FORMATTING => true,                  # Rainbow
     }
 
     attr_reader :config_file_path, :user_config, :options, :defaults
