@@ -215,7 +215,15 @@ class CalendarAssistant
       def availability datespec = "today"
         calendar_assistant(datespec) do |ca, date|
           event_set = ca.availability date
+
+          out = CalendarAssistant::CLI::Printer.new(StringIO.new)
           out.print_available_blocks ca, event_set
+
+          out.io.rewind
+          STDOUT.puts out.io.read
+
+          out.io.rewind
+          Clipboard.copy out.io.read.ansi_to_html
         end
       end
 

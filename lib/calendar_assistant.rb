@@ -12,12 +12,14 @@ autoload :YAML, "yaml"
 autoload :BusinessTime, "business_time"
 autoload :Chronic, "chronic"
 autoload :ChronicDuration, "chronic_duration"
+autoload :Clipboard, "calendar_assistant/extensions/clipboard_extensions"
 autoload :Google, "calendar_assistant/extensions/google_apis_extensions"
 autoload :Launchy, "launchy"
 autoload :TOML, "toml"
 autoload :Thor, "thor"
 require "calendar_assistant/extensions/rainbow_extensions" # Rainbow() doesn't trigger autoload
 require "active_support/time" # Time doesn't trigger autoload
+require "ansitags" # extends String and so can't easily be autoloaded
 
 #
 #  CalendarAssistant and associated classes
