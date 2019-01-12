@@ -81,8 +81,10 @@ Usage:
   calendar-assistant setup
 
 Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]              
+          [--debug], [--no-debug]            # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]  # Enable Text Formatting
+                                             # Default: true
 
 Description:
   This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar
@@ -100,8 +102,10 @@ Usage:
   calendar-assistant authorize PROFILE_NAME
 
 Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]              
+          [--debug], [--no-debug]            # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]  # Enable Text Formatting
+                                             # Default: true
 
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your
@@ -131,8 +135,10 @@ Commands:
   calendar-assistant version                                      # Display the version of calend...
 
 Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]              
+          [--debug], [--no-debug]            # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]  # Enable Text Formatting
+                                             # Default: true
 </pre>
 
 
@@ -143,12 +149,14 @@ Usage:
   calendar-assistant join [TIME]
 
 Options:
-          [--join], [--no-join]     # launch a browser to join the video call URL
-                                    # Default: true
-  -p, [--profile=PROFILE]           # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]  # Load events from a local file instead of Google Calendar
-  -h, -?, [--help], [--no-help]     
-          [--debug], [--no-debug]   # how dare you suggest there are bugs
+          [--join], [--no-join]              # launch a browser to join the video call URL
+                                             # Default: true
+  -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
+  -h, -?, [--help], [--no-help]              
+          [--debug], [--no-debug]            # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]  # Enable Text Formatting
+                                             # Default: true
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
 </pre>
@@ -190,6 +198,8 @@ Options:
           [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
   -h, -?, [--help], [--no-help]                  
           [--debug], [--no-debug]                # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]      # Enable Text Formatting
+                                                 # Default: true
 
 Show your availability for a date or range of dates (default 'today')
 </pre>
@@ -281,10 +291,12 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]           # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]  # Load events from a local file instead of Google Calendar
-  -h, -?, [--help], [--no-help]     
-          [--debug], [--no-debug]   # how dare you suggest there are bugs
+  -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
+  -h, -?, [--help], [--no-help]              
+          [--debug], [--no-debug]            # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]  # Enable Text Formatting
+                                             # Default: true
 
 Set your location to LOCATION for a date or range of dates (default 'today')
 </pre>
@@ -323,10 +335,12 @@ Usage:
   calendar-assistant location [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]           # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]  # Load events from a local file instead of Google Calendar
-  -h, -?, [--help], [--no-help]     
-          [--debug], [--no-debug]   # how dare you suggest there are bugs
+  -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
+  -h, -?, [--help], [--no-help]              
+          [--debug], [--no-debug]            # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]  # Enable Text Formatting
+                                             # Default: true
 
 Show your location for a date or range of dates (default 'today')
 </pre>
@@ -355,6 +369,8 @@ Options:
   -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
   -h, -?, [--help], [--no-help]                  
           [--debug], [--no-debug]                # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]      # Enable Text Formatting
+                                                 # Default: true
 
 Show your events for a date or range of dates (default 'today')
 </pre>
@@ -416,8 +432,10 @@ Usage:
   calendar-assistant config
 
 Options:
-  -h, -?, [--help], [--no-help]    
-          [--debug], [--no-debug]  # how dare you suggest there are bugs
+  -h, -?, [--help], [--no-help]              
+          [--debug], [--no-debug]            # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]  # Enable Text Formatting
+                                             # Default: true
 
 Dump your configuration parameters (merge of defaults and overrides from /home/user/.calendar-assistant)
 </pre>
