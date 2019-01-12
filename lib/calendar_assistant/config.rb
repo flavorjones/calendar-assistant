@@ -7,7 +7,7 @@ class CalendarAssistant
     class NoTokensAuthorized < CalendarAssistant::BaseException ; end
     class AccessingHashAsScalar < CalendarAssistant::BaseException ; end
 
-    CONFIG_FILE_PATH = File.join ENV["HOME"], ".calendar-assistant"
+    CONFIG_FILE_PATH = File.join (ENV['CA_HOME'] || ENV["HOME"]), ".calendar-assistant"
     DEFAULT_CALENDAR_ID = "primary"
 
     module Keys

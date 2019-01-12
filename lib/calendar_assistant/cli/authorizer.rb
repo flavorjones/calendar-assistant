@@ -25,7 +25,7 @@ class CalendarAssistant
 
       OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
       APPLICATION_NAME = "Flavorjones Calendar Assistant".freeze
-      CREDENTIALS_PATH = File.join ENV["HOME"], ".calendar-assistant.client"
+      CREDENTIALS_PATH = File.join (ENV['CA_HOME'] || ENV["HOME"]), ".calendar-assistant.client"
       SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR
 
       attr_reader :profile_name, :config_token_store
