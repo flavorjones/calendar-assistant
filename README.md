@@ -31,7 +31,9 @@ A command-line tool to help you manage your Google Calendar.
   * [`show`: View your calendar events](#show-view-your-calendar-events)
   * [`config`: View your configuration parameters](#config-view-your-configuration-parameters)
 - [Development](#development)
-  * [Tests](#tests)
+  * [Running Tests Locally](#running-tests-locally)
+  * [Continuous Integration](#continuous-integration)
+  * [Code Quality](#code-quality)
   * [Generate README](#generate-readme)
 - [References](#references)
 - [License](#license)
@@ -453,9 +455,10 @@ profile = "work"
 start-of-day = "9am"
 </pre>
 
+
 ## Development
 
-### Tests
+### Running Tests Locally
 
 ```bash
 gem install bundler
@@ -468,14 +471,26 @@ rake          # Default task runs both feature and non feature tests
 
 **Note:** Feature tests are excluded by default in [.rspec](.rspec)
 
+
+### Continuous Integration
+
+CI is running in a [Concourse](https://concourse-ci.org) pipeline at [https://ci.nokogiri.org](https://ci.nokogiri.org/teams/calendar-assistants/pipelines/calendar-assistant).
+
+
+### Code Quality
+
+We're running [Code Climate](https://codeclimate.com/github/flavorjones/calendar-assistant) to monitor code quality and test coverage.
+
+
 ### Generate README
 
-* Requires npm to be installed
-* Will use a fixture file rather than connecting to a remote calendar. Fixtures can be updated/regenerated in [generate-fixtures](generate-fixtures) script
+* Note that doing this requires npm to be installed
+* Generation will use a fixture file rather than connecting to a remote calendar. Fixtures can be updated/regenerated in [generate-fixtures](generate-fixtures) script
 
 ```bash
 ./generate-readme
 ```
+
 
 ## References
 
