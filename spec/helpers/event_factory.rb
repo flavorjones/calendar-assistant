@@ -82,6 +82,8 @@ class EventFactory
       set_option(attrs, self_attendee, :free)
       attrs[:start] = new_dates.first
       attrs[:end] = new_dates.last
+    when :zoom
+      attrs[:location] = "http://company.zoom.us/1"
     else
       raise "no factory option for: #{option}"
     end
