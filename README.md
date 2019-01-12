@@ -461,8 +461,12 @@ start-of-day = "9am"
 gem install bundler
 bundle install
 
-rake spec
+rake spec     # Run all tests except feature tests
+rake features # Run only feature tests
+rake          # Default task runs both feature and non feature tests
 ```
+
+**Note:** Feature tests are excluded by default in [.rspec](.rspec)
 
 ### Generate README
 

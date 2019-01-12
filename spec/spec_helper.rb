@@ -8,6 +8,7 @@ require_relative "./helpers/event_factory"
 
 require "timecop"
 require "securerandom"
+require 'aruba/rspec'
 
 ENV["THOR_DEBUG"] = "1" # UGH THOR
 
@@ -60,6 +61,19 @@ module RspecDescribeHelpers
       self.send(identifier).unlink
     end
   end
+
+  def with_temp_calendar_assistant_home
+    before(:context) do
+      @temp_home_dir = Dir.mktmpdir
+      @ca_home = ENV['CA_HOME']
+      ENV['CA_HOME'] = @temp_home_dir
+    end
+
+    after(:context) do
+      ENV['CA_HOME'] = @ca_home
+      FileUtils.remove_entry @temp_home_dir
+    end
+  end
 end
 
 module RspecExampleHelpers
@@ -81,9 +95,9 @@ module RspecExampleHelpers
     event_list_factory(event_factory_method: :for_in_hash, **parameters, &block)
   end
 
-  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, event_factory_method: :for, &block)
+  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", event_factory_method: :for, &block)
     service = CalendarAssistant::LocalService.new(file: file, load_events: false)
-    service.insert_calendar(GCal::Calendar.new(id: calendar_id))
+    service.insert_calendar(GCal::Calendar.new(id: calendar_id, time_zone: time_zone))
     EventFactory.new(service: service, calendar_id: calendar_id).public_send(event_factory_method, date: date, &block)
   end
 
