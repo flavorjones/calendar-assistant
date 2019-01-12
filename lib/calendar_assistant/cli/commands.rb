@@ -149,7 +149,7 @@ class CalendarAssistant
       def join timespec = "now"
         return if handle_help_args
         set_formatting
-        ca = CalendarAssistant.new CalendarAssistant::Config.new(options: options), service: service
+        ca = CalendarAssistant.new get_config, service: service
         ca.in_env do
           event_set, url = CalendarAssistant::CLI::Helpers.find_av_uri ca, timespec
           if !event_set.empty?
