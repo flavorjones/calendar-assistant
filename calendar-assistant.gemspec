@@ -34,12 +34,13 @@ Gem::Specification.new do |spec|
   spec.add_dependency "thor", "~> 0.20.0"
   spec.add_dependency "toml", "~> 0.2.0"
 
+  spec.add_development_dependency "aruba", "~> 0.14"
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "concourse"
-  spec.add_development_dependency "faker", "~> 1.9.1"
-  spec.add_development_dependency "license_finder", "~> 5.5.0"
+  spec.add_development_dependency "faker", "~> 1.9"
+  spec.add_development_dependency "license_finder", "~> 5.5"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "timecop", "~> 0.9.0"
+  spec.add_development_dependency "timecop", "~> 0.9"
   spec.add_development_dependency "simplecov", "~> 0.16"
 end
