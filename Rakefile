@@ -5,6 +5,8 @@ require "license_finder"
 
 Concourse.new("calendar-assistant").create_tasks!
 
+RSpec::Core::RakeTask.new(:test)
+
 RSpec::Core::RakeTask.new(:spec)  do |t|
   t.rspec_opts ||= []
   t.rspec_opts << " --tag=~type:aruba"
@@ -22,4 +24,4 @@ task :license_finder do
 end
 
 desc "Run specs, features and license finder"
-task :default => [:spec, :features, :license_finder]
+task :default => [:test, :license_finder]
