@@ -41,7 +41,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "concourse"
   spec.add_development_dependency "faker", "~> 1.9"
   spec.add_development_dependency "license_finder", "~> 5.5"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "timecop", "~> 0.9"
   spec.add_development_dependency "simplecov", "~> 0.16"
