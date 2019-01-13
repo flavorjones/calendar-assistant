@@ -77,7 +77,7 @@ class EventFactory
     when :busy
       attrs[:transparency] =  CalendarAssistant::Event::Transparency::OPAQUE
     when :location_event
-      attrs[:summary] = "#{CalendarAssistant::EMOJI_WORLDMAP} #{ attrs[:summary] || "Zanzibar" }"
+      attrs[:summary] = "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS].first} #{ attrs[:summary] || "Zanzibar" }"
       new_dates = CalendarAssistant.date_range_cast(attrs[:start]..attrs[:end])
       set_option(attrs, self_attendee, :free)
       attrs[:start] = new_dates.first

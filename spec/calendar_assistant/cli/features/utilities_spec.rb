@@ -22,10 +22,12 @@ RSpec.describe 'utility features', :type => :aruba do
     it { is_expected.to be_successfully_executed }
 
     it "prints config" do
+
       expect(subject.output).to eq (<<~OUT)
     
         [settings]
         end-of-day = "6pm"
+        location-icons = ["🗺 ","🌎"]
         meeting-length = "30m"
         start-of-day = "9am"
       OUT

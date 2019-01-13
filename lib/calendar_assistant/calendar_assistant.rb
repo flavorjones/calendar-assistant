@@ -2,7 +2,6 @@
 class CalendarAssistant
   class BaseException < RuntimeError ; end
 
-  EMOJI_WORLDMAP  = "🗺" # U+1F5FA WORLD MAP
   EMOJI_PLANE     = "🛪" # U+1F6EA NORTHEAST-POINTING AIRPLANE
   EMOJI_1_1       = "👫" # MAN AND WOMAN HOLDING HANDS
 
@@ -38,6 +37,8 @@ class CalendarAssistant
     @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
     @event_repositories = {} # calendar_id → event_repository
+
+    @emoji_worldmap = Array(@config.setting(CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS)).first
   end
 
   def in_env &block
@@ -86,7 +87,7 @@ class CalendarAssistant
     deleted_events = []
     modified_events = []
 
-    event = event_repository.create(transparency: CalendarAssistant::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{EMOJI_WORLDMAP}  #{location}")
+    event = event_repository.create(transparency: CalendarAssistant::Event::Transparency::TRANSPARENT, start: range.first, end: range.last , summary: "#{@emoji_worldmap} #{location}")
 
     existing_event_set.events.each do |existing_event|
       if existing_event.start_date >= event.start_date && existing_event.end_date <= event.end_date
@@ -109,6 +110,6 @@ class CalendarAssistant
   end
 
   def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
-    @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id)
+    @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id, config.setting(CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS))
   end
 end

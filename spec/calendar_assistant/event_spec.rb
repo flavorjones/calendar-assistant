@@ -65,7 +65,7 @@ describe CalendarAssistant::Event do
 
     let(:decorated_class) { Google::Apis::CalendarV3::Event }
     let(:decorated_object) { decorated_class.new }
-    subject { described_class.new decorated_object }
+    subject { described_class.new decorated_object, location_icons: [ "<<IAMANICON>>" ] }
 
     describe "#update" do
       it "calls #update! and returns itself" do
@@ -85,7 +85,7 @@ describe CalendarAssistant::Event do
       end
 
       context "event summary begins with a worldmap emoji" do
-        let(:decorated_object) { decorated_class.new(summary: "#{CalendarAssistant::EMOJI_WORLDMAP} yes a location event") }
+        let(:decorated_object) { decorated_class.new(summary: "<<IAMANICON>> yes a location event") }
 
         it "returns true" do
           expect(subject.location_event?).to be_truthy

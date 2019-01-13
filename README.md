@@ -70,6 +70,10 @@ All tokens and preferences will be stored in `~/.calendar-assistant` which is in
 
 The location of `.calendar-assistant` defaults to the user's home directory. This location may be overridden by setting the environment variable `CA_HOME`
 
+#### Location Emoji
+
+There is a `[settings]` key called `location-icons` that may be set to an array denoting all emoji that indicate a location event. The first icon in the array will be used as the default. The default emoji included are `["🗺 ", "🌎"]` with the map icon first
+
 ## Setup
 
 ### Installation
@@ -450,6 +454,7 @@ The output is TOML, which is suitable for dumping into `~/.calendar-assistant` a
 
 [settings]
 end-of-day = "6pm"
+location-icons = ["🌎","🗺 "]
 meeting-length = "30m"
 profile = "work"
 start-of-day = "9am"

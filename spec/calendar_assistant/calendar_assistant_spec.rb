@@ -108,9 +108,10 @@ describe CalendarAssistant do
           attributes = {
               start: new_event_start.date,
               end: new_event_end.date,
-              summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS].first} WFH",
               transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
+
 
           expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
 
@@ -127,7 +128,7 @@ describe CalendarAssistant do
           attributes = {
               start: new_event_start.date,
               end: new_event_end.date,
-              summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS].first} WFH",
               transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
 
@@ -157,7 +158,7 @@ describe CalendarAssistant do
           attributes = {
               start: new_event_start.date,
               end: new_event_end.date,
-              summary: "#{CalendarAssistant::EMOJI_WORLDMAP}  WFH",
+              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS].first} WFH",
               transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
 
@@ -227,7 +228,7 @@ describe CalendarAssistant do
       context "looking at own calendar" do
         before do
           expect(event_repository_factory).to receive(:new_event_repository).
-                                                with(anything, CalendarAssistant::Config::DEFAULT_CALENDAR_ID).
+                                                with(anything, CalendarAssistant::Config::DEFAULT_CALENDAR_ID, anything).
                                                 and_return(event_repository)
         end
 
@@ -253,7 +254,7 @@ describe CalendarAssistant do
 
         before do
           expect(event_repository_factory).to receive(:new_event_repository).
-                                                with(anything, other_calendar_id).
+                                                with(anything, other_calendar_id, anything).
                                                 and_return(event_repository)
         end
 
@@ -280,10 +281,10 @@ describe CalendarAssistant do
 
         before do
           expect(event_repository_factory).to receive(:new_event_repository).
-                                                with(anything, "someone@example.com").
+                                                with(anything, "someone@example.com", anything).
                                                 and_return(event_repository)
           expect(event_repository_factory).to receive(:new_event_repository).
-                                                with(anything, "somebodyelse@example.com").
+                                                with(anything, "somebodyelse@example.com", anything).
                                                 and_return(event_repository2)
         end
 
@@ -328,7 +329,7 @@ describe CalendarAssistant do
 
     describe "#event_repository" do
       it "invokes the factory method to create a new repository" do
-        expect(event_repository_factory).to receive(:new_event_repository).with(service, "foo")
+        expect(event_repository_factory).to receive(:new_event_repository).with(service, "foo", anything)
         ca.event_repository("foo")
       end
 

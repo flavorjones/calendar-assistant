@@ -28,11 +28,6 @@ class CalendarAssistant
     end
 
     #
-    #  constants describing behavior
-    #
-    LOCATION_EVENT_REGEX = /^#{CalendarAssistant::EMOJI_WORLDMAP}/
-
-    #
     #  class methods
     #
     def self.duration_in_seconds start_time, end_time
@@ -42,13 +37,21 @@ class CalendarAssistant
     #
     #  instance methods
     #
+    attr_reader :location_event_regex
+
+    def initialize(obj, location_icons: CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS])
+      super(obj)
+      @location_icons = location_icons
+      @location_event_regex = /^#{@location_icons.join("|")}/
+    end
+
     def update **args
       update!(**args)
       self
     end
 
     def location_event?
-      !! (summary =~ LOCATION_EVENT_REGEX)
+      !! (summary =~ location_event_regex)
     end
 
     def all_day?
