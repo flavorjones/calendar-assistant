@@ -115,6 +115,8 @@ class CalendarAssistant
         Config.find_in_hash(defaults, setting_name)
     end
 
+    alias_method :[], :setting
+
     def settings
       setting_names = CalendarAssistant::Config::Keys::Settings.constants.map do |k|
         CalendarAssistant::Config::Keys::Settings.const_get k

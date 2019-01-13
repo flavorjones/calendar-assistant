@@ -204,66 +204,76 @@ shared_examples_for "a configuration class" do
     end
   end
 
-  describe "#defaults" do
-    it "has an intelligent default for the duration of a new meeting" do
-      expect(subject.setting("meeting-length")).to eq("30m")
+  shared_examples_for "a hash like getter" do
+    describe "#defaults" do
+      it "has an intelligent default for the duration of a new meeting" do
+        expect(subject.public_send(method, "meeting-length")).to eq("30m")
+      end
+
+      it "has an intelligent default for the start of the day" do
+        expect(subject.public_send(method, "start-of-day")).to eq("9am")
+      end
+
+      it "has an intelligent default for the end of the day" do
+        expect(subject.public_send(method, "end-of-day")).to eq("6pm")
+      end
     end
 
-    it "has an intelligent default for the start of the day" do
-      expect(subject.setting("start-of-day")).to eq("9am")
-    end
+    describe "#setting" do
+      let(:user_config) do
+        {
+            "settings" =>
+                {
+                    "only-in-user-config" => "user-config",
+                    "in-user-config-and-defaults" => "user-config",
+                    "in-user-config-and-options" => "user-config",
+                    "everywhere" => "user-config"
+                }
+        }
+      end
 
-    it "has an intelligent default for the end of the day" do
-      expect(subject.setting("end-of-day")).to eq("6pm")
+      let(:defaults) do
+        {
+            "only-in-defaults" => "defaults",
+            "in-user-config-and-defaults" => "defaults",
+            "in-defaults-and-options" => "defaults",
+            "everywhere" => "defaults",
+        }
+      end
+
+      let(:options) do
+        {
+            "only-in-options" => "options",
+            "in-user-config-and-options" => "options",
+            "in-defaults-and-options" => "options",
+            "everywhere" => "options",
+        }
+      end
+
+      subject do
+        described_class.new **args,
+                            defaults: defaults,
+                            options: options
+      end
+
+      it { expect(subject.public_send(method, "only-in-user-config")).to eq("user-config") }
+      it { expect(subject.public_send(method, "only-in-defaults")).to eq("defaults") }
+      it { expect(subject.public_send(method, "only-in-options")).to eq("options") }
+
+      it { expect(subject.public_send(method, "in-user-config-and-defaults")).to eq("user-config") }
+      it { expect(subject.public_send(method, "in-user-config-and-options")).to eq("options") }
+      it { expect(subject.public_send(method, "in-defaults-and-options")).to eq("options") }
+
+      it { expect(subject.public_send(method, "everywhere")).to eq("options") }
     end
   end
+  
+  it_behaves_like "a hash like getter" do
+    let(:method) { :setting }
+  end
 
-  describe "#setting" do
-    let(:user_config) do
-      {
-          "settings" =>
-              {
-                  "only-in-user-config" => "user-config",
-                  "in-user-config-and-defaults" => "user-config",
-                  "in-user-config-and-options" => "user-config",
-                  "everywhere" => "user-config"
-              }
-      }
-    end
-
-    let(:defaults) do
-      {
-          "only-in-defaults" => "defaults",
-          "in-user-config-and-defaults" => "defaults",
-          "in-defaults-and-options" => "defaults",
-          "everywhere" => "defaults",
-      }
-    end
-
-    let(:options) do
-      {
-          "only-in-options" => "options",
-          "in-user-config-and-options" => "options",
-          "in-defaults-and-options" => "options",
-          "everywhere" => "options",
-      }
-    end
-
-    subject do
-      described_class.new **args,
-                          defaults: defaults,
-                          options: options
-    end
-
-    it { expect(subject.setting("only-in-user-config")).to eq("user-config") }
-    it { expect(subject.setting("only-in-defaults")).to eq("defaults") }
-    it { expect(subject.setting("only-in-options")).to eq("options") }
-
-    it { expect(subject.setting("in-user-config-and-defaults")).to eq("user-config") }
-    it { expect(subject.setting("in-user-config-and-options")).to eq("options") }
-    it { expect(subject.setting("in-defaults-and-options")).to eq("options") }
-
-    it { expect(subject.setting("everywhere")).to eq("options") }
+  it_behaves_like "a hash like getter" do
+    let(:method) { :[] }
   end
 
   describe "#settings" do
