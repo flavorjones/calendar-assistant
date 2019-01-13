@@ -30,7 +30,7 @@ describe CalendarAssistant::CLI::Commands do
   let(:event_set) {CalendarAssistant::EventSet.new er, events}
   let(:out) {double("STDOUT")}
   let(:time_range) {double("time range")}
-  let(:config) {CalendarAssistant::Config.new options: config_options }
+  let(:config) {CalendarAssistant::CLI::Config.new options: config_options }
   let(:config_options) {Hash.new}
 
   let(:service) {instance_double("CalendarService")}
@@ -42,7 +42,6 @@ describe CalendarAssistant::CLI::Commands do
     allow(config).to receive(:token_store).and_return(token_store)
     allow(config).to receive(:profile_name).and_return("profile-name")
     allow(authorizer).to receive(:service).and_return(service)
-
     allow(CalendarAssistant::Config).to receive(:new).with(options: { formatting: true }).and_return(config)
     allow(CalendarAssistant).to receive(:new).with(config, service: service).and_return(ca)
     allow(CalendarAssistant::CLI::Printer).to receive(:new).and_return(out)

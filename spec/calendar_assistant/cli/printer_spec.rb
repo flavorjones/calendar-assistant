@@ -39,7 +39,7 @@ describe CalendarAssistant::CLI::Printer do
     let(:calendar) { instance_double("Calendar") }
     let(:calendar_id) { "calendar-id" }
     let(:calendar_time_zone) { ENV['TZ'] }
-    let(:config) { CalendarAssistant::Config.new options: config_options }
+    let(:config) { CalendarAssistant::CLI::Config.new options: config_options }
     let(:config_options) { Hash.new }
     let(:er) { instance_double("EventRepository") }
     let(:event_set) { CalendarAssistant::EventSet.new er, events }

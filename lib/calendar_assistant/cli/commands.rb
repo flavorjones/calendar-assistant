@@ -23,7 +23,7 @@ class CalendarAssistant
                aliases: ["-a"]
       end
 
-      default_config = CalendarAssistant::Config.new options: options # used in option descriptions
+      default_config = CalendarAssistant::CLI::Config.new options: options # used in option descriptions
 
       class_option :help,
                    type: :boolean,
@@ -47,11 +47,11 @@ class CalendarAssistant
 
 
       desc "config",
-           "Dump your configuration parameters (merge of defaults and overrides from #{CalendarAssistant::Config::CONFIG_FILE_PATH})"
+           "Dump your configuration parameters (merge of defaults and overrides from #{CalendarAssistant::CLI::Config::CONFIG_FILE_PATH})"
 
       def config
         return if handle_help_args
-        settings = CalendarAssistant::Config.new.settings
+        settings = CalendarAssistant::CLI::Config.new.settings
         out.puts TOML::Generator.new({CalendarAssistant::Config::Keys::SETTINGS => settings}).body
       end
 
@@ -251,7 +251,7 @@ class CalendarAssistant
       end
 
       def get_config
-        @config ||= CalendarAssistant::Config.new(options: options)
+        @config ||= CalendarAssistant::CLI::Config.new(options: options)
       end
 
       def out

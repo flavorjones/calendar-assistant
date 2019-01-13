@@ -2,13 +2,10 @@ class CalendarAssistant
   class Config
     autoload :TokenStore, "calendar_assistant/config/token_store"
 
-    class TomlParseFailure < CalendarAssistant::BaseException ; end
-    class NoConfigFileToPersist < CalendarAssistant::BaseException ; end
-    class NoTokensAuthorized < CalendarAssistant::BaseException ; end
-    class AccessingHashAsScalar < CalendarAssistant::BaseException ; end
-
-    CONFIG_FILE_PATH = File.join (ENV['CA_HOME'] || ENV["HOME"]), ".calendar-assistant"
-    DEFAULT_CALENDAR_ID = "primary"
+    class NoTokensAuthorized < CalendarAssistant::BaseException;
+    end
+    class AccessingHashAsScalar < CalendarAssistant::BaseException;
+    end
 
     module Keys
       TOKENS = "tokens"
@@ -39,6 +36,8 @@ class CalendarAssistant
       end
     end
 
+    DEFAULT_CALENDAR_ID = "primary"
+
     DEFAULT_SETTINGS = {
       Keys::Settings::MEETING_LENGTH => "30m",            # ChronicDuration
       Keys::Settings::START_OF_DAY => "9am",              # BusinessTime
@@ -47,35 +46,15 @@ class CalendarAssistant
       Keys::Options::FORMATTING => true,                  # Rainbow
     }
 
-    attr_reader :config_file_path, :user_config, :options, :defaults
+    attr_reader :user_config, :options, :defaults
 
     def initialize options: {},
-                   config_file_path: CONFIG_FILE_PATH,
-                   config_io: nil,
+                   user_config: {},
                    defaults: DEFAULT_SETTINGS
-      if config_io.nil?
-        @config_file_path = config_file_path
-      end
-
-      @user_config = if config_io
-                       begin
-                         TOML.load config_io.read
-                       rescue Exception => e
-                         raise TomlParseFailure, "could not parse IO stream: #{e}"
-                       end
-                     elsif File.exist? config_file_path
-                       begin
-                         FileUtils.chmod 0600, config_file_path
-                         TOML.load_file config_file_path
-                       rescue Exception => e
-                         raise TomlParseFailure, "could not parse #{config_file_path}: #{e}"
-                       end
-                     else
-                       Hash.new
-                     end
 
       @defaults = defaults
       @options = options
+      @user_config = user_config
     end
 
     def in_env &block
@@ -103,11 +82,10 @@ class CalendarAssistant
       # finally we'll grab the first configured token and set that as the default
       token_names = tokens.keys
       if token_names.empty?
-        raise NoTokensAuthorized, "Please run `calendar-assistant help authorize` for help."
+        raise CalendarAssistant::Config::NoTokensAuthorized, "Please run `calendar-assistant help authorize` for help."
       end
       token_names.first.tap do |new_default|
         Config.set_in_hash user_config, [Keys::SETTINGS, Keys::Settings::PROFILE], new_default
-        persist!
       end
     end
 
@@ -115,7 +93,7 @@ class CalendarAssistant
       rval = Config.find_in_hash(user_config, keypath)
 
       if rval.is_a?(Hash)
-        raise AccessingHashAsScalar, "keypath #{keypath} is not a scalar"
+        raise CalendarAssistant::Config::AccessingHashAsScalar, "keypath #{keypath} is not a scalar"
       end
 
       rval
@@ -154,18 +132,6 @@ class CalendarAssistant
       CalendarAssistant::Config::TokenStore.new self
     end
 
-    def persist!
-      if config_file_path.nil?
-        raise NoConfigFileToPersist, "Cannot persist config when initialized with an IO"
-      end
-
-      content = TOML::Generator.new(user_config).body
-
-      File.open(config_file_path, "w") do |f|
-        f.write content
-      end
-    end
-
     #
     #  helper method for Keys::Options::ATTENDEES
     #
@@ -179,6 +145,10 @@ class CalendarAssistant
 
     def debug?
       setting(Keys::Options::DEBUG)
+    end
+
+    def persist!
+      #noop
     end
 
     private

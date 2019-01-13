@@ -78,7 +78,7 @@ describe CalendarAssistant::CLI::EventSetPresenter do
     let(:calendar_time_zone) { "calendar/time/zone" }
     let(:er) { instance_double("EventRepository") }
     let(:title_regexp) { Regexp.new("#{calendar_id}.*#{calendar_time_zone}") }
-    let(:config) { CalendarAssistant::Config.new options: config_options }
+    let(:config) { CalendarAssistant::CLI::Config.new options: config_options }
     let(:config_options) { Hash.new }
 
     let(:events) do
