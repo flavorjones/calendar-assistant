@@ -39,9 +39,11 @@ class CalendarAssistant
     #
     attr_reader :location_event_regex
 
-    def initialize(obj, location_icons: CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS])
+    def initialize(obj, config: CalendarAssistant::Config.new)
+
       super(obj)
-      @location_icons = location_icons
+      @location_icons = config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS]
+
       @location_event_regex = /^#{@location_icons.join("|")}/
     end
 

@@ -65,7 +65,7 @@ describe CalendarAssistant::Event do
 
     let(:decorated_class) { Google::Apis::CalendarV3::Event }
     let(:decorated_object) { decorated_class.new }
-    subject { described_class.new decorated_object, location_icons: [ "<<IAMANICON>>" ] }
+    subject { described_class.new decorated_object, config: { "location-icons" => [ "<<IAMANICON>>" ] } }
 
     describe "#update" do
       it "calls #update! and returns itself" do

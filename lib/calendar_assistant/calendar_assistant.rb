@@ -110,6 +110,6 @@ class CalendarAssistant
   end
 
   def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
-    @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id, config.setting(CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS))
+    @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id, config: config)
   end
 end
