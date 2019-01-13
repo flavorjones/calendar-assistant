@@ -43,28 +43,32 @@ anchors:
       silent: true
       text_file: calendar-assistant/.git/commit_message
       text: |
-        :concourse-failed: $ATC_EXTERNAL_URL/builds/$BUILD_ID (master) Fail: "$TEXT_FILE_CONTENT"
+        :concourse-failed: (master) :nobueno: $ATC_EXTERNAL_URL/builds/$BUILD_ID
+        $TEXT_FILE_CONTENT
   notify_success_to_slack: &notify_success_to_slack
     put: slack-notification
     params:
       silent: true
       text_file: calendar-assistant/.git/commit_message
       text: |
-        :concourse-succeeded: $ATC_EXTERNAL_URL/builds/$BUILD_ID (master) Success: "$TEXT_FILE_CONTENT"
+        :concourse-succeeded: (master) :success: $ATC_EXTERNAL_URL/builds/$BUILD_ID
+        $TEXT_FILE_CONTENT
   notify_pr_failure_to_slack: &notify_pr_failure_to_slack
     put: slack-notification
     params:
       silent: true
       text_file: calendar-assistant-pr/.git/id
       text: |
-        :concourse-failed: $ATC_EXTERNAL_URL/builds/$BUILD_ID PR $TEXT_FILE_CONTENT Fail: https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
+        :concourse-failed: (PR $TEXT_FILE_CONTENT) :nobueno: $ATC_EXTERNAL_URL/builds/$BUILD_ID
+        https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
   notify_pr_success_to_slack: &notify_pr_success_to_slack
     put: slack-notification
     params:
       silent: true
       text_file: calendar-assistant-pr/.git/id
       text: |
-        :concourse-succeeded: $ATC_EXTERNAL_URL/builds/$BUILD_ID PR $TEXT_FILE_CONTENT Success: https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
+        :concourse-succeeded: (PR $TEXT_FILE_CONTENT) :success: $ATC_EXTERNAL_URL/builds/$BUILD_ID
+        https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
 
 
 % ruby_version = RUBIES[:mri].last
