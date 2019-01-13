@@ -6,9 +6,9 @@ RSpec.describe 'join', :type => :aruba do
   let(:filename) { temp_file.path }
 
   before(:each) do
-    event_list_factory(file: filename, time_zone: "America/New_York") do
+    event_list_factory(file: filename, time_zone: Time.zone.name) do
       [
-          {start: Time.now.to_s, summary: "accepted", options: [:accepted, :zoom]},
+          { start: "3 minutes ago", end: "3 minutes from now", summary: "accepted", options: [:accepted, :zoom]},
       ]
     end
   end
@@ -21,12 +21,6 @@ RSpec.describe 'join', :type => :aruba do
   it { is_expected.to be_successfully_executed }
 
   it "joins the meeting for today's event" do
-    expect(subject.output).to eq (<<~OUT)
-      primary (all times in America/New_York)
-
-      2019-01-13  00:00 - 23:59 | accepted
-
-      http://company.zoom.us/1
-    OUT
+    expect(subject.output).to match /http:\/\/company.zoom.us\/1$/
   end
 end
