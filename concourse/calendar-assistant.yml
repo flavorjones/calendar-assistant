@@ -43,7 +43,7 @@ anchors:
       silent: true
       text_file: calendar-assistant/.git/commit_message
       text: |
-        :concourse-failed: (master) :nobueno: $ATC_EXTERNAL_URL/builds/$BUILD_ID
+        :concourse-failed: (master) $ATC_EXTERNAL_URL/builds/$BUILD_ID :nobueno:
         $TEXT_FILE_CONTENT
   notify_success_to_slack: &notify_success_to_slack
     put: slack-notification
@@ -51,7 +51,7 @@ anchors:
       silent: true
       text_file: calendar-assistant/.git/commit_message
       text: |
-        :concourse-succeeded: (master) :success: $ATC_EXTERNAL_URL/builds/$BUILD_ID
+        :concourse-succeeded: (master) $ATC_EXTERNAL_URL/builds/$BUILD_ID :success:
         $TEXT_FILE_CONTENT
   notify_pr_failure_to_slack: &notify_pr_failure_to_slack
     put: slack-notification
@@ -59,7 +59,7 @@ anchors:
       silent: true
       text_file: calendar-assistant-pr/.git/id
       text: |
-        :concourse-failed: (PR $TEXT_FILE_CONTENT) :nobueno: $ATC_EXTERNAL_URL/builds/$BUILD_ID
+        :concourse-failed: (PR $TEXT_FILE_CONTENT) $ATC_EXTERNAL_URL/builds/$BUILD_ID :nobueno:
         https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
   notify_pr_success_to_slack: &notify_pr_success_to_slack
     put: slack-notification
@@ -67,7 +67,7 @@ anchors:
       silent: true
       text_file: calendar-assistant-pr/.git/id
       text: |
-        :concourse-succeeded: (PR $TEXT_FILE_CONTENT) :success: $ATC_EXTERNAL_URL/builds/$BUILD_ID
+        :concourse-succeeded: (PR $TEXT_FILE_CONTENT) $ATC_EXTERNAL_URL/builds/$BUILD_ID :success:
         https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
 
 
