@@ -117,7 +117,8 @@ class CalendarAssistant
         return if handle_help_args
         return help! if profile_name.nil?
 
-        get_authorizer(profile_name: profile_name)
+        get_authorizer(profile_name: profile_name).authorize
+
         puts "\nYou're authorized!\n\n"
       end
 
