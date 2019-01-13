@@ -12,6 +12,8 @@ A command-line tool to help you manage your Google Calendar.
 [![Maintainability](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/maintainability)](https://codeclimate.com/github/flavorjones/calendar-assistant/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/test_coverage)](https://codeclimate.com/github/flavorjones/calendar-assistant/test_coverage)
 
+## Contents
+
 <!-- toc -->
 
 - [Features](#features)
@@ -454,7 +456,7 @@ The output is TOML, which is suitable for dumping into `~/.calendar-assistant` a
 
 [settings]
 end-of-day = "6pm"
-location-icons = ["🌎","🗺 "]
+location-icons = ["🗺 ","🌎"]
 meeting-length = "30m"
 profile = "work"
 start-of-day = "9am"
