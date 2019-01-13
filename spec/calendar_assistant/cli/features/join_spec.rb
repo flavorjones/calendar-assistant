@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 RSpec.describe 'join', :type => :aruba do
+  freeze_time
   with_temp_calendar_assistant_home
   with_temp_file("fixtures.yml")
   let(:filename) { temp_file.path }
 
   before(:each) do
-    event_list_factory(file: filename, time_zone: "America/New_York") do
+    event_list_factory(file: filename, time_zone: "Pacific/Fiji") do
       [
           {start: Time.now.to_s, summary: "accepted", options: [:accepted, :zoom]},
       ]
