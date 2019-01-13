@@ -25,7 +25,7 @@ function code-climate-setup {
     return
   fi
 
-  wget --no-verbose ${CC_CLI_URI}
+  wget --retry-on-http-error=502 --no-verbose ${CC_CLI_URI}
   chmod +x ${CC_CLI}
 
   export CI_NAME="concourse"
