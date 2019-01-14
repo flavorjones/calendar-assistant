@@ -199,6 +199,11 @@ class CalendarAssistant
       Event.duration_in_seconds start_time, end_time
     end
 
+    def other_human_attendees
+      return nil if attendees.nil?
+      attendees.select { |a| ! a.resource  && ! a.self }
+    end
+
     def human_attendees
       return nil if attendees.nil?
       attendees.select { |a| ! a.resource }

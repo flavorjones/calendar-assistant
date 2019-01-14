@@ -741,6 +741,20 @@ describe CalendarAssistant::Event do
       end
     end
 
+    describe "#other_human_attendees" do
+      context "there are no attendees" do
+        it { expect(subject.human_attendees).to be_nil }
+      end
+
+      context "there are attendees including people and rooms"  do
+        let(:decorated_object) { decorated_class.new(attendees: attendees) }
+
+        it "removes room resources from the list of attendees and myself" do
+          expect(subject.other_human_attendees).to eq(attendees - [attendee_room_resource, attendee_self])
+        end
+      end
+    end
+
     describe "#human_attendees" do
       context "there are no attendees" do
         it { expect(subject.human_attendees).to be_nil }
