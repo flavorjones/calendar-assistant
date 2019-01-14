@@ -696,37 +696,6 @@ describe CalendarAssistant::Event do
       end
     end
 
-    describe "#view_summary" do
-      context "event is not private" do
-        context "and summary exists" do
-          let(:decorated_object) { decorated_class.new(summary: "my summary") }
-          it { expect(subject.view_summary).to eq("my summary") }
-        end
-
-        context "and summary is blank" do
-          let(:decorated_object) { decorated_class.new(summary: "") }
-          it { expect(subject.view_summary).to eq("(no title)") }
-        end
-
-        context "and summary is nil" do
-          let(:decorated_object) { decorated_class.new(summary: nil) }
-          it { expect(subject.view_summary).to eq("(no title)") }
-        end
-      end
-
-      context "event is private" do
-        context "but we have access" do
-          let(:decorated_object) { decorated_class.new(summary: "don't ignore", visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
-          it { expect(subject.view_summary).to eq("don't ignore") }
-        end
-
-        context "and we do not have access" do
-          let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
-          it { expect(subject.view_summary).to eq("(private)") }
-        end
-      end
-    end
-
     describe "#duration" do
       context "for a one-day all-day event" do
         let(:decorated_object) do

@@ -11,6 +11,12 @@ class CalendarAssistant
         s
       end
 
+      def view_summary
+        return "(private)" if private? && (summary.nil? || summary.blank?)
+        return "(no title)" if summary.nil? || summary.blank?
+        summary
+      end
+
       private
 
       def event_attributes
@@ -28,6 +34,7 @@ class CalendarAssistant
 
         attributes.empty? ? "" : rainbow.wrap(sprintf(" (%s)", attributes.to_a.sort.join(", "))).italic
       end
+
       def rainbow
         @rainbow ||= Rainbow.global
       end

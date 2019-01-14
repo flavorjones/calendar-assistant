@@ -181,12 +181,6 @@ class CalendarAssistant
       end
     end
 
-    def view_summary
-      return "(private)" if private? && (summary.nil? || summary.blank?)
-      return "(no title)" if summary.nil? || summary.blank?
-      summary
-    end
-
     def duration
       if all_day?
         days = (end_date - start_date).to_i
