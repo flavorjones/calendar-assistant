@@ -122,7 +122,18 @@ class CalendarAssistant
         puts "\nYou're authorized!\n\n"
       end
 
+      desc "lint [DATE | DATERANGE | TIMERANGE]",
+           "Lint your events for a date or range of dates (default 'today')"
+      will_create_a_service
+      has_attendees
 
+      def lint datespec = "today"
+        calendar_assistant(datespec) do |ca, date|
+          event_set = ca.lint_events date
+          out.print_events ca, event_set, presenter_class: CalendarAssistant::CLI::LinterEventSetPresenter
+        end
+      end
+      
       desc "show [DATE | DATERANGE | TIMERANGE]",
            "Show your events for a date or range of dates (default 'today')"
       option CalendarAssistant::Config::Keys::Options::COMMITMENTS,

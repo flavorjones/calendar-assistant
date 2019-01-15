@@ -31,6 +31,7 @@ A command-line tool to help you manage your Google Calendar.
   * [`location-set`: Tell people where you are in the world](#location-set-tell-people-where-you-are-in-the-world)
   * [`location`: View where you're going to be in the world](#location-view-where-youre-going-to-be-in-the-world)
   * [`show`: View your calendar events](#show-view-your-calendar-events)
+  * [`lint`: Calendar events that require action](#lint-calendar-events-that-require-action)
   * [`config`: View your configuration parameters](#config-view-your-configuration-parameters)
 - [Development](#development)
   * [Running Tests Locally](#running-tests-locally)
@@ -137,6 +138,7 @@ Commands:
   calendar-assistant config                                       # Dump your configuration param...
   calendar-assistant help [COMMAND]                               # Describe available commands o...
   calendar-assistant join [TIME]                                  # Open the URL for a video call...
+  calendar-assistant lint [DATE | DATERANGE | TIMERANGE]          # Lint your events for a date o...
   calendar-assistant location [DATE | DATERANGE]                  # Show your location for a date...
   calendar-assistant location-set LOCATION [DATE | DATERANGE]     # Set your location to LOCATION...
   calendar-assistant setup                                        # Link your local calendar-assi...
@@ -360,8 +362,8 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-28  <b> | 🗺 Ravenhill</b><i> (not-busy)</i>
-2018-09-28               <b> | 🗺 Ravenhill</b><i> (not-busy)</i>
+2018-09-24 - 2018-09-28  <b> | 🗺  Gondolin</b><i> (not-busy)</i>
+2018-09-28               <b> | 🗺  Rivendell</b><i> (not-busy)</i>
 </pre>
 
 
@@ -390,28 +392,28 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-<strike>2018-10-01  03:30 - 05:00 | Incubate front-end bandwidth</strike>
-<strike>2018-10-01  07:30 - 08:30 | Cultivate dot-com vortals</strike>
-<strike>2018-10-01  07:30 - 08:30 | Monetize next-generation eyeballs</strike>
-2018-10-01  10:30 - 10:55<b> | Facilitate out-of-the-box deliverables</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Syndicate plug-and-play systems</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Facilitate bricks-and-clicks methodologies</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  11:50 - 12:00 | Deliver back-end experiences</strike>
-2018-10-01  12:00 - 12:30<b> | Unleash impactful models</b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Iterate magnetic supply-chains</strike>
-<strike>2018-10-01  12:30 - 13:30 | Recontextualize collaborative solutions</strike>
-2018-10-01  12:30 - 13:30<b> | Harness wireless deliverables</b><i> (recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Repurpose virtual channels</b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Harness front-end infrastructures</strike>
-2018-10-01  15:00 - 15:30<b> | Incentivize best-of-breed e-business</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Expedite cross-media users</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Leverage proactive channels</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Empower back-end mindshare</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Drive user-centric markets</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Generate bleeding-edge supply-chains</strike>
-<strike>2018-10-01  18:30 - 19:00 | Redefine bricks-and-clicks e-services</strike>
-<strike>2018-10-01  19:00 - 19:30 | Implement enterprise infrastructures</strike>
-2018-10-01               <b> | 🗺 High Pass</b><i> (not-busy)</i>
+<strike>2018-10-01  03:30 - 05:00 | Repurpose end-to-end convergence</strike>
+<strike>2018-10-01  07:30 - 08:30 | Iterate clicks-and-mortar vortals</strike>
+<strike>2018-10-01  07:30 - 08:30 | Grow viral portals</strike>
+2018-10-01  10:30 - 10:55<b> | Enable rich roi</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Leverage rich e-services</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Grow leading-edge communities</b><i> (1:1, recurring)</i>
+2018-10-01  11:50 - 12:00<b> | Cultivate revolutionary experiences</b><i> (awaiting)</i>
+2018-10-01  12:00 - 12:30<b> | Incentivize ubiquitous mindshare</b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Disintermediate next-generation niches</strike>
+<strike>2018-10-01  12:30 - 13:30 | Drive viral communities</strike>
+2018-10-01  12:30 - 13:30<b> | Synergize integrated supply-chains</b><i> (awaiting, recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Transform revolutionary users</b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Enable interactive networks</strike>
+2018-10-01  15:00 - 15:30<b> | Evolve global applications</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Implement b2c architectures</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Enable rich niches</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Implement frictionless e-markets</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Streamline world-class portals</b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Recontextualize rich paradigms</strike>
+<strike>2018-10-01  18:30 - 19:00 | Synergize dot-com functionalities</strike>
+2018-10-01  19:00 - 19:30<b> | Revolutionize transparent e-markets</b><i> (awaiting)</i>
+2018-10-01               <b> | 🗺  Country Round</b><i> (not-busy)</i>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -420,15 +422,52 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Facilitate out-of-the-box deliverables</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Syndicate plug-and-play systems</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Facilitate bricks-and-clicks methodologies</b><i> (1:1, recurring)</i>
-2018-10-01  12:30 - 13:30<b> | Harness wireless deliverables</b><i> (recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Incentivize best-of-breed e-business</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Expedite cross-media users</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Leverage proactive channels</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Empower back-end mindshare</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Drive user-centric markets</b><i> (1:1, recurring)</i>
+2018-10-01  10:30 - 10:55<b> | Enable rich roi</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Leverage rich e-services</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Grow leading-edge communities</b><i> (1:1, recurring)</i>
+2018-10-01  11:50 - 12:00<b> | Cultivate revolutionary experiences</b><i> (awaiting)</i>
+2018-10-01  12:30 - 13:30<b> | Synergize integrated supply-chains</b><i> (awaiting, recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Evolve global applications</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Implement b2c architectures</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Enable rich niches</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Implement frictionless e-markets</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Streamline world-class portals</b><i> (1:1, recurring)</i>
+2018-10-01  19:00 - 19:30<b> | Revolutionize transparent e-markets</b><i> (awaiting)</i>
+</pre>
+
+
+### `lint`: Calendar events that require action
+
+<pre>
+Usage:
+  calendar-assistant lint [DATE | DATERANGE | TIMERANGE]
+
+Options:
+  -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
+  -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
+  -h, -?, [--help], [--no-help]                  
+          [--debug], [--no-debug]                # how dare you suggest there are bugs
+          [--formatting], [--no-formatting]      # Enable Text Formatting
+                                                 # Default: true
+
+Lint your events for a date or range of dates (default 'today')
+</pre>
+
+For example: display all events that require action scheduled for tomorrow:
+
+<pre>
+<b>$</b> calendar-assistant lint 2018-10-01
+me@example.com
+- looking for events that need attention
+- all times in America/New_York
+
+2018-10-01  11:50 - 12:00<b> | Cultivate revolutionary experiences</b><i> (awaiting)</i>
+                                    attendees: 👍 three@example.com, 🤷 four@example.com
+2018-10-01  12:30 - 13:30<b> | Synergize integrated supply-chains</b><i> (awaiting, recurring)</i>
+                                    attendees: 👍 three@example.com, 🤷 four@example.com
+2018-10-01  19:00 - 19:30<b> | Revolutionize transparent e-markets</b><i> (awaiting)</i>
+                                    attendees: 👍 three@example.com, 🤷 four@example.com
 </pre>
 
 
@@ -456,7 +495,7 @@ The output is TOML, which is suitable for dumping into `~/.calendar-assistant` a
 
 [settings]
 end-of-day = "6pm"
-location-icons = ["🗺 ","🌎"]
+location-icons = ["🌎","🗺 "]
 meeting-length = "30m"
 profile = "work"
 start-of-day = "9am"

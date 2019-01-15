@@ -90,6 +90,22 @@ describe CalendarAssistant::CLI::Commands do
     it "should have a test"
   end
 
+  describe "lint" do
+    let(:command) { "lint" }
+    it_behaves_like "a command", profile: true
+
+    it "calls find_events by default for today" do
+      expect(CalendarAssistant::CLI::Helpers).to receive(:parse_datespec).with("today").and_return(time_range)
+      expect(ca).to receive(:lint_events).
+          with(time_range).
+          and_return(event_set)
+
+      expect(out).to receive(:print_events).with(ca, event_set, presenter_class: CalendarAssistant::CLI::LinterEventSetPresenter)
+
+      described_class.start [command]
+    end
+  end
+
   describe "show" do
     let(:command) {"show"}
     it_behaves_like "a command", profile: true

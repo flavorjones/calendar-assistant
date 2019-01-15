@@ -25,12 +25,12 @@ CalendarAssistant.in_tz "America/New_York"  do
       {start: "10:30", end: "10:55", options: [:one_on_one, :recurring]},
       {start: "11:00", end: "11:30", options: :recurring},
       {start: "11:30", end: "12:00", options: [:one_on_one, :recurring]},
-      {start: "11:50", end: "12:00", options: :declined},
+      {start: "11:50", end: "12:00", options: :needs_action},
       {start: "12:00", end: "12:30", options: :self},
       {start: "12:15", end: "12:30", options: :declined},
       {start: "12:30", end: "13:30", options: :declined},
-      {start: "12:30", end: "13:30", options: :recurring},
-      {start: "13:30", end: "14:50", options: :self},
+      {start: "12:30", end: "13:30", options: [:recurring, :needs_action]},
+      {start: "13:30", end: "14:50", options: [:self, :needs_action]},
       {start: "13:30", end: "14:30", options: :declined},
       {start: "15:00", end: "15:30", options: :one_on_one},
       {start: "16:00", end: "17:00", options: [:one_on_one, :recurring]},
@@ -39,7 +39,7 @@ CalendarAssistant.in_tz "America/New_York"  do
       {start: "17:30", end: "17:55", options: [:one_on_one, :recurring]},
       {start: "18:00", end: "20:30", options: :declined},
       {start: "18:30", end: "19:00", options: :declined},
-      {start: "19:00", end: "19:30", options: :declined},
+      {start: "19:00", end: "19:30", options: :needs_action},
     ]
   end
 

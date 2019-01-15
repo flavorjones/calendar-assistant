@@ -58,6 +58,16 @@ describe CalendarAssistant do
       allow(calendar).to receive(:time_zone).and_return("Europe/London")
     end
 
+    describe "#lint_events" do
+      let(:time) { Time.now.beginning_of_day..(Time.now + 1.day).end_of_day }
+      let(:event_array) { [instance_double("Event", needs_action?: false), instance_double("Event", needs_action?: true) ] }
+
+      it "calls through to the repository" do
+        expect(event_repository).to receive(:find).with(time, predicates: { needs_action?: true })
+        expect(ca.lint_events(time))
+      end
+    end
+
     describe "#find_events" do
       let(:time) { Time.now.beginning_of_day..(Time.now + 1.day).end_of_day }
 

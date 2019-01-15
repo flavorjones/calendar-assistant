@@ -221,6 +221,19 @@ Display _only_ the commitments I have to other people using the `-c` option:
 </pre>
 
 
+### `lint`: Calendar events that require action
+
+<pre>
+<%= run "help lint" %>
+</pre>
+
+For example: display all events that require action scheduled for tomorrow:
+
+<pre>
+<%= run "lint 2018-10-01" %>
+</pre>
+
+
 ### `config`: View your configuration parameters
 
 Calendar Assistant has intelligent defaults, which can be overridden in the TOML file `~/.calendar-assistant`, and further overridden via command-line parameters. Sometimes it's nice to be able to see what defaults Calendar Assistant is using:
