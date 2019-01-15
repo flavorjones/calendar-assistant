@@ -80,24 +80,52 @@ describe CalendarAssistant::EventRepository do
   end
 
   describe "#find" do
-    it "returns an EventSet with er=>self" do
-      result = event_repository.find time_range
-      expect(result.event_repository).to eq(event_repository)
-    end
-
-    context "given a time range" do
-      it "calls CalendarService#list_events with the range" do
+    context "when predicate filters are not passed" do
+      it "returns an EventSet with er=>self" do
         result = event_repository.find time_range
-        expect(result.events).to eq(event_array)
+        expect(result.event_repository).to eq(event_repository)
+      end
+
+      context "given a time range" do
+        it "calls CalendarService#list_events with the range" do
+          result = event_repository.find time_range
+          expect(result.events).to eq(event_array)
+        end
+      end
+
+      context "when no items are found" do
+        let(:time_range) { Time.parse("2017-10-18")..Time.parse("2017-10-19") }
+
+        it "returns an empty array" do
+          result = event_repository.find time_range
+          expect(result.events).to eq([])
+        end
       end
     end
 
-    context "when no items are found" do
-      let(:time_range) { Time.parse("2017-10-18")..Time.parse("2017-10-19") }
+    context "when predicate filters are passed" do
+      let(:other_event) do
+        GCal::Event.new(id: 3,
+                        start: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 10:30:00")),
+                        end: GCal::EventDateTime.new(date_time: Time.parse("2018-10-18 11:00:00")))
+      end
 
-      it "returns an empty array" do
-        result = event_repository.find time_range
-        expect(result.events).to eq([])
+      let(:event_array) { [nine_event, nine_thirty_event, other_event] }
+
+      before do
+        allow(nine_event).to receive(:locked?).and_return(false)
+        allow(nine_thirty_event).to receive(:locked?).and_return(true )
+        allow(other_event).to receive(:locked?).and_return(true)
+
+        allow(nine_event).to receive(:guests_can_modify?).and_return(false)
+        allow(nine_thirty_event).to receive(:guests_can_modify?).and_return(false )
+        allow(other_event).to receive(:guests_can_modify?).and_return(true)
+      end
+
+      it "uses those predicates to filter the event set" do
+        event_set = event_repository.find time_range, predicates: { locked?: true, guests_can_modify?: false }
+        expect(event_set.events.length).to eq 1
+        expect(event_set.events.first.__getobj__).to eq nine_thirty_event
       end
     end
   end
