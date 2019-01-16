@@ -1,5 +1,21 @@
 # Changelog for Calendar Assistant
 
+## v0.7.0 / 2019-01-15
+
+Features:
+
+- Emit a human-readable error if a calendar ID isn't found. [#58]
+- Add `--[no-]formatting` option to all commands.
+- Allow home directory to be overridden with `CA_HOME` env var.
+- Event attributes only displayed for non-private events.
+- Allow additional emoji icons for location events. [#56]
+
+
+Bugfixes:
+
+- Fix profile authorization. [#67]
+
+
 ## v0.6.0 / 2019-01-01
 
 Features:
