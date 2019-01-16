@@ -25,7 +25,7 @@ class EventFactory
       now = date.is_a?(String) ? Chronic.parse(date) : date
 
       wrap(yield).map do |event_attributes|
-        self_attendee = Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true)
+        self_attendee = Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true, email: "self@example.com" )
         attrs = call_values(default_attributes).merge(event_attributes)
         options = wrap(attrs[:options])
 
@@ -40,8 +40,8 @@ class EventFactory
 
         if (options & [:self, :one_on_one, :location_event]).empty?
           attrs[:attendees] += [
-              Google::Apis::CalendarV3::EventAttendee.new(id: 3),
-              Google::Apis::CalendarV3::EventAttendee.new(id: 4)
+              Google::Apis::CalendarV3::EventAttendee.new(id: 3, email: "three@example.com", response_status: CalendarAssistant::Event::Response::ACCEPTED),
+              Google::Apis::CalendarV3::EventAttendee.new(id: 4, email: "four@example.com")
           ]
         end
 
@@ -61,7 +61,7 @@ class EventFactory
     when :self
       attrs[:attendees] = nil
     when :one_on_one
-      attrs[:attendees].push Google::Apis::CalendarV3::EventAttendee.new(id: 2)
+      attrs[:attendees].push Google::Apis::CalendarV3::EventAttendee.new(id: 2, email: "two@example.com")
     when :declined
       self_attendee.response_status = CalendarAssistant::Event::Response::DECLINED
     when :accepted

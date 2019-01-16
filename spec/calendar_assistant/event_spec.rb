@@ -696,37 +696,6 @@ describe CalendarAssistant::Event do
       end
     end
 
-    describe "#view_summary" do
-      context "event is not private" do
-        context "and summary exists" do
-          let(:decorated_object) { decorated_class.new(summary: "my summary") }
-          it { expect(subject.view_summary).to eq("my summary") }
-        end
-
-        context "and summary is blank" do
-          let(:decorated_object) { decorated_class.new(summary: "") }
-          it { expect(subject.view_summary).to eq("(no title)") }
-        end
-
-        context "and summary is nil" do
-          let(:decorated_object) { decorated_class.new(summary: nil) }
-          it { expect(subject.view_summary).to eq("(no title)") }
-        end
-      end
-
-      context "event is private" do
-        context "but we have access" do
-          let(:decorated_object) { decorated_class.new(summary: "don't ignore", visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
-          it { expect(subject.view_summary).to eq("don't ignore") }
-        end
-
-        context "and we do not have access" do
-          let(:decorated_object) { decorated_class.new(visibility: CalendarAssistant::Event::Visibility::PRIVATE) }
-          it { expect(subject.view_summary).to eq("(private)") }
-        end
-      end
-    end
-
     describe "#duration" do
       context "for a one-day all-day event" do
         let(:decorated_object) do
@@ -769,6 +738,20 @@ describe CalendarAssistant::Event do
                                               and_return(duration)
         result = subject.duration_in_seconds
         expect(result).to eq(duration)
+      end
+    end
+
+    describe "#other_human_attendees" do
+      context "there are no attendees" do
+        it { expect(subject.human_attendees).to be_nil }
+      end
+
+      context "there are attendees including people and rooms"  do
+        let(:decorated_object) { decorated_class.new(attendees: attendees) }
+
+        it "removes room resources from the list of attendees and myself" do
+          expect(subject.other_human_attendees).to eq(attendees - [attendee_room_resource, attendee_self])
+        end
       end
     end
 

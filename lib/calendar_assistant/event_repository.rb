@@ -18,7 +18,7 @@ class CalendarAssistant
       end
     end
 
-    def find time_range
+    def find time_range, predicates: {}
       events = @service.list_events(@calendar_id,
                                    time_min: time_range.first.iso8601,
                                    time_max: time_range.last.iso8601,
@@ -26,7 +26,15 @@ class CalendarAssistant
                                    single_events: true,
                                    max_results: 2000,
                                    )
-      CalendarAssistant::EventSet.new self, events.items.map { |e| CalendarAssistant::Event.new(e, config: config) }
+      events = events.items.map { |e| CalendarAssistant::Event.new(e, config: config) }
+
+      unless predicates.empty?
+        events = events.select do |event|
+          predicates.all? { |predicate, value| event.public_send(predicate) == value }
+        end
+      end
+
+      CalendarAssistant::EventSet.new self, events
     end
 
     def new event_attributes

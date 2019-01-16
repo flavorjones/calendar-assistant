@@ -181,12 +181,6 @@ class CalendarAssistant
       end
     end
 
-    def view_summary
-      return "(private)" if private? && (summary.nil? || summary.blank?)
-      return "(no title)" if summary.nil? || summary.blank?
-      summary
-    end
-
     def duration
       if all_day?
         days = (end_date - start_date).to_i
@@ -203,6 +197,11 @@ class CalendarAssistant
 
     def duration_in_seconds
       Event.duration_in_seconds start_time, end_time
+    end
+
+    def other_human_attendees
+      return nil if attendees.nil?
+      attendees.select { |a| ! a.resource  && ! a.self }
     end
 
     def human_attendees

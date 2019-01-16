@@ -56,6 +56,15 @@ class CalendarAssistant
     end
   end
 
+  def lint_events time_range
+    calendar_ids = config.attendees
+    if calendar_ids.length > 1
+      raise BaseException, "CalendarAssistant#lint_events only supports one person (for now)"
+    end
+
+    event_repository(calendar_ids.first).find(time_range,  predicates: { needs_action?: true })
+  end
+
   def find_events time_range
     calendar_ids = config.attendees
     if calendar_ids.length > 1
