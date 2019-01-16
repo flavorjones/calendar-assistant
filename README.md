@@ -1,6 +1,7 @@
-# calendar assistant
+<img src="icons/calendar-assistant.png" align="right" />
 
-A command-line tool to help you manage your Google Calendar.
+# Calendar Assistant
+>A command-line tool to help you manage your Google Calendar.
 
 - easily join the videoconference for your current meeting
 - see yours and others' "availability" suitable for an email response
