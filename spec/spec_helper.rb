@@ -93,7 +93,7 @@ module RspecExampleHelpers
     end
   end
 
-  def event_list_factory_in_hash(**parameters, &block)
+  def structured_event_list_factory(**parameters, &block)
     event_list_factory(event_factory_method: :for_in_hash, **parameters, &block)
   end
 

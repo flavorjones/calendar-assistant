@@ -181,7 +181,7 @@ describe CalendarAssistant::EventSet do
 
       context "with an event at the end of the day and other events later" do
         let(:events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 date => [
                     {start: "7:30am", end: "8am", summary: "zeroth"},
@@ -197,7 +197,7 @@ describe CalendarAssistant::EventSet do
         end
 
         let(:expected_events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
               {
                 date => [
                   {start: "10am", end: "10:30am", summary: "available"},
@@ -220,7 +220,7 @@ describe CalendarAssistant::EventSet do
 
         context "a meeting length is passed" do
           let(:expected_events) do
-            event_list_factory_in_hash do
+            structured_event_list_factory do
               {
                   date => [
                       {start: "12pm", end: "1:30pm", summary: "available"},
@@ -240,7 +240,7 @@ describe CalendarAssistant::EventSet do
         let(:date) { time_range.first.to_date }
 
         let(:events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 date => [
                     {start: "8:30am", end: "10am", summary: "first"},
@@ -253,7 +253,7 @@ describe CalendarAssistant::EventSet do
         end
 
         let(:expected_events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
               {
                 date => [
                   {start: "10am", end: "10:30am", summary: "available"},
@@ -276,7 +276,7 @@ describe CalendarAssistant::EventSet do
 
         let(:events) { {date => []} }
         let(:expected_events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 date => [
                     {start: "9am", end: "6pm", summary: "available"},
@@ -293,7 +293,7 @@ describe CalendarAssistant::EventSet do
       context "with end dates out of order" do
         # see https://github.com/flavorjones/calendar-assistant/issues/44 item 3
         let(:events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 date => [
                     {start: "11am", end: "12pm", summary: "zeroth"},
@@ -304,7 +304,7 @@ describe CalendarAssistant::EventSet do
         end
 
         let(:expected_events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
               {
                 date => [
                   {start: "9am", end: "11am", summary: "available"},
@@ -322,7 +322,7 @@ describe CalendarAssistant::EventSet do
       context "with an event that crosses end-of-day" do
         # see https://github.com/flavorjones/calendar-assistant/issues/44 item 4
         let(:events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 date => [
                     {start: "11am", end: "12pm", summary: "zeroth"},
@@ -333,7 +333,7 @@ describe CalendarAssistant::EventSet do
         end
 
         let(:expected_events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
               {
                 date => [
                   {start: "9am", end: "11am", summary: "available"},
@@ -352,7 +352,7 @@ describe CalendarAssistant::EventSet do
     describe "multiple days" do
       let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "2018-01-01..2018-01-03" }
       let(:events) do
-        event_list_factory_in_hash do
+        structured_event_list_factory do
           {
               Date.parse("2018-01-01") => [],
               Date.parse("2018-01-02") => [],
@@ -361,7 +361,7 @@ describe CalendarAssistant::EventSet do
         end
       end
       let(:expected_events) do
-        event_list_factory_in_hash do
+        structured_event_list_factory do
             {
               Date.parse("2018-01-01") => [{start: "2018-01-01 9am", end: "2018-01-01 6pm", summary: "available"}],
               Date.parse("2018-01-02") => [{start: "2018-01-02 9am", end: "2018-01-02 6pm", summary: "available"}],
@@ -381,7 +381,7 @@ describe CalendarAssistant::EventSet do
 
       let(:events) do
         in_tz do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 date => [
                     {start: "8:30am", end: "10am", summary: "first"},
@@ -406,7 +406,7 @@ describe CalendarAssistant::EventSet do
           end
 
           let(:expected_events) do
-            event_list_factory_in_hash do
+            structured_event_list_factory do
               {
                   date => [
                       {start: "10am", end: "10:30am", summary: "available"},
@@ -432,7 +432,7 @@ describe CalendarAssistant::EventSet do
           end
 
           let(:expected_events) do
-            event_list_factory_in_hash do
+            structured_event_list_factory do
               {
                   date => [
                       {start: "8am", end: "8:30am", summary: "available"},
@@ -464,7 +464,7 @@ describe CalendarAssistant::EventSet do
 
         let(:expected_events) do
           in_tz do
-            event_list_factory_in_hash do
+            structured_event_list_factory do
               {
                   date => [
                       {start: "12pm", end: "1:30pm", summary: "available"},
@@ -513,7 +513,7 @@ describe CalendarAssistant::EventSet do
 
     context "non-intersecting sets" do
       let(:events1) do
-        event_list_factory_in_hash do
+        structured_event_list_factory do
           {
               Date.parse("2018-01-01") => [
                   {start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0"},
@@ -523,7 +523,7 @@ describe CalendarAssistant::EventSet do
       end
 
       let(:events2) do
-        event_list_factory_in_hash do
+        structured_event_list_factory do
           {
               Date.parse("2018-01-01") => [
                   {start: "2018-01-01 11am", end: "2018-01-01 2pm", summary: "1:0"},
@@ -544,7 +544,7 @@ describe CalendarAssistant::EventSet do
 
     context "overlapping events" do
       let(:events1) do
-        event_list_factory_in_hash do
+        structured_event_list_factory do
           {
               Date.parse("2018-01-01") => [
                   {start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0"},
@@ -565,7 +565,7 @@ describe CalendarAssistant::EventSet do
       end
 
       let(:events2) do
-        event_list_factory_in_hash do
+        structured_event_list_factory do
           {
               Date.parse("2018-01-01") => [
                   {start: "2018-01-01 10am", end: "2018-01-01 12pm", summary: "1:0"},
@@ -590,7 +590,7 @@ describe CalendarAssistant::EventSet do
 
       context "with no min-length specified" do
         let(:expected_events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 Date.parse("2018-01-01") => [
                     {start: "2018-01-01 10am", end: "2018-01-01 11am", summary: "1:0"},
@@ -618,7 +618,7 @@ describe CalendarAssistant::EventSet do
 
       context "with a min-length specified" do
         let(:expected_events) do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 Date.parse("2018-01-01") => [
                     {start: "2018-01-01 10am", end: "2018-01-01 11am", summary: "1:0"},
@@ -649,7 +649,7 @@ describe CalendarAssistant::EventSet do
 
       let(:events1) do
         in_tz time_zone1 do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 Date.parse("2018-01-01") => [
                     {start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "1:0"},
@@ -662,7 +662,7 @@ describe CalendarAssistant::EventSet do
       end
       let(:events2) do
         in_tz time_zone2 do
-          event_list_factory_in_hash do
+          structured_event_list_factory do
             {
                 Date.parse("2018-01-01") => [
                     {start: "2018-01-01 8am", end: "2018-01-01 10am", summary: "2:0"},
@@ -678,7 +678,7 @@ describe CalendarAssistant::EventSet do
       context "from the POV of calendar 1" do
         let(:expected_events) do
           in_tz time_zone1 do
-            event_list_factory_in_hash do
+            structured_event_list_factory do
               {
                   Date.parse("2018-01-01") => [
                       {start: "2018-01-01 12pm", end: "2018-01-01 1pm", summary: ""},
@@ -695,7 +695,7 @@ describe CalendarAssistant::EventSet do
       context "from the POV of calendar 2" do
         let(:expected_events) do
           in_tz time_zone2 do
-            event_list_factory_in_hash do
+            structured_event_list_factory do
               {
                   Date.parse("2018-01-01") => [
                       {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: ""},
