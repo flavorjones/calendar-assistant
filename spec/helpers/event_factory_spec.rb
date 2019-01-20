@@ -1,12 +1,10 @@
 describe EventFactory do
   freeze_time
-
   let(:event_factory) { EventFactory.new }
-  let(:default_attributes) { {} }
 
   describe "#for_in_hash" do
     it "retains the original structure" do
-      events = event_factory.for_in_hash(default_attributes) do
+      events = event_factory.for_in_hash do
         {
             "key 1" => {id: "funky"},
             "key 2" => [{id: "cold"}, {id: "medina"}]
@@ -19,6 +17,8 @@ describe EventFactory do
   end
 
   describe "#create_list" do
+    let(:default_attributes) { {} }
+
     describe "passing attributes as a block" do
       context "when no block is passed" do
         it "raises an ArgumentError" do
@@ -33,10 +33,33 @@ describe EventFactory do
       end
     end
 
-    let(:events) { event_factory.create_list(default_attributes) { attributes } }
+    subject { event_factory.create_list(default_attributes) { attributes }.first }
+    let(:attributes) { {start: "10:00", end: "15:00"} }
+
+    describe "date parsing" do
+      describe "when a default date is set" do
+        let(:default_attributes) { {date: "2001-01-01"} }
+
+        it "parses the start and end dates relative to that date" do
+          expect(subject.start.date_time).to eq Chronic.parse("2001-01-01 10:00")
+          expect(subject.end.date_time).to eq Chronic.parse("2001-01-01 15:00")
+        end
+      end
+
+      describe "when a default date is not set" do
+        it "parses the start and end dates relative to now" do
+          expect(subject.start.date_time).to eq Chronic.parse("2018-07-13 10:00")
+          expect(subject.end.date_time).to eq Chronic.parse("2018-07-13 15:00")
+        end
+      end
+    end
+  end
+
+  describe "#create" do
+    let(:event) { event_factory.create(event_attributes: attributes) }
 
     describe "id" do
-      subject { events.first.id }
+      subject { event.id }
 
       describe "when an id is passed" do
         let(:attributes) { {id: "fancy-id"} }
@@ -53,25 +76,9 @@ describe EventFactory do
     end
 
     describe "dates" do
-      subject { events.first }
+      subject { event }
 
       let(:attributes) { {start: "10:00", end: "15:00"} }
-
-      describe "when a default date is set" do
-        let(:default_attributes) { {date: "2001-01-01"} }
-
-        it "parses the start and end dates relative to that date" do
-          expect(subject.start.date_time).to eq Chronic.parse("2001-01-01 10:00")
-          expect(subject.end.date_time).to eq Chronic.parse("2001-01-01 15:00")
-        end
-      end
-
-      describe "when a default date is not set" do
-        it "parses the start and end dates relative to now" do
-          expect(subject.start.date_time).to eq Chronic.parse("2018-07-13 10:00")
-          expect(subject.end.date_time).to eq Chronic.parse("2018-07-13 15:00")
-        end
-      end
 
       describe "options" do
         describe "passing multiple options" do
