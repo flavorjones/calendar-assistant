@@ -15,6 +15,16 @@ describe CalendarAssistant::Event do
     end
   end
 
+  describe "predicates" do
+    it "lists all predicate methods with an arity of 0 in the PREDICATES constant" do
+      instance = described_class.new(double)
+      predicate_constant_methods = described_class::PREDICATES.values.flatten
+      instance_predicates = instance.public_methods(false).select{ |m| m =~ /\?$/ && instance.method(m).arity == 0 }
+
+      expect(instance_predicates - predicate_constant_methods).to be_empty
+    end
+  end
+
   describe "instance methods" do
     #
     #  factory bit

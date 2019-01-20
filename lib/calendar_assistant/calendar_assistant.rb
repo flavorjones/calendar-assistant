@@ -37,7 +37,7 @@ class CalendarAssistant
     @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
     @event_repositories = {} # calendar_id → event_repository
-
+    @event_predicates = PredicateCollection.build(config.setting(CalendarAssistant::Config::Keys::Options::MUST_BE), config.setting(CalendarAssistant::Config::Keys::Options::MUST_NOT_BE))
     @emoji_worldmap = Array(@config.setting(CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS)).first
   end
 
@@ -62,7 +62,7 @@ class CalendarAssistant
       raise BaseException, "CalendarAssistant#lint_events only supports one person (for now)"
     end
 
-    event_repository(calendar_ids.first).find(time_range,  predicates: { needs_action?: true })
+    event_repository(calendar_ids.first).find(time_range,  predicates: @event_predicates.merge({needs_action?: true}))
   end
 
   def find_events time_range
@@ -70,7 +70,7 @@ class CalendarAssistant
     if calendar_ids.length > 1
       raise BaseException, "CalendarAssistant#find_events only supports one person (for now)"
     end
-    event_repository(calendar_ids.first).find(time_range)
+    event_repository(calendar_ids.first).find(time_range, predicates: @event_predicates)
   end
 
   def availability time_range
@@ -78,11 +78,11 @@ class CalendarAssistant
     ers = calendar_ids.map do |calendar_id|
       event_repository calendar_id
     end
-    Scheduler.new(self, ers).available_blocks(time_range)
+    Scheduler.new(self, ers).available_blocks(time_range, predicates: @event_predicates)
   end
 
   def find_location_events time_range
-    event_set = event_repository.find(time_range)
+    event_set = event_repository.find(time_range, predicates: @event_predicates)
     event_set.new event_set.events.select { |e| e.location_event? }
   end
 

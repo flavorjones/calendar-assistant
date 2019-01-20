@@ -15,6 +15,18 @@ class CalendarAssistant
                desc: "Load events from a local file instead of Google Calendar"
       end
 
+      def self.predicate_option_descriptions
+        <<~EOD
+          This command may utilize --must-be or --must-not-be. Both options may include a space separated array of the following predicates
+          #{CalendarAssistant::Event::PREDICATES.values.flatten.map{ |p| p.to_s.gsub(/\?$/, "") }.join("\n")}
+        EOD
+      end
+
+      def self.with_predicate_options
+        option "must-be", type: "array", desc: "array of event predicates that must be true"
+        option "must-not-be", type: "array", desc: "array of event predicates that must not be true"
+      end
+
       def self.has_attendees
         option CalendarAssistant::Config::Keys::Options::ATTENDEES,
                type: :string,
@@ -127,13 +139,15 @@ class CalendarAssistant
       will_create_a_service
       has_attendees
 
+      with_predicate_options
+      long_desc predicate_option_descriptions
       def lint datespec = "today"
         calendar_assistant(datespec) do |ca, date|
           event_set = ca.lint_events date
           out.print_events ca, event_set, presenter_class: CalendarAssistant::CLI::LinterEventSetPresenter
         end
       end
-      
+
       desc "show [DATE | DATERANGE | TIMERANGE]",
            "Show your events for a date or range of dates (default 'today')"
       option CalendarAssistant::Config::Keys::Options::COMMITMENTS,
@@ -143,6 +157,8 @@ class CalendarAssistant
       will_create_a_service
       has_attendees
 
+      with_predicate_options
+      long_desc predicate_option_descriptions
       def show datespec = "today"
         calendar_assistant(datespec) do |ca, date|
           event_set = ca.find_events date
@@ -158,6 +174,8 @@ class CalendarAssistant
              desc: "launch a browser to join the video call URL"
       will_create_a_service
 
+      with_predicate_options
+      long_desc predicate_option_descriptions
       def join timespec = "now"
         return if handle_help_args
         set_formatting
@@ -179,6 +197,8 @@ class CalendarAssistant
            "Show your location for a date or range of dates (default 'today')"
       will_create_a_service
 
+      with_predicate_options
+      long_desc predicate_option_descriptions
       def location datespec = "today"
         calendar_assistant(datespec) do |ca, date|
           event_set = ca.find_location_events date
@@ -191,6 +211,8 @@ class CalendarAssistant
            "Set your location to LOCATION for a date or range of dates (default 'today')"
       will_create_a_service
 
+      with_predicate_options
+      long_desc predicate_option_descriptions
       def location_set location = nil, datespec = "today"
         return help! if location.nil?
 
@@ -224,6 +246,8 @@ class CalendarAssistant
       has_attendees
       will_create_a_service
 
+      with_predicate_options
+      long_desc predicate_option_descriptions
       def availability datespec = "today"
         calendar_assistant(datespec) do |ca, date|
           event_set = ca.availability date

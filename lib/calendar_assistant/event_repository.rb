@@ -29,8 +29,13 @@ class CalendarAssistant
       events = events.items.map { |e| CalendarAssistant::Event.new(e, config: config) }
 
       unless predicates.empty?
+        valid_predicates = CalendarAssistant::Event::PREDICATES.values.flatten
+
         events = events.select do |event|
-          predicates.all? { |predicate, value| event.public_send(predicate) == value }
+          predicates.all? do |predicate, value|
+            raise BaseException, "Invalid event predicate" unless valid_predicates.include?(predicate)
+            event.public_send(predicate) == value
+          end
         end
       end
 
