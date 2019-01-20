@@ -4,9 +4,9 @@ describe EventFactory do
 
   describe "#for_in_hash" do
     it "retains the original structure" do
-      events = event_factory.for_in_hash do
+      events = event_factory.create_list do
         {
-            "key 1" => {id: "funky"},
+            "key 1" => [{id: "funky"}],
             "key 2" => [{id: "cold"}, {id: "medina"}]
         }
       end
@@ -28,12 +28,12 @@ describe EventFactory do
 
       context "when a block is passed" do
         it "does not raise an ArgumentError" do
-          expect { event_factory.create_list(default_attributes) { {} } }.not_to raise_error
+          expect { event_factory.create_list(default_attributes) { [] } }.not_to raise_error
         end
       end
     end
 
-    subject { event_factory.create_list(default_attributes) { attributes }.first }
+    subject { event_factory.create_list(default_attributes) { [attributes] }.first }
     let(:attributes) { {start: "10:00", end: "15:00"} }
 
     describe "date parsing" do

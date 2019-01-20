@@ -6,21 +6,22 @@ class EventFactory
       service.get_calendar(calendar_id)
     rescue
       service.insert_calendar(GCal::Calendar.new(id: calendar_id))
-
     end
 
     @event_repository = CalendarAssistant::EventRepository.new(service, calendar_id)
   end
 
-  def for_in_hash(**default_attributes)
-    yield.each_with_object({}) do |(key, values), hsh|
-      hsh[key] = self.create_list(**default_attributes, &->() { values })
-    end
-  end
-
   def create_list(date: Time.now, **default_attributes)
     raise ArgumentError unless block_given?
-    wrap(yield).map do |event_attributes|
+    args = yield
+
+    if args.is_a?(Hash)
+      return args.each_with_object({}) do |(key, values), hsh|
+        hsh[key] = self.create_list(**default_attributes, &->() { values })
+      end
+    end
+
+    wrap(args).map do |event_attributes|
       attrs = call_values(default_attributes).merge(event_attributes)
       create(date: date, event_attributes: attrs)
     end
