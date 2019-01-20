@@ -14,11 +14,11 @@ class EventFactory
 
   def for_in_hash(**default_attributes)
     yield.each_with_object({}) do |(key, values), hsh|
-      hsh[key] = self.for(**default_attributes, &->() { values })
+      hsh[key] = self.create_list(**default_attributes, &->() { values })
     end
   end
 
-  def for(date: Time.now, **default_attributes)
+  def create_list(date: Time.now, **default_attributes)
     raise ArgumentError unless block_given?
 
     set_chronic_tz do

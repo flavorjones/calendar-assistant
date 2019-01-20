@@ -15,7 +15,7 @@ CalendarAssistant.in_tz "America/New_York"  do
   service.insert_calendar(calendar)
   event_factory = EventFactory.new(service: service, calendar_id: calendar.id)
 
-  event_factory.for(date: "2018-10-01", summary: -> { Faker::Company.bs.capitalize }) do
+  event_factory.create_list(date: "2018-10-01", summary: -> { Faker::Company.bs.capitalize }) do
     [
       {start: "03:30 AM", end: "05:00 AM", options: :declined},
       {start: "07:30 AM", end: "08:30 AM", options: :declined},
@@ -45,7 +45,7 @@ CalendarAssistant.in_tz "America/New_York"  do
 
   # Events for demonstrating availability
 
-  event_factory.for(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
+  event_factory.create_list(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
     [
       {start: "10:00", end: "13:30", options: :accepted},
       {start: "14:30", end: "15:30", options: :accepted},
@@ -53,14 +53,14 @@ CalendarAssistant.in_tz "America/New_York"  do
     ]
   end
 
-  event_factory.for(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
+  event_factory.create_list(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
     [
       {start: "09:00", end: "12:00", options: :accepted},
       {start: "16:30", end: "16:50", options: :accepted},
     ]
   end
 
-  event_factory.for(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
+  event_factory.create_list(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
     [
       {start: "08:30", end: "09:30", options: :accepted},
       {start: "14:30", end: "15:30", options: :accepted},
@@ -71,7 +71,7 @@ CalendarAssistant.in_tz "America/New_York"  do
 
   # Location Events
 
-  event_factory.for(summary: -> { Faker::Hobbit.location }) do
+  event_factory.create_list(summary: -> { Faker::Hobbit.location }) do
     [
       {start: "2018-10-01", options: :location_event},
       {start: "2018-09-24", end: "2018-09-28", options: :location_event},
@@ -87,7 +87,7 @@ CalendarAssistant.in_tz "America/Los_Angeles"  do
 
   # Events for demonstrating availability
 
-  event_factory.for(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
+  event_factory.create_list(date: "2018-11-05", summary: -> { Faker::Company.bs.capitalize }) do
     [
       {start: "10:00", end: "13:30", options: :accepted},
       {start: "14:30", end: "15:30", options: :accepted},
@@ -95,14 +95,14 @@ CalendarAssistant.in_tz "America/Los_Angeles"  do
     ]
   end
 
-  event_factory.for(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
+  event_factory.create_list(date: "2018-11-06", summary: -> { Faker::Company.bs.capitalize }) do
     [
       {start: "09:00", end: "12:00", options: :accepted},
       {start: "16:30", end: "16:50", options: :accepted},
     ]
   end
 
-  event_factory.for(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
+  event_factory.create_list(date: "2018-11-07", summary: -> { Faker::Company.bs.capitalize }) do
     [
       {start: "08:30", end: "09:30", options: :accepted},
       {start: "14:30", end: "15:30", options: :accepted},
