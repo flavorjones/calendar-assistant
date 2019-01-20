@@ -93,29 +93,17 @@ module RspecExampleHelpers
     end
   end
 
-  def event_list_factory_in_hash(**parameters, &block)
-    event_list_factory(event_factory_method: :for_in_hash, **parameters, &block)
+  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", event_factory_method: :create_list, &block)
+    EventFactory.new(service: service_for(file, calendar_id, time_zone), calendar_id: calendar_id).public_send(event_factory_method, date: date, &block)
   end
 
-  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", event_factory_method: :for, &block)
-    service = CalendarAssistant::LocalService.new(file: file, load_events: false)
-    service.insert_calendar(GCal::Calendar.new(id: calendar_id, time_zone: time_zone))
-    EventFactory.new(service: service, calendar_id: calendar_id).public_send(event_factory_method, date: date, &block)
-  end
+  def service_for(file, calendar_id, time_zone)
+    @services ||= {}
 
-  def event_factory summary, time_range, stub={}
-    if time_range.first.is_a?(Date)
-      CalendarAssistant::Event.new(GCal::Event.new summary: summary,
-                                                   start: GCal::EventDateTime.new(date: time_range.first),
-                                                   end: GCal::EventDateTime.new(date: time_range.last))
-    else
-      CalendarAssistant::Event.new(GCal::Event.new summary: summary,
-                                                   start: GCal::EventDateTime.new(date_time: time_range.first.to_datetime),
-                                                   end: GCal::EventDateTime.new(date_time: time_range.last.to_datetime))
-    end.tap do |event|
-      stub.each do |attr, value|
-        allow(event).to receive(attr).and_return(value)
-      end
+    service_key = sprintf("%s.%s.%s", file, calendar_id, time_zone)
+
+    @services[service_key] ||= begin
+      CalendarAssistant::LocalService.new(file: file, load_events: false).tap { |s| s.insert_calendar(GCal::Calendar.new(id: calendar_id, time_zone: time_zone)) }
     end
   end
 end

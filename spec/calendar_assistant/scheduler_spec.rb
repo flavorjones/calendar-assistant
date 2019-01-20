@@ -19,7 +19,7 @@ describe CalendarAssistant::Scheduler do
       end
 
       let(:cooked_events) do
-        event_list_factory_in_hash do
+        event_list_factory do
           {
               Date.parse("2018-01-01") => [
                   {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted},

@@ -6,53 +6,61 @@ class EventFactory
       service.get_calendar(calendar_id)
     rescue
       service.insert_calendar(GCal::Calendar.new(id: calendar_id))
-
     end
 
     @event_repository = CalendarAssistant::EventRepository.new(service, calendar_id)
   end
 
-  def for_in_hash(**default_attributes)
-    yield.each_with_object({}) do |(key, values), hsh|
-      hsh[key] = self.for(**default_attributes, &->() { values })
+  def create_list(date: Time.now, **default_attributes)
+    raise ArgumentError unless block_given?
+    args = yield
+
+    if args.is_a?(Hash)
+      return args.each_with_object({}) do |(key, values), hsh|
+        hsh[key] = self.create_list(**default_attributes, &->() { values })
+      end
+    end
+
+    wrap(args).map do |event_attributes|
+      attrs = call_values(default_attributes).merge(event_attributes)
+      create(date: date, event_attributes: attrs)
     end
   end
 
-  def for(date: Time.now, **default_attributes)
-    raise ArgumentError unless block_given?
-
+  def create(date: Time.now, event_attributes:, self_attendee: new_self_attendee)
     set_chronic_tz do
+
       now = date.is_a?(String) ? Chronic.parse(date) : date
 
-      wrap(yield).map do |event_attributes|
-        self_attendee = Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true, email: "self@example.com" )
-        attrs = call_values(default_attributes).merge(event_attributes)
-        options = wrap(attrs[:options])
+      attrs = event_attributes.dup
+      options = wrap(attrs[:options])
 
-        attrs[:attendees] = [self_attendee]
+      attrs[:attendees] = [self_attendee]
 
-        attrs[:start], attrs[:end] = set_dates(attrs[:start], attrs[:end], now, options.delete(:all_day))
+      attrs[:start], attrs[:end] = set_dates(attrs[:start], attrs[:end], now, options.delete(:all_day))
 
-
-        (options).each do |option|
-          set_option(attrs, self_attendee, option)
-        end
-
-        if (options & [:self, :one_on_one, :location_event]).empty?
-          attrs[:attendees] += [
-              Google::Apis::CalendarV3::EventAttendee.new(id: 3, email: "three@example.com", response_status: CalendarAssistant::Event::Response::ACCEPTED),
-              Google::Apis::CalendarV3::EventAttendee.new(id: 4, email: "four@example.com")
-          ]
-        end
-
-        attrs[:id] = SecureRandom.uuid unless attrs.has_key?(:id)
-
-        @event_repository.create(attrs)
+      (options).each do |option|
+        set_option(attrs, self_attendee, option)
       end
+
+      if (options & [:self, :one_on_one, :location_event]).empty?
+        attrs[:attendees] += [
+            Google::Apis::CalendarV3::EventAttendee.new(id: 3, email: "three@example.com", response_status: CalendarAssistant::Event::Response::ACCEPTED),
+            Google::Apis::CalendarV3::EventAttendee.new(id: 4, email: "four@example.com")
+        ]
+      end
+
+      attrs[:id] = SecureRandom.uuid unless attrs.has_key?(:id)
+
+      @event_repository.create(attrs)
     end
   end
 
   private
+
+  def new_self_attendee
+    Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true, email: "self@example.com")
+  end
 
   def set_option(attrs, self_attendee, option)
     case option
@@ -73,9 +81,9 @@ class EventFactory
     when :private
       attrs[:visibility] = CalendarAssistant::Event::Visibility::PRIVATE
     when :free
-      attrs[:transparency] =  CalendarAssistant::Event::Transparency::TRANSPARENT
+      attrs[:transparency] = CalendarAssistant::Event::Transparency::TRANSPARENT
     when :busy
-      attrs[:transparency] =  CalendarAssistant::Event::Transparency::OPAQUE
+      attrs[:transparency] = CalendarAssistant::Event::Transparency::OPAQUE
     when :location_event
       attrs[:summary] = "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS].first} #{ attrs[:summary] || "Zanzibar" }"
       new_dates = CalendarAssistant.date_range_cast(attrs[:start]..attrs[:end])

@@ -181,28 +181,32 @@ describe CalendarAssistant::EventSet do
 
       context "with an event at the end of the day and other events later" do
         let(:events) do
-          {
-            date => [
-              event_factory("zeroth", Chronic.parse("7:30am")..(Chronic.parse("8am"))),
-              event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
-              event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
-              event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
-              event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
-              event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm"))),
-              event_factory("sixth", Chronic.parse("6:30pm")..(Chronic.parse("7pm"))),
-            ]
-          }
+          event_list_factory do
+            {
+                date => [
+                    {start: "7:30am", end: "8am", summary: "zeroth"},
+                    {start: "8:30am", end: "10am", summary: "first"},
+                    {start: "10:30am", end: "12pm", summary: "second"},
+                    {start: "1:30pm", end: "2:30pm", summary: "third"},
+                    {start: "3pm", end: "5pm", summary: "fourth"},
+                    {start: "5:30pm", end: "6pm", summary: "fifth"},
+                    {start: "6:30pm", end: "7pm", summary: "sixth"}
+                ]
+            }
+          end
         end
 
         let(:expected_events) do
-          {
-            date => [
-              event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-              event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-              event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-              event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-            ]
-          }
+          event_list_factory do
+              {
+                date => [
+                  {start: "10am", end: "10:30am", summary: "available"},
+                  {start: "12pm", end: "1:30pm", summary: "available"},
+                  {start: "2:30pm", end: "3pm", summary: "available"},
+                  {start: "5pm", end: "5:30pm", summary: "available"},
+                ]
+              }
+          end
         end
 
         it "returns an EventSet storing a hash of available blocks on each date" do
@@ -216,11 +220,13 @@ describe CalendarAssistant::EventSet do
 
         context "a meeting length is passed" do
           let(:expected_events) do
-            {
-              date => [
-                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-              ]
-            }
+            event_list_factory do
+              {
+                  date => [
+                      {start: "12pm", end: "1:30pm", summary: "available"},
+                  ]
+              }
+            end
           end
 
           it "ignores available blocks shorter than that length" do
@@ -234,25 +240,29 @@ describe CalendarAssistant::EventSet do
         let(:date) { time_range.first.to_date }
 
         let(:events) do
-          {
-            date => [
-              event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
-              event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
-              event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
-              event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
-            ]
-          }
+          event_list_factory do
+            {
+                date => [
+                    {start: "8:30am", end: "10am", summary: "first"},
+                    {start: "10:30am", end: "12pm", summary: "second"},
+                    {start: "1:30pm", end: "2:30pm", summary: "third"},
+                    {start: "3pm", end: "5pm", summary: "fourth"},
+                ]
+            }
+          end
         end
 
         let(:expected_events) do
-          {
-            date => [
-              event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-              event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-              event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-              event_factory("available", Chronic.parse("5pm")..Chronic.parse("6pm")),
-            ]
-          }
+          event_list_factory do
+              {
+                date => [
+                  {start: "10am", end: "10:30am", summary: "available"},
+                  {start: "12pm", end: "1:30pm", summary: "available"},
+                  {start: "2:30pm", end: "3pm", summary: "available"},
+                  {start: "5pm", end: "6pm", summary: "available"},
+                ]
+              }
+          end
         end
 
         it "finds chunks of free time at the end of the day" do
@@ -264,13 +274,15 @@ describe CalendarAssistant::EventSet do
         let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "today" }
         let(:date) { time_range.first.to_date }
 
-        let(:events) { { date => [] } }
+        let(:events) { {date => []} }
         let(:expected_events) do
-          {
-            date => [
-              event_factory("available", Chronic.parse("9am")..Chronic.parse("6pm")),
-            ]
-          }
+          event_list_factory do
+            {
+                date => [
+                    {start: "9am", end: "6pm", summary: "available"},
+                ]
+            }
+          end
         end
 
         it "returns a big fat available block" do
@@ -281,21 +293,25 @@ describe CalendarAssistant::EventSet do
       context "with end dates out of order" do
         # see https://github.com/flavorjones/calendar-assistant/issues/44 item 3
         let(:events) do
-          {
-            date => [
-              event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm"))),
-              event_factory("first", Chronic.parse("11am")..(Chronic.parse("11:30am"))),
-            ]
-          }
+          event_list_factory do
+            {
+                date => [
+                    {start: "11am", end: "12pm", summary: "zeroth"},
+                    {start: "11am", end: "11:30am", summary: "first"},
+                ]
+            }
+          end
         end
 
         let(:expected_events) do
-          {
-            date => [
-              event_factory("available", Chronic.parse("9am")..Chronic.parse("11am")),
-              event_factory("available", Chronic.parse("12pm")..Chronic.parse("6pm")),
-            ]
-          }
+          event_list_factory do
+              {
+                date => [
+                  {start: "9am", end: "11am", summary: "available"},
+                  {start: "12pm", end: "6pm", summary: "available"},
+                ]
+              }
+          end
         end
 
         it "returns correct available blocks" do
@@ -306,21 +322,25 @@ describe CalendarAssistant::EventSet do
       context "with an event that crosses end-of-day" do
         # see https://github.com/flavorjones/calendar-assistant/issues/44 item 4
         let(:events) do
-          {
-            date => [
-              event_factory("zeroth", Chronic.parse("11am")..(Chronic.parse("12pm"))),
-              event_factory("first", Chronic.parse("5pm")..(Chronic.parse("7pm"))),
-            ]
-          }
+          event_list_factory do
+            {
+                date => [
+                    {start: "11am", end: "12pm", summary: "zeroth"},
+                    {start: "5pm", end: "7pm", summary: "first"},
+                ]
+            }
+          end
         end
 
         let(:expected_events) do
-          {
-            date => [
-              event_factory("available", Chronic.parse("9am")..Chronic.parse("11am")),
-              event_factory("available", Chronic.parse("12pm")..Chronic.parse("5pm")),
-            ]
-          }
+          event_list_factory do
+              {
+                date => [
+                  {start: "9am", end: "11am", summary: "available"},
+                  {start: "12pm", end: "5pm", summary: "available"},
+                ]
+              }
+          end
         end
 
         it "returns correct available blocks" do
@@ -332,18 +352,22 @@ describe CalendarAssistant::EventSet do
     describe "multiple days" do
       let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "2018-01-01..2018-01-03" }
       let(:events) do
-        {
-          Date.parse("2018-01-01") => [],
-          Date.parse("2018-01-02") => [],
-          Date.parse("2018-01-03") => [],
-        }
+        event_list_factory do
+          {
+              Date.parse("2018-01-01") => [],
+              Date.parse("2018-01-02") => [],
+              Date.parse("2018-01-03") => [],
+          }
+        end
       end
       let(:expected_events) do
-        {
-          Date.parse("2018-01-01") => [event_factory("available", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 6pm"))],
-          Date.parse("2018-01-02") => [event_factory("available", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 6pm"))],
-          Date.parse("2018-01-03") => [event_factory("available", Chronic.parse("2018-01-03 9am")..Chronic.parse("2018-01-03 6pm"))],
-        }
+        event_list_factory do
+            {
+              Date.parse("2018-01-01") => [{start: "2018-01-01 9am", end: "2018-01-01 6pm", summary: "available"}],
+              Date.parse("2018-01-02") => [{start: "2018-01-02 9am", end: "2018-01-02 6pm", summary: "available"}],
+              Date.parse("2018-01-03") => [{start: "2018-01-03 9am", end: "2018-01-03 6pm", summary: "available"}],
+            }
+        end
       end
 
       it "returns a hash of all dates" do
@@ -357,16 +381,18 @@ describe CalendarAssistant::EventSet do
 
       let(:events) do
         in_tz do
-          {
-            date => [
-              event_factory("first", Chronic.parse("8:30am")..(Chronic.parse("10am"))),
-              event_factory("second", Chronic.parse("10:30am")..(Chronic.parse("12pm"))),
-              event_factory("third", Chronic.parse("1:30pm")..(Chronic.parse("2:30pm"))),
-              event_factory("fourth", Chronic.parse("3pm")..(Chronic.parse("5pm"))),
-              event_factory("fifth", Chronic.parse("5:30pm")..(Chronic.parse("6pm"))),
-              event_factory("fourth", Chronic.parse("6:30pm")..(Chronic.parse("7pm"))),
-            ]
-          }
+          event_list_factory do
+            {
+                date => [
+                    {start: "8:30am", end: "10am", summary: "first"},
+                    {start: "10:30am", end: "12pm", summary: "second"},
+                    {start: "1:30pm", end: "2:30pm", summary: "third"},
+                    {start: "3pm", end: "5pm", summary: "fourth"},
+                    {start: "5:30pm", end: "6pm", summary: "fifth"},
+                    {start: "6:30pm", end: "7pm", summary: "fourth"},
+                ]
+            }
+          end
         end
       end
 
@@ -380,14 +406,16 @@ describe CalendarAssistant::EventSet do
           end
 
           let(:expected_events) do
-            {
-              date => [
-                event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-              ]
-            }
+            event_list_factory do
+              {
+                  date => [
+                      {start: "10am", end: "10:30am", summary: "available"},
+                      {start: "12pm", end: "1:30pm", summary: "available"},
+                      {start: "2:30pm", end: "3pm", summary: "available"},
+                      {start: "5pm", end: "5:30pm", summary: "available"},
+                  ]
+              }
+            end
           end
 
           it "finds blocks of time 30m or longer" do
@@ -404,16 +432,18 @@ describe CalendarAssistant::EventSet do
           end
 
           let(:expected_events) do
-            {
-              date => [
-                event_factory("available", Chronic.parse("8am")..Chronic.parse("8:30am")),
-                event_factory("available", Chronic.parse("10am")..Chronic.parse("10:30am")),
-                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-                event_factory("available", Chronic.parse("6pm")..Chronic.parse("6:30pm")),
-              ]
-            }
+            event_list_factory do
+              {
+                  date => [
+                      {start: "8am", end: "8:30am", summary: "available"},
+                      {start: "10am", end: "10:30am", summary: "available"},
+                      {start: "12pm", end: "1:30pm", summary: "available"},
+                      {start: "2:30pm", end: "3pm", summary: "available"},
+                      {start: "5pm", end: "5:30pm", summary: "available"},
+                      {start: "6pm", end: "6:30pm", summary: "available"},
+                  ]
+              }
+            end
           end
 
           it "finds blocks of time 30m or longer" do
@@ -434,15 +464,17 @@ describe CalendarAssistant::EventSet do
 
         let(:expected_events) do
           in_tz do
-            {
-              date => [
-                event_factory("available", Chronic.parse("12pm")..Chronic.parse("1:30pm")),
-                event_factory("available", Chronic.parse("2:30pm")..Chronic.parse("3pm")),
-                event_factory("available", Chronic.parse("5pm")..Chronic.parse("5:30pm")),
-                event_factory("available", Chronic.parse("6pm")..Chronic.parse("6:30pm")),
-                event_factory("available", Chronic.parse("7pm")..Chronic.parse("9pm")),
-              ]
-            }
+            event_list_factory do
+              {
+                  date => [
+                      {start: "12pm", end: "1:30pm", summary: "available"},
+                      {start: "2:30pm", end: "3pm", summary: "available"},
+                      {start: "5pm", end: "5:30pm", summary: "available"},
+                      {start: "6pm", end: "6:30pm", summary: "available"},
+                      {start: "7pm", end: "9pm", summary: "available"},
+                  ]
+              }
+            end
           end
         end
 
@@ -480,20 +512,24 @@ describe CalendarAssistant::EventSet do
     end
 
     context "non-intersecting sets" do
-      let(:events1)  do
-        {
-          Date.parse("2018-01-01") => [
-            event_factory("1:0", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 11am")),
-          ]
-        }
+      let(:events1) do
+        event_list_factory do
+          {
+              Date.parse("2018-01-01") => [
+                  {start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0"},
+              ]
+          }
+        end
       end
 
-      let(:events2)  do
-        {
-          Date.parse("2018-01-01") => [
-            event_factory("1:0", Chronic.parse("2018-01-01 11am")..Chronic.parse("2018-01-01 2pm")),
-          ]
-        }
+      let(:events2) do
+        event_list_factory do
+          {
+              Date.parse("2018-01-01") => [
+                  {start: "2018-01-01 11am", end: "2018-01-01 2pm", summary: "1:0"},
+              ]
+          }
+        end
       end
 
       let(:expected_events)  do
@@ -507,67 +543,73 @@ describe CalendarAssistant::EventSet do
     end
 
     context "overlapping events" do
-      let(:events1)  do
-        {
-          Date.parse("2018-01-01") => [
-            event_factory("1:0", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 11am")),
-          ],
-          Date.parse("2018-01-02") => [
-            event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 12pm")),
-          ],
-          Date.parse("2018-01-03") => [
-            event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
-          ],
-          Date.parse("2018-01-04") => [
-            event_factory("2:0", Chronic.parse("2018-01-01 8am")..Chronic.parse("2018-01-01 10am")),
-            event_factory("2:1", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 2pm")),
-            event_factory("2:2", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 6pm")),
-          ]
-        }
+      let(:events1) do
+        event_list_factory do
+          {
+              Date.parse("2018-01-01") => [
+                  {start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0"},
+              ],
+              Date.parse("2018-01-02") => [
+                  {start: "2018-01-02 9am", end: "2018-01-02 12pm", summary: "1:1"},
+              ],
+              Date.parse("2018-01-03") => [
+                  {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1"},
+              ],
+              Date.parse("2018-01-04") => [
+                  {start: "2018-01-01 8am", end: "2018-01-01 10am", summary: "2:0"},
+                  {start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "2:1"},
+                  {start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "2:2"},
+              ]
+          }
+        end
       end
 
-      let(:events2)  do
-        {
-          Date.parse("2018-01-01") => [
-            event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 12pm")),
-          ],
-          Date.parse("2018-01-02") => [
-            event_factory("1:1", Chronic.parse("2018-01-02 9:15am")..Chronic.parse("2018-01-02 9:30am")),
-            event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
-            event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
-            event_factory("1:1", Chronic.parse("2018-01-02 12:15pm")..Chronic.parse("2018-01-02 1pm")),
-          ],
-          Date.parse("2018-01-03") => [
-            event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
-          ],
-          Date.parse("2018-01-04") => [
-            event_factory("1:0", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 11am")),
-            event_factory("1:1", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 3pm")),
-            event_factory("1:2", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 7pm")),
-          ]
-        }
+      let(:events2) do
+        event_list_factory do
+          {
+              Date.parse("2018-01-01") => [
+                  {start: "2018-01-01 10am", end: "2018-01-01 12pm", summary: "1:0"},
+              ],
+              Date.parse("2018-01-02") => [
+                  {start: "2018-01-02 9:15am", end: "2018-01-02 9:30am", summary: "1:1"},
+                  {start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1"},
+                  {start: "2018-01-02 11:15am", end: "2018-01-02 11:45am", summary: "1:1"},
+                  {start: "2018-01-02 12:15pm", end: "2018-01-02 1pm", summary: "1:1"},
+              ],
+              Date.parse("2018-01-03") => [
+                  {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1"},
+              ],
+              Date.parse("2018-01-04") => [
+                  {start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0"},
+                  {start: "2018-01-01 1pm", end: "2018-01-01 3pm", summary: "1:1"},
+                  {start: "2018-01-01 5pm", end: "2018-01-01 7pm", summary: "1:2"},
+              ]
+          }
+        end
       end
 
       context "with no min-length specified" do
-        let(:expected_events)  do
-          {
-            Date.parse("2018-01-01") => [
-              event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 11am")),
-            ],
-            Date.parse("2018-01-02") => [
-              event_factory("1:1", Chronic.parse("2018-01-02 9:15am")..Chronic.parse("2018-01-02 9:30am")),
-              event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
-              event_factory("1:1", Chronic.parse("2018-01-02 11:15am")..Chronic.parse("2018-01-02 11:45am")),
-            ],
-            Date.parse("2018-01-03") => [
-              event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
-            ],
-            Date.parse("2018-01-04") => [
-              event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
-              event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
-              event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),
-            ]
-          }
+        let(:expected_events) do
+          event_list_factory do
+            {
+                Date.parse("2018-01-01") => [
+                    {start: "2018-01-01 10am", end: "2018-01-01 11am", summary: "1:0"},
+                ],
+                Date.parse("2018-01-02") => [
+                    {start: "2018-01-02 9:15am", end: "2018-01-02 9:30am", summary: "1:1"},
+                    {start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1"},
+                    {start: "2018-01-02 11:15am", end: "2018-01-02 11:45am", summary: "1:1"},
+                ],
+                Date.parse("2018-01-03") => [
+                    {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1"},
+                ],
+                Date.parse("2018-01-04") => [
+                    {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: ""},
+                    {start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: ""},
+                    {start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: ""},
+                ]
+            }
+          end
         end
 
         it { expect_to_match_expected_events set1.intersection(set2).events }
@@ -575,23 +617,25 @@ describe CalendarAssistant::EventSet do
       end
 
       context "with a min-length specified" do
-        let(:expected_events)  do
-          {
-            Date.parse("2018-01-01") => [
-              event_factory("1:0", Chronic.parse("2018-01-01 10am")..Chronic.parse("2018-01-01 11am")),
-            ],
-            Date.parse("2018-01-02") => [
-              event_factory("1:1", Chronic.parse("2018-01-02 10am")..Chronic.parse("2018-01-02 11am")),
-            ],
-            Date.parse("2018-01-03") => [
-              event_factory("1:1", Chronic.parse("2018-01-02 9am")..Chronic.parse("2018-01-02 10am")),
-            ],
-            Date.parse("2018-01-04") => [
-              event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
-              event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
-              event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),
-            ]
-          }
+        let(:expected_events) do
+          event_list_factory do
+            {
+                Date.parse("2018-01-01") => [
+                    {start: "2018-01-01 10am", end: "2018-01-01 11am", summary: "1:0"},
+                ],
+                Date.parse("2018-01-02") => [
+                    {start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1"},
+                ],
+                Date.parse("2018-01-03") => [
+                    {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1"},
+                ],
+                Date.parse("2018-01-04") => [
+                    {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: ""},
+                    {start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: ""},
+                    {start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: ""},
+                ]
+            }
+          end
         end
 
         it { expect_to_match_expected_events set1.intersection(set2, length: 31.minutes).events }
@@ -605,37 +649,44 @@ describe CalendarAssistant::EventSet do
 
       let(:events1) do
         in_tz time_zone1 do
-          {
-            Date.parse("2018-01-01") => [
-              event_factory("1:0", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 2pm")),
-              event_factory("1:1", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 6pm")),
-              event_factory("1:2", Chronic.parse("2018-01-01 8pm")..Chronic.parse("2018-01-01 10pm")),
-            ]
-          }
+          event_list_factory do
+            {
+                Date.parse("2018-01-01") => [
+                    {start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "1:0"},
+                    {start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "1:1"},
+                    {start: "2018-01-01 8pm", end: "2018-01-01 10pm", summary: "1:2"},
+                ]
+            }
+          end
         end
       end
       let(:events2) do
         in_tz time_zone2 do
-          {
-            Date.parse("2018-01-01") => [
-              event_factory("2:0", Chronic.parse("2018-01-01 8am")..Chronic.parse("2018-01-01 10am")),
-              event_factory("2:1", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 2pm")),
-              event_factory("2:2", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 6pm")),
-            ]
-          }
+          event_list_factory do
+            {
+                Date.parse("2018-01-01") => [
+                    {start: "2018-01-01 8am", end: "2018-01-01 10am", summary: "2:0"},
+                    {start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "2:1"},
+                    {start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "2:2"},
+                ]
+            }
+          end
         end
       end
+
 
       context "from the POV of calendar 1" do
         let(:expected_events) do
           in_tz time_zone1 do
-            {
-              Date.parse("2018-01-01") => [
-                event_factory("", Chronic.parse("2018-01-01 12pm")..Chronic.parse("2018-01-01 1pm")),
-                event_factory("", Chronic.parse("2018-01-01 4pm")..Chronic.parse("2018-01-01 5pm")),
-                event_factory("", Chronic.parse("2018-01-01 8pm")..Chronic.parse("2018-01-01 9pm")),
-              ]
-            }
+            event_list_factory do
+              {
+                  Date.parse("2018-01-01") => [
+                      {start: "2018-01-01 12pm", end: "2018-01-01 1pm", summary: ""},
+                      {start: "2018-01-01 4pm", end: "2018-01-01 5pm", summary: ""},
+                      {start: "2018-01-01 8pm", end: "2018-01-01 9pm", summary: ""},
+                  ]
+              }
+            end
           end
         end
         it { expect_to_match_expected_events set1.intersection(set2).events }
@@ -644,13 +695,15 @@ describe CalendarAssistant::EventSet do
       context "from the POV of calendar 2" do
         let(:expected_events) do
           in_tz time_zone2 do
-            {
-              Date.parse("2018-01-01") => [
-                event_factory("", Chronic.parse("2018-01-01 9am")..Chronic.parse("2018-01-01 10am")),
-                event_factory("", Chronic.parse("2018-01-01 1pm")..Chronic.parse("2018-01-01 2pm")),
-                event_factory("", Chronic.parse("2018-01-01 5pm")..Chronic.parse("2018-01-01 6pm")),
-              ]
-            }
+            event_list_factory do
+              {
+                  Date.parse("2018-01-01") => [
+                      {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: ""},
+                      {start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: ""},
+                      {start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: ""},
+                  ]
+              }
+            end
           end
         end
 
