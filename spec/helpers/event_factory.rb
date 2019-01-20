@@ -25,34 +25,41 @@ class EventFactory
       now = date.is_a?(String) ? Chronic.parse(date) : date
 
       wrap(yield).map do |event_attributes|
-        self_attendee = Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true, email: "self@example.com" )
         attrs = call_values(default_attributes).merge(event_attributes)
-        options = wrap(attrs[:options])
-
-        attrs[:attendees] = [self_attendee]
-
-        attrs[:start], attrs[:end] = set_dates(attrs[:start], attrs[:end], now, options.delete(:all_day))
-
-
-        (options).each do |option|
-          set_option(attrs, self_attendee, option)
-        end
-
-        if (options & [:self, :one_on_one, :location_event]).empty?
-          attrs[:attendees] += [
-              Google::Apis::CalendarV3::EventAttendee.new(id: 3, email: "three@example.com", response_status: CalendarAssistant::Event::Response::ACCEPTED),
-              Google::Apis::CalendarV3::EventAttendee.new(id: 4, email: "four@example.com")
-          ]
-        end
-
-        attrs[:id] = SecureRandom.uuid unless attrs.has_key?(:id)
-
-        @event_repository.create(attrs)
+        create(attrs, now)
       end
     end
   end
 
   private
+
+  def create(attrs, now, self_attendee = new_self_attendee)
+    options = wrap(attrs[:options])
+
+    attrs[:attendees] = [self_attendee]
+
+    attrs[:start], attrs[:end] = set_dates(attrs[:start], attrs[:end], now, options.delete(:all_day))
+
+
+    (options).each do |option|
+      set_option(attrs, self_attendee, option)
+    end
+
+    if (options & [:self, :one_on_one, :location_event]).empty?
+      attrs[:attendees] += [
+          Google::Apis::CalendarV3::EventAttendee.new(id: 3, email: "three@example.com", response_status: CalendarAssistant::Event::Response::ACCEPTED),
+          Google::Apis::CalendarV3::EventAttendee.new(id: 4, email: "four@example.com")
+      ]
+    end
+
+    attrs[:id] = SecureRandom.uuid unless attrs.has_key?(:id)
+
+    @event_repository.create(attrs)
+  end
+
+  def new_self_attendee
+    Google::Apis::CalendarV3::EventAttendee.new(id: 1, self: true, email: "self@example.com" )
+  end
 
   def set_option(attrs, self_attendee, option)
     case option
