@@ -71,7 +71,6 @@ anchors:
         https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
 
 
-% ruby_version = RUBIES[:mri].last
 jobs:
   - name: rake-spec
     public: true
@@ -84,7 +83,7 @@ jobs:
           platform: linux
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: "<%= ruby_version %>"}
+            source: {repository: "flavorjones/calendar-assistant-test"}
           inputs:
             - name: ci
             - name: calendar-assistant
@@ -110,7 +109,7 @@ jobs:
           platform: linux
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: "<%= ruby_version %>"}
+            source: {repository: "flavorjones/calendar-assistant-test"}
           inputs:
             - name: ci
             - name: calendar-assistant-pr
