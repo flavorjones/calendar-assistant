@@ -108,7 +108,7 @@ describe CalendarAssistant::Scheduler do
       end
 
       it "calls EventRepository#find with the right time range" do
-        expect(er).to receive(:find).with(time_range, predicates: {}).and_return(event_set)
+        expect(er).to receive(:find).with(time_range).and_return(event_set)
         scheduler.available_blocks(time_range)
       end
 
@@ -160,8 +160,8 @@ describe CalendarAssistant::Scheduler do
         end
 
         it "calls EventRepository#find with the right time range" do
-          expect(er).to receive(:find).with(time_range, predicates: {}).and_return(event_set)
-          expect(er2).to receive(:find).with(time_range, predicates: {}).and_return(event_set)
+          expect(er).to receive(:find).with(time_range).and_return(event_set)
+          expect(er2).to receive(:find).with(time_range).and_return(event_set)
           scheduler.available_blocks(time_range)
         end
 

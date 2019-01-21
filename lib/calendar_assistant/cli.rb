@@ -1,6 +1,5 @@
 require_relative 'cli/config'
 require_relative 'cli/helpers'
-require_relative 'cli/command_service'
 require_relative 'cli/printer'
 require_relative 'cli/event_presenter'
 require_relative 'cli/event_set_presenter'

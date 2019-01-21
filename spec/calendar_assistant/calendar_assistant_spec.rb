@@ -72,7 +72,7 @@ describe CalendarAssistant do
       let(:time) { Time.now.beginning_of_day..(Time.now + 1.day).end_of_day }
 
       it "calls through to the repository" do
-        expect(event_repository).to receive(:find).with(time, predicates: {})
+        expect(event_repository).to receive(:find).with(time)
         ca.find_events(time)
       end
     end
@@ -87,7 +87,7 @@ describe CalendarAssistant do
       it "selects location events from event repository find" do
         time = Time.now.beginning_of_day..(Time.now + 1.day).end_of_day
 
-        expect(event_repository).to receive(:find).with(time, predicates: {}).and_return(event_set)
+        expect(event_repository).to receive(:find).with(time).and_return(event_set)
 
         result = ca.find_location_events time
         expect(result.events).to eq([location_event])
@@ -246,7 +246,7 @@ describe CalendarAssistant do
           expect(CalendarAssistant::Scheduler).to receive(:new).
                                                     with(ca, [event_repository]).
                                                     and_return(scheduler)
-          expect(scheduler).to receive(:available_blocks).with(time_range, predicates: {}).and_return(event_set)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
           response = ca.availability(time_range)
 
@@ -272,7 +272,7 @@ describe CalendarAssistant do
           expect(CalendarAssistant::Scheduler).to receive(:new).
                                                     with(ca, [event_repository]).
                                                     and_return(scheduler)
-          expect(scheduler).to receive(:available_blocks).with(time_range, predicates: {}).and_return(event_set)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
           response = ca.availability(time_range)
 
@@ -302,7 +302,7 @@ describe CalendarAssistant do
           expect(CalendarAssistant::Scheduler).to receive(:new).
                                                     with(ca, [event_repository, event_repository2]).
                                                     and_return(scheduler)
-          expect(scheduler).to receive(:available_blocks).with(time_range, predicates: {}).and_return(event_set)
+          expect(scheduler).to receive(:available_blocks).with(time_range).and_return(event_set)
 
           response = ca.availability(time_range)
 

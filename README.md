@@ -165,20 +165,12 @@ Options:
                                              # Default: true
   -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
           [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
-          [--must-be=one two three]          # array of event predicates that must be true
-          [--must-not-be=one two three]      # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]              
           [--debug], [--no-debug]            # how dare you suggest there are bugs
           [--formatting], [--no-formatting]  # Enable Text Formatting
                                              # Default: true
 
-Description:
-  This command may utilize --must-be or --must-not-be. Both options may include a space separated array
-  of the following predicates accepted declined awaiting tentative all_day past current future
-  private public explicitly_visible visible_guestlist location_event self one_on_one busy
-  commitment recurring abandoned anyone_can_add_self attendees_omitted end_time_unspecified
-  guests_can_invite_others guests_can_modify guests_can_see_other_guests private_copy locked
-  needs_action
+Open the URL for a video call attached to your meeting at time TIME (default 'now')
 </pre>
 
 Some examples:
@@ -216,20 +208,12 @@ Options:
   -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
   -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
           [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
-          [--must-be=one two three]              # array of event predicates that must be true
-          [--must-not-be=one two three]          # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]                  
           [--debug], [--no-debug]                # how dare you suggest there are bugs
           [--formatting], [--no-formatting]      # Enable Text Formatting
                                                  # Default: true
 
-Description:
-  This command may utilize --must-be or --must-not-be. Both options may include a space separated array
-  of the following predicates accepted declined awaiting tentative all_day past current future
-  private public explicitly_visible visible_guestlist location_event self one_on_one busy
-  commitment recurring abandoned anyone_can_add_self attendees_omitted end_time_unspecified
-  guests_can_invite_others guests_can_modify guests_can_see_other_guests private_copy locked
-  needs_action
+Show your availability for a date or range of dates (default 'today')
 </pre>
 
 
@@ -321,20 +305,12 @@ Usage:
 Options:
   -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
           [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
-          [--must-be=one two three]          # array of event predicates that must be true
-          [--must-not-be=one two three]      # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]              
           [--debug], [--no-debug]            # how dare you suggest there are bugs
           [--formatting], [--no-formatting]  # Enable Text Formatting
                                              # Default: true
 
-Description:
-  This command may utilize --must-be or --must-not-be. Both options may include a space separated array
-  of the following predicates accepted declined awaiting tentative all_day past current future
-  private public explicitly_visible visible_guestlist location_event self one_on_one busy
-  commitment recurring abandoned anyone_can_add_self attendees_omitted end_time_unspecified
-  guests_can_invite_others guests_can_modify guests_can_see_other_guests private_copy locked
-  needs_action
+Set your location to LOCATION for a date or range of dates (default 'today')
 </pre>
 
 **Note** that you can only be in one place at a time, so existing location events may be modified or deleted when new overlapping events are created.
@@ -373,20 +349,12 @@ Usage:
 Options:
   -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
           [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
-          [--must-be=one two three]          # array of event predicates that must be true
-          [--must-not-be=one two three]      # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]              
           [--debug], [--no-debug]            # how dare you suggest there are bugs
           [--formatting], [--no-formatting]  # Enable Text Formatting
                                              # Default: true
 
-Description:
-  This command may utilize --must-be or --must-not-be. Both options may include a space separated array
-  of the following predicates accepted declined awaiting tentative all_day past current future
-  private public explicitly_visible visible_guestlist location_event self one_on_one busy
-  commitment recurring abandoned anyone_can_add_self attendees_omitted end_time_unspecified
-  guests_can_invite_others guests_can_modify guests_can_see_other_guests private_copy locked
-  needs_action
+Show your location for a date or range of dates (default 'today')
 </pre>
 
 For example:
@@ -411,20 +379,12 @@ Options:
   -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
           [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
   -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
-          [--must-be=one two three]              # array of event predicates that must be true
-          [--must-not-be=one two three]          # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]                  
           [--debug], [--no-debug]                # how dare you suggest there are bugs
           [--formatting], [--no-formatting]      # Enable Text Formatting
                                                  # Default: true
 
-Description:
-  This command may utilize --must-be or --must-not-be. Both options may include a space separated array
-  of the following predicates accepted declined awaiting tentative all_day past current future
-  private public explicitly_visible visible_guestlist location_event self one_on_one busy
-  commitment recurring abandoned anyone_can_add_self attendees_omitted end_time_unspecified
-  guests_can_invite_others guests_can_modify guests_can_see_other_guests private_copy locked
-  needs_action
+Show your events for a date or range of dates (default 'today')
 </pre>
 
 For example: display all events scheduled for tomorrow:
@@ -487,20 +447,12 @@ Options:
   -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
           [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
   -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
-          [--must-be=one two three]              # array of event predicates that must be true
-          [--must-not-be=one two three]          # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]                  
           [--debug], [--no-debug]                # how dare you suggest there are bugs
           [--formatting], [--no-formatting]      # Enable Text Formatting
                                                  # Default: true
 
-Description:
-  This command may utilize --must-be or --must-not-be. Both options may include a space separated array
-  of the following predicates accepted declined awaiting tentative all_day past current future
-  private public explicitly_visible visible_guestlist location_event self one_on_one busy
-  commitment recurring abandoned anyone_can_add_self attendees_omitted end_time_unspecified
-  guests_can_invite_others guests_can_modify guests_can_see_other_guests private_copy locked
-  needs_action
+Lint your events for a date or range of dates (default 'today')
 </pre>
 
 For example: display all events that require action scheduled for tomorrow:

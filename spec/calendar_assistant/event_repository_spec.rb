@@ -122,12 +122,6 @@ describe CalendarAssistant::EventRepository do
         allow(other_event).to receive(:guests_can_modify?).and_return(true)
       end
 
-      context "and the predicate is not valid" do
-        it 'raises an error' do
-          expect { event_repository.find time_range, predicates: {malicious?: true, object_id: "1"} }.to raise_error(CalendarAssistant::BaseException)
-        end
-      end
-
       it "uses those predicates to filter the event set" do
         event_set = event_repository.find time_range, predicates: { locked?: true, guests_can_modify?: false }
         expect(event_set.events.length).to eq 1
