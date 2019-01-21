@@ -3,7 +3,7 @@ require "rspec/core/rake_task"
 require "concourse"
 require "license_finder"
 
-Concourse.new("calendar-assistant").create_tasks!
+Concourse.new("calendar-assistant", fly_target: "calendar-assistants").create_tasks!
 
 RSpec::Core::RakeTask.new(:test)
 
