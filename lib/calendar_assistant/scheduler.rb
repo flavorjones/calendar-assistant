@@ -26,10 +26,10 @@ class CalendarAssistant
       @ers = Array(event_repositories)
     end
 
-    def available_blocks time_range
+    def available_blocks time_range, predicates: {}
       avail = nil
       ers.each do |er|
-        event_set = er.find time_range # array
+        event_set = er.find time_range, predicates: predicates # array
         event_set = Scheduler.select_busy_events event_set # hash
         event_set.ensure_keys time_range.first.to_date .. time_range.last.to_date, only: true
 

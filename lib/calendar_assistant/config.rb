@@ -34,6 +34,8 @@ class CalendarAssistant
         LOCAL_STORE = "local-store" # filename
         DEBUG = "debug"             # bool
         FORMATTING = "formatting"   # Rainbow
+        MUST_BE = "must-be"         # Event Predicates
+        MUST_NOT_BE = "must-not-be" # Event Predicates
       end
     end
 
