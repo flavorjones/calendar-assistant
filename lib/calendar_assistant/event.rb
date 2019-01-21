@@ -27,6 +27,45 @@ class CalendarAssistant
       PRIVATE = "private"
     end
 
+    PREDICATES = {
+        "response": %I[
+          accepted?
+          declined?
+          awaiting?
+          tentative?
+        ],
+        "temporal": %I[
+          all_day?
+          past?
+          current?
+          future?
+        ],
+        "visibility": %I[
+          private?
+          public?
+          explicitly_visible?
+          visible_guestlist?
+        ],
+        "attributes": %I[
+          location_event?
+          self?
+          one_on_one?
+          busy?
+          commitment?
+          recurring?
+          abandoned?
+          anyone_can_add_self?
+          attendees_omitted?
+          end_time_unspecified?
+          guests_can_invite_others?
+          guests_can_modify?
+          guests_can_see_other_guests?
+          private_copy?
+          locked?
+          needs_action?
+      ]
+    }
+
     #
     #  class methods
     #
