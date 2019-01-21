@@ -23,45 +23,24 @@ RSpec.describe 'show', :type => :aruba do
     end
   end
 
+  before(:each) { run("./bin/calendar-assistant show 2018-01-01 --formatting=false --local-store=#{filename}") }
   before(:each) { stop_all_commands }
 
   subject { last_command_stopped }
 
-  context "when there are no predicates" do
-    before(:each) { run("./bin/calendar-assistant show 2018-01-01 --formatting=false --local-store=#{filename}") }
+  it { is_expected.to be_successfully_executed }
 
-    it { is_expected.to be_successfully_executed }
+  it "prints events for the first of January, 2018" do
+    expect(subject.output).to eq (<<~OUT)
+    primary (all times in Pacific/Fiji)
 
-    it "prints events for the first of January, 2018" do
-      expect(subject.output).to eq (<<~OUT)
-        primary (all times in Pacific/Fiji)
+    2018-01-01  09:00 - 10:00 | accepted
+    2018-01-01  09:00 - 10:00 | self (self)
+    2018-01-01  09:00 - 10:00 | declined
+    2018-01-01  09:00 - 10:00 | maybe (tentative)
+    2018-01-01  09:00 - 10:00 | needs action (awaiting)
+    2018-01-01  09:00 - 10:00 | private
 
-        2018-01-01  09:00 - 10:00 | accepted
-        2018-01-01  09:00 - 10:00 | self (self)
-        2018-01-01  09:00 - 10:00 | declined
-        2018-01-01  09:00 - 10:00 | maybe (tentative)
-        2018-01-01  09:00 - 10:00 | needs action (awaiting)
-        2018-01-01  09:00 - 10:00 | private
-
-      OUT
-    end
-  end
-
-  context "when passed a predicate" do
-    before(:each) { run("./bin/calendar-assistant show 2018-01-01 --must-not-be=self tentative --formatting=false --local-store=#{filename}") }
-
-    it { is_expected.to be_successfully_executed }
-
-    it "prints events filtered by those predicate" do
-      expect(subject.output).to eq (<<~OUT)
-        primary (all times in Pacific/Fiji)
-
-        2018-01-01  09:00 - 10:00 | accepted
-        2018-01-01  09:00 - 10:00 | declined
-        2018-01-01  09:00 - 10:00 | needs action (awaiting)
-        2018-01-01  09:00 - 10:00 | private
-
-      OUT
-    end
+  OUT
   end
 end

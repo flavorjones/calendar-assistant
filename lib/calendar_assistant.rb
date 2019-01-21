@@ -35,7 +35,6 @@ class CalendarAssistant
   autoload :EventSet,               "calendar_assistant/event_set"
   autoload :Scheduler,              "calendar_assistant/scheduler"
   autoload :LocalService,           "calendar_assistant/local_service"
-  autoload :PredicateCollection,    "calendar_assistant/predicate_collection"
 end
 
 require "calendar_assistant/cli"
