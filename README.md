@@ -92,10 +92,10 @@ Usage:
   calendar-assistant setup
 
 Options:
-  -h, -?, [--help], [--no-help]              
-          [--debug], [--no-debug]            # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]  # Enable Text Formatting
-                                             # Default: true
+  -h, -?, [--help], [--no-help]          
+          [--debug], [--no-debug]        # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
+                                         # Default: true
 
 Description:
   This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar
@@ -113,10 +113,10 @@ Usage:
   calendar-assistant authorize PROFILE_NAME
 
 Options:
-  -h, -?, [--help], [--no-help]              
-          [--debug], [--no-debug]            # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]  # Enable Text Formatting
-                                             # Default: true
+  -h, -?, [--help], [--no-help]          
+          [--debug], [--no-debug]        # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
+                                         # Default: true
 
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your
@@ -147,10 +147,10 @@ Commands:
   calendar-assistant version                                      # Display the version of calend...
 
 Options:
-  -h, -?, [--help], [--no-help]              
-          [--debug], [--no-debug]            # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]  # Enable Text Formatting
-                                             # Default: true
+  -h, -?, [--help], [--no-help]          
+          [--debug], [--no-debug]        # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
+                                         # Default: true
 </pre>
 
 
@@ -161,16 +161,16 @@ Usage:
   calendar-assistant join [TIME]
 
 Options:
-          [--join], [--no-join]              # launch a browser to join the video call URL
-                                             # Default: true
-  -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
-          [--must-be=one two three]          # array of event predicates that must be true
-          [--must-not-be=one two three]      # array of event predicates that must not be true
-  -h, -?, [--help], [--no-help]              
-          [--debug], [--no-debug]            # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]  # Enable Text Formatting
-                                             # Default: true
+          [--join], [--no-join]          # launch a browser to join the video call URL
+                                         # Default: true
+  -p, [--profile=PROFILE]                # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]       # Load events from a local file instead of Google Calendar
+          [--must-be=one two three]      # array of event predicates that must be true
+          [--must-not-be=one two three]  # array of event predicates that must not be true
+  -h, -?, [--help], [--no-help]          
+          [--debug], [--no-debug]        # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
+                                         # Default: true
 
 Description:
   This command may utilize --must-be or --must-not-be. Both options may include a space separated array
@@ -220,7 +220,7 @@ Options:
           [--must-not-be=one two three]          # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]                  
           [--debug], [--no-debug]                # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]      # Enable Text Formatting
+  -f, [--formatting], [--no-formatting]          # Enable Text Formatting
                                                  # Default: true
 
 Description:
@@ -319,14 +319,14 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
-          [--must-be=one two three]          # array of event predicates that must be true
-          [--must-not-be=one two three]      # array of event predicates that must not be true
-  -h, -?, [--help], [--no-help]              
-          [--debug], [--no-debug]            # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]  # Enable Text Formatting
-                                             # Default: true
+  -p, [--profile=PROFILE]                # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]       # Load events from a local file instead of Google Calendar
+          [--must-be=one two three]      # array of event predicates that must be true
+          [--must-not-be=one two three]  # array of event predicates that must not be true
+  -h, -?, [--help], [--no-help]          
+          [--debug], [--no-debug]        # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
+                                         # Default: true
 
 Description:
   This command may utilize --must-be or --must-not-be. Both options may include a space separated array
@@ -371,14 +371,14 @@ Usage:
   calendar-assistant location [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]                    # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
-          [--must-be=one two three]          # array of event predicates that must be true
-          [--must-not-be=one two three]      # array of event predicates that must not be true
-  -h, -?, [--help], [--no-help]              
-          [--debug], [--no-debug]            # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]  # Enable Text Formatting
-                                             # Default: true
+  -p, [--profile=PROFILE]                # the profile you'd like to use (if different from default)
+          [--local-store=FILENAME]       # Load events from a local file instead of Google Calendar
+          [--must-be=one two three]      # array of event predicates that must be true
+          [--must-not-be=one two three]  # array of event predicates that must not be true
+  -h, -?, [--help], [--no-help]          
+          [--debug], [--no-debug]        # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
+                                         # Default: true
 
 Description:
   This command may utilize --must-be or --must-not-be. Both options may include a space separated array
@@ -415,7 +415,7 @@ Options:
           [--must-not-be=one two three]          # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]                  
           [--debug], [--no-debug]                # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]      # Enable Text Formatting
+  -f, [--formatting], [--no-formatting]          # Enable Text Formatting
                                                  # Default: true
 
 Description:
@@ -491,7 +491,7 @@ Options:
           [--must-not-be=one two three]          # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]                  
           [--debug], [--no-debug]                # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]      # Enable Text Formatting
+  -f, [--formatting], [--no-formatting]          # Enable Text Formatting
                                                  # Default: true
 
 Description:
@@ -529,10 +529,10 @@ Usage:
   calendar-assistant config
 
 Options:
-  -h, -?, [--help], [--no-help]              
-          [--debug], [--no-debug]            # how dare you suggest there are bugs
-          [--formatting], [--no-formatting]  # Enable Text Formatting
-                                             # Default: true
+  -h, -?, [--help], [--no-help]          
+          [--debug], [--no-debug]        # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
+                                         # Default: true
 
 Dump your configuration parameters (merge of defaults and overrides from /home/user/.calendar-assistant)
 </pre>
@@ -544,7 +544,7 @@ The output is TOML, which is suitable for dumping into `~/.calendar-assistant` a
 
 [settings]
 end-of-day = "6pm"
-location-icons = ["🌎","🗺 "]
+location-icons = ["🗺 ","🌎"]
 meeting-length = "30m"
 profile = "work"
 start-of-day = "9am"

@@ -45,7 +45,9 @@ class CalendarAssistant
       class_option CalendarAssistant::Config::Keys::Options::FORMATTING,
                    type: :boolean,
                    desc: "Enable Text Formatting",
-                   default: CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Options::FORMATTING]
+                   default: CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Options::FORMATTING],
+                   aliases: "-f"
+
 
       desc "version",
            "Display the version of calendar-assistant"
