@@ -1,5 +1,19 @@
 <%
 
+libdir = File.join(File.dirname(__FILE__), "lib")
+$LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
+
+require 'calendar_assistant'
+
+def print_predicates
+  CalendarAssistant::Event::PREDICATES.each_with_object([]) do |(key,values), out|
+    out << "* **#{key.capitalize}**"
+    values.each do |value|
+      out << "\t* `#{value.to_s.gsub(/\?$/,"")}`"
+    end
+  end.join("\n")
+end
+
 LOCAL_STORE_OPTION = " --local-store=fixtures.yml"
 
 def obfuscate line
@@ -59,6 +73,12 @@ Also note that every command will adopt an intelligent default, which is general
 ### Human-Friendly Duration Specification
 
 Some duration-related preferences are interpreted by [ChronicDuration](https://github.com/henrypoydar/chronic_duration) and so can be terms like "10m", "30 minutes", "four hours", etc.
+
+### Filter Events by property
+
+Commands that return events like `show`, `join`, `availability`, `location` or `lint` can be filtered using the option `--must-be` or `--must-not-be`. These options expect a comma separated list of one of the following properties.
+
+<%= print_predicates %>
 
 
 ### Preferences
