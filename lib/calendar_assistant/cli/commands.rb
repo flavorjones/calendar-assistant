@@ -10,7 +10,8 @@ class CalendarAssistant
         option CalendarAssistant::Config::Keys::Options::LOCAL_STORE,
                type: :string,
                banner: "FILENAME",
-               desc: "Load events from a local file instead of Google Calendar"
+               desc: "Load events from a local file instead of Google Calendar",
+               aliases: [ "-l" ]
       end
 
       def self.predicate_option_descriptions

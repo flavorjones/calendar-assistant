@@ -164,7 +164,7 @@ Options:
           [--join], [--no-join]          # launch a browser to join the video call URL
                                          # Default: true
   -p, [--profile=PROFILE]                # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]       # Load events from a local file instead of Google Calendar
+  -l, [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
           [--must-be=one two three]      # array of event predicates that must be true
           [--must-not-be=one two three]  # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]          
@@ -215,7 +215,7 @@ Options:
   -e, [--end-of-day=TIME]                        # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
   -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
   -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
+  -l, [--local-store=FILENAME]                   # Load events from a local file instead of Google Calendar
           [--must-be=one two three]              # array of event predicates that must be true
           [--must-not-be=one two three]          # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]                  
@@ -320,7 +320,7 @@ Usage:
 
 Options:
   -p, [--profile=PROFILE]                # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]       # Load events from a local file instead of Google Calendar
+  -l, [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
           [--must-be=one two three]      # array of event predicates that must be true
           [--must-not-be=one two three]  # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]          
@@ -372,7 +372,7 @@ Usage:
 
 Options:
   -p, [--profile=PROFILE]                # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]       # Load events from a local file instead of Google Calendar
+  -l, [--local-store=FILENAME]           # Load events from a local file instead of Google Calendar
           [--must-be=one two three]      # array of event predicates that must be true
           [--must-not-be=one two three]  # array of event predicates that must not be true
   -h, -?, [--help], [--no-help]          
@@ -409,7 +409,7 @@ Usage:
 Options:
   -c, [--commitments], [--no-commitments]        # only show events that you've accepted with another person
   -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
+  -l, [--local-store=FILENAME]                   # Load events from a local file instead of Google Calendar
   -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
           [--must-be=one two three]              # array of event predicates that must be true
           [--must-not-be=one two three]          # array of event predicates that must not be true
@@ -485,7 +485,7 @@ Usage:
 
 Options:
   -p, [--profile=PROFILE]                        # the profile you'd like to use (if different from default)
-          [--local-store=FILENAME]               # Load events from a local file instead of Google Calendar
+  -l, [--local-store=FILENAME]                   # Load events from a local file instead of Google Calendar
   -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
           [--must-be=one two three]              # array of event predicates that must be true
           [--must-not-be=one two three]          # array of event predicates that must not be true
