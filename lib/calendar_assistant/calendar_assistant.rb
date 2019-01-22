@@ -37,7 +37,7 @@ class CalendarAssistant
     @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
     @event_repositories = {} # calendar_id → event_repository
-    @event_predicates = PredicateCollection.build(config.setting(CalendarAssistant::Config::Keys::Options::MUST_BE), config.setting(CalendarAssistant::Config::Keys::Options::MUST_NOT_BE))
+    @event_predicates = PredicateCollection.build(config.must_be, config.must_not_be)
     @emoji_worldmap = Array(@config.setting(CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS)).first
   end
 

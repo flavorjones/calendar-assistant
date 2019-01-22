@@ -21,9 +21,17 @@ class CalendarAssistant
         EOD
       end
 
-      def self.with_predicate_options
-        option "must-be", type: "array", desc: "array of event predicates that must be true"
-        option "must-not-be", type: "array", desc: "array of event predicates that must not be true"
+      def self.has_events
+        option CalendarAssistant::Config::Keys::Options::MUST_BE,
+               type: :string,
+               desc: "Event properties that must be true (see README)",
+               banner: "PROPERTY1[,PROPERTY2[,...]]",
+               aliases: [ "-b" ]
+        option CalendarAssistant::Config::Keys::Options::MUST_NOT_BE,
+               type: :string,
+               desc: "Event properties that must be false (see README)",
+               banner: "PROPERTY1[,PROPERTY2[,...]]",
+               aliases: [ "-n" ]
       end
 
       def self.has_attendees
