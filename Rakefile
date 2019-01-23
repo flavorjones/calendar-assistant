@@ -12,26 +12,30 @@ Concourse.new("calendar-assistant", fly_target: "calendar-assistants").create_ta
 #
 #  spec tasks
 #
-RSpec::Core::RakeTask.new(:test)
+desc "Run unit and feature specs"
+RSpec::Core::RakeTask.new("spec")
+task "test" => "spec" # undocumented alias for 'spec'
 
-RSpec::Core::RakeTask.new(:spec)  do |t|
+desc "Run unit specs"
+RSpec::Core::RakeTask.new("spec:unit")  do |t|
   t.rspec_opts ||= []
   t.rspec_opts << " --tag=~type:aruba"
 end
 
-RSpec::Core::RakeTask.new(:features)  do |t|
+desc "Run feature specs"
+RSpec::Core::RakeTask.new("spec:feature")  do |t|
   t.rspec_opts ||= []
   t.rspec_opts << " --tag=type:aruba"
 end
 
 desc "Ensure all dependencies meet license requirements."
-task :license_finder do
+task "license_finder" do
   LicenseFinder::CLI::Main.start(["report"])
   LicenseFinder::CLI::Main.start([])
 end
 
-desc "Run specs, features and license finder"
-task :default => [:test, :license_finder]
+desc "Run unit specs, feature specs, and license finder"
+task "default" => ["spec", "license_finder"]
 
 
 #
