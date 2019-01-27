@@ -1,5 +1,14 @@
 # Changelog for Calendar Assistant
 
+## unreleased
+
+Features:
+
+- Allow location event visibility to be set. [#17]
+- Allow command-specific settings. [#17]
+- Support a `nickname` setting and use it in `location-set` to uniquely identify you in an event summmary. [#85]
+
+
 ## v0.7.0 / 2019-01-15
 
 Features:

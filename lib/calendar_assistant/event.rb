@@ -76,14 +76,9 @@ class CalendarAssistant
     #
     #  instance methods
     #
-    attr_reader :location_event_regex
-
     def initialize(obj, config: CalendarAssistant::Config.new)
-
       super(obj)
-      @location_icons = config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS]
-
-      @location_event_regex = /^#{@location_icons.join("|")}/
+      @config = config
     end
 
     def update **args
@@ -278,6 +273,21 @@ class CalendarAssistant
 
     def contains? time
       start_time <= time && time < end_time
+    end
+
+    def self.location_event_prefix config, icon=Array(config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS]).first
+      if nickname = config[CalendarAssistant::Config::Keys::Settings::NICKNAME]
+        return "#{icon} #{nickname} @ "
+      end
+      "#{icon} "
+    end
+
+    private
+
+    def location_event_regex
+      location_icons = @config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS]
+      regex_string = Event.location_event_prefix(@config, "^(" + location_icons.join("|") + ")")
+      Regexp.new(regex_string)
     end
   end
 end

@@ -73,9 +73,11 @@ describe CalendarAssistant::Event do
       [attendee_self, attendee_room_resource, attendee_optional, attendee_required, attendee_organizer, attendee_group]
     end
 
+    let(:base_config) { { CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS => [ "<<IAMANICON>>" ] } }
+    let(:config) { base_config }
     let(:decorated_class) { Google::Apis::CalendarV3::Event }
     let(:decorated_object) { decorated_class.new }
-    subject { described_class.new decorated_object, config: { "location-icons" => [ "<<IAMANICON>>" ] } }
+    subject { described_class.new decorated_object, config: config }
 
     describe "#update" do
       it "calls #update! and returns itself" do
@@ -89,16 +91,30 @@ describe CalendarAssistant::Event do
       context "event summary does not begin with a worldmap emoji" do
         let(:decorated_object) { decorated_class.new(summary: "not a location event") }
 
-        it "returns false" do
-          expect(subject.location_event?).to be_falsey
+        it { expect(subject).not_to be_location_event }
+      end
+
+      context "no nickname is set" do
+        context "event summary begins with a worldmap emoji" do
+          let(:decorated_object) { decorated_class.new(summary: "<<IAMANICON>> yes a location event") }
+
+          it { expect(subject).to be_location_event }
         end
       end
 
-      context "event summary begins with a worldmap emoji" do
-        let(:decorated_object) { decorated_class.new(summary: "<<IAMANICON>> yes a location event") }
+      context "a nickname is set" do
+        let(:config) { base_config.merge({CalendarAssistant::Config::Keys::Settings::NICKNAME => "Foo"}) }
 
-        it "returns true" do
-          expect(subject.location_event?).to be_truthy
+        context "event summary begins with a worldmap emoji but not a prefix" do
+          let(:decorated_object) { decorated_class.new(summary: "<<IAMANICON>> not a location event") }
+
+          it { expect(subject).not_to be_location_event }
+        end
+
+        context "event summary begins with a worldmap emoji and a prefix and an @" do
+          let(:decorated_object) { decorated_class.new(summary: "<<IAMANICON>> Foo @ a location event") }
+
+          it { expect(subject).to be_location_event }
         end
       end
     end
