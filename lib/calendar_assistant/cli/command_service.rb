@@ -3,9 +3,11 @@ class CalendarAssistant
     class CommandService
       attr_reader :options, :config, :out
 
-      def initialize(options: {})
-        @options = options
-        @config  = CalendarAssistant::CLI::Config.new(options: options)
+      def initialize(context:, options: {})
+        @options = options.dup
+        @options[CalendarAssistant::Config::Keys::Options::CONTEXT] ||= context.to_s
+
+        @config  = CalendarAssistant::CLI::Config.new(options: @options)
         @authorizer = {}
         @out = CalendarAssistant::CLI::Printer.new
       end

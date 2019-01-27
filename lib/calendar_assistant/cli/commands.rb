@@ -260,7 +260,7 @@ class CalendarAssistant
       end
 
       def command_service
-        @command_service ||= CommandService.new(options: options)
+        @command_service ||= CommandService.new(context: current_command_chain.first, options: options)
       end
 
       def calendar_assistant datespec = "today", &block
