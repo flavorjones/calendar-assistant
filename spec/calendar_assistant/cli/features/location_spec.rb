@@ -36,7 +36,7 @@ RSpec.describe 'location', :type => :aruba do
     expect(last_command_stopped.output).to eq (<<~OUT)
     primary (all times in Pacific/Fiji)
 
-    2018-01-01                | 🗺  Zanzibar (not-busy, public, self)
+    2018-01-01                | 🌎 Zanzibar (not-busy, public, self)
 
     OUT
   end

@@ -1,3 +1,4 @@
+# coding: utf-8
 class CalendarAssistant
   class Config
     autoload :TokenStore, "calendar_assistant/config/token_store"
@@ -16,12 +17,13 @@ class CalendarAssistant
       #  and which can be overridden by entries in the user config file
       #
       module Settings
-        PROFILE = "profile"               # string
-        MEETING_LENGTH = "meeting-length" # ChronicDuration
-        START_OF_DAY = "start-of-day"     # BusinessTime
-        END_OF_DAY = "end-of-day"         # BusinessTime
-        LOCATION_ICONS = "location-icons" # Location Icons
-        VISIBILITY = "visibility"         # Event Visibility
+        PROFILE = "profile"                 # string
+        MEETING_LENGTH = "meeting-length"   # ChronicDuration
+        START_OF_DAY = "start-of-day"       # BusinessTime
+        END_OF_DAY = "end-of-day"           # BusinessTime
+        LOCATION_ICON = "location-icon"     # string emoji
+        NICKNAME = "nickname"               # string
+        VISIBILITY = "visibility"           # Event Visibility
       end
 
       #
@@ -44,7 +46,7 @@ class CalendarAssistant
     DEFAULT_CALENDAR_ID = "primary"
 
     DEFAULT_SETTINGS = {
-      Keys::Settings::LOCATION_ICONS => ["🗺 ", "🌎"],    # Location Icons
+      Keys::Settings::LOCATION_ICON => "🌎",              # string emoji
       Keys::Settings::MEETING_LENGTH => "30m",            # ChronicDuration
       Keys::Settings::START_OF_DAY => "9am",              # BusinessTime
       Keys::Settings::END_OF_DAY => "6pm",                # BusinessTime

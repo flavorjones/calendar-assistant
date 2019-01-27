@@ -113,6 +113,13 @@ All tokens and preferences will be stored in `~/.calendar-assistant` which is in
 The location of `.calendar-assistant` defaults to the user's home directory. This location may be overridden by setting the environment variable `CA_HOME`
 
 
+#### Nickname
+
+Some commands, like `location-set`, will refer to you by nickname if you configure it (the alternative might be to not specify your name, or use your email id).
+
+Set `nickname` to a string that would uniquely and briefly identify you to others, like "Mike D" or "JK".
+
+
 #### Location Emoji
 
 There is a `[settings]` key called `location-icons` that may be set to an array denoting all emoji that indicate a location event. The first icon in the array will be used as the default. The default emoji included are `["🗺 ", "🌎"]` with the map icon first
@@ -425,8 +432,8 @@ For example:
 <b>$</b> calendar-assistant location "2018-09-24...2018-09-28"
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-09-24 - 2018-09-28  <b> | 🗺  Gondolin</b><i> (not-busy)</i>
-2018-09-28               <b> | 🗺  Rivendell</b><i> (not-busy)</i>
+2018-09-24 - 2018-09-28  <b> | 🌎 Iron Hills</b><i> (not-busy)</i>
+2018-09-28               <b> | 🌎 Country Round</b><i> (not-busy)</i>
 </pre>
 
 
@@ -457,28 +464,28 @@ For example: display all events scheduled for tomorrow:
 <b>$</b> calendar-assistant show 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-<strike>2018-10-01  03:30 - 05:00 | Repurpose end-to-end convergence</strike>
-<strike>2018-10-01  07:30 - 08:30 | Iterate clicks-and-mortar vortals</strike>
-<strike>2018-10-01  07:30 - 08:30 | Grow viral portals</strike>
-2018-10-01  10:30 - 10:55<b> | Enable rich roi</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Leverage rich e-services</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Grow leading-edge communities</b><i> (1:1, recurring)</i>
-2018-10-01  11:50 - 12:00<b> | Cultivate revolutionary experiences</b><i> (awaiting)</i>
-2018-10-01  12:00 - 12:30<b> | Incentivize ubiquitous mindshare</b><i> (self)</i>
-<strike>2018-10-01  12:15 - 12:30 | Disintermediate next-generation niches</strike>
-<strike>2018-10-01  12:30 - 13:30 | Drive viral communities</strike>
-2018-10-01  12:30 - 13:30<b> | Synergize integrated supply-chains</b><i> (awaiting, recurring)</i>
-2018-10-01  13:30 - 14:50<b> | Transform revolutionary users</b><i> (self)</i>
-<strike>2018-10-01  13:30 - 14:30 | Enable interactive networks</strike>
-2018-10-01  15:00 - 15:30<b> | Evolve global applications</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Implement b2c architectures</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Enable rich niches</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Implement frictionless e-markets</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Streamline world-class portals</b><i> (1:1, recurring)</i>
-<strike>2018-10-01  18:00 - 20:30 | Recontextualize rich paradigms</strike>
-<strike>2018-10-01  18:30 - 19:00 | Synergize dot-com functionalities</strike>
-2018-10-01  19:00 - 19:30<b> | Revolutionize transparent e-markets</b><i> (awaiting)</i>
-2018-10-01               <b> | 🗺  Country Round</b><i> (not-busy)</i>
+<strike>2018-10-01  03:30 - 05:00 | Facilitate 24/365 web services</strike>
+<strike>2018-10-01  07:30 - 08:30 | Reintermediate magnetic communities</strike>
+<strike>2018-10-01  07:30 - 08:30 | Revolutionize bricks-and-clicks synergies</strike>
+2018-10-01  10:30 - 10:55<b> | Whiteboard clicks-and-mortar metrics</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Architect holistic models</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Reinvent bleeding-edge e-services</b><i> (1:1, recurring)</i>
+2018-10-01  11:50 - 12:00<b> | Synergize e-business systems</b><i> (awaiting)</i>
+2018-10-01  12:00 - 12:30<b> | Reinvent e-business e-tailers</b><i> (self)</i>
+<strike>2018-10-01  12:15 - 12:30 | Maximize clicks-and-mortar convergence</strike>
+<strike>2018-10-01  12:30 - 13:30 | Disintermediate end-to-end bandwidth</strike>
+2018-10-01  12:30 - 13:30<b> | Iterate innovative networks</b><i> (awaiting, recurring)</i>
+2018-10-01  13:30 - 14:50<b> | Engage holistic users</b><i> (self)</i>
+<strike>2018-10-01  13:30 - 14:30 | Enable e-business e-services</strike>
+2018-10-01  15:00 - 15:30<b> | Innovate impactful technologies</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Iterate dynamic networks</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Deploy robust content</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Synthesize viral methodologies</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Scale collaborative methodologies</b><i> (1:1, recurring)</i>
+<strike>2018-10-01  18:00 - 20:30 | Seize rich experiences</strike>
+<strike>2018-10-01  18:30 - 19:00 | Engineer one-to-one e-business</strike>
+2018-10-01  19:00 - 19:30<b> | Recontextualize collaborative content</b><i> (awaiting)</i>
+2018-10-01               <b> | 🌎 Grey Mountains</b><i> (not-busy)</i>
 </pre>
 
 Display _only_ the commitments I have to other people using the `-c` option:
@@ -487,17 +494,17 @@ Display _only_ the commitments I have to other people using the `-c` option:
 <b>$</b> calendar-assistant show -c 2018-10-01
 <i>me@example.com (all times in America/New_York)
 </i>
-2018-10-01  10:30 - 10:55<b> | Enable rich roi</b><i> (1:1, recurring)</i>
-2018-10-01  11:00 - 11:30<b> | Leverage rich e-services</b><i> (recurring)</i>
-2018-10-01  11:30 - 12:00<b> | Grow leading-edge communities</b><i> (1:1, recurring)</i>
-2018-10-01  11:50 - 12:00<b> | Cultivate revolutionary experiences</b><i> (awaiting)</i>
-2018-10-01  12:30 - 13:30<b> | Synergize integrated supply-chains</b><i> (awaiting, recurring)</i>
-2018-10-01  15:00 - 15:30<b> | Evolve global applications</b><i> (1:1)</i>
-2018-10-01  16:00 - 17:00<b> | Implement b2c architectures</b><i> (1:1, recurring)</i>
-2018-10-01  16:45 - 17:00<b> | Enable rich niches</b><i> (recurring)</i>
-2018-10-01  17:00 - 17:30<b> | Implement frictionless e-markets</b><i> (recurring)</i>
-2018-10-01  17:30 - 17:55<b> | Streamline world-class portals</b><i> (1:1, recurring)</i>
-2018-10-01  19:00 - 19:30<b> | Revolutionize transparent e-markets</b><i> (awaiting)</i>
+2018-10-01  10:30 - 10:55<b> | Whiteboard clicks-and-mortar metrics</b><i> (1:1, recurring)</i>
+2018-10-01  11:00 - 11:30<b> | Architect holistic models</b><i> (recurring)</i>
+2018-10-01  11:30 - 12:00<b> | Reinvent bleeding-edge e-services</b><i> (1:1, recurring)</i>
+2018-10-01  11:50 - 12:00<b> | Synergize e-business systems</b><i> (awaiting)</i>
+2018-10-01  12:30 - 13:30<b> | Iterate innovative networks</b><i> (awaiting, recurring)</i>
+2018-10-01  15:00 - 15:30<b> | Innovate impactful technologies</b><i> (1:1)</i>
+2018-10-01  16:00 - 17:00<b> | Iterate dynamic networks</b><i> (1:1, recurring)</i>
+2018-10-01  16:45 - 17:00<b> | Deploy robust content</b><i> (recurring)</i>
+2018-10-01  17:00 - 17:30<b> | Synthesize viral methodologies</b><i> (recurring)</i>
+2018-10-01  17:30 - 17:55<b> | Scale collaborative methodologies</b><i> (1:1, recurring)</i>
+2018-10-01  19:00 - 19:30<b> | Recontextualize collaborative content</b><i> (awaiting)</i>
 </pre>
 
 
@@ -529,11 +536,11 @@ me@example.com
 - looking for events that need attention
 - all times in America/New_York
 
-2018-10-01  11:50 - 12:00<b> | Cultivate revolutionary experiences</b><i> (awaiting)</i>
+2018-10-01  11:50 - 12:00<b> | Synergize e-business systems</b><i> (awaiting)</i>
                                     attendees: 👍 three@example.com, 🤷 four@example.com
-2018-10-01  12:30 - 13:30<b> | Synergize integrated supply-chains</b><i> (awaiting, recurring)</i>
+2018-10-01  12:30 - 13:30<b> | Iterate innovative networks</b><i> (awaiting, recurring)</i>
                                     attendees: 👍 three@example.com, 🤷 four@example.com
-2018-10-01  19:00 - 19:30<b> | Revolutionize transparent e-markets</b><i> (awaiting)</i>
+2018-10-01  19:00 - 19:30<b> | Recontextualize collaborative content</b><i> (awaiting)</i>
                                     attendees: 👍 three@example.com, 🤷 four@example.com
 </pre>
 
@@ -562,7 +569,7 @@ The output is TOML, which is suitable for dumping into `~/.calendar-assistant` a
 
 [settings]
 end-of-day = "6pm"
-location-icons = ["🗺 ","🌎"]
+location-icon = "🌎"
 meeting-length = "30m"
 profile = "work"
 start-of-day = "9am"
