@@ -73,6 +73,14 @@ class CalendarAssistant
       (end_time.to_datetime - start_time.to_datetime).days.to_i
     end
 
+    def self.location_event_prefix config
+      icon = config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]
+      if nickname = config[CalendarAssistant::Config::Keys::Settings::NICKNAME]
+        return "#{icon} #{nickname} @ "
+      end
+      "#{icon} "
+    end
+
     #
     #  instance methods
     #
@@ -87,7 +95,7 @@ class CalendarAssistant
     end
 
     def location_event?
-      !! (summary =~ location_event_regex)
+      !! summary.try(:starts_with?, Event.location_event_prefix(@config))
     end
 
     def all_day?
@@ -275,19 +283,5 @@ class CalendarAssistant
       start_time <= time && time < end_time
     end
 
-    def self.location_event_prefix config, icon=config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]
-      if nickname = config[CalendarAssistant::Config::Keys::Settings::NICKNAME]
-        return "#{icon} #{nickname} @ "
-      end
-      "#{icon} "
-    end
-
-    private
-
-    def location_event_regex
-      location_icon = @config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]
-      regex_string = Event.location_event_prefix(@config, "^(" + location_icon + ")")
-      Regexp.new(regex_string)
-    end
   end
 end
