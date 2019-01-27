@@ -34,6 +34,8 @@ class CalendarAssistant
         LOCAL_STORE = "local-store" # filename
         DEBUG = "debug"             # bool
         FORMATTING = "formatting"   # Rainbow
+        MUST_BE = "must-be"         # Event Predicates
+        MUST_NOT_BE = "must-not-be" # Event Predicates
       end
     end
 
@@ -140,11 +142,15 @@ class CalendarAssistant
     #  helper method for Keys::Options::ATTENDEES
     #
     def attendees
-      a = setting(Keys::Options::ATTENDEES)
-      if a.is_a?(String)
-        a = a.split(",")
-      end
-      a
+      split_if_array(Keys::Options::ATTENDEES)
+    end
+
+    def must_be
+      split_if_array(Keys::Options::MUST_BE)
+    end
+
+    def must_not_be
+      split_if_array(Keys::Options::MUST_NOT_BE)
     end
 
     def debug?
@@ -156,6 +162,14 @@ class CalendarAssistant
     end
 
     private
+
+    def split_if_array(key)
+      a = setting(key)
+      if a.is_a?(String)
+        a = a.split(",")
+      end
+      a
+    end
 
     def self.find_in_hash hash, keypath
       current_val = hash

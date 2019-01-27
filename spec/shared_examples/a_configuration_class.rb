@@ -355,6 +355,44 @@ shared_examples_for "a configuration class" do
     end
   end
 
+  describe "#must_be" do
+    subject { described_class.new options: config_options }
+
+    context "by default" do
+      let(:config_options) { Hash.new }
+      it { expect(subject.attendees).to eq([described_class::DEFAULT_CALENDAR_ID]) }
+    end
+
+    context "passed a single must_be" do
+      let(:config_options) { {described_class::Keys::Options::MUST_BE => "option1"} }
+      it { expect(subject.must_be).to eq(["option1"]) }
+    end
+
+    context "passed multiple must_bes" do
+      let(:config_options) { {described_class::Keys::Options::MUST_BE => "option1,option2"} }
+      it { expect(subject.must_be).to eq(["option1", "option2"]) }
+    end
+  end
+
+  describe "#must_not_be" do
+    subject { described_class.new options: config_options }
+
+    context "by default" do
+      let(:config_options) { Hash.new }
+      it { expect(subject.attendees).to eq([described_class::DEFAULT_CALENDAR_ID]) }
+    end
+
+    context "passed a single must_not_be" do
+      let(:config_options) { {described_class::Keys::Options::MUST_NOT_BE => "option1"} }
+      it { expect(subject.must_not_be).to eq(["option1"]) }
+    end
+
+    context "passed multiple must_not_bes" do
+      let(:config_options) { {described_class::Keys::Options::MUST_NOT_BE => "option1,option2"} }
+      it { expect(subject.must_not_be).to eq(["option1", "option2"]) }
+    end
+  end
+
   describe "#debug?" do
     subject { described_class.new options: config_options }
 
