@@ -227,7 +227,10 @@ shared_examples_for "a configuration class" do
                     "only-in-user-config" => "user-config",
                     "in-user-config-and-defaults" => "user-config",
                     "in-user-config-and-options" => "user-config",
-                    "everywhere" => "user-config"
+                    "everywhere" => "user-config",
+                    "command" => {
+                      "only-in-user-config" => "command-specific-value"
+                    }
                 }
         }
       end
@@ -265,9 +268,19 @@ shared_examples_for "a configuration class" do
       it { expect(subject.public_send(method, "in-defaults-and-options")).to eq("options") }
 
       it { expect(subject.public_send(method, "everywhere")).to eq("options") }
+
+      context "when requesting a specific context" do
+        let(:options) do
+          {
+            "context" => "command"
+          }
+        end
+
+        it { expect(subject.public_send(method, "only-in-user-config")).to eq("command-specific-value") }
+      end
     end
   end
-  
+
   it_behaves_like "a hash like getter" do
     let(:method) { :setting }
   end

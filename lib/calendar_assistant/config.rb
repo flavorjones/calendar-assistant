@@ -37,6 +37,7 @@ class CalendarAssistant
         FORMATTING = "formatting"   # Rainbow
         MUST_BE = "must-be"         # array of event predicates (comma-delimited)
         MUST_NOT_BE = "must-not-be" # array of event predicates (comma-delimited)
+        CONTEXT = "context"         # symbol referring to command context
       end
     end
 
@@ -113,7 +114,9 @@ class CalendarAssistant
     #  and settings
     #
     def setting setting_name
+      context = Config.find_in_hash(options, Keys::Options::CONTEXT)
       Config.find_in_hash(options, setting_name) ||
+        Config.find_in_hash(user_config, [Keys::SETTINGS, context, setting_name]) ||
         Config.find_in_hash(user_config, [Keys::SETTINGS, setting_name]) ||
         Config.find_in_hash(defaults, setting_name)
     end
