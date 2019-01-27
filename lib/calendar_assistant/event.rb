@@ -275,7 +275,7 @@ class CalendarAssistant
       start_time <= time && time < end_time
     end
 
-    def self.location_event_prefix config, icon=Array(config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS]).first
+    def self.location_event_prefix config, icon=config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]
       if nickname = config[CalendarAssistant::Config::Keys::Settings::NICKNAME]
         return "#{icon} #{nickname} @ "
       end
@@ -285,8 +285,8 @@ class CalendarAssistant
     private
 
     def location_event_regex
-      location_icons = @config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS]
-      regex_string = Event.location_event_prefix(@config, "^(" + location_icons.join("|") + ")")
+      location_icon = @config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]
+      regex_string = Event.location_event_prefix(@config, "^(" + location_icon + ")")
       Regexp.new(regex_string)
     end
   end

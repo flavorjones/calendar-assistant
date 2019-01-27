@@ -118,7 +118,7 @@ describe CalendarAssistant do
           attributes = {
               start: new_event_start.date,
               end: new_event_end.date,
-              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS].first} WFH",
+              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]} WFH",
               transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
 
@@ -138,7 +138,7 @@ describe CalendarAssistant do
           attributes = {
               start: new_event_start.date,
               end: new_event_end.date,
-              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS].first} WFH",
+              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]} WFH",
               transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
 
@@ -168,7 +168,7 @@ describe CalendarAssistant do
           attributes = {
               start: new_event_start.date,
               end: new_event_end.date,
-              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS].first} WFH",
+              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]} WFH",
               transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
           }
 

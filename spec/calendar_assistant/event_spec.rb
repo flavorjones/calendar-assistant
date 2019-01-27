@@ -73,7 +73,7 @@ describe CalendarAssistant::Event do
       [attendee_self, attendee_room_resource, attendee_optional, attendee_required, attendee_organizer, attendee_group]
     end
 
-    let(:base_config) { { CalendarAssistant::Config::Keys::Settings::LOCATION_ICONS => [ "<<IAMANICON>>" ] } }
+    let(:base_config) { { CalendarAssistant::Config::Keys::Settings::LOCATION_ICON => "<<IAMANICON>>" } }
     let(:config) { base_config }
     let(:decorated_class) { Google::Apis::CalendarV3::Event }
     let(:decorated_object) { decorated_class.new }

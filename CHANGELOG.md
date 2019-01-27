@@ -8,6 +8,9 @@ Features:
 - Allow command-specific settings. [#17]
 - Support a `nickname` setting and use it in `location-set` to uniquely identify you in an event summmary. [#85]
 
+Breaking Changes:
+
+- Remove support for multiple location icons
 
 ## v0.7.0 / 2019-01-15
 

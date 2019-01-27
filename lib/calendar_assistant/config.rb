@@ -21,7 +21,7 @@ class CalendarAssistant
         MEETING_LENGTH = "meeting-length"   # ChronicDuration
         START_OF_DAY = "start-of-day"       # BusinessTime
         END_OF_DAY = "end-of-day"           # BusinessTime
-        LOCATION_ICONS = "location-icons"   # array of emojis
+        LOCATION_ICON = "location-icon"     # string emoji
         NICKNAME = "nickname"               # string
         VISIBILITY = "visibility"           # Event Visibility
       end
@@ -46,7 +46,7 @@ class CalendarAssistant
     DEFAULT_CALENDAR_ID = "primary"
 
     DEFAULT_SETTINGS = {
-      Keys::Settings::LOCATION_ICONS => ["🗺 ", "🌎"],    # array of emojis
+      Keys::Settings::LOCATION_ICON => "🌎",              # string emoji
       Keys::Settings::MEETING_LENGTH => "30m",            # ChronicDuration
       Keys::Settings::START_OF_DAY => "9am",              # BusinessTime
       Keys::Settings::END_OF_DAY => "6pm",                # BusinessTime
