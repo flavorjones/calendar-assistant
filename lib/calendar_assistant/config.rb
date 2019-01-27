@@ -21,6 +21,7 @@ class CalendarAssistant
         START_OF_DAY = "start-of-day"     # BusinessTime
         END_OF_DAY = "end-of-day"         # BusinessTime
         LOCATION_ICONS = "location-icons" # Location Icons
+        VISIBILITY = "visibility"         # Event Visibility
       end
 
       #
@@ -34,8 +35,8 @@ class CalendarAssistant
         LOCAL_STORE = "local-store" # filename
         DEBUG = "debug"             # bool
         FORMATTING = "formatting"   # Rainbow
-        MUST_BE = "must-be"         # Event Predicates
-        MUST_NOT_BE = "must-not-be" # Event Predicates
+        MUST_BE = "must-be"         # array of event predicates (comma-delimited)
+        MUST_NOT_BE = "must-not-be" # array of event predicates (comma-delimited)
       end
     end
 
@@ -159,6 +160,18 @@ class CalendarAssistant
 
     def persist!
       #noop
+    end
+
+    def event_visibility
+      value = setting(Keys::Settings::VISIBILITY)
+      case value
+      when CalendarAssistant::Event::Visibility::PUBLIC
+        CalendarAssistant::Event::Visibility::PUBLIC
+      when CalendarAssistant::Event::Visibility::PRIVATE
+        CalendarAssistant::Event::Visibility::PRIVATE
+      else
+        CalendarAssistant::Event::Visibility::DEFAULT
+      end
     end
 
     private

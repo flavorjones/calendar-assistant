@@ -406,4 +406,33 @@ shared_examples_for "a configuration class" do
       it { expect(subject.debug?).to be_truthy }
     end
   end
+
+  describe "#event_visibility" do
+    subject { described_class.new options: config_options }
+
+    context "by default" do
+      let(:config_options) { Hash.new }
+      it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::DEFAULT) }
+    end
+
+    context "when public" do
+      let(:config_options) { {described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::PUBLIC }  }
+      it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::PUBLIC) }
+    end
+
+    context "when private" do
+      let(:config_options) { {described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::PRIVATE }  }
+      it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::PRIVATE) }
+    end
+
+    context "when explicitly default" do
+      let(:config_options) { {described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::DEFAULT }  }
+      it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::DEFAULT) }
+    end
+
+    context "when it's utter nonsense" do
+      let(:config_options) { {described_class::Keys::Settings::VISIBILITY => "cloudy" }  }
+      it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::DEFAULT) }
+    end
+  end
 end

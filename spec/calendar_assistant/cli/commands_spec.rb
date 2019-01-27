@@ -194,6 +194,7 @@ describe CalendarAssistant::CLI::Commands do
 
       described_class.start [command, "-p", "work"]
     end
+
   end
 
   describe "location-set" do
@@ -230,6 +231,21 @@ describe CalendarAssistant::CLI::Commands do
       allow(out).to receive(:print_events)
 
       described_class.start [command, "-p", "work", "Palo Alto"]
+    end
+
+    describe "visibility" do
+      describe "public" do
+        it "allows visibility to be set" do
+          expect(CalendarAssistant::Config).to receive(:new).
+            with(options: hash_including(CalendarAssistant::Config::Keys::Settings::VISIBILITY => "public")).
+            and_return(config)
+
+          allow(ca).to receive(:create_location_event).and_return(event_set)
+          allow(out).to receive(:print_events)
+
+          described_class.start [command, "--visibility", "public", "Cocomo"]
+        end
+      end
     end
   end
 

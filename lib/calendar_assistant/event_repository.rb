@@ -34,6 +34,7 @@ class CalendarAssistant
 
     def new event_attributes
       event = Google::Apis::CalendarV3::Event.new DateHelpers.cast_dates(event_attributes)
+      event.visibility ||= config.event_visibility
       CalendarAssistant::Event.new(event, config: config)
     end
 
