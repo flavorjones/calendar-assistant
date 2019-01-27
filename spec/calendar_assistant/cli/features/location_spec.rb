@@ -24,8 +24,11 @@ RSpec.describe 'location', :type => :aruba do
 
     OUT
 
-    run("./bin/calendar-assistant location-set Zanzibar 2018-01-01 --formatting=false --local-store=#{filename}")
+    run("./bin/calendar-assistant location-set Zanzibar 2018-01-01 --visibility=public --formatting=false --local-store=#{filename}")
     stop_all_commands
+
+    expect(last_command_stopped).to be_successfully_executed
+
     run("./bin/calendar-assistant location 2018-01-01 --formatting=false --local-store=#{filename}")
     stop_all_commands
 
@@ -33,7 +36,7 @@ RSpec.describe 'location', :type => :aruba do
     expect(last_command_stopped.output).to eq (<<~OUT)
     primary (all times in Pacific/Fiji)
 
-    2018-01-01                | 🗺  Zanzibar (not-busy, self)
+    2018-01-01                | 🗺  Zanzibar (not-busy, public, self)
 
     OUT
   end

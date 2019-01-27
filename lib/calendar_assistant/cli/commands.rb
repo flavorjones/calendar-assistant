@@ -207,8 +207,11 @@ class CalendarAssistant
 
       desc "location-set LOCATION [DATE | DATERANGE]",
            "Set your location to LOCATION for a date or range of dates (default 'today')"
+      option CalendarAssistant::Config::Keys::Settings::VISIBILITY,
+             type: :string,
+             banner: "VISIBILITY",
+             desc: "[default is 'default'] Set the visbility of the event. Values are 'public', 'private', 'default'."
       will_create_a_service
-
       has_events
       def location_set location = nil, datespec = "today"
         return help! if location.nil?
@@ -242,7 +245,6 @@ class CalendarAssistant
              aliases: ["-e"]
       has_attendees
       will_create_a_service
-
       has_events
       def availability datespec = "today"
         calendar_assistant(datespec) do |ca, date, out|

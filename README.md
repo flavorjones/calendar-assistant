@@ -345,6 +345,7 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
+          [--visibility=VISIBILITY]                # [default is 'default'] Set the visbility of the event. Values are 'public', 'private', 'default'.
   -p, [--profile=PROFILE]                          # the profile you'd like to use (if different from default)
   -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
   -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
