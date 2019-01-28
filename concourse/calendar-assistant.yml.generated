@@ -1,0 +1,130 @@
+resource_types:
+- name: pull-request
+  type: docker-image
+  source:
+    repository: jtarchie/pr
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
+resources:
+  - name: ci
+    type: git
+    source:
+      uri: https://github.com/flavorjones/calendar-assistant/
+      branch: master
+      disable_ci_skip: true # always get the latest pipeline configuration
+  - name: calendar-assistant
+    type: git
+    source:
+      uri: https://github.com/flavorjones/calendar-assistant/
+      branch: master
+      ignore_paths:
+        - concourse/**
+        - doc/**
+  - name: calendar-assistant-pr
+    type: pull-request
+    source:
+      repo: flavorjones/calendar-assistant
+      access_token: {{github-repo-status-access-token}}
+      ignore_paths:
+        - concourse/**
+  - name: slack-notification
+    type: slack-notification
+    source:
+      url: {{pivotal-slack-calendar-assistant-webhook-url}}
+
+anchors:
+  notify_failure_to_slack: &notify_failure_to_slack
+    put: slack-notification
+    params:
+      silent: true
+      text_file: calendar-assistant/.git/commit_message
+      text: |
+        :concourse-failed: (master) $ATC_EXTERNAL_URL/builds/$BUILD_ID :nobueno:
+        $TEXT_FILE_CONTENT
+  notify_success_to_slack: &notify_success_to_slack
+    put: slack-notification
+    params:
+      silent: true
+      text_file: calendar-assistant/.git/commit_message
+      text: |
+        :concourse-succeeded: (master) $ATC_EXTERNAL_URL/builds/$BUILD_ID :success:
+        $TEXT_FILE_CONTENT
+  notify_pr_failure_to_slack: &notify_pr_failure_to_slack
+    put: slack-notification
+    params:
+      silent: true
+      text_file: calendar-assistant-pr/.git/id
+      text: |
+        :concourse-failed: (PR $TEXT_FILE_CONTENT) $ATC_EXTERNAL_URL/builds/$BUILD_ID :nobueno:
+        https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
+  notify_pr_success_to_slack: &notify_pr_success_to_slack
+    put: slack-notification
+    params:
+      silent: true
+      text_file: calendar-assistant-pr/.git/id
+      text: |
+        :concourse-succeeded: (PR $TEXT_FILE_CONTENT) $ATC_EXTERNAL_URL/builds/$BUILD_ID :success:
+        https://github.com/flavorjones/calendar-assistant/pull/$TEXT_FILE_CONTENT
+
+
+jobs:
+  - name: rake-spec
+    public: true
+    plan:
+      - get: ci
+      - get: calendar-assistant
+        trigger: true
+      - task: rake-spec
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: "flavorjones/calendar-assistant-test"}
+          inputs:
+            - name: ci
+            - name: calendar-assistant
+          params:
+            CC_TEST_REPORTER_ID: {{code_climate_reporter_id}}
+            GIT_BRANCH: master
+          run:
+            path: ci/concourse/tasks/rake-spec/run.sh
+    on_failure: *notify_failure_to_slack
+    on_success: *notify_success_to_slack
+
+  - name: rake-spec-pr
+    public: true
+    plan:
+      - get: ci
+      - get: calendar-assistant-pr
+        trigger: true
+        version: every
+      - put: calendar-assistant-pr
+        params: {path: calendar-assistant-pr, status: pending}
+      - task: rake-spec
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: "flavorjones/calendar-assistant-test"}
+          inputs:
+            - name: ci
+            - name: calendar-assistant-pr
+              path: calendar-assistant
+          params:
+            CC_TEST_REPORTER_ID: {{code_climate_reporter_id}}
+          run:
+            path: ci/concourse/tasks/rake-spec/run.sh
+        on_failure:
+          aggregate:
+            - *notify_pr_failure_to_slack
+            - put: calendar-assistant-pr
+              params: {path: calendar-assistant-pr, status: failure}
+        on_success:
+          aggregate:
+            - *notify_pr_success_to_slack
+            - put: calendar-assistant-pr
+              params: {path: calendar-assistant-pr, status: success}

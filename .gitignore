@@ -1,5 +1,4 @@
 Gemfile.lock
-concourse/calendar-assistant.yml.generated
 concourse/private.yml
 coverage
 credentials.json
