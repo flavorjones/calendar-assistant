@@ -1,6 +1,6 @@
 # Changelog for Calendar Assistant
 
-## unreleased
+## v0.8.0 / 2019-01-28
 
 Features:
 
@@ -8,9 +8,11 @@ Features:
 - Allow command-specific settings. [#17]
 - Support a `nickname` setting and use it in `location-set` to uniquely identify you in an event summmary. [#85]
 
+
 Breaking Changes:
 
-- Remove support for multiple location icons
+- Remove support for multiple location event icons.
+
 
 ## v0.7.0 / 2019-01-15
 
