@@ -93,8 +93,12 @@ module RspecExampleHelpers
     end
   end
 
-  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", event_factory_method: :create_list, &block)
-    EventFactory.new(service: service_for(file, calendar_id, time_zone), calendar_id: calendar_id).public_send(event_factory_method, date: date, &block)
+  def event_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", **options)
+    EventFactory.new(service: service_for(file, calendar_id, time_zone), calendar_id: calendar_id).create(date: date, event_attributes: options)
+  end
+
+  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", &block)
+    EventFactory.new(service: service_for(file, calendar_id, time_zone), calendar_id: calendar_id).create_list(date: date, &block)
   end
 
   def service_for(file, calendar_id, time_zone)
