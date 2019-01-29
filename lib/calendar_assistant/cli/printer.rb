@@ -38,7 +38,7 @@ class CalendarAssistant
       end
 
       def print_available_blocks ca, event_set, omit_title: false
-        ers = ca.config.attendees.map {|calendar_id| ca.event_repository calendar_id}
+        ers = ca.config.calendar_ids.map {|calendar_id| ca.event_repository calendar_id}
         time_zones = ers.map {|er| er.calendar.time_zone}.uniq
 
         unless omit_title

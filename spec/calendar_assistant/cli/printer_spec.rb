@@ -115,7 +115,7 @@ describe CalendarAssistant::CLI::Printer do
       end
 
       context "run with multiple attendees" do
-        let(:config_options) { {CalendarAssistant::Config::Keys::Options::ATTENDEES => "foo@example.com,bar@example.com"} }
+        let(:config_options) { {CalendarAssistant::Config::Keys::Options::CALENDARS => "foo@example.com,bar@example.com"} }
         let(:calendar_time_zone) { "America/Los_Angeles" }
         let(:calendar2) { instance_double("Calendar(2)") }
         let(:er2) { instance_double("EventRepository(2)") }

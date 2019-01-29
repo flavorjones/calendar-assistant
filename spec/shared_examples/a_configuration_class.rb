@@ -354,17 +354,17 @@ shared_examples_for "a configuration class" do
 
     context "by default" do
       let(:config_options) { Hash.new }
-      it { expect(subject.attendees).to eq([described_class::DEFAULT_CALENDAR_ID]) }
+      it { expect(subject.calendar_ids).to eq([described_class::DEFAULT_CALENDAR_ID]) }
     end
 
     context "passed a single attendee" do
-      let(:config_options) { {described_class::Keys::Options::ATTENDEES => "foo@example.com"} }
-      it { expect(subject.attendees).to eq(["foo@example.com"]) }
+      let(:config_options) { {described_class::Keys::Options::CALENDARS => "foo@example.com"} }
+      it { expect(subject.calendar_ids).to eq(["foo@example.com"]) }
     end
 
     context "passed multiple attendees" do
-      let(:config_options) { {described_class::Keys::Options::ATTENDEES => "foo@example.com,bar@example.com"} }
-      it { expect(subject.attendees).to eq(["foo@example.com", "bar@example.com"]) }
+      let(:config_options) { {described_class::Keys::Options::CALENDARS => "foo@example.com,bar@example.com"} }
+      it { expect(subject.calendar_ids).to eq(["foo@example.com", "bar@example.com"]) }
     end
   end
 
@@ -373,7 +373,7 @@ shared_examples_for "a configuration class" do
 
     context "by default" do
       let(:config_options) { Hash.new }
-      it { expect(subject.attendees).to eq([described_class::DEFAULT_CALENDAR_ID]) }
+      it { expect(subject.calendar_ids).to eq([described_class::DEFAULT_CALENDAR_ID]) }
     end
 
     context "passed a single must_be" do
@@ -392,7 +392,7 @@ shared_examples_for "a configuration class" do
 
     context "by default" do
       let(:config_options) { Hash.new }
-      it { expect(subject.attendees).to eq([described_class::DEFAULT_CALENDAR_ID]) }
+      it { expect(subject.calendar_ids).to eq([described_class::DEFAULT_CALENDAR_ID]) }
     end
 
     context "passed a single must_not_be" do

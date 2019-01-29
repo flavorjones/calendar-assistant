@@ -265,18 +265,18 @@ Usage:
   calendar-assistant availability [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -l, [--meeting-length=LENGTH]                    # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
-  -s, [--start-of-day=TIME]                        # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
-  -e, [--end-of-day=TIME]                          # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
-  -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]    # [default 'me'] people (email IDs) to whom this command will be applied
-  -p, [--profile=PROFILE]                          # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                    
-          [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
-                                                   # Default: true
+  -l, [--meeting-length=LENGTH]                               # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
+  -s, [--start-of-day=TIME]                                   # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
+  -e, [--end-of-day=TIME]                                     # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
+  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
+  -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -h, -?, [--help], [--no-help]                               
+          [--debug], [--no-debug]                             # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+                                                              # Default: true
 
 Show your availability for a date or range of dates (default 'today')
 </pre>
@@ -445,16 +445,16 @@ Usage:
   calendar-assistant show [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -c, [--commitments], [--no-commitments]          # only show events that you've accepted with another person
-  -p, [--profile=PROFILE]                          # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
-  -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]    # [default 'me'] people (email IDs) to whom this command will be applied
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                    
-          [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
-                                                   # Default: true
+  -c, [--commitments], [--no-commitments]                     # only show events that you've accepted with another person
+  -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
+  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -h, -?, [--help], [--no-help]                               
+          [--debug], [--no-debug]                             # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+                                                              # Default: true
 
 Show your events for a date or range of dates (default 'today')
 </pre>
@@ -516,15 +516,15 @@ Usage:
   calendar-assistant lint [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -p, [--profile=PROFILE]                          # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
-  -a, [--attendees=ATTENDEE1[,ATTENDEE2[,...]]]    # [default 'me'] people (email IDs) to whom this command will be applied
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                    
-          [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
-                                                   # Default: true
+  -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
+  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -h, -?, [--help], [--no-help]                               
+          [--debug], [--no-debug]                             # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+                                                              # Default: true
 
 Lint your events for a date or range of dates (default 'today')
 </pre>

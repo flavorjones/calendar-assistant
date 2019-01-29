@@ -33,7 +33,7 @@ class CalendarAssistant
       module Options
         COMMITMENTS = "commitments" # bool
         JOIN = "join"               # bool
-        ATTENDEES = "attendees"     # array of calendar ids (comma-delimited)
+        CALENDARS = "calendars"     # array of calendar ids (comma-delimited)
         LOCAL_STORE = "local-store" # filename
         DEBUG = "debug"             # bool
         FORMATTING = "formatting"   # Rainbow
@@ -50,7 +50,7 @@ class CalendarAssistant
       Keys::Settings::MEETING_LENGTH => "30m",            # ChronicDuration
       Keys::Settings::START_OF_DAY => "9am",              # BusinessTime
       Keys::Settings::END_OF_DAY => "6pm",                # BusinessTime
-      Keys::Options::ATTENDEES => [DEFAULT_CALENDAR_ID],  # array of calendar ids
+      Keys::Options::CALENDARS => [DEFAULT_CALENDAR_ID],  # array of calendar ids
       Keys::Options::FORMATTING => true,                  # Rainbow
     }
 
@@ -145,10 +145,10 @@ class CalendarAssistant
     end
 
     #
-    #  helper method for Keys::Options::ATTENDEES
+    #  helper method for Keys::Options::CALENDARS
     #
-    def attendees
-      split_if_array(Keys::Options::ATTENDEES)
+    def calendar_ids
+      split_if_array(Keys::Options::CALENDARS)
     end
 
     def must_be

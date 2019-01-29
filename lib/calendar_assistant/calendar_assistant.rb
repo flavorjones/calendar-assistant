@@ -56,7 +56,7 @@ class CalendarAssistant
   end
 
   def lint_events time_range
-    calendar_ids = config.attendees
+    calendar_ids = config.calendar_ids
     if calendar_ids.length > 1
       raise BaseException, "CalendarAssistant#lint_events only supports one person (for now)"
     end
@@ -64,7 +64,7 @@ class CalendarAssistant
   end
 
   def find_events time_range
-    calendar_ids = config.attendees
+    calendar_ids = config.calendar_ids
     if calendar_ids.length > 1
       raise BaseException, "CalendarAssistant#find_events only supports one person (for now)"
     end
@@ -72,7 +72,7 @@ class CalendarAssistant
   end
 
   def availability time_range
-    calendar_ids = config.attendees
+    calendar_ids = config.calendar_ids
     ers = calendar_ids.map do |calendar_id|
       event_repository calendar_id
     end

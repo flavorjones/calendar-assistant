@@ -27,12 +27,12 @@ class CalendarAssistant
                aliases: [ "-n" ]
       end
 
-      def self.has_attendees
-        option CalendarAssistant::Config::Keys::Options::ATTENDEES,
+      def self.has_multiple_calendars
+        option CalendarAssistant::Config::Keys::Options::CALENDARS,
                type: :string,
-               banner: "ATTENDEE1[,ATTENDEE2[,...]]",
+               banner: "CALENDAR1[,CALENDAR2[,...]]",
                desc: "[default 'me'] people (email IDs) to whom this command will be applied",
-               aliases: ["-a"]
+               aliases: ["-a", "--attendees"]
       end
 
       default_config = CalendarAssistant::CLI::Config.new options: options # used in option descriptions
@@ -139,7 +139,7 @@ class CalendarAssistant
       desc "lint [DATE | DATERANGE | TIMERANGE]",
            "Lint your events for a date or range of dates (default 'today')"
       will_create_a_service
-      has_attendees
+      has_multiple_calendars
 
       has_events
       def lint datespec = "today"
@@ -156,7 +156,7 @@ class CalendarAssistant
              desc: "only show events that you've accepted with another person",
              aliases: ["-c"]
       will_create_a_service
-      has_attendees
+      has_multiple_calendars
 
       has_events
       def show datespec = "today"
@@ -243,7 +243,7 @@ class CalendarAssistant
              desc: sprintf("[default %s] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')",
                            default_config.setting(CalendarAssistant::Config::Keys::Settings::END_OF_DAY)),
              aliases: ["-e"]
-      has_attendees
+      has_multiple_calendars
       will_create_a_service
       has_events
       def availability datespec = "today"
