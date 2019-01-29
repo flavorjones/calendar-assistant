@@ -1,15 +1,16 @@
 class CalendarAssistant
   class EventRepositoryFactory
-    def self.new_event_repository service, calendar_id, config: CalendarAssistant::Config.new
-      EventRepository.new service, calendar_id, config: config
-    end
+    def self.new_event_repository service, calendar_id, config: CalendarAssistant::Config.new, type: :base
+      klass = case type
+              when :location
+                LocationEventRepository
+              when :lint
+                LintEventRepository
+              else
+                EventRepository
+              end
 
-    def self.new_location_event_repository service, calendar_id, config: CalendarAssistant::Config.new
-      LocationEventRepository.new service, calendar_id, config: config
-    end
-
-    def self.new_lint_event_repository service, calendar_id, config: CalendarAssistant::Config.new
-      LintEventRepository.new service, calendar_id, config: config
+      klass.new service, calendar_id, config: config
     end
   end
 end

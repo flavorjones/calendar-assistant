@@ -73,7 +73,7 @@ describe CalendarAssistant do
 
 
       it "calls through to the repository" do
-        expect(event_repository_factory).to receive(:new_lint_event_repository).and_return(lint_event_repository)
+        expect(event_repository_factory).to receive(:new_event_repository).with(service, anything, hash_including(type: :lint)).and_return(lint_event_repository)
         expect(lint_event_repository).to receive(:find).with(time, predicates: {})
         ca.lint_events(time)
       end
@@ -84,7 +84,7 @@ describe CalendarAssistant do
       let(:event_repository) { instance_double("EventRepository") }
 
       it "calls LocationEventRepository#find" do
-        expect(event_repository_factory).to receive(:new_location_event_repository).and_return(event_repository)
+        expect(event_repository_factory).to receive(:new_event_repository).with(service, anything, hash_including(type: :location)).and_return(event_repository)
         expect(event_repository).to receive(:find).with(time, predicates: {}).and_return(event_set)
         ca.find_location_events time
       end
@@ -95,7 +95,7 @@ describe CalendarAssistant do
       let(:event_repository) { instance_double("EventRepository") }
 
       it "calls LocationEventRepository#create" do
-        expect(event_repository_factory).to receive(:new_location_event_repository).and_return(event_repository)
+        expect(event_repository_factory).to receive(:new_event_repository).with(service, anything, hash_including(type: :location)).and_return(event_repository)
         expect(event_repository).to receive(:create).with(time, "Hogwarts", predicates: {}).and_return(event_set)
         ca.create_location_event time, "Hogwarts"
       end
@@ -214,32 +214,28 @@ describe CalendarAssistant do
     end
 
     describe "#event_repository" do
-      it "invokes the factory method to create a new repository" do
-        expect(event_repository_factory).to receive(:new_event_repository).with(service, "foo", anything)
-        ca.event_repository("foo")
+      context "with no type" do
+        it "invokes the factory method to create a new repository" do
+          expect(event_repository_factory).to receive(:new_event_repository).with(service, "foo", anything)
+          ca.event_repository("foo")
+        end
+
+        it "caches the result" do
+          expect(event_repository_factory).to receive(:new_event_repository).once
+          ca.event_repository("foo")
+          ca.event_repository("foo")
+        end
       end
 
-      it "caches the result" do
-        expect(event_repository_factory).to receive(:new_event_repository).once
-        ca.event_repository("foo")
-        ca.event_repository("foo")
-      end
-    end
-
-    describe "#location_event_repository" do
-      before do
-        allow(event_repository_factory).to receive(:new_location_event_repository).and_return(event_repository)
-      end
-
-      it "invokes the factory method to create a new repository" do
-        expect(event_repository_factory).to receive(:new_location_event_repository).with(service, "foo", anything)
-        ca.location_event_repository("foo")
-      end
-
-      it "caches the result" do
-        expect(event_repository_factory).to receive(:new_location_event_repository).once
-        ca.location_event_repository("foo")
-        ca.location_event_repository("foo")
+      context "with a type set" do
+        it "still caches the result" do
+          expect(event_repository_factory).to receive(:new_event_repository).with(service, "foo", hash_including(type: :lint)).once
+          expect(event_repository_factory).to receive(:new_event_repository).with(service, "foo", hash_including(type: :location)).once
+          ca.event_repository("foo", type: :lint)
+          ca.event_repository("foo", type: :lint)
+          ca.event_repository("foo", type: :location)
+          ca.event_repository("foo", type: :location)
+        end
       end
     end
   end

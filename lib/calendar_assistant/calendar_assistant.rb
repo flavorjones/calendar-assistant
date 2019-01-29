@@ -36,9 +36,7 @@ class CalendarAssistant
 
     @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
-    @event_repositories = {} # calendar_id → event_repository
-    @location_event_repositories = {} # calendar_id → event_repository
-    @lint_event_repositories = {} # calendar_id → event_repository
+    @event_repositories = {} # type, calendar_id → event_repository
     @event_predicates = PredicateCollection.build(config.must_be, config.must_not_be)
   end
 
@@ -62,7 +60,7 @@ class CalendarAssistant
     if calendar_ids.length > 1
       raise BaseException, "CalendarAssistant#lint_events only supports one person (for now)"
     end
-    lint_event_repository(calendar_ids.first).find(time_range,  predicates: @event_predicates)
+    event_repository(calendar_ids.first, type: :lint).find(time_range,  predicates: @event_predicates)
   end
 
   def find_events time_range
@@ -82,25 +80,16 @@ class CalendarAssistant
   end
 
   def find_location_events time_range
-    location_event_repository.find(time_range, predicates: @event_predicates)
+    event_repository(type: :location).find(time_range, predicates: @event_predicates)
   end
 
   def create_location_event time_range, location
-    location_event_repository.create(time_range, location, predicates: @event_predicates)
+    event_repository(type: :location).create(time_range, location, predicates: @event_predicates)
   end
 
-  def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
-    @event_repositories[calendar_id] ||=
-      @event_repository_factory.new_event_repository(@service, calendar_id, config: config)
-  end
-
-  def location_event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
-    @location_event_repositories[calendar_id] ||=
-      @event_repository_factory.new_location_event_repository(@service, calendar_id, config: config)
-  end
-
-  def lint_event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
-    @lint_event_repositories[calendar_id] ||=
-        @event_repository_factory.new_lint_event_repository(@service, calendar_id, config: config)
+  def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID, type: :base
+    @event_repositories[type] ||= {}
+    @event_repositories[type][calendar_id] ||=
+      @event_repository_factory.new_event_repository(@service, calendar_id, config: config, type: type)
   end
 end
