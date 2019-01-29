@@ -18,4 +18,14 @@ describe CalendarAssistant::EventRepositoryFactory do
       described_class.new_location_event_repository(service, calendar_id)
     end
   end
+
+  describe ".new_lint_event_repository" do
+    let(:service) { instance_double "Service" }
+    let(:calendar_id) { instance_double "calendar_id" }
+
+    it "creates a LocationEventRepository" do
+      expect(CalendarAssistant::LintEventRepository).to receive(:new).with(service, calendar_id, anything)
+      described_class.new_lint_event_repository(service, calendar_id)
+    end
+  end
 end

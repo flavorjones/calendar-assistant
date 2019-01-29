@@ -36,6 +36,7 @@ class CalendarAssistant
   autoload :Scheduler,               "calendar_assistant/scheduler"
   autoload :LocalService,            "calendar_assistant/local_service"
   autoload :LocationEventRepository, "calendar_assistant/location_event_repository"
+  autoload :LintEventRepository,     "calendar_assistant/lint_event_repository"
   autoload :PredicateCollection,     "calendar_assistant/predicate_collection"
 end
 
