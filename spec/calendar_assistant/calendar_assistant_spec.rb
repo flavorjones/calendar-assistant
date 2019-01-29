@@ -78,156 +78,24 @@ describe CalendarAssistant do
     end
 
     describe "#find_location_events" do
+      let(:time) { Time.now.beginning_of_day..(Time.now + 1.day).end_of_day }
       let(:event_repository) { instance_double("EventRepository") }
-      let(:location_event) { instance_double("Event", :location_event? => true) }
-      let(:other_event) { instance_double("Event", :location_event? => false) }
-      let(:events) { [location_event, other_event].shuffle }
-      let(:event_set) { CalendarAssistant::EventSet.new(event_repository, events) }
 
-      it "selects location events from event repository find" do
-        time = Time.now.beginning_of_day..(Time.now + 1.day).end_of_day
-
+      it "calls LocationEventRepository#find" do
+        expect(event_repository_factory).to receive(:new_location_event_repository).and_return(event_repository)
         expect(event_repository).to receive(:find).with(time, predicates: {}).and_return(event_set)
-
-        result = ca.find_location_events time
-        expect(result.events).to eq([location_event])
+        ca.find_location_events time
       end
     end
 
     describe "#create_location_event" do
-      let(:new_event) do
-        CalendarAssistant::Event.new(instance_double("GCal::Event", {
-                          id: SecureRandom.uuid,
-                          start: new_event_start,
-                          end: new_event_end
-                        }))
-      end
+      let(:time) { Time.now.beginning_of_day..(Time.now + 1.day).end_of_day }
+      let(:event_repository) { instance_double("EventRepository") }
 
-      before do
-        allow(service).to receive(:list_events).and_return(nil)
-      end
-
-      let(:new_event_start) { GCal::EventDateTime.new date: new_event_start_date }
-      let(:new_event_end) { GCal::EventDateTime.new date: (new_event_end_date + 1.day) } # always one day later than actual end
-
-      context "called with a Date" do
-        let(:new_event_start_date) { Date.today }
-        let(:new_event_end_date) { new_event_start_date }
-
-        it "creates an appropriately-titled transparent all-day event" do
-          attributes = {
-              start: new_event_start.date,
-              end: new_event_end.date,
-              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]} WFH",
-              transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
-          }
-
-
-          expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
-
-          response = ca.create_location_event CalendarAssistant::CLI::Helpers.parse_datespec("today"), "WFH"
-          expect(response.events[:created]).to eq([new_event])
-        end
-      end
-
-      context "called with a Date Range" do
-        let(:new_event_start_date) { Date.parse("2019-09-03") }
-        let(:new_event_end_date) { Date.parse("2019-09-05") }
-
-        it "creates an appropriately-titled transparent all-day event" do
-          attributes = {
-              start: new_event_start.date,
-              end: new_event_end.date,
-              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]} WFH",
-              transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
-          }
-
-          expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
-
-          response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-          expect(response.events[:created]).to eq([new_event])
-        end
-      end
-
-      context "when there's a pre-existing location event" do
-        let(:existing_event_start) { GCal::EventDateTime.new date: existing_event_start_date }
-        let(:existing_event_end) { GCal::EventDateTime.new date: (existing_event_end_date + 1.day) } # always one day later than actual end
-
-        let(:new_event_start_date) { Date.parse("2019-09-03") }
-        let(:new_event_end_date) { Date.parse("2019-09-05") }
-
-        let(:existing_event) do
-          CalendarAssistant::Event.new(instance_double("GCal::Event", {
-                            id: SecureRandom.uuid,
-                            start: existing_event_start,
-                            end: existing_event_end
-                          }))
-        end
-
-        before do
-          attributes = {
-              start: new_event_start.date,
-              end: new_event_end.date,
-              summary: "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]} WFH",
-              transparency: CalendarAssistant::Event::Transparency::TRANSPARENT
-          }
-
-          expect(event_repository).to receive(:create).with(attributes).and_return(new_event)
-          expect(ca).to receive(:find_location_events).
-                          and_return(CalendarAssistant::EventSet.new(event_repository, [existing_event]))
-        end
-
-        context "when the new event is entirely within the range of the pre-existing event" do
-          let(:existing_event_start_date) { new_event_start_date }
-          let(:existing_event_end_date) { new_event_end_date }
-
-          it "removes the pre-existing event" do
-            expect(event_repository).to receive(:delete).with(existing_event)
-
-            response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response.events[:created]).to eq([new_event])
-            expect(response.events[:deleted]).to eq([existing_event])
-          end
-        end
-
-        context "when the new event overlaps the start of the pre-existing event" do
-          let(:existing_event_start_date) { Date.parse("2019-09-04") }
-          let(:existing_event_end_date) { Date.parse("2019-09-06") }
-
-          it "shrinks the pre-existing event" do
-            expect(event_repository).to receive(:update).with(existing_event, start: existing_event_end_date)
-
-            response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response.events[:created]).to eq([new_event])
-            expect(response.events[:modified]).to eq([existing_event])
-          end
-        end
-
-        context "when the new event overlaps the end of the pre-existing event" do
-          let(:existing_event_start_date) { Date.parse("2019-09-02") }
-          let(:existing_event_end_date) { Date.parse("2019-09-04") }
-
-          it "shrinks the pre-existing event" do
-            expect(event_repository).to receive(:update).with(existing_event, end: new_event_start_date )
-
-            response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response.events[:created]).to eq([new_event])
-            expect(response.events[:modified]).to eq([existing_event])
-          end
-        end
-
-        context "when the new event is completely overlapped by the pre-existing event" do
-          let(:existing_event_start_date) { Date.parse("2019-09-02") }
-          let(:existing_event_end_date) { Date.parse("2019-09-06") }
-
-          it "shrinks the pre-existing event" do
-            expect(event_repository).to receive(:update).with(existing_event, start: existing_event_end_date)
-
-            response = ca.create_location_event new_event_start_date..new_event_end_date, "WFH"
-            expect(response.events[:created]).to eq([new_event])
-            expect(response.events[:modified]).to eq([existing_event])
-          end
-        end
+      it "calls LocationEventRepository#create" do
+        expect(event_repository_factory).to receive(:new_location_event_repository).and_return(event_repository)
+        expect(event_repository).to receive(:create).with(time, "Hogwarts", predicates: {}).and_return(event_set)
+        ca.create_location_event time, "Hogwarts"
       end
     end
 
@@ -347,6 +215,23 @@ describe CalendarAssistant do
         expect(event_repository_factory).to receive(:new_event_repository).once
         ca.event_repository("foo")
         ca.event_repository("foo")
+      end
+    end
+
+    describe "#location_event_repository" do
+      before do
+        allow(event_repository_factory).to receive(:new_location_event_repository).and_return(event_repository)
+      end
+
+      it "invokes the factory method to create a new repository" do
+        expect(event_repository_factory).to receive(:new_location_event_repository).with(service, "foo", anything)
+        ca.location_event_repository("foo")
+      end
+
+      it "caches the result" do
+        expect(event_repository_factory).to receive(:new_location_event_repository).once
+        ca.location_event_repository("foo")
+        ca.location_event_repository("foo")
       end
     end
   end

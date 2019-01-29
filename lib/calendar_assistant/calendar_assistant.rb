@@ -37,6 +37,7 @@ class CalendarAssistant
     @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
     @event_repositories = {} # calendar_id → event_repository
+    @location_event_repositories = {} # calendar_id → event_repository
     @event_predicates = PredicateCollection.build(config.must_be, config.must_not_be)
   end
 
@@ -81,47 +82,20 @@ class CalendarAssistant
   end
 
   def find_location_events time_range
-    event_set = event_repository.find(time_range, predicates: @event_predicates)
-    event_set.new event_set.events.select { |e| e.location_event? }
+    location_event_repository.find(time_range, predicates: @event_predicates)
   end
 
   def create_location_event time_range, location
-    # find pre-existing events that overlap
-    existing_event_set = find_location_events time_range
-
-    # augment event end date appropriately
-    range = CalendarAssistant.date_range_cast time_range
-
-    deleted_events = []
-    modified_events = []
-
-    event = event_repository.create(
-      transparency: CalendarAssistant::Event::Transparency::TRANSPARENT,
-      start: range.first, end: range.last,
-      summary: "#{Event.location_event_prefix(@config)}#{location}"
-    )
-
-    existing_event_set.events.each do |existing_event|
-      if existing_event.start_date >= event.start_date && existing_event.end_date <= event.end_date
-        event_repository.delete existing_event
-        deleted_events << existing_event
-      elsif existing_event.start_date <= event.end_date && existing_event.end_date > event.end_date
-        event_repository.update existing_event, start: range.last
-        modified_events << existing_event
-      elsif existing_event.start_date < event.start_date && existing_event.end_date >= event.start_date
-        event_repository.update existing_event, end: range.first
-        modified_events << existing_event
-      end
-    end
-
-    response = {created: [event]}
-    response[:deleted] = deleted_events unless deleted_events.empty?
-    response[:modified] = modified_events unless modified_events.empty?
-
-    existing_event_set.new response
+    location_event_repository.create(time_range, location, predicates: @event_predicates)
   end
 
   def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
-    @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id, config: config)
+    @event_repositories[calendar_id] ||=
+      @event_repository_factory.new_event_repository(@service, calendar_id, config: config)
+  end
+
+  def location_event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
+    @location_event_repositories[calendar_id] ||=
+      @event_repository_factory.new_location_event_repository(@service, calendar_id, config: config)
   end
 end
