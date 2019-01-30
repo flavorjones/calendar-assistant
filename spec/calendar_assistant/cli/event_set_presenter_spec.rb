@@ -185,5 +185,28 @@ describe CalendarAssistant::CLI::EventSetPresenter do
         subject.to_s
       end
     end
+
+    context "passed a Hash of a EventSets" do
+      let(:event_set) { CalendarAssistant::EventSet.new(er, { meta: CalendarAssistant::EventSet.new(er, first: [events.first], second: [events.second]) } ) }
+
+      it "prints a title containing the cal id and time zone" do
+        expect(subject.to_s).to match(title_regexp)
+      end
+
+
+      it "prints each hash key capitalized" do
+        expect(subject.description).to match /Meta:/
+        expect(subject.description).to match /First:/
+        expect(subject.description).to match /Second:/
+      end
+
+      it "recursively creates an event set presenter for each hash value" do
+        allow(described_class).to receive(:new).and_call_original
+
+        expect(described_class).to receive(:new).with(CalendarAssistant::EventSet.new(er, [events.first]), config: config, event_presenter_class: event_presenter_class)
+        expect(described_class).to receive(:new).with(CalendarAssistant::EventSet.new(er, [events.second]), config: config, event_presenter_class: event_presenter_class)
+        subject.to_s
+      end
+    end
   end
 end
