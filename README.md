@@ -119,7 +119,6 @@ Some commands, like `location-set`, will refer to you by nickname if you configu
 
 Set `nickname` to a string that would uniquely and briefly identify you to others, like "Mike D" or "JK".
 
-
 #### Location Emoji
 
 There is a `[settings]` key called `location-icon` that may be set to an emoji denoting a location event. By default CalendarAssistant will use `"🌎"`, but you can change this.
@@ -132,11 +131,16 @@ If there are user preferences you'd like to set for just a single command (e.g.,
 ```toml
 [settings]
 visibility = "default"
+nickname = "uniquely-me"
 
 [settings.location_set]
 visibility = "public"
+calendars = ["teamcalendar@group.calendar.google.com","teamcalendar2@group.calendar.google.com"]
 ```
 
+_This Example illustrates how one might create and manage location events on **multiple calendars**.
+Note that this option should probably only be used in conjunction with the `nickname` setting described above
+as its logic will modify calendar events and the nickname helps uniquely identify location records for a user_
 
 ## Setup
 
@@ -368,15 +372,16 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
-          [--visibility=VISIBILITY]                # [default is 'default'] Set the visbility of the event. Values are 'public', 'private', 'default'.
-  -p, [--profile=PROFILE]                          # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                    
-          [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
-                                                   # Default: true
+          [--visibility=VISIBILITY]                           # [default is 'default'] Set the visibility of the event. Values are 'public', 'private', 'default'.
+  -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
+  -h, -?, [--help], [--no-help]                               
+          [--debug], [--no-debug]                             # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+                                                              # Default: true
 
 Set your location to LOCATION for a date or range of dates (default 'today')
 </pre>

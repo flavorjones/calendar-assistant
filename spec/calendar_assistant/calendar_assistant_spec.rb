@@ -97,7 +97,7 @@ describe CalendarAssistant do
       it "calls LocationEventRepository#create" do
         expect(event_repository_factory).to receive(:new_event_repository).with(service, anything, hash_including(type: :location)).and_return(event_repository)
         expect(event_repository).to receive(:create).with(time, "Hogwarts", predicates: {}).and_return(event_set)
-        ca.create_location_event time, "Hogwarts"
+        ca.create_location_events time, "Hogwarts"
       end
     end
 

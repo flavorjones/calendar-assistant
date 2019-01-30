@@ -213,11 +213,12 @@ class CalendarAssistant
              desc: "[default is 'default'] Set the visibility of the event. Values are 'public', 'private', 'default'."
       will_create_a_service
       has_events
+      has_multiple_calendars
       def location_set location = nil, datespec = "today"
         return help! if location.nil?
 
         calendar_assistant(datespec) do |ca, date, out|
-          event_set = ca.create_location_event date, location
+          event_set = ca.create_location_events date, location
           out.print_events ca, event_set
         end
       end

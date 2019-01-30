@@ -83,8 +83,10 @@ class CalendarAssistant
     event_repository(type: :location).find(time_range, predicates: @event_predicates)
   end
 
-  def create_location_event time_range, location
-    event_repository(type: :location).create(time_range, location, predicates: @event_predicates)
+  def create_location_events time_range, location
+    EventSet.new(event_repository, (Array(config.calendar_ids) | [Config::DEFAULT_CALENDAR_ID]).each_with_object({}) do |calendar_id, hsh|
+      hsh[calendar_id] = event_repository(calendar_id, type: :location).create(time_range, location, predicates: @event_predicates)
+    end)
   end
 
   def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID, type: :base
