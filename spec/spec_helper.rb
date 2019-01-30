@@ -93,21 +93,21 @@ module RspecExampleHelpers
     end
   end
 
-  def event_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", **options)
-    EventFactory.new(service: service_for(file, calendar_id, time_zone), calendar_id: calendar_id).create(date: date, event_attributes: options)
+  def event_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", load_events: false, **options)
+    EventFactory.new(service: service_for(file, calendar_id, time_zone, load_events), calendar_id: calendar_id).create(date: date, event_attributes: options)
   end
 
-  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", &block)
-    EventFactory.new(service: service_for(file, calendar_id, time_zone), calendar_id: calendar_id).create_list(date: date, &block)
+  def event_list_factory(date: Time.now, file: nil, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji", load_events: false, &block)
+    EventFactory.new(service: service_for(file, calendar_id, time_zone, load_events), calendar_id: calendar_id).create_list(date: date, &block)
   end
 
-  def service_for(file, calendar_id, time_zone)
+  def service_for(file, calendar_id, time_zone, load_events = false)
     @services ||= {}
 
     service_key = sprintf("%s.%s.%s", file, calendar_id, time_zone)
 
     @services[service_key] ||= begin
-      CalendarAssistant::LocalService.new(file: file, load_events: false).tap { |s| s.insert_calendar(GCal::Calendar.new(id: calendar_id, time_zone: time_zone)) }
+      CalendarAssistant::LocalService.new(file: file, load_events: load_events).tap { |s| s.insert_calendar(GCal::Calendar.new(id: calendar_id, time_zone: time_zone)) }
     end
   end
 end
