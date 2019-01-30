@@ -32,7 +32,7 @@ class CalendarAssistant
         end
       end
 
-      def print_events ca, event_set, omit_title: false, presenter_class: CLI::EventSetPresenter
+      def print_events ca, event_set, presenter_class: CLI::EventSetPresenter
         puts presenter_class.new(event_set, config: ca.config).to_s
         puts
       end
