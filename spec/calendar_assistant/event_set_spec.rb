@@ -154,6 +154,31 @@ describe CalendarAssistant::EventSet do
     end
   end
 
+  describe "#[]" do
+    context "when the key does not exist" do
+      it "sets the value to an empty array" do
+        event_set = described_class.new(event_repository, { } )
+        expect(event_set[:new_key]).to eq []
+      end
+    end
+
+    context "when the key does exist" do
+      it "returns that value" do
+        event_set = described_class.new(event_repository, { existing_key: :value } )
+        expect(event_set[:existing_key]).to eq :value
+      end
+    end
+  end
+
+  describe "#[]=" do
+    let(:subject) { described_class.new event_repository, { } }
+
+    it "allows values to be added to an existing event set, like it is a hash" do
+      subject[:new_key] = "funk"
+      expect(subject[:new_key]).to eq "funk"
+    end
+  end
+
   describe "#available_blocks" do
     set_date_to_a_weekday # because otherwise if tests run on a weekend they'll fail
 

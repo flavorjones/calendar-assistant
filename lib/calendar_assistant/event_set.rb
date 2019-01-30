@@ -58,6 +58,14 @@ class CalendarAssistant
         end
       end
 
+      def [] key
+        events[key] ||= []
+      end
+
+      def []= key, value
+        events[key] = value
+      end
+
       def available_blocks length: 1
         event_repository.in_tz do
           dates = events.keys.sort
