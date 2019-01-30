@@ -46,6 +46,7 @@ class CalendarAssistant
 
     def delete event
       @service.delete_event @calendar_id,  event.id
+      event
     end
 
     def update(event, attributes)
