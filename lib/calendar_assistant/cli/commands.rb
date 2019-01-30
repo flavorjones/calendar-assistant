@@ -210,7 +210,7 @@ class CalendarAssistant
       option CalendarAssistant::Config::Keys::Settings::VISIBILITY,
              type: :string,
              banner: "VISIBILITY",
-             desc: "[default is 'default'] Set the visbility of the event. Values are 'public', 'private', 'default'."
+             desc: "[default is 'default'] Set the visibility of the event. Values are 'public', 'private', 'default'."
       will_create_a_service
       has_events
       def location_set location = nil, datespec = "today"
