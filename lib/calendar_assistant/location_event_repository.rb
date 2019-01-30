@@ -12,33 +12,31 @@ class CalendarAssistant
       # augment event end date appropriately
       range = CalendarAssistant.date_range_cast time
 
-      deleted_events = []
-      modified_events = []
-
       event = super(
           transparency: CalendarAssistant::Event::Transparency::TRANSPARENT,
           start: range.first, end: range.last,
           summary: "#{Event.location_event_prefix(@config)}#{location}"
       )
 
+      modify_location_events(event, existing_event_set)
+    end
+
+    private
+
+    def modify_location_events(event, existing_event_set)
+      response = existing_event_set.new({created: [event]})
+
       existing_event_set.events.each do |existing_event|
         if existing_event.start_date >= event.start_date && existing_event.end_date <= event.end_date
-          delete existing_event
-          deleted_events << existing_event
+          response[:deleted] << delete(existing_event)
         elsif existing_event.start_date <= event.end_date && existing_event.end_date > event.end_date
-          update existing_event, start: range.last
-          modified_events << existing_event
+          response[:modified] << update(existing_event, start: event.end_date)
         elsif existing_event.start_date < event.start_date && existing_event.end_date >= event.start_date
-          update existing_event, end: range.first
-          modified_events << existing_event
+          response[:modified] << update(existing_event, end: event.start_date)
         end
       end
 
-      response = {created: [event]}
-      response[:deleted] = deleted_events unless deleted_events.empty?
-      response[:modified] = modified_events unless modified_events.empty?
-
-      existing_event_set.new response
+      response
     end
   end
 end

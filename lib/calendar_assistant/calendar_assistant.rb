@@ -84,14 +84,24 @@ class CalendarAssistant
   end
 
   def create_location_events time_range, location
-    EventSet.new(event_repository, (Array(config.calendar_ids) | [Config::DEFAULT_CALENDAR_ID]).each_with_object({}) do |calendar_id, hsh|
-      hsh[calendar_id] = event_repository(calendar_id, type: :location).create(time_range, location, predicates: @event_predicates)
-    end)
+    event_set = EventSet::Hash.new(event_repository,{})
+
+    unique_calendar_ids.each do |calendar_id|
+      event_set[calendar_id] = event_repository(calendar_id, type: :location).create(time_range, location, predicates: @event_predicates)
+    end
+
+    event_set
   end
 
   def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID, type: :base
     @event_repositories[type] ||= {}
     @event_repositories[type][calendar_id] ||=
       @event_repository_factory.new_event_repository(@service, calendar_id, config: config, type: type)
+  end
+
+  private
+
+  def unique_calendar_ids
+    Array(config.calendar_ids) | [Config::DEFAULT_CALENDAR_ID]
   end
 end
