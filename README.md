@@ -122,7 +122,7 @@ Set `nickname` to a string that would uniquely and briefly identify you to other
 
 #### Location Emoji
 
-There is a `[settings]` key called `location-icons` that may be set to an array denoting all emoji that indicate a location event. The first icon in the array will be used as the default. The default emoji included are `["🗺 ", "🌎"]` with the map icon first
+There is a `[settings]` key called `location-icon` that may be set to an emoji denoting a location event. By default CalendarAssistant will use `"🌎"`, but you can change this.
 
 
 #### Command-Specific Preferences
@@ -131,10 +131,10 @@ If there are user preferences you'd like to set for just a single command (e.g.,
 
 ```toml
 [settings]
-visibility = default
+visibility = "default"
 
 [settings.location_set]
-visibility = public
+visibility = "public"
 ```
 
 
@@ -162,7 +162,8 @@ Description:
   API, and saving the credentials necessary to access the API on behalf of users.
 
   If you already have downloaded client credentials, you don't need to run this command. Instead,
-  rename the downloaded JSON file to `/home/user/.calendar-assistant.client`
+  rename the downloaded JSON file to
+  `/home/user/.calendar-assistant.client`
 </pre>
 
 
@@ -571,7 +572,6 @@ The output is TOML, which is suitable for dumping into `~/.calendar-assistant` a
 end-of-day = "6pm"
 location-icon = "🌎"
 meeting-length = "30m"
-profile = "work"
 start-of-day = "9am"
 </pre>
 

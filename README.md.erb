@@ -19,15 +19,22 @@ LOCAL_STORE_OPTION = " --local-store=fixtures.yml"
 def obfuscate line
   line.
     gsub(LOCAL_STORE_OPTION, "").
-    gsub(/#{ENV["HOME"]}/, "/home/user")
+    gsub(/#{ENV["HOME"]}.*\//, "/home/user/")
 end
 
 def run args
   STDERR.puts "→ calendar-assistant #{args}"
+
   output = []
   output << "<b>$</b> calendar-assistant #{args}" unless args =~ /\bhelp\b/
+
   args += LOCAL_STORE_OPTION unless args =~ /\bconfig|help\b/
-  output += `ruby -Ilib bin/calendar-assistant #{args} | node_modules/.bin/ansi-to-html`.split("\n")
+
+  env = "env"
+  env += " CA_HOME=#{Dir.pwd}"
+
+  output += `#{env} ruby -Ilib bin/calendar-assistant #{args} | node_modules/.bin/ansi-to-html`.split("\n")
+
   output.map {|line| obfuscate line }.join("\n")
 end
 %>
@@ -97,7 +104,7 @@ Set `nickname` to a string that would uniquely and briefly identify you to other
 
 #### Location Emoji
 
-There is a `[settings]` key called `location-icons` that may be set to an array denoting all emoji that indicate a location event. The first icon in the array will be used as the default. The default emoji included are `["🗺 ", "🌎"]` with the map icon first
+There is a `[settings]` key called `location-icon` that may be set to an emoji denoting a location event. By default CalendarAssistant will use `"🌎"`, but you can change this.
 
 
 #### Command-Specific Preferences
@@ -106,10 +113,10 @@ If there are user preferences you'd like to set for just a single command (e.g.,
 
 ```toml
 [settings]
-visibility = default
+visibility = "default"
 
 [settings.location_set]
-visibility = public
+visibility = "public"
 ```
 
 
