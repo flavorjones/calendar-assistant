@@ -30,7 +30,7 @@ RSpec.describe 'location', :type => :aruba do
 
     OUT
 
-    run("./bin/calendar-assistant location-set Zanzibar 2018-01-01 --calendars=other_calendar@example.com --visibility=public --formatting=false --local-store=#{filename}")
+    run("./bin/calendar-assistant location-set Zanzibar 2018-01-01 --force --calendars=other_calendar@example.com --visibility=public --formatting=false --local-store=#{filename}")
     stop_all_commands
 
     expect(last_command_stopped).to be_successfully_executed

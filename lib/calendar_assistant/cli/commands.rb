@@ -207,6 +207,9 @@ class CalendarAssistant
 
       desc "location-set LOCATION [DATE | DATERANGE]",
            "Set your location to LOCATION for a date or range of dates (default 'today')"
+      option CalendarAssistant::Config::Keys::Options::FORCE,
+             type: :boolean,
+             desc: "will manage location across multiple calendars whether a nickname is set or not"
       option CalendarAssistant::Config::Keys::Settings::VISIBILITY,
              type: :string,
              banner: "VISIBILITY",

@@ -84,6 +84,8 @@ class CalendarAssistant
   end
 
   def create_location_events time_range, location
+    LocationConfigValidator.valid?(config)
+
     event_set = EventSet::Hash.new(event_repository,{})
 
     unique_calendar_ids.each do |calendar_id|
@@ -102,6 +104,6 @@ class CalendarAssistant
   private
 
   def unique_calendar_ids
-    Array(config.calendar_ids) | [Config::DEFAULT_CALENDAR_ID]
+    @unique_calendar_ids ||= Array(config.calendar_ids) | [Config::DEFAULT_CALENDAR_ID]
   end
 end

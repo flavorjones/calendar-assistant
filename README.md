@@ -138,9 +138,6 @@ visibility = "public"
 calendars = ["teamcalendar@group.calendar.google.com","teamcalendar2@group.calendar.google.com"]
 ```
 
-_This Example illustrates how one might create and manage location events on **multiple calendars**.
-Note that this option should probably only be used in conjunction with the `nickname` setting described above
-as its logic will modify calendar events and the nickname helps uniquely identify location records for a user_
 
 ## Setup
 
@@ -372,6 +369,7 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
+          [--force]                                           # will manage location across multiple calendars whether a nickname is set or not
           [--visibility=VISIBILITY]                           # [default is 'default'] Set the visibility of the event. Values are 'public', 'private', 'default'.
   -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
   -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar

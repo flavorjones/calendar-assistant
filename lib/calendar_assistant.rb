@@ -38,6 +38,7 @@ class CalendarAssistant
   autoload :LocationEventRepository, "calendar_assistant/location_event_repository"
   autoload :LintEventRepository,     "calendar_assistant/lint_event_repository"
   autoload :PredicateCollection,     "calendar_assistant/predicate_collection"
+  autoload :LocationConfigValidator, "calendar_assistant/location_config_validator"
 end
 
 require "calendar_assistant/cli"

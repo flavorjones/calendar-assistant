@@ -40,6 +40,7 @@ class CalendarAssistant
         MUST_BE = "must-be"         # array of event predicates (comma-delimited)
         MUST_NOT_BE = "must-not-be" # array of event predicates (comma-delimited)
         CONTEXT = "context"         # symbol referring to command context
+        FORCE = "force"             # bool
       end
     end
 
