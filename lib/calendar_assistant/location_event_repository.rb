@@ -12,6 +12,7 @@ class CalendarAssistant
       # augment event end date appropriately
       range = CalendarAssistant.date_range_cast time
 
+
       event = super(
           transparency: CalendarAssistant::Event::Transparency::TRANSPARENT,
           start: range.first, end: range.last,
@@ -27,11 +28,11 @@ class CalendarAssistant
       response = existing_event_set.new({created: [event]})
 
       existing_event_set.events.each do |existing_event|
-        if existing_event.start_date >= event.start_date && existing_event.end_date <= event.end_date
+        if event.cover?(existing_event)
           response[:deleted] << delete(existing_event)
-        elsif existing_event.start_date <= event.end_date && existing_event.end_date > event.end_date
-          response[:modified] << update(existing_event, start: event.end_date)
-        elsif existing_event.start_date < event.start_date && existing_event.end_date >= event.start_date
+        elsif event.overlaps_start_of?(existing_event)
+        response[:modified] << update(existing_event, start: event.end_date)
+        elsif event.overlaps_end_of?(existing_event)
           response[:modified] << update(existing_event, end: event.start_date)
         end
       end

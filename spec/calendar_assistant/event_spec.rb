@@ -634,6 +634,78 @@ describe CalendarAssistant::Event do
       end
     end
 
+    describe 'cover?' do
+      let(:existing_event_start_date) { GCal::EventDateTime.new(date: Date.today) }
+      let(:existing_event_end_date) { GCal::EventDateTime.new(date: Date.today + 1) }
+      let(:event_start_date) { existing_event_start_date }
+      let(:event_end_date) { GCal::EventDateTime.new(date: Date.today + 1) }
+      let(:existing_event) { described_class.new(decorated_class.new(start: existing_event_start_date, end: existing_event_end_date), config: config) }
+      let(:decorated_object) { decorated_class.new(start: event_start_date, end: event_end_date) }
+
+      context "when other event occurs within the range of this event" do
+        it "returns true" do
+          expect(subject.cover?(existing_event)).to be_truthy
+        end
+      end
+
+      context "when the other event does not occur within the range of this event" do
+        let(:existing_event_end_date) { GCal::EventDateTime.new(date: Date.today + 10) }
+
+        it "returns false" do
+          expect(subject.cover?(existing_event)).to be_falsey
+        end
+      end
+    end
+
+    describe 'overlaps_end_of?' do
+      let(:existing_event_start_date) { GCal::EventDateTime.new(date: Date.today + 2 ) }
+      let(:existing_event_end_date) { GCal::EventDateTime.new(date: Date.today + 6) }
+      let(:event_start_date) { GCal::EventDateTime.new(date: Date.today + 1) }
+      let(:event_end_date) { GCal::EventDateTime.new(date: Date.today + 5) }
+
+      let(:existing_event) { described_class.new(decorated_class.new(start: existing_event_start_date, end: existing_event_end_date), config: config) }
+      let(:decorated_object) { decorated_class.new(start: event_start_date, end: event_end_date) }
+
+      context "when other event overlaps end of this event" do
+        it "returns true" do
+          expect(subject.overlaps_start_of?(existing_event)).to be_truthy
+        end
+      end
+
+      context "when the other event does not overlap end date of this event" do
+        let(:existing_event_end_date) { GCal::EventDateTime.new(date: Date.today) }
+
+        it "returns false" do
+          expect(subject.overlaps_start_of?(existing_event)).to be_falsey
+        end
+      end
+    end
+
+    describe 'overlaps_start_of?' do
+      let(:existing_event_start_date) { GCal::EventDateTime.new(date: Date.today) }
+      let(:existing_event_end_date) { GCal::EventDateTime.new(date: Date.today + 5) }
+      let(:event_start_date) { GCal::EventDateTime.new(date: Date.today + 2) }
+      let(:event_end_date) { GCal::EventDateTime.new(date: Date.today + 5) }
+
+      let(:existing_event) { described_class.new(decorated_class.new(start: existing_event_start_date, end: existing_event_end_date), config: config) }
+      let(:decorated_object) { decorated_class.new(start: event_start_date, end: event_end_date) }
+
+      context "when other event overlaps start of this event" do
+        it "returns true" do
+          expect(subject.overlaps_end_of?(existing_event)).to be_truthy
+        end
+      end
+
+      context "when the other event does not overlap start date of this event" do
+        let(:existing_event_start_date) { GCal::EventDateTime.new(date: Date.today + 4) }
+
+        it "returns false" do
+          expect(subject.overlaps_end_of?(existing_event)).to be_falsey
+        end
+      end
+    end
+
+
     describe "#start_time" do
       context "all day event" do
         # test Date and String
