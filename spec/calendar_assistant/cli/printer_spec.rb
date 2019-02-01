@@ -1,3 +1,4 @@
+# coding: utf-8
 describe CalendarAssistant::CLI::Printer do
   let(:stdout) { StringIO.new }
   let(:ca) { instance_double("CalendarAssistant") }

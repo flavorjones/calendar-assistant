@@ -1,3 +1,4 @@
+# coding: utf-8
 class CalendarAssistant
   module CLI
     class Printer
