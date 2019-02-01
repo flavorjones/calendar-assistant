@@ -16,6 +16,16 @@ describe CalendarAssistant::CLI::Printer do
       expect(Launchy).to receive(:open).with(url)
       subject.launch(url)
     end
+
+    context "Launchy raises an exception" do
+      let(:url) { "notarealprotocol:///foo/bar" }
+
+      it "ensures a CalendarAssistant::BaseException descendant is raised" do
+        expect {
+          subject.launch(url)
+        }.to raise_error(CalendarAssistant::BaseException, /No application found/)
+      end
+    end
   end
 
   describe "#puts" do

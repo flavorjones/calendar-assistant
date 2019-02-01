@@ -1,6 +1,8 @@
 class CalendarAssistant
   module CLI
     class Printer
+      class LaunchUrlException < CalendarAssistant::BaseException ; end
+
 
       attr_reader :io
 
@@ -9,7 +11,11 @@ class CalendarAssistant
       end
 
       def launch url
-        Launchy.open url
+        begin
+          Launchy.open(url)
+        rescue Exception => e
+          raise LaunchUrlException.new(e)
+        end
       end
 
       def puts *args
