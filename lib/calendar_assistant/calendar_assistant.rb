@@ -36,7 +36,7 @@ class CalendarAssistant
 
     @calendar = service.get_calendar Config::DEFAULT_CALENDAR_ID
     @event_repository_factory = event_repository_factory
-    @event_repositories = {} # calendar_id → event_repository
+    @event_repositories = {} # type, calendar_id → event_repository
     @event_predicates = PredicateCollection.build(config.must_be, config.must_not_be)
   end
 
@@ -56,16 +56,15 @@ class CalendarAssistant
   end
 
   def lint_events time_range
-    calendar_ids = config.attendees
+    calendar_ids = config.calendar_ids
     if calendar_ids.length > 1
       raise BaseException, "CalendarAssistant#lint_events only supports one person (for now)"
     end
-
-    event_repository(calendar_ids.first).find(time_range,  predicates: @event_predicates.merge({needs_action?: true}))
+    event_repository(calendar_ids.first, type: :lint).find(time_range,  predicates: @event_predicates)
   end
 
   def find_events time_range
-    calendar_ids = config.attendees
+    calendar_ids = config.calendar_ids
     if calendar_ids.length > 1
       raise BaseException, "CalendarAssistant#find_events only supports one person (for now)"
     end
@@ -73,7 +72,7 @@ class CalendarAssistant
   end
 
   def availability time_range
-    calendar_ids = config.attendees
+    calendar_ids = config.calendar_ids
     ers = calendar_ids.map do |calendar_id|
       event_repository calendar_id
     end
@@ -81,47 +80,30 @@ class CalendarAssistant
   end
 
   def find_location_events time_range
-    event_set = event_repository.find(time_range, predicates: @event_predicates)
-    event_set.new event_set.events.select { |e| e.location_event? }
+    event_repository(type: :location).find(time_range, predicates: @event_predicates)
   end
 
-  def create_location_event time_range, location
-    # find pre-existing events that overlap
-    existing_event_set = find_location_events time_range
+  def create_location_events time_range, location
+    LocationConfigValidator.valid?(config)
 
-    # augment event end date appropriately
-    range = CalendarAssistant.date_range_cast time_range
+    event_set = EventSet::Hash.new(event_repository,{})
 
-    deleted_events = []
-    modified_events = []
-
-    event = event_repository.create(
-      transparency: CalendarAssistant::Event::Transparency::TRANSPARENT,
-      start: range.first, end: range.last,
-      summary: "#{Event.location_event_prefix(@config)}#{location}"
-    )
-
-    existing_event_set.events.each do |existing_event|
-      if existing_event.start_date >= event.start_date && existing_event.end_date <= event.end_date
-        event_repository.delete existing_event
-        deleted_events << existing_event
-      elsif existing_event.start_date <= event.end_date && existing_event.end_date > event.end_date
-        event_repository.update existing_event, start: range.last
-        modified_events << existing_event
-      elsif existing_event.start_date < event.start_date && existing_event.end_date >= event.start_date
-        event_repository.update existing_event, end: range.first
-        modified_events << existing_event
-      end
+    unique_calendar_ids.each do |calendar_id|
+      event_set[calendar_id] = event_repository(calendar_id, type: :location).create(time_range, location, predicates: @event_predicates)
     end
 
-    response = {created: [event]}
-    response[:deleted] = deleted_events unless deleted_events.empty?
-    response[:modified] = modified_events unless modified_events.empty?
-
-    existing_event_set.new response
+    event_set
   end
 
-  def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID
-    @event_repositories[calendar_id] ||= @event_repository_factory.new_event_repository(@service, calendar_id, config: config)
+  def event_repository calendar_id=Config::DEFAULT_CALENDAR_ID, type: :base
+    @event_repositories[type] ||= {}
+    @event_repositories[type][calendar_id] ||=
+      @event_repository_factory.new_event_repository(@service, calendar_id, config: config, type: type)
+  end
+
+  private
+
+  def unique_calendar_ids
+    @unique_calendar_ids ||= Array(config.calendar_ids) | [Config::DEFAULT_CALENDAR_ID]
   end
 end

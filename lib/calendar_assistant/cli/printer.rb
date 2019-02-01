@@ -32,13 +32,13 @@ class CalendarAssistant
         end
       end
 
-      def print_events ca, event_set, omit_title: false, presenter_class: CLI::EventSetPresenter
+      def print_events ca, event_set, presenter_class: CLI::EventSetPresenter
         puts presenter_class.new(event_set, config: ca.config).to_s
         puts
       end
 
       def print_available_blocks ca, event_set, omit_title: false
-        ers = ca.config.attendees.map {|calendar_id| ca.event_repository calendar_id}
+        ers = ca.config.calendar_ids.map {|calendar_id| ca.event_repository calendar_id}
         time_zones = ers.map {|er| er.calendar.time_zone}.uniq
 
         unless omit_title

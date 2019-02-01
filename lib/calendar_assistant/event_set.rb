@@ -8,6 +8,9 @@ class CalendarAssistant
   #
   class EventSet
     def self.new event_repository, events=nil
+      if events.is_a?(EventSet::Hash)
+        return EventSet::Hash.new event_repository, events.try(:events)
+      end
       if events.is_a?(::Hash)
         return EventSet::Hash.new event_repository, events
       end
@@ -53,6 +56,14 @@ class CalendarAssistant
             end
           end
         end
+      end
+
+      def [] key
+        events[key] ||= []
+      end
+
+      def []= key, value
+        events[key] = value
       end
 
       def available_blocks length: 1

@@ -138,7 +138,7 @@ describe CalendarAssistant::EventRepository do
 
   describe "#delete" do
     it "calls the service with the event id" do
-      event_repository.delete(nine_event)
+      expect(event_repository.delete(nine_event)).to eq nine_event
       result = event_repository.find time_range
       expect(result.events).not_to include(nine_event)
     end

@@ -144,7 +144,7 @@ describe CalendarAssistant::CLI::Commands do
     context "given another person's calendar id" do
       let(:config_options) do
         {
-            CalendarAssistant::Config::Keys::Options::ATTENDEES => "somebody@example.com"
+            CalendarAssistant::Config::Keys::Options::CALENDARS => "somebody@example.com"
         }
       end
 
@@ -204,7 +204,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "calls create_location_event by default for today" do
       expect(CalendarAssistant::CLI::Helpers).to receive(:parse_datespec).with("today").and_return(time_range)
-      expect(ca).to receive("create_location_event").
+      expect(ca).to receive("create_location_events").
           with(time_range, "Palo Alto").
           and_return(event_set)
       expect(out).to receive(:print_events).with(ca, event_set)
@@ -214,7 +214,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "calls create_location_event with the range returned from parse_datespec" do
       expect(CalendarAssistant::CLI::Helpers).to receive(:parse_datespec).with("user-datespec").and_return(time_range)
-      expect(ca).to receive("create_location_event").
+      expect(ca).to receive("create_location_events").
           with(time_range, "Palo Alto").
           and_return(event_set)
       expect(out).to receive(:print_events).with(ca, event_set)
@@ -227,7 +227,7 @@ describe CalendarAssistant::CLI::Commands do
           with(options: hash_including(CalendarAssistant::Config::Keys::Settings::PROFILE => "work")).
           and_return(config)
 
-      allow(ca).to receive(:create_location_event).and_return(event_set)
+      allow(ca).to receive(:create_location_events).and_return(event_set)
       allow(out).to receive(:print_events)
 
       described_class.start [command, "-p", "work", "Palo Alto"]
@@ -240,7 +240,7 @@ describe CalendarAssistant::CLI::Commands do
             with(options: hash_including(CalendarAssistant::Config::Keys::Settings::VISIBILITY => "public")).
             and_return(config)
 
-          allow(ca).to receive(:create_location_event).and_return(event_set)
+          allow(ca).to receive(:create_location_events).and_return(event_set)
           allow(out).to receive(:print_events)
 
           described_class.start [command, "--visibility", "public", "Cocomo"]
@@ -405,7 +405,7 @@ describe CalendarAssistant::CLI::Commands do
 
     it "looks up another person's availability" do
       expect(CalendarAssistant::Config).to receive(:new).
-          with(options: hash_including(CalendarAssistant::Config::Keys::Options::ATTENDEES => "somebody@example.com")).
+          with(options: hash_including(CalendarAssistant::Config::Keys::Options::CALENDARS => "somebody@example.com")).
           and_return(config)
 
       allow(ca).to receive(:availability)

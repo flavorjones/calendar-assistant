@@ -191,6 +191,18 @@ class CalendarAssistant
       gcsog.nil? ? true : !!gcsog
     end
 
+    def cover?(event)
+      event.start_date >= start_date && event.end_date <= end_date
+    end
+
+    def overlaps_start_of?(event)
+      event.start_date <= end_date && event.end_date > end_date
+    end
+
+    def overlaps_end_of?(event)
+      event.start_date < start_date && event.end_date >= start_date
+    end
+
     def start_time
       if all_day?
         start_date.beginning_of_day
