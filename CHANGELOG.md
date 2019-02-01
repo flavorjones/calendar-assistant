@@ -1,12 +1,17 @@
 # Changelog for Calendar Assistant
 
-## unreleased:
+## unreleased
 
-- Support multiple calendars `--calendars` to manage location events on multiple calendars [#63]
+Features:
+
+- Support multiple calendars `--calendars` to manage location events on multiple calendars. [#63]
+- Zoom meetings will be launched with the `zoom` cli instead of the browser. [#91]
+
 
 ## v0.8.0 / 2019-01-28
 
 Features:
+
 - Most commands now allow filtering by property. See README for details on `--must-be` and `--must-not-be`. [#72]
 - Allow location event visibility to be set. [#17]
 - Allow command-specific settings. [#17]
