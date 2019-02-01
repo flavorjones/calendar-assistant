@@ -2,6 +2,8 @@
 
 set -e
 
+FILENAME=${1:-README.md}
+
 modules="ansi-to-html markdown-toc"
 
 for module in $modules ; do
@@ -11,7 +13,7 @@ for module in $modules ; do
   fi
 done
 
-echo "Generating updated README.md..."
+echo "Generating updated ${FILENAME}..."
 export THOR_COLUMNS=100
-erb README.md.erb > README.md
-node_modules/.bin/markdown-toc README.md -i --maxdepth 3
+erb README.md.erb > $FILENAME
+node_modules/.bin/markdown-toc $FILENAME -i --maxdepth 3
