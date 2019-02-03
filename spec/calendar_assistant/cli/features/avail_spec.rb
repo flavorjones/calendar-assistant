@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 RSpec.describe 'avail', :type => :aruba do
@@ -22,7 +23,7 @@ RSpec.describe 'avail', :type => :aruba do
     end
   end
 
-  before(:each) { run("./bin/calendar-assistant avail 2018-01-02 --formatting=false --local-store=#{filename}") }
+  before(:each) { run_command("./bin/calendar-assistant avail 2018-01-02 --formatting=false --local-store=#{filename}") }
   before(:each) { stop_all_commands }
 
   subject { last_command_stopped }
