@@ -191,32 +191,24 @@ class CalendarAssistant
     end
 
     def self.find_in_hash hash, keypath
-      current_val = hash
-      keypath = keypath.split(".") unless keypath.is_a?(Array)
-
-      keypath.each do |key|
-        if current_val.has_key?(key)
-          current_val = current_val[key]
-        else
-          current_val = nil
-          break
-        end
+      split_keypath(keypath).inject(hash) do |current_val, key|
+        break unless current_val.has_key?(key)
+        current_val[key]
       end
-
-      current_val
     end
 
     def self.set_in_hash hash, keypath, new_value
-      current_hash = hash
-      keypath = keypath.split(".") unless keypath.is_a?(Array)
-      *path_parts, key = *keypath
+      *path_parts, key = *split_keypath(keypath)
 
-      path_parts.each do |path_part|
-        current_hash[path_part] ||= {}
-        current_hash = current_hash[path_part]
+      current_hash = path_parts.inject(hash) do |current_val, path|
+        current_val[path] ||= {}
       end
 
       current_hash[key] = new_value
+    end
+
+    def self.split_keypath(keypath)
+      keypath.is_a?(Array) ? keypath : keypath.split(".")
     end
   end
 end
