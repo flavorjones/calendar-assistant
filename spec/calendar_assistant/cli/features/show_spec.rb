@@ -28,7 +28,7 @@ RSpec.describe 'show', :type => :aruba do
   subject { last_command_stopped }
 
   context "when there are no predicates" do
-    before(:each) { run("./bin/calendar-assistant show 2018-01-01 --formatting=false --local-store=#{filename}") }
+    before(:each) { run_command("./bin/calendar-assistant show 2018-01-01 --formatting=false --local-store=#{filename}") }
 
     it { is_expected.to be_successfully_executed }
 
@@ -48,7 +48,7 @@ RSpec.describe 'show', :type => :aruba do
   end
 
   context "when passed a predicate" do
-    before(:each) { run("./bin/calendar-assistant show 2018-01-01 --must-not-be=self,tentative --formatting=false --local-store=#{filename}") }
+    before(:each) { run_command("./bin/calendar-assistant show 2018-01-01 --must-not-be=self,tentative --formatting=false --local-store=#{filename}") }
 
     it { is_expected.to be_successfully_executed }
 
