@@ -13,7 +13,7 @@ RSpec.describe 'join', :type => :aruba do
     end
   end
 
-  before(:each) { run("./bin/calendar-assistant join --no-join --formatting=false --local-store=#{filename}") }
+  before(:each) { run_command("./bin/calendar-assistant join --no-join --formatting=false --local-store=#{filename}") }
   before(:each) { stop_all_commands }
 
   subject { last_command_stopped }
@@ -21,6 +21,6 @@ RSpec.describe 'join', :type => :aruba do
   it { is_expected.to be_successfully_executed }
 
   it "joins the meeting for today's event" do
-    expect(subject.output).to match /http:\/\/company.zoom.us\/1$/
+    expect(subject.output).to match(/http:\/\/company.zoom.us\/1$/)
   end
 end

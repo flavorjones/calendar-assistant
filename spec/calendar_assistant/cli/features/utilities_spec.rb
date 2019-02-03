@@ -17,7 +17,7 @@ RSpec.describe 'utility features', :type => :aruba do
   subject { last_command_stopped }
 
   describe "config" do
-    before(:each) { run("./bin/calendar-assistant config --formatting=false") }
+    before(:each) { run_command("./bin/calendar-assistant config --formatting=false") }
     before(:each) { stop_all_commands }
 
     it { is_expected.to be_successfully_executed }
@@ -28,7 +28,7 @@ RSpec.describe 'utility features', :type => :aruba do
   end
 
   describe "version" do
-    before(:each) { run("./bin/calendar-assistant version --formatting=false") }
+    before(:each) { run_command("./bin/calendar-assistant version --formatting=false") }
     before(:each) { stop_all_commands }
 
     it { is_expected.to be_successfully_executed }
@@ -39,24 +39,24 @@ RSpec.describe 'utility features', :type => :aruba do
   end
 
   describe "authorize" do
-    before(:each) { run("./bin/calendar-assistant authorize --formatting=false") }
+    before(:each) { run_command("./bin/calendar-assistant authorize --formatting=false") }
     before(:each) { stop_all_commands }
 
     it { is_expected.to be_successfully_executed }
 
     it "prints authorize help" do
-      expect(subject.output).to match /^Usage:\n  calendar-assistant authorize PROFILE_NAME/
+      expect(subject.output).to match(/^Usage:\n  calendar-assistant authorize PROFILE_NAME/)
     end
   end
 
   describe "help" do
-    before(:each) { run("./bin/calendar-assistant help --formatting=false") }
+    before(:each) { run_command("./bin/calendar-assistant help --formatting=false") }
     before(:each) { stop_all_commands }
 
     it { is_expected.to be_successfully_executed }
 
     it "prints help" do
-      expect(subject.output).to match /^Commands:\n  calendar-assistant authorize/
+      expect(subject.output).to match(/^Commands:\n  calendar-assistant authorize/)
     end
   end
 
