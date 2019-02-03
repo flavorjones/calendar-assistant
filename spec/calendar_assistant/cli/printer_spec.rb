@@ -1,3 +1,4 @@
+# coding: utf-8
 describe CalendarAssistant::CLI::Printer do
   let(:stdout) { StringIO.new }
   let(:ca) { instance_double("CalendarAssistant") }
@@ -15,6 +16,16 @@ describe CalendarAssistant::CLI::Printer do
     it "calls Launchy.open with the url" do
       expect(Launchy).to receive(:open).with(url)
       subject.launch(url)
+    end
+
+    context "Launchy raises an exception" do
+      let(:url) { "notarealprotocol:///foo/bar" }
+
+      it "ensures a CalendarAssistant::BaseException descendant is raised" do
+        expect {
+          subject.launch(url)
+        }.to raise_error(CalendarAssistant::BaseException, /No application found/)
+      end
     end
   end
 

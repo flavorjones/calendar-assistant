@@ -13,7 +13,7 @@ autoload :BusinessTime, "business_time"
 autoload :Chronic, "chronic"
 autoload :ChronicDuration, "chronic_duration"
 autoload :Google, "calendar_assistant/extensions/google_apis_extensions"
-autoload :Launchy, "launchy"
+autoload :Launchy, "calendar_assistant/extensions/launchy_extensions"
 autoload :TOML, "toml"
 autoload :Thor, "thor"
 require "calendar_assistant/extensions/rainbow_extensions" # Rainbow() doesn't trigger autoload
