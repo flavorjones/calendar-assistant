@@ -1,5 +1,8 @@
 class CalendarAssistant
   class EventRepository
+    class CalendarNotFoundException < CalendarAssistant::BaseException;
+    end
+
     attr_reader :calendar, :calendar_id, :config
 
     def initialize(service, calendar_id, config: CalendarAssistant::Config.new)
@@ -8,7 +11,7 @@ class CalendarAssistant
       @calendar_id = calendar_id
       @calendar = @service.get_calendar @calendar_id
     rescue Google::Apis::ClientError => e
-      raise BaseException, "Calendar for #{@calendar_id} not found" if e.status_code == 404
+      raise CalendarNotFoundException, "Calendar for #{@calendar_id} not found" if e.status_code == 404
       raise
     end
 
