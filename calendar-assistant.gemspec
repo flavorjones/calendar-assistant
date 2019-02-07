@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "thor", "~> 0.20.0"
   spec.add_dependency "toml", "~> 0.2.0"
 
-  spec.add_development_dependency "aruba", "~> 0.14"
+  spec.add_development_dependency "aruba", "~> 0.14.8"
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "concourse"
   spec.add_development_dependency "faker", "~> 1.9"
