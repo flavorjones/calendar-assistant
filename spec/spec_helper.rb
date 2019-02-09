@@ -7,6 +7,7 @@ end
 require_relative "../lib/calendar_assistant"
 require_relative "./helpers/event_factory"
 require_relative "./shared_examples/a_configuration_class"
+require_relative "./shared_examples/an_object_that_has_duration"
 
 require "timecop"
 require "securerandom"

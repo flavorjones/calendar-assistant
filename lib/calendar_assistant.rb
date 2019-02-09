@@ -29,6 +29,7 @@ class CalendarAssistant
   autoload :Config,                  "calendar_assistant/config"
   autoload :StringHelpers,           "calendar_assistant/string_helpers"
   autoload :DateHelpers,             "calendar_assistant/date_helpers"
+  autoload :HasDuration,             "calendar_assistant/has_duration"
   autoload :Event,                   "calendar_assistant/event"
   autoload :EventRepository,         "calendar_assistant/event_repository"
   autoload :EventRepositoryFactory,  "calendar_assistant/event_repository_factory"
