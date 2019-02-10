@@ -88,14 +88,14 @@ class CalendarAssistant
               next if Time.after_business_hours?(e.start_time.to_time)
 
               if HasDuration.duration_in_seconds(start_time, e.start_time) >= length
-                avail_time[date] << event_repository.available_block(start_time, e.start_time)
+                avail_time[date] << AvailableBlock.new(start: start_time, end: e.start_time)
               end
               start_time = [e.end_time, start_time].max
               break if ! start_time.during_business_hours?
             end
 
             if HasDuration.duration_in_seconds(start_time, end_time) >= length
-              avail_time[date] << event_repository.available_block(start_time, end_time)
+              avail_time[date] << AvailableBlock.new(start: start_time, end: end_time)
             end
 
             avail_time
@@ -118,7 +118,7 @@ class CalendarAssistant
                 start_time = [event_a.start_time, event_b.start_time].max
                 end_time   = [event_a.end_time,   event_b.end_time  ].min
                 if HasDuration.duration_in_seconds(start_time, end_time) >= length
-                  set.events[date] << event_repository.available_block(start_time, end_time)
+                  set.events[date] << AvailableBlock.new(start: start_time, end: end_time)
                 end
               end
             end

@@ -2,6 +2,12 @@ class CalendarAssistant
   module HasDuration
     def self.duration_in_seconds start_time, end_time
       (end_time.to_datetime - start_time.to_datetime).days.to_i
+
+    end
+
+    def self.cast_datetime(datetime, time_zone = Time.zone.name)
+        return datetime if datetime.is_a?(Google::Apis::CalendarV3::EventDateTime)
+        Google::Apis::CalendarV3::EventDateTime.new(date_time: datetime.in_time_zone(time_zone).to_datetime)
     end
 
     def all_day?

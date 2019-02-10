@@ -10,5 +10,27 @@ describe CalendarAssistant::HasDuration do
         it { expect(described_class.duration_in_seconds(Time.now, Time.now + 1)).to eq(1) }
       end
     end
+
+    describe ".cast_datetime" do
+      context "given DateTime" do
+        freeze_time
+
+        it "returns an event with DateTime objects in the right time zone" do
+          event = described_class.cast_datetime(DateTime.now, "America/New_York")
+          expect(event.date_time).to be_a(DateTime)
+          expect(event.date_time.strftime("%Z")).to eq("-04:00")
+        end
+      end
+
+      context "given Time" do
+        freeze_time
+
+        it "returns an event with DateTime objects in the right time zone" do
+          event = described_class.cast_datetime(Time.now, "America/New_York")
+          expect(event.date_time).to be_a(DateTime)
+          expect(event.date_time.strftime("%Z")).to eq("-04:00")
+        end
+      end
+    end
   end
 end
