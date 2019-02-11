@@ -1,6 +1,9 @@
 FROM ruby:latest
 LABEL maintainer=mike.dalessio@gmail.com
 
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
+RUN apt-get install -y nodejs
+
 COPY Gemfile                           calendar-assistant/
 COPY Gemfile.lock                      calendar-assistant/
 COPY calendar-assistant.gemspec        calendar-assistant/
