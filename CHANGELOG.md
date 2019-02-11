@@ -1,10 +1,11 @@
 # Changelog for Calendar Assistant
 
-## unreleased
+## v0.9.0 / 2019-02-11
 
 Features:
 
 - Support multiple calendars `--calendars` to manage location events on multiple calendars. [#63]
+- Emit human-readable error message when location config is invalid. [#95]
 - Zoom meetings will be launched with the `zoom` cli instead of the browser. [#91]
 
 
