@@ -166,39 +166,4 @@ describe CalendarAssistant::EventRepository do
       event_repository.in_tz do ; end
     end
   end
-
-  describe "#available_block" do
-    before do
-      allow(calendar).to receive(:time_zone).and_return("America/New_York")
-    end
-
-    it "returns a CalendarAssistant::Event" do
-      event = event_repository.available_block(Time.now, Time.now)
-      expect(event).to be_a(CalendarAssistant::Event)
-    end
-
-    context "given DateTime" do
-      freeze_time
-
-      it "returns an event with DateTime objects in the right time zone" do
-        event = event_repository.available_block(DateTime.now, DateTime.now)
-        expect(event.start.date_time).to be_a(DateTime)
-        expect(event.end.date_time).to be_a(DateTime)
-        expect(event.start.date_time.strftime("%Z")).to eq("-04:00")
-        expect(event.end.date_time.strftime("%Z")).to eq("-04:00")
-      end
-    end
-
-    context "given Time" do
-      freeze_time
-
-      it "returns an event with DateTime objects in the right time zone" do
-        event = event_repository.available_block(Time.now, Time.now)
-        expect(event.start.date_time).to be_a(DateTime)
-        expect(event.end.date_time).to be_a(DateTime)
-        expect(event.start.date_time.strftime("%Z")).to eq("-04:00")
-        expect(event.end.date_time.strftime("%Z")).to eq("-04:00")
-      end
-    end
-  end
 end

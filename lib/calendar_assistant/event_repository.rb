@@ -58,15 +58,6 @@ class CalendarAssistant
       CalendarAssistant::Event.new(updated_event, config: config)
     end
 
-    def available_block start_time, end_time
-      e = Google::Apis::CalendarV3::Event.new(
-        start: Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time.in_time_zone(calendar.time_zone).to_datetime),
-        end: Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time.in_time_zone(calendar.time_zone).to_datetime),
-        summary: "available"
-      )
-      CalendarAssistant::Event.new e, config: config
-    end
-
     private
 
     def filter_by_predicates(events, predicates)
