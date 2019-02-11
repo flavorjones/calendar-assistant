@@ -2,12 +2,13 @@
 require "rspec/core/rake_task"
 require "concourse"
 require "license_finder"
+require "tempfile"
+require "rainbow"
 
 #
 #  concourse
 #
 Concourse.new("calendar-assistant", fly_target: "calendar-assistants").create_tasks!
-
 
 #
 #  spec tasks
@@ -17,26 +18,38 @@ RSpec::Core::RakeTask.new("spec")
 task "test" => "spec" # undocumented alias for 'spec'
 
 desc "Run unit specs"
-RSpec::Core::RakeTask.new("spec:unit")  do |t|
+RSpec::Core::RakeTask.new("spec:unit") do |t|
   t.rspec_opts ||= []
   t.rspec_opts << " --tag=~type:aruba"
 end
 
 desc "Run feature specs"
-RSpec::Core::RakeTask.new("spec:feature")  do |t|
+RSpec::Core::RakeTask.new("spec:feature") do |t|
   t.rspec_opts ||= []
   t.rspec_opts << " --tag=type:aruba"
 end
 
-desc "Ensure all dependencies meet license requirements."
+desc "Ensure all dependencies meet license requirements"
 task "license_finder" do
   LicenseFinder::CLI::Main.start(["report"])
   LicenseFinder::CLI::Main.start([])
 end
 
-desc "Run unit specs, feature specs, and license finder"
-task "default" => ["spec", "license_finder"]
+#
+#  readme tasks
+#
+desc "Generate the README.md from its erb template"
+task "readme" do
+  sh "./generate-readme"
+end
 
+desc "Generate the README.md from its erb template"
+task "readme:check" do
+  file = Tempfile.new("readme").path
+  sh "./generate-readme #{file}"
+  sh "diff -C3 #{file} README.md"
+  puts Rainbow("README.md looks good").green
+end
 
 #
 # docker docker docker
@@ -53,3 +66,9 @@ end
 
 desc "Build and push a docker image for testing"
 task "docker" => ["docker:build", "docker:push"]
+
+#
+#  default
+#
+desc "Run unit specs, feature specs, license finder, and check the README"
+task "default" => ["spec", "license_finder", "readme:check"]
