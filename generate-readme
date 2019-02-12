@@ -1,17 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
+
+FILENAME=${1:-README.md}
 
 modules="ansi-to-html markdown-toc"
 
 for module in $modules ; do
-  if [[ ! -e node_modules/.bin/$module ]] ; then
+  if ! which $module ; then
     echo "NOTICE: installing npm module $module ..."
-    npm install $module
+    npm install --global $module
   fi
 done
 
-echo "Generating updated README.md..."
-export THOR_COLUMNS=100
-erb README.md.erb > README.md
-node_modules/.bin/markdown-toc README.md -i --maxdepth 3
+echo "Generating content into ${FILENAME} ..."
+export THOR_COLUMNS=120
+erb README.md.erb > $FILENAME
+markdown-toc $FILENAME -i --maxdepth 3

@@ -5,6 +5,9 @@ $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 require 'calendar_assistant'
 
+ENV["HOME"] = Dir.pwd
+Encoding.default_external = Encoding::UTF_8
+
 def print_predicates
   CalendarAssistant::Event::PREDICATES.each_with_object([]) do |(key,values), out|
     out << "* **#{key.capitalize}**"
@@ -33,7 +36,7 @@ def run args
   env = "env"
   env += " CA_HOME=#{Dir.pwd}"
 
-  output += `#{env} ruby -Ilib bin/calendar-assistant #{args} | node_modules/.bin/ansi-to-html`.split("\n")
+  output += `#{env} ruby -Ilib bin/calendar-assistant #{args} | ansi-to-html`.split("\n")
 
   output.map {|line| obfuscate line }.join("\n")
 end
