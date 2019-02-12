@@ -10,7 +10,7 @@ pushd calendar-assistant
 
   code-climate-setup
 
-  bundle install --without=optional
+  bundle install --local --without=optional || bundle install --without=optional
   bundle exec rake
 
   code-climate-shipit
