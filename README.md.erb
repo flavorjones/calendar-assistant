@@ -33,7 +33,7 @@ def run args
   env = "env"
   env += " CA_HOME=#{Dir.pwd}"
 
-  output += `#{env} ruby -Ilib bin/calendar-assistant #{args} | node_modules/.bin/ansi-to-html`.split("\n")
+  output += `#{env} ruby -Ilib bin/calendar-assistant #{args} | ansi-to-html`.split("\n")
 
   output.map {|line| obfuscate line }.join("\n")
 end

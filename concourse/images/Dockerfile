@@ -3,6 +3,7 @@ LABEL maintainer=mike.dalessio@gmail.com
 
 RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
 RUN apt-get install -y nodejs
+RUN npm install --global ansi-to-html markdown-toc
 
 COPY Gemfile                           calendar-assistant/
 COPY Gemfile.lock                      calendar-assistant/
