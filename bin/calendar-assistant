@@ -1,9 +1,10 @@
 #! /usr/bin/env ruby
-libdir = File.join( File.dirname(__FILE__), "..", "lib")
+libdir = File.join(File.dirname(__FILE__), "..", "lib")
 $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 require "calendar_assistant"
 
+Encoding.default_internal = Encoding::UTF_8
 Rainbow.enabled = true
 
 begin

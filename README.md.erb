@@ -5,6 +5,9 @@ $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 require 'calendar_assistant'
 
+ENV["HOME"] = Dir.pwd
+Encoding.default_external = Encoding::UTF_8
+
 def print_predicates
   CalendarAssistant::Event::PREDICATES.each_with_object([]) do |(key,values), out|
     out << "* **#{key.capitalize}**"
