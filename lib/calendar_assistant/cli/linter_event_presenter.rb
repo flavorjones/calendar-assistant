@@ -12,12 +12,12 @@ class CalendarAssistant
         s += rainbow.wrap(sprintf(" | %s", view_summary)).bold
         s += event_attributes unless private?
         s = rainbow.wrap(Rainbow.uncolor(s)).faint.strike if declined?
-        s += "\n #{' ' * (date_length + 2)}attendees: #{attendees}"
+        s += "\n #{" " * (date_length + 2)}attendees: #{attendees}"
         s
       end
 
       def attendees
-        if required_other_attendees .length > SUMMARY_THRESHOLD
+        if required_other_attendees.length > SUMMARY_THRESHOLD
           summary_attendee_list
         else
           detailed_attendee_list
@@ -43,7 +43,7 @@ class CalendarAssistant
       end
 
       def required_other_attendees
-        @required_other_attendees ||= (other_human_attendees || []).select {|a| !a.optional }
+        @required_other_attendees ||= (other_human_attendees || []).select { |a| !a.optional }
       end
 
       def response_emoji(response_status)

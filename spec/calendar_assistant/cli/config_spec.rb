@@ -1,4 +1,4 @@
-require 'toml'
+require "toml"
 
 describe CalendarAssistant::CLI::Config do
   with_temp_config_file

@@ -14,7 +14,7 @@ class CalendarAssistant
   class ZoomLaunchy < Launchy::Application::Browser
     ZOOM_URI_REGEXP = %r(https?://\w+.zoom.us/j/(\d+))
 
-    def self.handles? uri
+    def self.handles?(uri)
       return true if ZOOM_URI_REGEXP.match(uri)
     end
 
@@ -26,7 +26,7 @@ class CalendarAssistant
       [find_executable("xdg-open")]
     end
 
-    def open uri, options={}
+    def open(uri, options = {})
       command = host_os_family.app_list(self).compact.first
       if command.nil?
         super uri, options

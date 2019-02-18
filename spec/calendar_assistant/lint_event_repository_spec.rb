@@ -1,5 +1,5 @@
 describe CalendarAssistant::LintEventRepository do
-  def expect_event_equalish e1, e2
+  def expect_event_equalish(e1, e2)
     expect(e1.summary).to eq(e2.summary)
     expect(e1.start_time).to eq(e2.start_time)
     expect(e1.end_time).to eq(e2.end_time)
@@ -40,14 +40,14 @@ describe CalendarAssistant::LintEventRepository do
 
       it "filters out non-lint events and applies other predicates" do
         time = Time.now.beginning_of_day..(Time.now + 1.day).end_of_day
-        result = lint_event_repository.find(time, predicates: { recurring?: false} )
+        result = lint_event_repository.find(time, predicates: { recurring?: false })
         expect(result.events.count).to eq 1
         expect_event_equalish(result.events.first, needs_action)
       end
       context "and one of those precicates is asking for needs_action to be false" do
         it "still filters out non-lint events and applies other predicates" do
           time = Time.now.beginning_of_day..(Time.now + 1.day).end_of_day
-          result = lint_event_repository.find(time, predicates: { needs_action?: false, recurring?: false} )
+          result = lint_event_repository.find(time, predicates: { needs_action?: false, recurring?: false })
           expect(result.events.count).to eq 1
           expect_event_equalish(result.events.first, needs_action)
         end

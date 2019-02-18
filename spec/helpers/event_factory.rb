@@ -1,7 +1,8 @@
-require 'securerandom'
+require "securerandom"
+
 class EventFactory
-  def initialize service: CalendarAssistant::LocalService.new,
-                 calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID
+  def initialize(service: CalendarAssistant::LocalService.new,
+                 calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID)
     begin
       service.get_calendar(calendar_id)
     rescue
@@ -17,8 +18,8 @@ class EventFactory
 
     if args.is_a?(Hash)
       return args.each_with_object({}) do |(key, values), hsh|
-        hsh[key] = self.create_list(**default_attributes, &->() { values })
-      end
+               hsh[key] = self.create_list(**default_attributes, &-> () { values })
+             end
     end
 
     wrap(args).map do |event_attributes|
@@ -29,7 +30,6 @@ class EventFactory
 
   def create(date: Time.now, event_attributes:, self_attendee: new_self_attendee)
     set_chronic_tz do
-
       now = date.is_a?(String) ? Chronic.parse(date) : date
 
       attrs = event_attributes.dup
@@ -45,8 +45,8 @@ class EventFactory
 
       if (options & [:self, :one_on_one, :location_event]).empty?
         attrs[:attendees] += [
-            Google::Apis::CalendarV3::EventAttendee.new(id: 3, email: "three@example.com", response_status: CalendarAssistant::Event::Response::ACCEPTED),
-            Google::Apis::CalendarV3::EventAttendee.new(id: 4, email: "four@example.com")
+          Google::Apis::CalendarV3::EventAttendee.new(id: 3, email: "three@example.com", response_status: CalendarAssistant::Event::Response::ACCEPTED),
+          Google::Apis::CalendarV3::EventAttendee.new(id: 4, email: "four@example.com"),
         ]
       end
 
@@ -85,7 +85,7 @@ class EventFactory
     when :busy
       attrs[:transparency] = CalendarAssistant::Event::Transparency::OPAQUE
     when :location_event
-      attrs[:summary] = "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]} #{ attrs[:summary] || "Zanzibar" }"
+      attrs[:summary] = "#{CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]} #{attrs[:summary] || "Zanzibar"}"
       new_dates = CalendarAssistant.date_range_cast(attrs[:start]..attrs[:end])
       set_option(attrs, self_attendee, :free)
       attrs[:start] = new_dates.first
@@ -121,7 +121,7 @@ class EventFactory
 
   def call_values(attributes)
     attributes
-        .each_with_object({}) do |(key, value), hsh|
+      .each_with_object({}) do |(key, value), hsh|
       hsh[key] = value.respond_to?(:call) ? value.call : value
     end
   end

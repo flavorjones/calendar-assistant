@@ -4,7 +4,6 @@ describe CalendarAssistant::CLI::LinterEventPresenter do
   subject { described_class.new decorated_object }
 
   describe "attendees" do
-
     let(:attendee_self) do
       GCal::EventAttendee.new display_name: "Attendee Self",
                               email: "attendee-self@example.com",
@@ -103,4 +102,3 @@ describe CalendarAssistant::CLI::LinterEventPresenter do
     end
   end
 end
-

@@ -1,7 +1,6 @@
-require 'date'
+require "date"
 
 describe CalendarAssistant::EventRepository do
-
   let(:service) { CalendarAssistant::LocalService.new }
 
   let(:event_repository) { described_class.new(service, calendar_id) }
@@ -44,7 +43,7 @@ describe CalendarAssistant::EventRepository do
         let(:status_code) { 404 }
         it "raises a CalendarAssistant::BaseException" do
           expect(service).to receive(:get_calendar).with(calendar_id).and_raise(exception)
-          expect {described_class.new(service, calendar_id)}.to raise_error(CalendarAssistant::BaseException)
+          expect { described_class.new(service, calendar_id) }.to raise_error(CalendarAssistant::BaseException)
         end
       end
 
@@ -52,7 +51,7 @@ describe CalendarAssistant::EventRepository do
         let(:status_code) { 401 }
         it "raises the original ClientError" do
           expect(service).to receive(:get_calendar).with(calendar_id).and_raise(exception)
-          expect {described_class.new(service, calendar_id)}.to raise_error(exception)
+          expect { described_class.new(service, calendar_id) }.to raise_error(exception)
         end
       end
     end
@@ -114,17 +113,17 @@ describe CalendarAssistant::EventRepository do
 
       before do
         allow(nine_event).to receive(:locked?).and_return(false)
-        allow(nine_thirty_event).to receive(:locked?).and_return(true )
+        allow(nine_thirty_event).to receive(:locked?).and_return(true)
         allow(other_event).to receive(:locked?).and_return(true)
 
         allow(nine_event).to receive(:guests_can_modify?).and_return(false)
-        allow(nine_thirty_event).to receive(:guests_can_modify?).and_return(false )
+        allow(nine_thirty_event).to receive(:guests_can_modify?).and_return(false)
         allow(other_event).to receive(:guests_can_modify?).and_return(true)
       end
 
       context "and the predicate is not valid" do
-        it 'raises an error' do
-          expect { event_repository.find time_range, predicates: {malicious?: true, object_id: "1"} }.to raise_error(CalendarAssistant::BaseException)
+        it "raises an error" do
+          expect { event_repository.find time_range, predicates: { malicious?: true, object_id: "1" } }.to raise_error(CalendarAssistant::BaseException)
         end
       end
 
@@ -148,7 +147,7 @@ describe CalendarAssistant::EventRepository do
     let(:time_range) { Time.parse("2018-10-18 08:00")..Time.parse("2018-10-18 09:15") }
 
     it "casts dates to GCal::EventDateTime and updates the event" do
-      new_attributes = {start: DateTime.parse("1776-07-04")}
+      new_attributes = { start: DateTime.parse("1776-07-04") }
       event_repository.update(nine_event, new_attributes)
 
       result = event_repository.find time_range
@@ -163,7 +162,7 @@ describe CalendarAssistant::EventRepository do
 
     it "calls CalendarAssistant.in_tz with the calendar's time zone" do
       expect(CalendarAssistant).to receive(:in_tz).with("a time zone id")
-      event_repository.in_tz do ; end
+      event_repository.in_tz do; end
     end
   end
 end

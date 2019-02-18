@@ -68,6 +68,14 @@ desc "Build and push a docker image for testing"
 task "docker" => ["docker:build", "docker:push"]
 
 #
+#  formatting
+#
+desc "Format ruby code"
+task "format" do
+  sh "rufo lib spec", verbose: true
+end
+
+#
 #  default
 #
 desc "Run unit specs, feature specs, license finder, and check the README"

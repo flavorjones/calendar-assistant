@@ -21,7 +21,7 @@ class Google::Apis::CalendarV3::EventDateTime
     date_time.strftime "%Y-%m-%d %H:%M"
   end
 
-  def == rhs
+  def ==(rhs)
     if date
       return to_date == rhs.to_date
     end

@@ -1,7 +1,7 @@
 # coding: utf-8
-require 'spec_helper'
+require "spec_helper"
 
-RSpec.describe 'location', :type => :aruba do
+RSpec.describe "location", :type => :aruba do
   with_temp_calendar_assistant_home
   with_temp_file("fixtures.yml")
   let(:filename) { temp_file.path }
@@ -9,13 +9,13 @@ RSpec.describe 'location', :type => :aruba do
   before(:each) do
     event_list_factory(file: filename, calendar_id: CalendarAssistant::Config::DEFAULT_CALENDAR_ID, time_zone: "Pacific/Fiji") do
       [
-        {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted},
+        { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted },
       ]
     end
 
     event_list_factory(file: filename, load_events: true, calendar_id: "other_calendar@example.com", time_zone: "Pacific/Fiji") do
       [
-        {start: "2018-02-01 9am", end: "2018-02-01 10am", summary: "accepted", options: :accepted},
+        { start: "2018-02-01 9am", end: "2018-02-01 10am", summary: "accepted", options: :accepted },
       ]
     end
   end
@@ -24,20 +24,21 @@ RSpec.describe 'location', :type => :aruba do
     run_command("./bin/calendar-assistant location 2018-01-01 --formatting=false --local-store=#{filename}")
     stop_all_commands
     expect(last_command_stopped).to be_successfully_executed
-    expect(last_command_stopped.output).to eq (<<~OUT)
-    primary (all times in Pacific/Fiji)
+    expected = <<~OUT
+      primary (all times in Pacific/Fiji)
 
-    No events in this time range.
+      No events in this time range.
 
     OUT
+    expect(last_command_stopped.output).to eq(expected)
 
     run_command("./bin/calendar-assistant location-set Zanzibar 2018-01-01 --force --calendars=other_calendar@example.com --visibility=public --formatting=false --local-store=#{filename}")
     stop_all_commands
 
     expect(last_command_stopped).to be_successfully_executed
-    expect(last_command_stopped.output).to eq (<<~OUT)
+    expected = <<~OUT
       primary (all times in Pacific/Fiji)
-      
+
       Other_calendar@example.com:
       Created:
       2018-01-01                | 🌎 Zanzibar (not-busy, public, self)
@@ -46,15 +47,17 @@ RSpec.describe 'location', :type => :aruba do
       2018-01-01                | 🌎 Zanzibar (not-busy, public, self)
 
     OUT
+    expect(last_command_stopped.output).to eq(expected)
     run_command("./bin/calendar-assistant location 2018-01-01 --formatting=false --local-store=#{filename}")
     stop_all_commands
 
     expect(last_command_stopped).to be_successfully_executed
-    expect(last_command_stopped.output).to eq (<<~OUT)
-    primary (all times in Pacific/Fiji)
+    expected = <<~OUT
+      primary (all times in Pacific/Fiji)
 
-    2018-01-01                | 🌎 Zanzibar (not-busy, public, self)
+      2018-01-01                | 🌎 Zanzibar (not-busy, public, self)
 
     OUT
+    expect(last_command_stopped.output).to eq(expected)
   end
 end

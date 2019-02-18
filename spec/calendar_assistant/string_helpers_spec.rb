@@ -6,7 +6,6 @@ describe CalendarAssistant::StringHelpers do
       end
     end
 
-
     context "text does not contain a URI for the domain" do
       it "returns nil" do
         expect(subject.find_uri_for_domain("This\ncontains https://docs.ruby-lang.org/foo which doesn't match", "example.com")).to be_nil

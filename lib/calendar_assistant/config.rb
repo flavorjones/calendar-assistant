@@ -3,9 +3,10 @@ class CalendarAssistant
   class Config
     autoload :TokenStore, "calendar_assistant/config/token_store"
 
-    class NoTokensAuthorized < CalendarAssistant::BaseException;
+    class NoTokensAuthorized < CalendarAssistant::BaseException
     end
-    class AccessingHashAsScalar < CalendarAssistant::BaseException;
+
+    class AccessingHashAsScalar < CalendarAssistant::BaseException
     end
 
     module Keys
@@ -57,16 +58,15 @@ class CalendarAssistant
 
     attr_reader :user_config, :options, :defaults
 
-    def initialize options: {},
+    def initialize(options: {},
                    user_config: {},
-                   defaults: DEFAULT_SETTINGS
-
+                   defaults: DEFAULT_SETTINGS)
       @defaults = defaults
       @options = options
       @user_config = user_config
     end
 
-    def in_env &block
+    def in_env(&block)
       # this is totally not thread-safe
       orig_b_o_d = BusinessTime::Config.beginning_of_workday
       orig_e_o_d = BusinessTime::Config.end_of_workday
@@ -98,7 +98,7 @@ class CalendarAssistant
       end
     end
 
-    def get keypath
+    def get(keypath)
       rval = Config.find_in_hash(user_config, keypath)
 
       if rval.is_a?(Hash)
@@ -108,7 +108,7 @@ class CalendarAssistant
       rval
     end
 
-    def set keypath, value
+    def set(keypath, value)
       Config.set_in_hash user_config, keypath, value
     end
 
@@ -116,7 +116,7 @@ class CalendarAssistant
     #  note that, despite the name, this method returns both options
     #  and settings
     #
-    def setting setting_name
+    def setting(setting_name)
       context = Config.find_in_hash(options, Keys::Options::CONTEXT)
       Config.find_in_hash(options, setting_name) ||
         Config.find_in_hash(user_config, [Keys::SETTINGS, context, setting_name]) ||
@@ -190,14 +190,14 @@ class CalendarAssistant
       a
     end
 
-    def self.find_in_hash hash, keypath
+    def self.find_in_hash(hash, keypath)
       split_keypath(keypath).inject(hash) do |current_val, key|
         break unless current_val.has_key?(key)
         current_val[key]
       end
     end
 
-    def self.set_in_hash hash, keypath, new_value
+    def self.set_in_hash(hash, keypath, new_value)
       *path_parts, key = *split_keypath(keypath)
 
       current_hash = path_parts.inject(hash) do |current_val, path|

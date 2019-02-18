@@ -39,7 +39,7 @@ describe CalendarAssistant::CLI::Helpers do
 
       context "passed a date range" do
         it "returns a range for all of the days in the date range" do
-          expect(subject.parse_datespec("today..tomorrow")).to eq(Time.now.beginning_of_day..(Time.now+1.day).end_of_day)
+          expect(subject.parse_datespec("today..tomorrow")).to eq(Time.now.beginning_of_day..(Time.now + 1.day).end_of_day)
         end
       end
 
@@ -67,7 +67,7 @@ describe CalendarAssistant::CLI::Helpers do
       freeze_time
 
       it "searches in a narrow range around the specified time" do
-        range = Time.now..(Time.now+5.minutes)
+        range = Time.now..(Time.now + 5.minutes)
         expect(ca).to receive(:find_events).with(range).and_return(event_set)
 
         subject.find_av_uri(ca, "now")

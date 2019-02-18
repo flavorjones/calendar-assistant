@@ -2,16 +2,15 @@
 class CalendarAssistant
   module CLI
     class Printer
-      class LaunchUrlException < CalendarAssistant::BaseException ; end
-
+      class LaunchUrlException < CalendarAssistant::BaseException; end
 
       attr_reader :io
 
-      def initialize io = STDOUT
+      def initialize(io = STDOUT)
         @io = io
       end
 
-      def launch url
+      def launch(url)
         begin
           Launchy.open(url)
         rescue Exception => e
@@ -19,11 +18,11 @@ class CalendarAssistant
         end
       end
 
-      def puts *args
+      def puts(*args)
         io.puts(*args)
       end
 
-      def prompt query, default = nil
+      def prompt(query, default = nil)
         loop do
           message = query
           message += " [#{default}]" if default
@@ -39,27 +38,28 @@ class CalendarAssistant
         end
       end
 
-      def print_events ca, event_set, presenter_class: CLI::EventSetPresenter
+      def print_events(ca, event_set, presenter_class: CLI::EventSetPresenter)
         puts presenter_class.new(event_set, config: ca.config).to_s
         puts
       end
 
-      def print_available_blocks ca, event_set, omit_title: false
-        ers = ca.config.calendar_ids.map {|calendar_id| ca.event_repository calendar_id}
-        time_zones = ers.map {|er| er.calendar.time_zone}.uniq
+      def print_available_blocks(ca, event_set, omit_title: false)
+        ers = ca.config.calendar_ids.map { |calendar_id| ca.event_repository calendar_id }
+        time_zones = ers.map { |er| er.calendar.time_zone }.uniq
 
         unless omit_title
-          puts Rainbow(ers.map {|er| er.calendar.id}.join(", ")).italic
+          puts Rainbow(ers.map { |er| er.calendar.id }.join(", ")).italic
           puts Rainbow(sprintf("- looking for blocks at least %s long",
                                ChronicDuration.output(
-                                   ChronicDuration.parse(
-                                       ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))))).italic
+                 ChronicDuration.parse(
+                   ca.config.setting(Config::Keys::Settings::MEETING_LENGTH)
+                 )
+               ))).italic
           time_zones.each do |time_zone|
             puts Rainbow(sprintf("- between %s and %s in %s",
                                  ca.config.setting(Config::Keys::Settings::START_OF_DAY),
                                  ca.config.setting(Config::Keys::Settings::END_OF_DAY),
-                                 time_zone,
-                         )).italic
+                                 time_zone)).italic
           end
           puts
         end

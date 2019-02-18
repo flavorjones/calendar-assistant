@@ -1,6 +1,6 @@
 describe CalendarAssistant::PredicateCollection do
   let(:true_predicates) { [:one, "two"] }
-  let(:false_predicates){ [:three, :four] }
+  let(:false_predicates) { [:three, :four] }
 
   it "adds predicates that are true and false, and makes em look like predicate methods" do
     result = described_class.build(true_predicates, false_predicates)

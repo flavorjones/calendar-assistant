@@ -1,12 +1,12 @@
 shared_examples_for "a configuration class" do
-  let(:user_config) { { } }
+  let(:user_config) { {} }
 
   describe "#in_env" do
     subject { described_class.new options: config_options }
     let(:config_options) do
       {
-          described_class::Keys::Settings::START_OF_DAY => "7am",
-          described_class::Keys::Settings::END_OF_DAY => "3pm",
+        described_class::Keys::Settings::START_OF_DAY => "7am",
+        described_class::Keys::Settings::END_OF_DAY => "3pm",
       }
     end
 
@@ -48,10 +48,10 @@ shared_examples_for "a configuration class" do
       context "a token exists" do
         let(:user_config) do
           {
-              "tokens" => {
-                  "arbeit" => "fake-token-1",
-                  "play" => "fake-token-2",
-              }
+            "tokens" => {
+              "arbeit" => "fake-token-1",
+              "play" => "fake-token-2",
+            },
           }
         end
 
@@ -71,13 +71,13 @@ shared_examples_for "a configuration class" do
     context "a default profile name is configured" do
       let(:user_config) do
         {
-            "tokens" => {
-                "arbeit" => "fake-token-1",
-                "play" => "fake-token-2"
-            },
-            "settings" => {
-                "profile" => "other"
-            }
+          "tokens" => {
+            "arbeit" => "fake-token-1",
+            "play" => "fake-token-2",
+          },
+          "settings" => {
+            "profile" => "other",
+          },
         }
       end
 
@@ -86,7 +86,7 @@ shared_examples_for "a configuration class" do
       end
 
       context "a profile is specified via options" do
-        let(:options) { {"profile" => "home"} }
+        let(:options) { { "profile" => "home" } }
 
         it "returns the profile specified in the options" do
           expect(subject.profile_name).to eq("home")
@@ -98,12 +98,12 @@ shared_examples_for "a configuration class" do
   describe "#get" do
     let(:user_config) do
       {
-          "size" => "medium",
+        "size" => "medium",
 
-          "things" => {
-              "thing2" => "bar",
-              "thing1" => "foo"
-          }
+        "things" => {
+          "thing2" => "bar",
+          "thing1" => "foo",
+        },
       }
     end
 
@@ -126,7 +126,7 @@ shared_examples_for "a configuration class" do
       context "the value is a Hash" do
         it "raises an exception" do
           expect { subject.get("things") }.
-              to raise_exception(described_class::AccessingHashAsScalar)
+            to raise_exception(described_class::AccessingHashAsScalar)
         end
       end
     end
@@ -142,12 +142,12 @@ shared_examples_for "a configuration class" do
   describe "#set" do
     let(:user_config) do
       {
-          "size" => "medium",
+        "size" => "medium",
 
-          "things" => {
-              "thing1" => "foo",
-              "thing2" => "bar"
-          }
+        "things" => {
+          "thing1" => "foo",
+          "thing2" => "bar",
+        },
       }
     end
 
@@ -222,34 +222,33 @@ shared_examples_for "a configuration class" do
     describe "#setting" do
       let(:user_config) do
         {
-            "settings" =>
-                {
-                    "only-in-user-config" => "user-config",
-                    "in-user-config-and-defaults" => "user-config",
-                    "in-user-config-and-options" => "user-config",
-                    "everywhere" => "user-config",
-                    "command" => {
-                      "only-in-user-config" => "command-specific-value"
-                    }
-                }
+          "settings" => {
+            "only-in-user-config" => "user-config",
+            "in-user-config-and-defaults" => "user-config",
+            "in-user-config-and-options" => "user-config",
+            "everywhere" => "user-config",
+            "command" => {
+              "only-in-user-config" => "command-specific-value",
+            },
+          },
         }
       end
 
       let(:defaults) do
         {
-            "only-in-defaults" => "defaults",
-            "in-user-config-and-defaults" => "defaults",
-            "in-defaults-and-options" => "defaults",
-            "everywhere" => "defaults",
+          "only-in-defaults" => "defaults",
+          "in-user-config-and-defaults" => "defaults",
+          "in-defaults-and-options" => "defaults",
+          "everywhere" => "defaults",
         }
       end
 
       let(:options) do
         {
-            "only-in-options" => "options",
-            "in-user-config-and-options" => "options",
-            "in-defaults-and-options" => "options",
-            "everywhere" => "options",
+          "only-in-options" => "options",
+          "in-user-config-and-options" => "options",
+          "in-defaults-and-options" => "options",
+          "everywhere" => "options",
         }
       end
 
@@ -272,7 +271,7 @@ shared_examples_for "a configuration class" do
       context "when requesting a specific context" do
         let(:options) do
           {
-            "context" => "command"
+            "context" => "command",
           }
         end
 
@@ -306,9 +305,9 @@ shared_examples_for "a configuration class" do
     context "there are tokens configured in user_config" do
       let(:user_config) do
         {
-            "tokens" => {
-                "arbeit" => "asdfasdf"
-            }
+          "tokens" => {
+            "arbeit" => "asdfasdf",
+          },
         }
       end
 
@@ -322,9 +321,9 @@ shared_examples_for "a configuration class" do
     context "there are no tokens configured in user_config" do
       let(:user_config) do
         {
-            "things" => {
-                "thing1" => "asdfasdf"
-            }
+          "things" => {
+            "thing1" => "asdfasdf",
+          },
         }
       end
 
@@ -358,12 +357,12 @@ shared_examples_for "a configuration class" do
     end
 
     context "passed a single attendee" do
-      let(:config_options) { {described_class::Keys::Options::CALENDARS => "foo@example.com"} }
+      let(:config_options) { { described_class::Keys::Options::CALENDARS => "foo@example.com" } }
       it { expect(subject.calendar_ids).to eq(["foo@example.com"]) }
     end
 
     context "passed multiple attendees" do
-      let(:config_options) { {described_class::Keys::Options::CALENDARS => "foo@example.com,bar@example.com"} }
+      let(:config_options) { { described_class::Keys::Options::CALENDARS => "foo@example.com,bar@example.com" } }
       it { expect(subject.calendar_ids).to eq(["foo@example.com", "bar@example.com"]) }
     end
   end
@@ -377,12 +376,12 @@ shared_examples_for "a configuration class" do
     end
 
     context "passed a single must_be" do
-      let(:config_options) { {described_class::Keys::Options::MUST_BE => "option1"} }
+      let(:config_options) { { described_class::Keys::Options::MUST_BE => "option1" } }
       it { expect(subject.must_be).to eq(["option1"]) }
     end
 
     context "passed multiple must_bes" do
-      let(:config_options) { {described_class::Keys::Options::MUST_BE => "option1,option2"} }
+      let(:config_options) { { described_class::Keys::Options::MUST_BE => "option1,option2" } }
       it { expect(subject.must_be).to eq(["option1", "option2"]) }
     end
   end
@@ -396,12 +395,12 @@ shared_examples_for "a configuration class" do
     end
 
     context "passed a single must_not_be" do
-      let(:config_options) { {described_class::Keys::Options::MUST_NOT_BE => "option1"} }
+      let(:config_options) { { described_class::Keys::Options::MUST_NOT_BE => "option1" } }
       it { expect(subject.must_not_be).to eq(["option1"]) }
     end
 
     context "passed multiple must_not_bes" do
-      let(:config_options) { {described_class::Keys::Options::MUST_NOT_BE => "option1,option2"} }
+      let(:config_options) { { described_class::Keys::Options::MUST_NOT_BE => "option1,option2" } }
       it { expect(subject.must_not_be).to eq(["option1", "option2"]) }
     end
   end
@@ -415,7 +414,7 @@ shared_examples_for "a configuration class" do
     end
 
     context "when set" do
-      let(:config_options) { {described_class::Keys::Options::DEBUG => true} }
+      let(:config_options) { { described_class::Keys::Options::DEBUG => true } }
       it { expect(subject.debug?).to be_truthy }
     end
   end
@@ -429,22 +428,22 @@ shared_examples_for "a configuration class" do
     end
 
     context "when public" do
-      let(:config_options) { {described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::PUBLIC }  }
+      let(:config_options) { { described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::PUBLIC } }
       it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::PUBLIC) }
     end
 
     context "when private" do
-      let(:config_options) { {described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::PRIVATE }  }
+      let(:config_options) { { described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::PRIVATE } }
       it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::PRIVATE) }
     end
 
     context "when explicitly default" do
-      let(:config_options) { {described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::DEFAULT }  }
+      let(:config_options) { { described_class::Keys::Settings::VISIBILITY => CalendarAssistant::Event::Visibility::DEFAULT } }
       it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::DEFAULT) }
     end
 
     context "when it's utter nonsense" do
-      let(:config_options) { {described_class::Keys::Settings::VISIBILITY => "cloudy" }  }
+      let(:config_options) { { described_class::Keys::Settings::VISIBILITY => "cloudy" } }
       it { expect(subject.event_visibility).to eq(CalendarAssistant::Event::Visibility::DEFAULT) }
     end
   end

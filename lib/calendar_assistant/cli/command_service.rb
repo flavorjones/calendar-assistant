@@ -7,7 +7,7 @@ class CalendarAssistant
         @options = options.dup
         @options[CalendarAssistant::Config::Keys::Options::CONTEXT] ||= context.to_s
 
-        @config  = CalendarAssistant::CLI::Config.new(options: @options)
+        @config = CalendarAssistant::CLI::Config.new(options: @options)
         @authorizer = {}
         @out = CalendarAssistant::CLI::Printer.new
       end

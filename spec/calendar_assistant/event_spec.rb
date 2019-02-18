@@ -1,4 +1,4 @@
-require 'date'
+require "date"
 
 describe CalendarAssistant::Event do
   it_behaves_like "an object that has duration" do
@@ -6,14 +6,13 @@ describe CalendarAssistant::Event do
     let(:decorated_object) { decorated_class.new(params) }
 
     let(:an_object) { described_class.new decorated_object }
-
   end
 
   describe "predicates" do
     it "lists all predicate methods with an arity of 0 in the PREDICATES constant" do
       instance = described_class.new(double)
       predicate_constant_methods = described_class::PREDICATES.values.flatten
-      instance_predicates = instance.public_methods(false).select{ |m| m =~ /\?$/ && instance.method(m).arity == 0 }
+      instance_predicates = instance.public_methods(false).select { |m| m =~ /\?$/ && instance.method(m).arity == 0 }
 
       expect(instance_predicates - predicate_constant_methods).to be_empty
     end
@@ -75,7 +74,7 @@ describe CalendarAssistant::Event do
 
     describe "#update" do
       it "calls #update! and returns itself" do
-        expect(subject).to receive(:update!).with({:foo => 1, :bar => 2})
+        expect(subject).to receive(:update!).with({ :foo => 1, :bar => 2 })
         actual = subject.update :foo => 1, :bar => 2
         expect(actual).to eq(subject)
       end
@@ -97,7 +96,7 @@ describe CalendarAssistant::Event do
       end
 
       context "a nickname is set" do
-        let(:config) { base_config.merge({CalendarAssistant::Config::Keys::Settings::NICKNAME => "Foo"}) }
+        let(:config) { base_config.merge({ CalendarAssistant::Config::Keys::Settings::NICKNAME => "Foo" }) }
 
         context "event summary begins with a worldmap emoji but not a prefix" do
           let(:decorated_object) { decorated_class.new(summary: "<<IAMANICON>> not a location event") }
@@ -530,7 +529,7 @@ describe CalendarAssistant::Event do
         it { expect(subject.human_attendees).to be_nil }
       end
 
-      context "there are attendees including people and rooms"  do
+      context "there are attendees including people and rooms" do
         let(:decorated_object) { decorated_class.new(attendees: attendees) }
 
         it "removes room resources from the list of attendees and myself" do
@@ -544,7 +543,7 @@ describe CalendarAssistant::Event do
         it { expect(subject.human_attendees).to be_nil }
       end
 
-      context "there are attendees including people and rooms"  do
+      context "there are attendees including people and rooms" do
         let(:decorated_object) { decorated_class.new(attendees: attendees) }
 
         it "removes room resources from the list of attendees" do
@@ -562,7 +561,7 @@ describe CalendarAssistant::Event do
         end
       end
 
-      context "there are attendees"  do
+      context "there are attendees" do
         let(:decorated_object) { decorated_class.new(attendees: attendees) }
 
         it "looks up an EventAttendee by email, or returns nil" do

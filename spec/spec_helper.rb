@@ -1,4 +1,4 @@
-require 'simplecov'
+require "simplecov"
 
 SimpleCov.start do
   add_filter "/spec/"
@@ -11,7 +11,7 @@ require_relative "./shared_examples/an_object_that_has_duration"
 
 require "timecop"
 require "securerandom"
-require 'aruba/rspec'
+require "aruba/rspec"
 
 ENV["THOR_DEBUG"] = "1" # UGH THOR
 
@@ -21,7 +21,7 @@ GCal = Google::Apis::CalendarV3
 BusinessTime::Config.beginning_of_workday = "12pm"
 BusinessTime::Config.end_of_workday = "12:30pm"
 Time.zone = "Pacific/Fiji"
-ENV['TZ'] = "Pacific/Fiji"
+ENV["TZ"] = "Pacific/Fiji"
 
 # make sure we don't do weird things with timecop
 Timecop.safe_mode = true
@@ -43,7 +43,7 @@ module RspecDescribeHelpers
     end
   end
 
-  def with_temp_config_file &block
+  def with_temp_config_file(&block)
     with_temp_file("config_file", :temp_config_file, &block)
   end
 
@@ -68,29 +68,29 @@ module RspecDescribeHelpers
   def with_temp_calendar_assistant_home
     before(:context) do
       @temp_home_dir = Dir.mktmpdir
-      @ca_home = ENV['CA_HOME']
-      ENV['CA_HOME'] = @temp_home_dir
+      @ca_home = ENV["CA_HOME"]
+      ENV["CA_HOME"] = @temp_home_dir
     end
 
     after(:context) do
-      ENV['CA_HOME'] = @ca_home
+      ENV["CA_HOME"] = @ca_home
       FileUtils.remove_entry @temp_home_dir
     end
   end
 end
 
 module RspecExampleHelpers
-  def in_tz tz=time_zone, &block
+  def in_tz(tz = time_zone, &block)
     # this is totally not thread-safe
     orig_time_tz = Time.zone
-    orig_env_tz = ENV['TZ']
+    orig_env_tz = ENV["TZ"]
     begin
       Time.zone = tz
-      ENV['TZ'] = tz
+      ENV["TZ"] = tz
       yield
     ensure
       Time.zone = orig_time_tz
-      ENV['TZ'] = orig_env_tz
+      ENV["TZ"] = orig_env_tz
     end
   end
 

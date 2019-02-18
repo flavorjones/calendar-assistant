@@ -1,15 +1,15 @@
-require 'date'
+require "date"
 
 describe CalendarAssistant::DateHelpers do
   freeze_time
 
   let(:attributes) do
     {
-        key: "value",
-        key_with_a_date_string: "2010-10-10",
-        key_with_a_date: Date.today,
-        key_with_a_date_time: DateTime.now,
-        key_with_a_time: Time.now
+      key: "value",
+      key_with_a_date_string: "2010-10-10",
+      key_with_a_date: Date.today,
+      key_with_a_date_time: DateTime.now,
+      key_with_a_time: Time.now,
     }
   end
 

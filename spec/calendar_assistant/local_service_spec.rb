@@ -66,9 +66,7 @@ describe CalendarAssistant::LocalService do
     end
 
     context "when no filename is passed" do
-
       describe "#list_events" do
-
         before do
           service.insert_event(calendar_id, location_event)
           service.insert_event(calendar_id, nine_event)
@@ -80,11 +78,11 @@ describe CalendarAssistant::LocalService do
           events = service.list_events(calendar_id, time_min: Time.parse("2018-10-18 08:00:00").iso8601, time_max: Time.parse("2018-10-18 18:00:00").iso8601)
 
           expect(events.items).to match_array(
-                                      [
-                                          location_event,
-                                          nine_event,
-                                          nine_thirty_event
-                                      ]
+                                    [
+                                      location_event,
+                                      nine_event,
+                                      nine_thirty_event,
+                                    ]
                                   )
         end
       end
@@ -109,7 +107,7 @@ describe CalendarAssistant::LocalService do
       let(:service) { described_class.new(file: filename, load_events: load_events) }
 
       before do
-        File.open(filename, "w") { |f| f.write({calendar_id => {events: {5678 => GCal::Event.new(id: 5678)}}}.to_yaml) }
+        File.open(filename, "w") { |f| f.write({ calendar_id => { events: { 5678 => GCal::Event.new(id: 5678) } } }.to_yaml) }
       end
 
       context "and we want to load events" do

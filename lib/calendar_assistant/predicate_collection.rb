@@ -1,6 +1,5 @@
 class CalendarAssistant
   module PredicateCollection
-
     def self.build(must_be, must_not_be)
       predicates = {}
       Array(must_be).each do |predicate|

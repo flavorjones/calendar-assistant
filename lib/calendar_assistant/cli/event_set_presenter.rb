@@ -9,8 +9,8 @@ class CalendarAssistant
 
       def to_s
         [
-            title,
-            description
+          title,
+          description,
         ].join("\n")
       end
 
