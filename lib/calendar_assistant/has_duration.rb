@@ -1,13 +1,12 @@
 class CalendarAssistant
   module HasDuration
-    def self.duration_in_seconds start_time, end_time
+    def self.duration_in_seconds(start_time, end_time)
       (end_time.to_datetime - start_time.to_datetime).days.to_i
-
     end
 
     def self.cast_datetime(datetime, time_zone = Time.zone.name)
-        return datetime if datetime.is_a?(Google::Apis::CalendarV3::EventDateTime)
-        Google::Apis::CalendarV3::EventDateTime.new(date_time: datetime.in_time_zone(time_zone).to_datetime)
+      return datetime if datetime.is_a?(Google::Apis::CalendarV3::EventDateTime)
+      Google::Apis::CalendarV3::EventDateTime.new(date_time: datetime.in_time_zone(time_zone).to_datetime)
     end
 
     def all_day?
@@ -95,7 +94,7 @@ class CalendarAssistant
       HasDuration.duration_in_seconds start_time, end_time
     end
 
-    def contains? time
+    def contains?(time)
       start_time <= time && time < end_time
     end
   end

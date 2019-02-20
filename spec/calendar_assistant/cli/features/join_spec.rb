@@ -1,6 +1,6 @@
-require 'spec_helper'
+require "spec_helper"
 
-RSpec.describe 'join', :type => :aruba do
+RSpec.describe "join", :type => :aruba do
   with_temp_calendar_assistant_home
   with_temp_file("fixtures.yml")
   let(:filename) { temp_file.path }
@@ -8,7 +8,7 @@ RSpec.describe 'join', :type => :aruba do
   before(:each) do
     event_list_factory(file: filename, time_zone: Time.zone.name) do
       [
-          { start: "3 minutes ago", end: "3 minutes from now", summary: "accepted", options: [:accepted, :zoom]},
+        { start: "3 minutes ago", end: "3 minutes from now", summary: "accepted", options: [:accepted, :zoom] },
       ]
     end
   end

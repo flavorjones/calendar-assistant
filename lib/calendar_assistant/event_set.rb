@@ -7,7 +7,7 @@ class CalendarAssistant
   #  - it could be a bare Event
   #
   class EventSet
-    def self.new event_repository, events=nil
+    def self.new(event_repository, events = nil)
       if events.is_a?(EventSet::Hash)
         return EventSet::Hash.new event_repository, events.try(:events)
       end
@@ -23,17 +23,17 @@ class CalendarAssistant
     class Base
       attr_reader :event_repository, :events
 
-      def initialize event_repository, events
+      def initialize(event_repository, events)
         @event_repository = event_repository
         @events = events
       end
 
-      def == rhs
+      def ==(rhs)
         return false unless rhs.is_a?(self.class)
         self.event_repository == rhs.event_repository && self.events == rhs.events
       end
 
-      def new new_events
+      def new(new_events)
         EventSet.new self.event_repository, new_events
       end
 
@@ -45,28 +45,28 @@ class CalendarAssistant
     end
 
     class Hash < EventSet::Base
-      def ensure_keys keys, only: false
+      def ensure_keys(keys, only: false)
         keys.each do |key|
           events[key] = [] unless events.has_key?(key)
         end
         if only
           events.keys.each do |key|
-            if ! keys.include? key
+            if !keys.include? key
               events.delete(key)
             end
           end
         end
       end
 
-      def [] key
+      def [](key)
         events[key] ||= []
       end
 
-      def []= key, value
+      def []=(key, value)
         events[key] = value
       end
 
-      def available_blocks length: 1
+      def available_blocks(length: 1)
         event_repository.in_tz do
           dates = events.keys.sort
 
@@ -91,7 +91,7 @@ class CalendarAssistant
                 avail_time[date] << AvailableBlock.new(start: start_time, end: e.start_time)
               end
               start_time = [e.end_time, start_time].max
-              break if ! start_time.during_business_hours?
+              break if !start_time.during_business_hours?
             end
 
             if HasDuration.duration_in_seconds(start_time, end_time) >= length
@@ -105,18 +105,18 @@ class CalendarAssistant
         end
       end
 
-      def intersection other, length: 1
+      def intersection(other, length: 1)
         set = new({})
         set.ensure_keys(events.keys + other.events.keys)
         set.events.keys.each do |date|
           events[date].each do |event_a|
             other.events[date].each do |event_b|
               if event_a.contains?(event_b.start_time) ||
-                 event_a.contains?(event_b.end_time-1) ||
+                 event_a.contains?(event_b.end_time - 1) ||
                  event_b.contains?(event_a.start_time) ||
-                 event_b.contains?(event_a.end_time-1)
+                 event_b.contains?(event_a.end_time - 1)
                 start_time = [event_a.start_time, event_b.start_time].max
-                end_time   = [event_a.end_time,   event_b.end_time  ].min
+                end_time = [event_a.end_time, event_b.end_time].min
                 if HasDuration.duration_in_seconds(start_time, end_time) >= length
                   set.events[date] << AvailableBlock.new(start: start_time, end: end_time)
                 end

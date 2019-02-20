@@ -7,9 +7,9 @@ class CalendarAssistant
 
       def title
         rainbow.wrap(<<~OUT)
-        #{event_repository.calendar.id}
-        - looking for events that need attention
-        - all times in #{event_repository.calendar.time_zone}
+          #{event_repository.calendar.id}
+          - looking for events that need attention
+          - all times in #{event_repository.calendar.time_zone}
         OUT
       end
 

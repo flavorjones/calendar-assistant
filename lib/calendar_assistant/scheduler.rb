@@ -5,7 +5,7 @@ class CalendarAssistant
     #
     #  class methods
     #
-    def self.select_busy_events event_set
+    def self.select_busy_events(event_set)
       dates_events = Hash.new
       event_set.events.each do |event|
         if event.private? || event.accepted? || event.self? || (event.all_day? && event.busy?)
@@ -17,21 +17,20 @@ class CalendarAssistant
       event_set.new dates_events
     end
 
-
     #
     #  instance methods
     #
-    def initialize calendar_assistant, event_repositories
+    def initialize(calendar_assistant, event_repositories)
       @ca = calendar_assistant
       @ers = Array(event_repositories)
     end
 
-    def available_blocks time_range, predicates: {}
+    def available_blocks(time_range, predicates: {})
       avail = nil
       ers.each do |er|
         event_set = er.find time_range, predicates: predicates # array
         event_set = Scheduler.select_busy_events event_set # hash
-        event_set.ensure_keys time_range.first.to_date .. time_range.last.to_date, only: true
+        event_set.ensure_keys time_range.first.to_date..time_range.last.to_date, only: true
 
         length = ChronicDuration.parse(ca.config.setting(Config::Keys::Settings::MEETING_LENGTH))
         ca.in_env do

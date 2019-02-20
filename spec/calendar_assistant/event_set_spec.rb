@@ -2,7 +2,7 @@ describe CalendarAssistant::EventSet do
   let(:event_repository) { instance_double "EventRepository" }
   let(:events) { [instance_double("Event1"), instance_double("Event2")] }
 
-  def expect_to_match_expected_events found_avails
+  def expect_to_match_expected_events(found_avails)
     expect(found_avails.keys).to eq(expected_events.keys)
     found_avails.keys.each do |date|
       expect(found_avails[date].length).to(
@@ -99,7 +99,7 @@ describe CalendarAssistant::EventSet do
   end
 
   describe "#ensure_keys" do
-    subject { described_class.new event_repository, {"z" => 1} }
+    subject { described_class.new event_repository, { "z" => 1 } }
 
     context "Array arg" do
       context "with only: true" do
@@ -130,7 +130,7 @@ describe CalendarAssistant::EventSet do
     context "Range arg" do
       context "with only: true" do
         it "creates a key for each Range value and removes non-matching keys" do
-          subject.ensure_keys "a" .. "c", only: true
+          subject.ensure_keys "a".."c", only: true
           expect(subject.events.keys).to eq(["a", "b", "c"])
           expect(subject.events["a"]).to eq([])
         end
@@ -138,7 +138,7 @@ describe CalendarAssistant::EventSet do
 
       context "with only: false" do
         it "creates a key for each Range value" do
-          subject.ensure_keys "a" .. "c", only: false
+          subject.ensure_keys "a".."c", only: false
           expect(subject.events.keys).to eq(["z", "a", "b", "c"])
           expect(subject.events["a"]).to eq([])
         end
@@ -146,7 +146,7 @@ describe CalendarAssistant::EventSet do
 
       context "default only value" do
         it "creates a key for each Range value" do
-          subject.ensure_keys "a" .. "c"
+          subject.ensure_keys "a".."c"
           expect(subject.events.keys).to eq(["z", "a", "b", "c"])
           expect(subject.events["a"]).to eq([])
         end
@@ -157,21 +157,21 @@ describe CalendarAssistant::EventSet do
   describe "#[]" do
     context "when the key does not exist" do
       it "sets the value to an empty array" do
-        event_set = described_class.new(event_repository, { } )
+        event_set = described_class.new(event_repository, {})
         expect(event_set[:new_key]).to eq []
       end
     end
 
     context "when the key does exist" do
       it "returns that value" do
-        event_set = described_class.new(event_repository, { existing_key: :value } )
+        event_set = described_class.new(event_repository, { existing_key: :value })
         expect(event_set[:existing_key]).to eq :value
       end
     end
   end
 
   describe "#[]=" do
-    let(:subject) { described_class.new event_repository, { } }
+    let(:subject) { described_class.new event_repository, {} }
 
     it "allows values to be added to an existing event set, like it is a hash" do
       subject[:new_key] = "funk"
@@ -187,7 +187,7 @@ describe CalendarAssistant::EventSet do
     let(:service) { instance_double("CalendarService") }
     let(:calendar_id) { "foo@example.com" }
     let(:calendar) { instance_double("Calendar") }
-    let(:time_zone) { ENV['TZ'] }
+    let(:time_zone) { ENV["TZ"] }
     let(:config) { CalendarAssistant::Config.new options: config_options }
     let(:config_options) { Hash.new }
 
@@ -208,29 +208,29 @@ describe CalendarAssistant::EventSet do
         let(:events) do
           event_list_factory do
             {
-                date => [
-                    {start: "7:30am", end: "8am", summary: "zeroth"},
-                    {start: "8:30am", end: "10am", summary: "first"},
-                    {start: "10:30am", end: "12pm", summary: "second"},
-                    {start: "1:30pm", end: "2:30pm", summary: "third"},
-                    {start: "3pm", end: "5pm", summary: "fourth"},
-                    {start: "5:30pm", end: "6pm", summary: "fifth"},
-                    {start: "6:30pm", end: "7pm", summary: "sixth"}
-                ]
+              date => [
+                { start: "7:30am", end: "8am", summary: "zeroth" },
+                { start: "8:30am", end: "10am", summary: "first" },
+                { start: "10:30am", end: "12pm", summary: "second" },
+                { start: "1:30pm", end: "2:30pm", summary: "third" },
+                { start: "3pm", end: "5pm", summary: "fourth" },
+                { start: "5:30pm", end: "6pm", summary: "fifth" },
+                { start: "6:30pm", end: "7pm", summary: "sixth" },
+              ],
             }
           end
         end
 
         let(:expected_events) do
           event_list_factory do
-              {
-                date => [
-                  {start: "10am", end: "10:30am", summary: "available"},
-                  {start: "12pm", end: "1:30pm", summary: "available"},
-                  {start: "2:30pm", end: "3pm", summary: "available"},
-                  {start: "5pm", end: "5:30pm", summary: "available"},
-                ]
-              }
+            {
+              date => [
+                { start: "10am", end: "10:30am", summary: "available" },
+                { start: "12pm", end: "1:30pm", summary: "available" },
+                { start: "2:30pm", end: "3pm", summary: "available" },
+                { start: "5pm", end: "5:30pm", summary: "available" },
+              ],
+            }
           end
         end
 
@@ -247,9 +247,9 @@ describe CalendarAssistant::EventSet do
           let(:expected_events) do
             event_list_factory do
               {
-                  date => [
-                      {start: "12pm", end: "1:30pm", summary: "available"},
-                  ]
+                date => [
+                  { start: "12pm", end: "1:30pm", summary: "available" },
+                ],
               }
             end
           end
@@ -267,26 +267,26 @@ describe CalendarAssistant::EventSet do
         let(:events) do
           event_list_factory do
             {
-                date => [
-                    {start: "8:30am", end: "10am", summary: "first"},
-                    {start: "10:30am", end: "12pm", summary: "second"},
-                    {start: "1:30pm", end: "2:30pm", summary: "third"},
-                    {start: "3pm", end: "5pm", summary: "fourth"},
-                ]
+              date => [
+                { start: "8:30am", end: "10am", summary: "first" },
+                { start: "10:30am", end: "12pm", summary: "second" },
+                { start: "1:30pm", end: "2:30pm", summary: "third" },
+                { start: "3pm", end: "5pm", summary: "fourth" },
+              ],
             }
           end
         end
 
         let(:expected_events) do
           event_list_factory do
-              {
-                date => [
-                  {start: "10am", end: "10:30am", summary: "available"},
-                  {start: "12pm", end: "1:30pm", summary: "available"},
-                  {start: "2:30pm", end: "3pm", summary: "available"},
-                  {start: "5pm", end: "6pm", summary: "available"},
-                ]
-              }
+            {
+              date => [
+                { start: "10am", end: "10:30am", summary: "available" },
+                { start: "12pm", end: "1:30pm", summary: "available" },
+                { start: "2:30pm", end: "3pm", summary: "available" },
+                { start: "5pm", end: "6pm", summary: "available" },
+              ],
+            }
           end
         end
 
@@ -299,13 +299,13 @@ describe CalendarAssistant::EventSet do
         let(:time_range) { CalendarAssistant::CLI::Helpers.parse_datespec "today" }
         let(:date) { time_range.first.to_date }
 
-        let(:events) { {date => []} }
+        let(:events) { { date => [] } }
         let(:expected_events) do
           event_list_factory do
             {
-                date => [
-                    {start: "9am", end: "6pm", summary: "available"},
-                ]
+              date => [
+                { start: "9am", end: "6pm", summary: "available" },
+              ],
             }
           end
         end
@@ -320,22 +320,22 @@ describe CalendarAssistant::EventSet do
         let(:events) do
           event_list_factory do
             {
-                date => [
-                    {start: "11am", end: "12pm", summary: "zeroth"},
-                    {start: "11am", end: "11:30am", summary: "first"},
-                ]
+              date => [
+                { start: "11am", end: "12pm", summary: "zeroth" },
+                { start: "11am", end: "11:30am", summary: "first" },
+              ],
             }
           end
         end
 
         let(:expected_events) do
           event_list_factory do
-              {
-                date => [
-                  {start: "9am", end: "11am", summary: "available"},
-                  {start: "12pm", end: "6pm", summary: "available"},
-                ]
-              }
+            {
+              date => [
+                { start: "9am", end: "11am", summary: "available" },
+                { start: "12pm", end: "6pm", summary: "available" },
+              ],
+            }
           end
         end
 
@@ -349,22 +349,22 @@ describe CalendarAssistant::EventSet do
         let(:events) do
           event_list_factory do
             {
-                date => [
-                    {start: "11am", end: "12pm", summary: "zeroth"},
-                    {start: "5pm", end: "7pm", summary: "first"},
-                ]
+              date => [
+                { start: "11am", end: "12pm", summary: "zeroth" },
+                { start: "5pm", end: "7pm", summary: "first" },
+              ],
             }
           end
         end
 
         let(:expected_events) do
           event_list_factory do
-              {
-                date => [
-                  {start: "9am", end: "11am", summary: "available"},
-                  {start: "12pm", end: "5pm", summary: "available"},
-                ]
-              }
+            {
+              date => [
+                { start: "9am", end: "11am", summary: "available" },
+                { start: "12pm", end: "5pm", summary: "available" },
+              ],
+            }
           end
         end
 
@@ -379,19 +379,19 @@ describe CalendarAssistant::EventSet do
       let(:events) do
         event_list_factory do
           {
-              Date.parse("2018-01-01") => [],
-              Date.parse("2018-01-02") => [],
-              Date.parse("2018-01-03") => [],
+            Date.parse("2018-01-01") => [],
+            Date.parse("2018-01-02") => [],
+            Date.parse("2018-01-03") => [],
           }
         end
       end
       let(:expected_events) do
         event_list_factory do
-            {
-              Date.parse("2018-01-01") => [{start: "2018-01-01 9am", end: "2018-01-01 6pm", summary: "available"}],
-              Date.parse("2018-01-02") => [{start: "2018-01-02 9am", end: "2018-01-02 6pm", summary: "available"}],
-              Date.parse("2018-01-03") => [{start: "2018-01-03 9am", end: "2018-01-03 6pm", summary: "available"}],
-            }
+          {
+            Date.parse("2018-01-01") => [{ start: "2018-01-01 9am", end: "2018-01-01 6pm", summary: "available" }],
+            Date.parse("2018-01-02") => [{ start: "2018-01-02 9am", end: "2018-01-02 6pm", summary: "available" }],
+            Date.parse("2018-01-03") => [{ start: "2018-01-03 9am", end: "2018-01-03 6pm", summary: "available" }],
+          }
         end
       end
 
@@ -408,14 +408,14 @@ describe CalendarAssistant::EventSet do
         in_tz do
           event_list_factory do
             {
-                date => [
-                    {start: "8:30am", end: "10am", summary: "first"},
-                    {start: "10:30am", end: "12pm", summary: "second"},
-                    {start: "1:30pm", end: "2:30pm", summary: "third"},
-                    {start: "3pm", end: "5pm", summary: "fourth"},
-                    {start: "5:30pm", end: "6pm", summary: "fifth"},
-                    {start: "6:30pm", end: "7pm", summary: "fourth"},
-                ]
+              date => [
+                { start: "8:30am", end: "10am", summary: "first" },
+                { start: "10:30am", end: "12pm", summary: "second" },
+                { start: "1:30pm", end: "2:30pm", summary: "third" },
+                { start: "3pm", end: "5pm", summary: "fourth" },
+                { start: "5:30pm", end: "6pm", summary: "fifth" },
+                { start: "6:30pm", end: "7pm", summary: "fourth" },
+              ],
             }
           end
         end
@@ -433,12 +433,12 @@ describe CalendarAssistant::EventSet do
           let(:expected_events) do
             event_list_factory do
               {
-                  date => [
-                      {start: "10am", end: "10:30am", summary: "available"},
-                      {start: "12pm", end: "1:30pm", summary: "available"},
-                      {start: "2:30pm", end: "3pm", summary: "available"},
-                      {start: "5pm", end: "5:30pm", summary: "available"},
-                  ]
+                date => [
+                  { start: "10am", end: "10:30am", summary: "available" },
+                  { start: "12pm", end: "1:30pm", summary: "available" },
+                  { start: "2:30pm", end: "3pm", summary: "available" },
+                  { start: "5pm", end: "5:30pm", summary: "available" },
+                ],
               }
             end
           end
@@ -459,14 +459,14 @@ describe CalendarAssistant::EventSet do
           let(:expected_events) do
             event_list_factory do
               {
-                  date => [
-                      {start: "8am", end: "8:30am", summary: "available"},
-                      {start: "10am", end: "10:30am", summary: "available"},
-                      {start: "12pm", end: "1:30pm", summary: "available"},
-                      {start: "2:30pm", end: "3pm", summary: "available"},
-                      {start: "5pm", end: "5:30pm", summary: "available"},
-                      {start: "6pm", end: "6:30pm", summary: "available"},
-                  ]
+                date => [
+                  { start: "8am", end: "8:30am", summary: "available" },
+                  { start: "10am", end: "10:30am", summary: "available" },
+                  { start: "12pm", end: "1:30pm", summary: "available" },
+                  { start: "2:30pm", end: "3pm", summary: "available" },
+                  { start: "5pm", end: "5:30pm", summary: "available" },
+                  { start: "6pm", end: "6:30pm", summary: "available" },
+                ],
               }
             end
           end
@@ -491,13 +491,13 @@ describe CalendarAssistant::EventSet do
           in_tz do
             event_list_factory do
               {
-                  date => [
-                      {start: "12pm", end: "1:30pm", summary: "available"},
-                      {start: "2:30pm", end: "3pm", summary: "available"},
-                      {start: "5pm", end: "5:30pm", summary: "available"},
-                      {start: "6pm", end: "6:30pm", summary: "available"},
-                      {start: "7pm", end: "9pm", summary: "available"},
-                  ]
+                date => [
+                  { start: "12pm", end: "1:30pm", summary: "available" },
+                  { start: "2:30pm", end: "3pm", summary: "available" },
+                  { start: "5pm", end: "5:30pm", summary: "available" },
+                  { start: "6pm", end: "6:30pm", summary: "available" },
+                  { start: "7pm", end: "9pm", summary: "available" },
+                ],
               }
             end
           end
@@ -521,7 +521,7 @@ describe CalendarAssistant::EventSet do
     let(:calendar_id2) { "bar@example.com" }
     let(:calendar1) { instance_double("Calendar") }
     let(:calendar2) { instance_double("Calendar") }
-    let(:time_zone1) { ENV['TZ'] }
+    let(:time_zone1) { ENV["TZ"] }
     let(:time_zone2) { time_zone1 }
 
     let(:er1) { CalendarAssistant::EventRepository.new service, calendar_id1 }
@@ -540,9 +540,9 @@ describe CalendarAssistant::EventSet do
       let(:events1) do
         event_list_factory do
           {
-              Date.parse("2018-01-01") => [
-                  {start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0"},
-              ]
+            Date.parse("2018-01-01") => [
+              { start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0" },
+            ],
           }
         end
       end
@@ -550,16 +550,16 @@ describe CalendarAssistant::EventSet do
       let(:events2) do
         event_list_factory do
           {
-              Date.parse("2018-01-01") => [
-                  {start: "2018-01-01 11am", end: "2018-01-01 2pm", summary: "1:0"},
-              ]
+            Date.parse("2018-01-01") => [
+              { start: "2018-01-01 11am", end: "2018-01-01 2pm", summary: "1:0" },
+            ],
           }
         end
       end
 
-      let(:expected_events)  do
+      let(:expected_events) do
         {
-          Date.parse("2018-01-01") => []
+          Date.parse("2018-01-01") => [],
         }
       end
 
@@ -571,20 +571,20 @@ describe CalendarAssistant::EventSet do
       let(:events1) do
         event_list_factory do
           {
-              Date.parse("2018-01-01") => [
-                  {start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0"},
-              ],
-              Date.parse("2018-01-02") => [
-                  {start: "2018-01-02 9am", end: "2018-01-02 12pm", summary: "1:1"},
-              ],
-              Date.parse("2018-01-03") => [
-                  {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1"},
-              ],
-              Date.parse("2018-01-04") => [
-                  {start: "2018-01-01 8am", end: "2018-01-01 10am", summary: "2:0"},
-                  {start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "2:1"},
-                  {start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "2:2"},
-              ]
+            Date.parse("2018-01-01") => [
+              { start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0" },
+            ],
+            Date.parse("2018-01-02") => [
+              { start: "2018-01-02 9am", end: "2018-01-02 12pm", summary: "1:1" },
+            ],
+            Date.parse("2018-01-03") => [
+              { start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1" },
+            ],
+            Date.parse("2018-01-04") => [
+              { start: "2018-01-01 8am", end: "2018-01-01 10am", summary: "2:0" },
+              { start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "2:1" },
+              { start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "2:2" },
+            ],
           }
         end
       end
@@ -592,23 +592,23 @@ describe CalendarAssistant::EventSet do
       let(:events2) do
         event_list_factory do
           {
-              Date.parse("2018-01-01") => [
-                  {start: "2018-01-01 10am", end: "2018-01-01 12pm", summary: "1:0"},
-              ],
-              Date.parse("2018-01-02") => [
-                  {start: "2018-01-02 9:15am", end: "2018-01-02 9:30am", summary: "1:1"},
-                  {start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1"},
-                  {start: "2018-01-02 11:15am", end: "2018-01-02 11:45am", summary: "1:1"},
-                  {start: "2018-01-02 12:15pm", end: "2018-01-02 1pm", summary: "1:1"},
-              ],
-              Date.parse("2018-01-03") => [
-                  {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1"},
-              ],
-              Date.parse("2018-01-04") => [
-                  {start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0"},
-                  {start: "2018-01-01 1pm", end: "2018-01-01 3pm", summary: "1:1"},
-                  {start: "2018-01-01 5pm", end: "2018-01-01 7pm", summary: "1:2"},
-              ]
+            Date.parse("2018-01-01") => [
+              { start: "2018-01-01 10am", end: "2018-01-01 12pm", summary: "1:0" },
+            ],
+            Date.parse("2018-01-02") => [
+              { start: "2018-01-02 9:15am", end: "2018-01-02 9:30am", summary: "1:1" },
+              { start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1" },
+              { start: "2018-01-02 11:15am", end: "2018-01-02 11:45am", summary: "1:1" },
+              { start: "2018-01-02 12:15pm", end: "2018-01-02 1pm", summary: "1:1" },
+            ],
+            Date.parse("2018-01-03") => [
+              { start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1" },
+            ],
+            Date.parse("2018-01-04") => [
+              { start: "2018-01-01 9am", end: "2018-01-01 11am", summary: "1:0" },
+              { start: "2018-01-01 1pm", end: "2018-01-01 3pm", summary: "1:1" },
+              { start: "2018-01-01 5pm", end: "2018-01-01 7pm", summary: "1:2" },
+            ],
           }
         end
       end
@@ -617,22 +617,22 @@ describe CalendarAssistant::EventSet do
         let(:expected_events) do
           event_list_factory do
             {
-                Date.parse("2018-01-01") => [
-                    {start: "2018-01-01 10am", end: "2018-01-01 11am", summary: "1:0"},
-                ],
-                Date.parse("2018-01-02") => [
-                    {start: "2018-01-02 9:15am", end: "2018-01-02 9:30am", summary: "1:1"},
-                    {start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1"},
-                    {start: "2018-01-02 11:15am", end: "2018-01-02 11:45am", summary: "1:1"},
-                ],
-                Date.parse("2018-01-03") => [
-                    {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1"},
-                ],
-                Date.parse("2018-01-04") => [
-                    {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: ""},
-                    {start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: ""},
-                    {start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: ""},
-                ]
+              Date.parse("2018-01-01") => [
+                { start: "2018-01-01 10am", end: "2018-01-01 11am", summary: "1:0" },
+              ],
+              Date.parse("2018-01-02") => [
+                { start: "2018-01-02 9:15am", end: "2018-01-02 9:30am", summary: "1:1" },
+                { start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1" },
+                { start: "2018-01-02 11:15am", end: "2018-01-02 11:45am", summary: "1:1" },
+              ],
+              Date.parse("2018-01-03") => [
+                { start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1" },
+              ],
+              Date.parse("2018-01-04") => [
+                { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "" },
+                { start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: "" },
+                { start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: "" },
+              ],
             }
           end
         end
@@ -645,20 +645,20 @@ describe CalendarAssistant::EventSet do
         let(:expected_events) do
           event_list_factory do
             {
-                Date.parse("2018-01-01") => [
-                    {start: "2018-01-01 10am", end: "2018-01-01 11am", summary: "1:0"},
-                ],
-                Date.parse("2018-01-02") => [
-                    {start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1"},
-                ],
-                Date.parse("2018-01-03") => [
-                    {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1"},
-                ],
-                Date.parse("2018-01-04") => [
-                    {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: ""},
-                    {start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: ""},
-                    {start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: ""},
-                ]
+              Date.parse("2018-01-01") => [
+                { start: "2018-01-01 10am", end: "2018-01-01 11am", summary: "1:0" },
+              ],
+              Date.parse("2018-01-02") => [
+                { start: "2018-01-02 10am", end: "2018-01-02 11am", summary: "1:1" },
+              ],
+              Date.parse("2018-01-03") => [
+                { start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "1:1" },
+              ],
+              Date.parse("2018-01-04") => [
+                { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "" },
+                { start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: "" },
+                { start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: "" },
+              ],
             }
           end
         end
@@ -676,11 +676,11 @@ describe CalendarAssistant::EventSet do
         in_tz time_zone1 do
           event_list_factory do
             {
-                Date.parse("2018-01-01") => [
-                    {start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "1:0"},
-                    {start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "1:1"},
-                    {start: "2018-01-01 8pm", end: "2018-01-01 10pm", summary: "1:2"},
-                ]
+              Date.parse("2018-01-01") => [
+                { start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "1:0" },
+                { start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "1:1" },
+                { start: "2018-01-01 8pm", end: "2018-01-01 10pm", summary: "1:2" },
+              ],
             }
           end
         end
@@ -689,27 +689,26 @@ describe CalendarAssistant::EventSet do
         in_tz time_zone2 do
           event_list_factory do
             {
-                Date.parse("2018-01-01") => [
-                    {start: "2018-01-01 8am", end: "2018-01-01 10am", summary: "2:0"},
-                    {start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "2:1"},
-                    {start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "2:2"},
-                ]
+              Date.parse("2018-01-01") => [
+                { start: "2018-01-01 8am", end: "2018-01-01 10am", summary: "2:0" },
+                { start: "2018-01-01 12pm", end: "2018-01-01 2pm", summary: "2:1" },
+                { start: "2018-01-01 4pm", end: "2018-01-01 6pm", summary: "2:2" },
+              ],
             }
           end
         end
       end
-
 
       context "from the POV of calendar 1" do
         let(:expected_events) do
           in_tz time_zone1 do
             event_list_factory do
               {
-                  Date.parse("2018-01-01") => [
-                      {start: "2018-01-01 12pm", end: "2018-01-01 1pm", summary: ""},
-                      {start: "2018-01-01 4pm", end: "2018-01-01 5pm", summary: ""},
-                      {start: "2018-01-01 8pm", end: "2018-01-01 9pm", summary: ""},
-                  ]
+                Date.parse("2018-01-01") => [
+                  { start: "2018-01-01 12pm", end: "2018-01-01 1pm", summary: "" },
+                  { start: "2018-01-01 4pm", end: "2018-01-01 5pm", summary: "" },
+                  { start: "2018-01-01 8pm", end: "2018-01-01 9pm", summary: "" },
+                ],
               }
             end
           end
@@ -722,11 +721,11 @@ describe CalendarAssistant::EventSet do
           in_tz time_zone2 do
             event_list_factory do
               {
-                  Date.parse("2018-01-01") => [
-                      {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: ""},
-                      {start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: ""},
-                      {start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: ""},
-                  ]
+                Date.parse("2018-01-01") => [
+                  { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "" },
+                  { start: "2018-01-01 1pm", end: "2018-01-01 2pm", summary: "" },
+                  { start: "2018-01-01 5pm", end: "2018-01-01 6pm", summary: "" },
+                ],
               }
             end
           end

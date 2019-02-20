@@ -4,16 +4,16 @@ describe CalendarAssistant::Scheduler do
       let(:raw_events) do
         event_list_factory do
           [
-              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted},
-              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "self", options: :self},
-              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "declined", options: :declined},
-              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "maybe", options: :tentative},
-              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "needs action", options: :needs_action},
-              {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "private", options: :private},
-              {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "yeah", options: :self},
-              {start: "2018-01-03 9am", end: "2018-01-03 10am", summary: "sure", options: :self},
-              {start: "2018-01-04 9am", end: "2018-01-04 10am", summary: "ignore this date", options: :declined},
-              {start: "2018-01-07", end: "2018-01-09", summary: "this is an all day busy event", options: [:all_day, :busy] }
+            { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted },
+            { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "self", options: :self },
+            { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "declined", options: :declined },
+            { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "maybe", options: :tentative },
+            { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "needs action", options: :needs_action },
+            { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "private", options: :private },
+            { start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "yeah", options: :self },
+            { start: "2018-01-03 9am", end: "2018-01-03 10am", summary: "sure", options: :self },
+            { start: "2018-01-04 9am", end: "2018-01-04 10am", summary: "ignore this date", options: :declined },
+            { start: "2018-01-07", end: "2018-01-09", summary: "this is an all day busy event", options: [:all_day, :busy] },
           ]
         end
       end
@@ -21,32 +21,32 @@ describe CalendarAssistant::Scheduler do
       let(:cooked_events) do
         event_list_factory do
           {
-              Date.parse("2018-01-01") => [
-                  {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted},
-                  {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "self", options: :self},
-                  {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "private", options: :private}
-              ],
-              Date.parse("2018-01-02") => [
-                  {start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "yeah", options: :self}
-              ],
-              Date.parse("2018-01-03") => [
-                  {start: "2018-01-03 9am", end: "2018-01-03 10am", summary: "sure", options: :self}
-              ],
-              Date.parse("2018-01-07") => [
-                  {start: "2018-01-07", end: "2018-01-09", summary: "this is an all day busy event", options: [:all_day, :busy] }
-              ]
+            Date.parse("2018-01-01") => [
+              { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted },
+              { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "self", options: :self },
+              { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "private", options: :private },
+            ],
+            Date.parse("2018-01-02") => [
+              { start: "2018-01-02 9am", end: "2018-01-02 10am", summary: "yeah", options: :self },
+            ],
+            Date.parse("2018-01-03") => [
+              { start: "2018-01-03 9am", end: "2018-01-03 10am", summary: "sure", options: :self },
+            ],
+            Date.parse("2018-01-07") => [
+              { start: "2018-01-07", end: "2018-01-09", summary: "this is an all day busy event", options: [:all_day, :busy] },
+            ],
 
           }
         end
       end
 
-      def expect_event_equalish e1, e2
+      def expect_event_equalish(e1, e2)
         expect(e1.summary).to eq(e2.summary)
         expect(e1.start_time).to eq(e2.start_time)
         expect(e1.end_time).to eq(e2.end_time)
       end
 
-      def expect_event_set_hash_equalish es1, es2
+      def expect_event_set_hash_equalish(es1, es2)
         expect(es1.keys).to eq(es2.keys)
         es1.keys.each do |date|
           es1[date].each_with_index do |e, j|
@@ -70,7 +70,7 @@ describe CalendarAssistant::Scheduler do
     let(:ca) { CalendarAssistant.new config, service: service }
     let(:service) { instance_double("CalendarService") }
     let(:calendar) { instance_double("Calendar") }
-    let(:time_zone) { ENV['TZ'] }
+    let(:time_zone) { ENV["TZ"] }
     let(:calendar_id) { "foo@example.com" }
     let(:er) { CalendarAssistant::EventRepository.new service, calendar_id }
     let(:er2) { CalendarAssistant::EventRepository.new service, calendar_id }
@@ -118,7 +118,7 @@ describe CalendarAssistant::Scheduler do
       end
 
       it "fills in empty dates in the event set" do
-        date_range = time_range.first.to_date .. time_range.last.to_date
+        date_range = time_range.first.to_date..time_range.last.to_date
         expect(event_set_hash).to receive(:ensure_keys).with(date_range, only: true)
         scheduler.available_blocks(time_range)
       end
@@ -143,7 +143,7 @@ describe CalendarAssistant::Scheduler do
         end
 
         context "when configured" do
-          let(:config_options) { {CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "60m"} }
+          let(:config_options) { { CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "60m" } }
 
           it "passes the right meeting length to EventSet#available_blocks" do
             expect(event_set_hash).to receive(:available_blocks).with(length: 60 * 60)
@@ -179,12 +179,12 @@ describe CalendarAssistant::Scheduler do
           end
 
           context "when configured" do
-            let(:config_options) { {CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "60m"} }
+            let(:config_options) { { CalendarAssistant::Config::Keys::Settings::MEETING_LENGTH => "60m" } }
 
             it "returns the intersection of the available blocks" do
               available_blocks = instance_double "EventSet(available)"
               allow(event_set_hash).to receive(:available_blocks).and_return(available_blocks)
-              expect(available_blocks).to receive(:intersection).with(available_blocks, length: 60*60).and_return(available_blocks)
+              expect(available_blocks).to receive(:intersection).with(available_blocks, length: 60 * 60).and_return(available_blocks)
               result = scheduler.available_blocks(time_range)
               expect(result).to eq(available_blocks)
             end

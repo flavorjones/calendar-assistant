@@ -82,7 +82,7 @@ describe Google::Apis::CalendarV3::EventDateTime do
       it { expect(described_class.new(date_time: Time.now) == described_class.new(date_time: Time.now.to_datetime)).to be_truthy }
       it { expect(described_class.new(date_time: Time.now.to_datetime) == described_class.new(date_time: (Time.now + 1))).to be_falsey }
       it { expect(described_class.new(date_time: Time.now.to_datetime) == described_class.new(date_time: Time.now)).to be_truthy }
-      it { expect(described_class.new(date_time: Time.now) == described_class.new(date_time: (Time.now + 1).to_datetime)).to be_falsey  }
+      it { expect(described_class.new(date_time: Time.now) == described_class.new(date_time: (Time.now + 1).to_datetime)).to be_falsey }
     end
   end
 end

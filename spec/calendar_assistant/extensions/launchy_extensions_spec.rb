@@ -28,12 +28,12 @@ describe CalendarAssistant::ZoomLaunchy do
 
   describe "#open" do
     context "given a zoom conference number link" do
-      before { ENV['BROWSER'] = "mybrowser" } # used by parent class Launchy::Application::Browser
+      before { ENV["BROWSER"] = "mybrowser" } # used by parent class Launchy::Application::Browser
 
-      let(:url)     { "https://schmoopie.zoom.us/j/999999999" }
+      let(:url) { "https://schmoopie.zoom.us/j/999999999" }
       let(:zoommtg) { "zoommtg://zoom.us/join?confno=999999999" }
 
-      [ ["darwin", "open"], ["linux", "xdg-open"] ].each do |host_os, command|
+      [["darwin", "open"], ["linux", "xdg-open"]].each do |host_os, command|
         context "on host os '#{host_os}'" do
           around do |example|
             Launchy.host_os = host_os
@@ -44,7 +44,7 @@ describe CalendarAssistant::ZoomLaunchy do
           context "executable '#{command}' is found" do
             before do
               allow(subject).to(receive(:find_executable).with(command).
-                                  and_return("/path/to/#{command}"))
+                and_return("/path/to/#{command}"))
             end
 
             it "runs the executable '#{command}' with a transformed URL" do
@@ -56,7 +56,7 @@ describe CalendarAssistant::ZoomLaunchy do
           context "executable '#{command}' is not found" do
             before do
               allow(subject).to(receive(:find_executable).with(command).
-                                  and_return(nil))
+                and_return(nil))
             end
 
             it "runs the browser with the original URL" do

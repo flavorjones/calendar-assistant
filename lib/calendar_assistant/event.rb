@@ -29,49 +29,49 @@ class CalendarAssistant
     end
 
     PREDICATES = {
-        "response": %I[
-          accepted?
-          declined?
-          awaiting?
-          tentative?
-        ],
-        "temporal": %I[
-          all_day?
-          past?
-          current?
-          future?
-        ],
-        "visibility": %I[
-          private?
-          public?
-          explicitly_visible?
-          visible_guestlist?
-        ],
-        "attributes": %I[
-          location_event?
-          self?
-          one_on_one?
-          busy?
-          commitment?
-          recurring?
-          abandoned?
-          anyone_can_add_self?
-          attendees_omitted?
-          end_time_unspecified?
-          guests_can_invite_others?
-          guests_can_modify?
-          guests_can_see_other_guests?
-          private_copy?
-          locked?
-          needs_action?
-      ]
+      "response": %I[
+        accepted?
+        declined?
+        awaiting?
+        tentative?
+      ],
+      "temporal": %I[
+        all_day?
+        past?
+        current?
+        future?
+      ],
+      "visibility": %I[
+        private?
+        public?
+        explicitly_visible?
+        visible_guestlist?
+      ],
+      "attributes": %I[
+        location_event?
+        self?
+        one_on_one?
+        busy?
+        commitment?
+        recurring?
+        abandoned?
+        anyone_can_add_self?
+        attendees_omitted?
+        end_time_unspecified?
+        guests_can_invite_others?
+        guests_can_modify?
+        guests_can_see_other_guests?
+        private_copy?
+        locked?
+        needs_action?
+      ],
     }
 
     #
     #  class methods
     #
 
-    def self.location_event_prefix config
+    def self.location_event_prefix(config)
       icon = config[CalendarAssistant::Config::Keys::Settings::LOCATION_ICON]
       if nickname = config[CalendarAssistant::Config::Keys::Settings::NICKNAME]
         return "#{icon} #{nickname} @ "
@@ -87,13 +87,13 @@ class CalendarAssistant
       @config = config
     end
 
-    def update **args
+    def update(**args)
       update!(**args)
       self
     end
 
     def location_event?
-      !! summary.try(:starts_with?, Event.location_event_prefix(@config))
+      !!summary.try(:starts_with?, Event.location_event_prefix(@config))
     end
 
     def accepted?
@@ -167,15 +167,15 @@ class CalendarAssistant
 
     def other_human_attendees
       return nil if attendees.nil?
-      attendees.select { |a| ! a.resource  && ! a.self }
+      attendees.select { |a| !a.resource && !a.self }
     end
 
     def human_attendees
       return nil if attendees.nil?
-      attendees.select { |a| ! a.resource }
+      attendees.select { |a| !a.resource }
     end
 
-    def attendee id
+    def attendee(id)
       return nil if attendees.nil?
       attendees.find do |attendee|
         attendee.email == id
@@ -192,15 +192,15 @@ class CalendarAssistant
 
     def av_uri
       @av_uri ||= begin
-                    description_link = CalendarAssistant::StringHelpers.find_uri_for_domain(description, "zoom.us")
-                    return description_link if description_link
+        description_link = CalendarAssistant::StringHelpers.find_uri_for_domain(description, "zoom.us")
+        return description_link if description_link
 
-                    location_link = CalendarAssistant::StringHelpers.find_uri_for_domain(location, "zoom.us")
-                    return location_link if location_link
+        location_link = CalendarAssistant::StringHelpers.find_uri_for_domain(location, "zoom.us")
+        return location_link if location_link
 
-                    return hangout_link if hangout_link
-                    nil
-                  end
+        return hangout_link if hangout_link
+        nil
+      end
     end
   end
 end

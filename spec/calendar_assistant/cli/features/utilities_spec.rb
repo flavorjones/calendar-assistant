@@ -1,7 +1,7 @@
 # coding: utf-8
-require 'spec_helper'
+require "spec_helper"
 
-RSpec.describe 'utility features', :type => :aruba do
+RSpec.describe "utility features", :type => :aruba do
   with_temp_calendar_assistant_home
   with_temp_file("fixtures.yml")
   let(:filename) { temp_file.path }
@@ -9,7 +9,7 @@ RSpec.describe 'utility features', :type => :aruba do
   before(:each) do
     event_list_factory(file: filename, time_zone: "Pacific/Fiji") do
       [
-        {start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted},
+        { start: "2018-01-01 9am", end: "2018-01-01 10am", summary: "accepted", options: :accepted },
       ]
     end
   end
@@ -59,7 +59,6 @@ RSpec.describe 'utility features', :type => :aruba do
       expect(subject.output).to match(/^Commands:\n  calendar-assistant authorize/)
     end
   end
-
 
   describe "setup" do
     it "has interactive steps and seems too hard to test"

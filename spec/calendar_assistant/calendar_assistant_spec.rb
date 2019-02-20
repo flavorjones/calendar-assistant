@@ -15,18 +15,18 @@ describe CalendarAssistant do
     describe ".in_tz" do
       it "sets the timezone and restores it" do
         Time.zone = "Pacific/Fiji"
-        ENV['TZ'] = "Pacific/Fiji"
+        ENV["TZ"] = "Pacific/Fiji"
         CalendarAssistant.in_tz "Europe/Istanbul" do
           expect(Time.zone.name).to eq("Europe/Istanbul")
-          expect(ENV['TZ']).to eq("Europe/Istanbul")
+          expect(ENV["TZ"]).to eq("Europe/Istanbul")
         end
         expect(Time.zone.name).to eq("Pacific/Fiji")
-        expect(ENV['TZ']).to eq("Pacific/Fiji")
+        expect(ENV["TZ"]).to eq("Pacific/Fiji")
       end
 
       it "exceptionally restores the timezone" do
         Time.zone = "Pacific/Fiji"
-        ENV['TZ'] = "Pacific/Fiji"
+        ENV["TZ"] = "Pacific/Fiji"
         begin
           CalendarAssistant.in_tz "Europe/Istanbul" do
             raise RuntimeError
@@ -34,7 +34,7 @@ describe CalendarAssistant do
         rescue
         end
         expect(Time.zone.name).to eq("Pacific/Fiji")
-        expect(ENV['TZ']).to eq("Pacific/Fiji")
+        expect(ENV["TZ"]).to eq("Pacific/Fiji")
       end
     end
   end
@@ -70,7 +70,6 @@ describe CalendarAssistant do
     describe "#lint_events" do
       let(:time) { Time.now.beginning_of_day..(Time.now + 1.day).end_of_day }
       let(:lint_event_repository) { instance_double("LintEventRepository") }
-
 
       it "calls through to the repository" do
         expect(event_repository_factory).to receive(:new_event_repository).with(service, anything, hash_including(type: :lint)).and_return(lint_event_repository)
@@ -109,14 +108,14 @@ describe CalendarAssistant do
       context "looking at own calendar" do
         before do
           expect(event_repository_factory).to receive(:new_event_repository).
-              with(anything, CalendarAssistant::Config::DEFAULT_CALENDAR_ID, anything).
-              and_return(event_repository)
+                                                with(anything, CalendarAssistant::Config::DEFAULT_CALENDAR_ID, anything).
+                                                and_return(event_repository)
         end
 
         it "creates a scheduler and invokes #available_blocks" do
           expect(CalendarAssistant::Scheduler).to receive(:new).
-              with(ca, [event_repository]).
-              and_return(scheduler)
+                                                    with(ca, [event_repository]).
+                                                    and_return(scheduler)
           expect(scheduler).to receive(:available_blocks).with(time_range, predicates: {}).and_return(event_set)
 
           response = ca.availability(time_range)
@@ -129,20 +128,20 @@ describe CalendarAssistant do
         let(:other_calendar_id) { "somebodyelse@example.com" }
         let(:config_options) do
           {
-              CalendarAssistant::Config::Keys::Options::CALENDARS => other_calendar_id,
+            CalendarAssistant::Config::Keys::Options::CALENDARS => other_calendar_id,
           }
         end
 
         before do
           expect(event_repository_factory).to receive(:new_event_repository).
-              with(anything, other_calendar_id, anything).
-              and_return(event_repository)
+                                                with(anything, other_calendar_id, anything).
+                                                and_return(event_repository)
         end
 
         it "creates a scheduler and invokes #available_blocks" do
           expect(CalendarAssistant::Scheduler).to receive(:new).
-              with(ca, [event_repository]).
-              and_return(scheduler)
+                                                    with(ca, [event_repository]).
+                                                    and_return(scheduler)
           expect(scheduler).to receive(:available_blocks).with(time_range, predicates: {}).and_return(event_set)
 
           response = ca.availability(time_range)
@@ -156,23 +155,23 @@ describe CalendarAssistant do
 
         let(:config_options) do
           {
-              CalendarAssistant::Config::Keys::Options::CALENDARS => "someone@example.com,somebodyelse@example.com",
+            CalendarAssistant::Config::Keys::Options::CALENDARS => "someone@example.com,somebodyelse@example.com",
           }
         end
 
         before do
           expect(event_repository_factory).to receive(:new_event_repository).
-              with(anything, "someone@example.com", anything).
-              and_return(event_repository)
+                                                with(anything, "someone@example.com", anything).
+                                                and_return(event_repository)
           expect(event_repository_factory).to receive(:new_event_repository).
-              with(anything, "somebodyelse@example.com", anything).
-              and_return(event_repository2)
+                                                with(anything, "somebodyelse@example.com", anything).
+                                                and_return(event_repository2)
         end
 
         it "creates a scheduler with multiple EventRepositories" do
           expect(CalendarAssistant::Scheduler).to receive(:new).
-              with(ca, [event_repository, event_repository2]).
-              and_return(scheduler)
+                                                    with(ca, [event_repository, event_repository2]).
+                                                    and_return(scheduler)
           expect(scheduler).to receive(:available_blocks).with(time_range, predicates: {}).and_return(event_set)
 
           response = ca.availability(time_range)
@@ -189,14 +188,12 @@ describe CalendarAssistant do
       it "calls Config#in_env" do
         expect(config).to receive(:in_env)
         ca.in_env do
-          ;
         end
       end
 
       it "calls in_tz with the calendar timezone" do
         expect(ca).to receive(:in_tz)
         ca.in_env do
-          ;
         end
       end
     end
@@ -209,7 +206,6 @@ describe CalendarAssistant do
       it "calls .in_tz with the default calendar's time zone" do
         expect(CalendarAssistant).to receive(:in_tz).with("a time zone id")
         ca.in_tz do
-          ;
         end
       end
     end

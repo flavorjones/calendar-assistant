@@ -46,7 +46,7 @@ class CalendarAssistant
         date_ansi_codes << :bright if current?
         date_ansi_codes << :faint if past?
 
-        date_ansi_codes.inject(rainbow.wrap(date)) {|text, ansi| text.send ansi}
+        date_ansi_codes.inject(rainbow.wrap(date)) { |text, ansi| text.send ansi }
       end
 
       def event_date
@@ -60,7 +60,7 @@ class CalendarAssistant
           end
         else
           if start_date == end_date
-            sprintf("%s - %s", start.date_time.strftime("%Y-%m-%d  %H:%M"),  __getobj__.end.date_time.strftime("%H:%M"))
+            sprintf("%s - %s", start.date_time.strftime("%Y-%m-%d  %H:%M"), __getobj__.end.date_time.strftime("%H:%M"))
           else
             sprintf("%s  -  %s", start.date_time.strftime("%Y-%m-%d %H:%M"), __getobj__.end.date_time.strftime("%Y-%m-%d %H:%M"))
           end

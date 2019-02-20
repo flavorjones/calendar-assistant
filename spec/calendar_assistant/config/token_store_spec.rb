@@ -5,10 +5,9 @@ describe CalendarAssistant::Config::TokenStore do
 
       let :user_config do
         {
-            "tokens" =>
-                {
-                    "work" => "fake-token-string"
-                }
+          "tokens" => {
+            "work" => "fake-token-string",
+          },
         }
       end
 
@@ -61,10 +60,10 @@ describe CalendarAssistant::Config::TokenStore do
   describe "#delete" do
     let(:user_config) do
       {
-          "tokens" => {
-              "work" => "fake-token-string",
-              "play" => "fake-token-string2"
-          }
+        "tokens" => {
+          "work" => "fake-token-string",
+          "play" => "fake-token-string2",
+        },
       }
     end
 

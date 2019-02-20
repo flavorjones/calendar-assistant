@@ -1,4 +1,4 @@
-require 'date'
+require "date"
 
 shared_examples_for "an object that has duration" do
   subject { an_object }
@@ -157,7 +157,7 @@ shared_examples_for "an object that has duration" do
 
       let(:rhs) { rhs_class.new(rhs_start_date, rhs_end_date) }
 
-      describe 'cover?' do
+      describe "cover?" do
         let(:rhs_start_date) { GCal::EventDateTime.new(date: Date.today) }
         let(:rhs_end_date) { GCal::EventDateTime.new(date: Date.today + 1) }
         let(:start_param) { rhs_start_date }
@@ -178,7 +178,7 @@ shared_examples_for "an object that has duration" do
         end
       end
 
-      describe 'overlaps_end_of?' do
+      describe "overlaps_end_of?" do
         let(:rhs_start_date) { GCal::EventDateTime.new(date: Date.today + 2) }
         let(:rhs_end_date) { GCal::EventDateTime.new(date: Date.today + 6) }
         let(:start_param) { GCal::EventDateTime.new(date: Date.today + 1) }
@@ -199,7 +199,7 @@ shared_examples_for "an object that has duration" do
         end
       end
 
-      describe 'overlaps_start_of?' do
+      describe "overlaps_start_of?" do
         let(:rhs_start_date) { GCal::EventDateTime.new(date: Date.today) }
         let(:rhs_end_date) { GCal::EventDateTime.new(date: Date.today + 5) }
         let(:start_param) { GCal::EventDateTime.new(date: Date.today + 2) }
@@ -347,7 +347,6 @@ shared_examples_for "an object that has duration" do
         let(:start_param) { GCal::EventDateTime.new(date: Date.today) }
         let(:end_param) { GCal::EventDateTime.new(date: Date.today + 1) }
 
-
         it { expect(subject.duration).to eq("1d") }
       end
 
@@ -374,18 +373,17 @@ shared_examples_for "an object that has duration" do
 
       it "calls Event.duration_in_seconds with the start and end times" do
         expect(CalendarAssistant::HasDuration).to receive(:duration_in_seconds).
-            with(start_param.date_time, end_param.date_time).
-            and_return(duration)
+                                                    with(start_param.date_time, end_param.date_time).
+                                                    and_return(duration)
 
         result = subject.duration_in_seconds
         expect(result).to eq(duration)
       end
     end
 
-
     describe "#contains?" do
       freeze_time
-      let(:time_zone) { ENV['TZ'] }
+      let(:time_zone) { ENV["TZ"] }
 
       subject { in_tz { an_object } }
 

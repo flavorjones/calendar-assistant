@@ -1,6 +1,6 @@
 class CalendarAssistant
   class EventRepository
-    class CalendarNotFoundException < CalendarAssistant::BaseException;
+    class CalendarNotFoundException < CalendarAssistant::BaseException
     end
 
     attr_reader :calendar, :calendar_id, :config
@@ -15,40 +15,39 @@ class CalendarAssistant
       raise
     end
 
-    def in_tz &block
+    def in_tz(&block)
       CalendarAssistant.in_tz calendar.time_zone do
         yield
       end
     end
 
-    def find time_range, predicates: {}
+    def find(time_range, predicates: {})
       events = @service.list_events(@calendar_id,
-                                   time_min: time_range.first.iso8601,
-                                   time_max: time_range.last.iso8601,
-                                   order_by: "startTime",
-                                   single_events: true,
-                                   max_results: 2000,
-                                   )
+                                    time_min: time_range.first.iso8601,
+                                    time_max: time_range.last.iso8601,
+                                    order_by: "startTime",
+                                    single_events: true,
+                                    max_results: 2000)
       events = events.items.map { |e| CalendarAssistant::Event.new(e, config: config) }
 
       events = filter_by_predicates(events, predicates) unless predicates.empty?
       CalendarAssistant::EventSet.new self, events
     end
 
-    def new event_attributes
+    def new(event_attributes)
       event = Google::Apis::CalendarV3::Event.new DateHelpers.cast_dates(event_attributes)
       event.visibility ||= config.event_visibility
       CalendarAssistant::Event.new(event, config: config)
     end
 
-    def create event_attributes
+    def create(event_attributes)
       new(event_attributes).tap do |event|
         @service.insert_event @calendar_id, event.__getobj__
       end
     end
 
-    def delete event
-      @service.delete_event @calendar_id,  event.id
+    def delete(event)
+      @service.delete_event @calendar_id, event.id
       event
     end
 

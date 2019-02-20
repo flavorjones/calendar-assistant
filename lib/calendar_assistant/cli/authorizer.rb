@@ -20,17 +20,17 @@
 class CalendarAssistant
   module CLI
     class Authorizer
-      class NoCredentials < CalendarAssistant::BaseException ; end
-      class UnauthorizedError < CalendarAssistant::BaseException ; end
+      class NoCredentials < CalendarAssistant::BaseException; end
+      class UnauthorizedError < CalendarAssistant::BaseException; end
 
-      OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
+      OOB_URI = "urn:ietf:wg:oauth:2.0:oob".freeze
       APPLICATION_NAME = "Flavorjones Calendar Assistant".freeze
-      CREDENTIALS_PATH = File.join (ENV['CA_HOME'] || ENV["HOME"]), ".calendar-assistant.client"
+      CREDENTIALS_PATH = File.join (ENV["CA_HOME"] || ENV["HOME"]), ".calendar-assistant.client"
       SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR
 
       attr_reader :profile_name, :config_token_store
 
-      def initialize profile_name, config_token_store
+      def initialize(profile_name, config_token_store)
         @profile_name = profile_name
         @config_token_store = config_token_store
       end
@@ -50,7 +50,7 @@ class CalendarAssistant
         end
       end
 
-    private
+      private
 
       def credentials
         @credentials ||= authorizer.get_credentials profile_name
@@ -74,14 +74,14 @@ class CalendarAssistant
 
       def authorizer
         @authorizer ||= begin
-                          if ! File.exists?(CREDENTIALS_PATH)
-                            raise NoCredentials, "No credentials found. Please run `calendar-assistant help setup` for instructions"
-                          end
+          if !File.exists?(CREDENTIALS_PATH)
+            raise NoCredentials, "No credentials found. Please run `calendar-assistant help setup` for instructions"
+          end
 
-                          FileUtils.chmod 0600, CREDENTIALS_PATH
-                          client_id = Google::Auth::ClientId.from_file(CREDENTIALS_PATH)
-                          Google::Auth::UserAuthorizer.new(client_id, SCOPE, config_token_store)
-                        end
+          FileUtils.chmod 0600, CREDENTIALS_PATH
+          client_id = Google::Auth::ClientId.from_file(CREDENTIALS_PATH)
+          Google::Auth::UserAuthorizer.new(client_id, SCOPE, config_token_store)
+        end
       end
     end
   end

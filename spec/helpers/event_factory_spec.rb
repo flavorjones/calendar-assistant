@@ -6,8 +6,8 @@ describe EventFactory do
     it "retains the original structure" do
       events = event_factory.create_list do
         {
-            "key 1" => [{id: "funky"}],
-            "key 2" => [{id: "cold"}, {id: "medina"}]
+          "key 1" => [{ id: "funky" }],
+          "key 2" => [{ id: "cold" }, { id: "medina" }],
         }
       end
 
@@ -34,11 +34,11 @@ describe EventFactory do
     end
 
     subject { event_factory.create_list(default_attributes) { [attributes] }.first }
-    let(:attributes) { {start: "10:00", end: "15:00"} }
+    let(:attributes) { { start: "10:00", end: "15:00" } }
 
     describe "date parsing" do
       describe "when a default date is set" do
-        let(:default_attributes) { {date: "2001-01-01"} }
+        let(:default_attributes) { { date: "2001-01-01" } }
 
         it "parses the start and end dates relative to that date" do
           expect(subject.start.date_time).to eq Chronic.parse("2001-01-01 10:00")
@@ -62,7 +62,7 @@ describe EventFactory do
       subject { event.id }
 
       describe "when an id is passed" do
-        let(:attributes) { {id: "fancy-id"} }
+        let(:attributes) { { id: "fancy-id" } }
 
         it { is_expected.to eq "fancy-id" }
       end
@@ -78,11 +78,11 @@ describe EventFactory do
     describe "dates" do
       subject { event }
 
-      let(:attributes) { {start: "10:00", end: "15:00"} }
+      let(:attributes) { { start: "10:00", end: "15:00" } }
 
       describe "options" do
         describe "passing multiple options" do
-          let(:attributes) { {start: Time.now.to_s, options: [:recurring, :self]} }
+          let(:attributes) { { start: Time.now.to_s, options: [:recurring, :self] } }
 
           it { is_expected.to be_recurring }
           it { is_expected.to be_self }
@@ -91,12 +91,12 @@ describe EventFactory do
         describe "individual options" do
           shared_examples_for "an option that translates to a predicate" do
             context "when the option is set" do
-              let(:attributes) { {start: Time.now.to_s, options: option} }
+              let(:attributes) { { start: Time.now.to_s, options: option } }
               it { is_expected.to self.send("be_#{option}") }
             end
 
             context "when the option is not set" do
-              let(:attributes) { {start: Time.now.to_s} }
+              let(:attributes) { { start: Time.now.to_s } }
               it { is_expected.not_to self.send("be_#{option}") }
             end
           end
@@ -151,24 +151,24 @@ describe EventFactory do
 
           describe "busy" do
             context "when set" do
-              let(:attributes) { {start: Time.now.to_s, options: :busy} }
+              let(:attributes) { { start: Time.now.to_s, options: :busy } }
               it { is_expected.to be_busy }
             end
 
             context "when deliberately not set" do
-              let(:attributes) { {start: Time.now.to_s} }
+              let(:attributes) { { start: Time.now.to_s } }
               it { is_expected.to be_busy }
             end
 
             context "when set to free" do
-              let(:attributes) { {start: Time.now.to_s, options: :free} }
+              let(:attributes) { { start: Time.now.to_s, options: :free } }
               it { is_expected.not_to be_busy }
             end
           end
 
           describe "location event" do
             let(:option) { :location_event }
-            let(:attributes) { {start: Time.now.to_s, options: option} }
+            let(:attributes) { { start: Time.now.to_s, options: option } }
 
             it_behaves_like "an option that translates to a predicate"
 

@@ -1,5 +1,5 @@
 describe CalendarAssistant::LocationEventRepository do
-  def expect_event_equalish e1, e2
+  def expect_event_equalish(e1, e2)
     expect(e1.summary).to eq(e2.summary)
     expect(e1.start_time).to eq(e2.start_time)
     expect(e1.end_time).to eq(e2.end_time)
@@ -28,7 +28,6 @@ describe CalendarAssistant::LocationEventRepository do
 
     let(:event_array) { [location_event, other_event] }
     let(:event_set) { CalendarAssistant::EventSet.new event_repository, event_array }
-
 
     it "filters out non-location events" do
       time = Time.now.beginning_of_day..(Time.now + 1.day).end_of_day

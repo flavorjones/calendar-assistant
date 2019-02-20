@@ -1,6 +1,6 @@
 class CalendarAssistant
   module DateHelpers
-    def self.cast_dates attributes
+    def self.cast_dates(attributes)
       attributes.each_with_object({}) do |(key, value), object|
         if value.is_a?(Time) || value.is_a?(DateTime)
           object[key] = Google::Apis::CalendarV3::EventDateTime.new(date_time: value)
@@ -13,4 +13,3 @@ class CalendarAssistant
     end
   end
 end
-
