@@ -413,4 +413,19 @@ describe CalendarAssistant::CLI::Commands do
       described_class.start [command, "-a", "somebody@example.com"]
     end
   end
+
+  describe "interactive" do
+    let(:command) { "interactive" }
+    it_behaves_like "a command" do
+      before do
+        allow(CalendarAssistant::CLI::Repl).to receive(:start).with(described_class)
+      end
+    end
+
+    it "calls the repl" do
+      expect(CalendarAssistant::CLI::Repl).to receive(:start).with(described_class)
+
+      described_class.start [command]
+    end
+  end
 end

@@ -255,6 +255,13 @@ class CalendarAssistant
         end
       end
 
+      desc "interactive", "interactive console for calendar assistant"
+
+      def interactive
+        return if handle_help_args
+        CalendarAssistant::CLI::Repl.start(CalendarAssistant::CLI::Commands)
+      end
+
       private
 
       def set_formatting
