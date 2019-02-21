@@ -1,3 +1,5 @@
+require "thor_repl"
+
 describe CalendarAssistant::CLI::Commands do
   shared_examples "a command" do |options|
     options ||= {}
@@ -418,12 +420,12 @@ describe CalendarAssistant::CLI::Commands do
     let(:command) { "interactive" }
     it_behaves_like "a command" do
       before do
-        allow(CalendarAssistant::CLI::Repl).to receive(:start).with(described_class)
+        allow(ThorRepl).to receive(:start)
       end
     end
 
     it "calls the repl" do
-      expect(CalendarAssistant::CLI::Repl).to receive(:start).with(described_class)
+      expect(ThorRepl).to receive(:start).with(described_class, anything)
 
       described_class.start [command]
     end
