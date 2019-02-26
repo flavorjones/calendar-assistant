@@ -1,9 +1,11 @@
 # Changelog for Calendar Assistant
-## Unreleased
+
+## v0.10.0 / 2019-02-26
 
 Features:
 
 - Interactive console mode: `interactive`
+
 
 ## v0.9.0 / 2019-02-11
 
