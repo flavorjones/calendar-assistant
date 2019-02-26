@@ -1,6 +1,8 @@
 class CalendarAssistant
   module CLI
     class Commands < Thor
+      HISTORY_FILE_PATH = File.join (ENV["CA_HOME"] || ENV["HOME"]), ".calendar-assistant.history"
+
       def self.will_create_a_service
         option CalendarAssistant::Config::Keys::Settings::PROFILE,
                type: :string,
@@ -253,6 +255,13 @@ class CalendarAssistant
           event_set = ca.availability date
           out.print_available_blocks ca, event_set
         end
+      end
+
+      desc "interactive", "interactive console for calendar assistant"
+      def interactive
+        return if handle_help_args
+        require "thor_repl"
+        ThorRepl.start(CalendarAssistant::CLI::Commands, history_file_path: HISTORY_FILE_PATH, prompt: Rainbow("calendar-asssistant> ").bright)
       end
 
       private
