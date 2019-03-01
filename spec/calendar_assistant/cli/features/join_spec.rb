@@ -13,7 +13,7 @@ RSpec.describe "join", :type => :aruba do
     end
   end
 
-  before(:each) { run_command("./bin/calendar-assistant join --no-join --formatting=false --local-store=#{filename}") }
+  before(:each) { run_command("./bin/calendar-assistant join --no-join --no-color --local-store=#{filename}") }
   before(:each) { stop_all_commands }
 
   subject { last_command_stopped }

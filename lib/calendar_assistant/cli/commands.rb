@@ -46,11 +46,10 @@ class CalendarAssistant
                    type: :boolean,
                    desc: "how dare you suggest there are bugs"
 
-      class_option CalendarAssistant::Config::Keys::Options::FORMATTING,
+      class_option CalendarAssistant::Config::Keys::Options::COLOR,
                    type: :boolean,
-                   desc: "Enable Text Formatting",
-                   default: CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Options::FORMATTING],
-                   aliases: "-f"
+                   desc: "Enable ANSI Text Coloring",
+                   default: CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Options::COLOR]
 
       desc "version",
            "Display the version of calendar-assistant"
@@ -177,7 +176,7 @@ class CalendarAssistant
 
       def join(timespec = "now")
         return if handle_help_args
-        set_formatting
+        set_color_option
         ca = CalendarAssistant.new command_service.config, service: command_service.service
         ca.in_env do
           event_set, url = CalendarAssistant::CLI::Helpers.find_av_uri ca, timespec
@@ -258,6 +257,7 @@ class CalendarAssistant
       end
 
       desc "interactive", "interactive console for calendar assistant"
+
       def interactive
         return if handle_help_args
         require "thor_repl"
@@ -266,8 +266,8 @@ class CalendarAssistant
 
       private
 
-      def set_formatting
-        Rainbow.enabled = !!options[:formatting]
+      def set_color_option
+        Rainbow.enabled = !!options[CalendarAssistant::Config::Keys::Options::COLOR]
       end
 
       def command_service
@@ -276,7 +276,7 @@ class CalendarAssistant
 
       def calendar_assistant(datespec = "today", &block)
         return if handle_help_args
-        set_formatting
+        set_color_option
         command_service.calendar_assistant(datespec, &block)
       end
 

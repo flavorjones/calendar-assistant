@@ -37,7 +37,7 @@ class CalendarAssistant
         CALENDARS = "calendars"     # array of calendar ids (comma-delimited)
         LOCAL_STORE = "local-store" # filename
         DEBUG = "debug"             # bool
-        FORMATTING = "formatting"   # Rainbow
+        COLOR = "color"             # bool
         MUST_BE = "must-be"         # array of event predicates (comma-delimited)
         MUST_NOT_BE = "must-not-be" # array of event predicates (comma-delimited)
         CONTEXT = "context"         # symbol referring to command context
@@ -53,7 +53,7 @@ class CalendarAssistant
       Keys::Settings::START_OF_DAY => "9am",              # BusinessTime
       Keys::Settings::END_OF_DAY => "6pm",                # BusinessTime
       Keys::Options::CALENDARS => [DEFAULT_CALENDAR_ID],  # array of calendar ids
-      Keys::Options::FORMATTING => true,                  # Rainbow
+      Keys::Options::COLOR => true,                       # bool
     }
 
     attr_reader :user_config, :options, :defaults
