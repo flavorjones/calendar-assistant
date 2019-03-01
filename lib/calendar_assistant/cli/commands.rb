@@ -51,6 +51,12 @@ class CalendarAssistant
                    desc: "Enable ANSI Text Coloring",
                    default: CalendarAssistant::Config::DEFAULT_SETTINGS[CalendarAssistant::Config::Keys::Options::COLOR]
 
+      class_option CalendarAssistant::Config::Keys::Options::FORMAT,
+                   type: :string,
+                   banner: "FORMAT",
+                   desc: "output format (e.g, 'csv')",
+                   aliases: ["-F"]
+
       desc "version",
            "Display the version of calendar-assistant"
 

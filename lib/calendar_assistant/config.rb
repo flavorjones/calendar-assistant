@@ -42,6 +42,7 @@ class CalendarAssistant
         MUST_NOT_BE = "must-not-be" # array of event predicates (comma-delimited)
         CONTEXT = "context"         # symbol referring to command context
         FORCE = "force"             # bool
+        FORMAT = "format"           # string
       end
     end
 
@@ -54,6 +55,7 @@ class CalendarAssistant
       Keys::Settings::END_OF_DAY => "6pm",                # BusinessTime
       Keys::Options::CALENDARS => [DEFAULT_CALENDAR_ID],  # array of calendar ids
       Keys::Options::COLOR => true,                       # bool
+      Keys::Options::FORMAT => "human",                   # string
     }
 
     attr_reader :user_config, :options, :defaults

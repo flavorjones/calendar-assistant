@@ -47,6 +47,28 @@ RSpec.describe "show", :type => :aruba do
     end
   end
 
+  context "when we request CSV formatting" do
+    before(:each) { run_command("./bin/calendar-assistant show 2018-01-01 --format=csv --local-store=#{filename}") }
+
+    it { is_expected.to be_successfully_executed }
+
+    it "prints events for the first of January, 2018" do
+      expected = <<~OUT
+        start_time,end_time,description
+        2018-01-01T11:02:01-05:00,2018-01-01T11:02:01-05:00,accepted
+        2018-01-01T11:02:01-05:00,2018-01-01T11:02:01-05:00,self
+        2018-01-01T11:02:01-05:00,2018-01-01T11:02:01-05:00,declined
+        2018-01-01T11:02:01-05:00,2018-01-01T11:02:01-05:00,maybe
+        2018-01-01T11:02:01-05:00,2018-01-01T11:02:01-05:00,needs action
+        2018-01-01T11:02:01-05:00,2018-01-01T11:02:01-05:00,private
+        2018-01-01T11:02:01-05:00,2018-01-01T11:02:01-05:00,accepted
+        2018-01-01T11:02:01-05:00,2018-01-01T11:02:01-05:00,accepted
+
+      OUT
+      expect(subject.output).to eq(expected)
+    end
+  end
+
   context "when passed a predicate" do
     before(:each) { run_command("./bin/calendar-assistant show 2018-01-01 --must-not-be=self,tentative --no-color --local-store=#{filename}") }
 

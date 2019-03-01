@@ -159,6 +159,7 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
           [--color], [--no-color]  # Enable ANSI Text Coloring
                                    # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 
 Description:
   This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar API, and saving the
@@ -180,6 +181,7 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
           [--color], [--no-color]  # Enable ANSI Text Coloring
                                    # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your calendar.
@@ -214,6 +216,7 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
           [--color], [--no-color]  # Enable ANSI Text Coloring
                                    # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 </pre>
 
 
@@ -234,6 +237,7 @@ Options:
           [--debug], [--no-debug]                  # how dare you suggest there are bugs
           [--color], [--no-color]                  # Enable ANSI Text Coloring
                                                    # Default: true
+  -F, [--format=FORMAT]                            # output format (e.g, 'csv')
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
 </pre>
@@ -279,6 +283,7 @@ Options:
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
           [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
+  -F, [--format=FORMAT]                                       # output format (e.g, 'csv')
 
 Show your availability for a date or range of dates (default 'today')
 </pre>
@@ -381,6 +386,7 @@ Options:
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
           [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
+  -F, [--format=FORMAT]                                       # output format (e.g, 'csv')
 
 Set your location to LOCATION for a date or range of dates (default 'today')
 </pre>
@@ -427,6 +433,7 @@ Options:
           [--debug], [--no-debug]                  # how dare you suggest there are bugs
           [--color], [--no-color]                  # Enable ANSI Text Coloring
                                                    # Default: true
+  -F, [--format=FORMAT]                            # output format (e.g, 'csv')
 
 Show your location for a date or range of dates (default 'today')
 </pre>
@@ -459,6 +466,7 @@ Options:
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
           [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
+  -F, [--format=FORMAT]                                       # output format (e.g, 'csv')
 
 Show your events for a date or range of dates (default 'today')
 </pre>
@@ -529,6 +537,7 @@ Options:
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
           [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
+  -F, [--format=FORMAT]                                       # output format (e.g, 'csv')
 
 Lint your events for a date or range of dates (default 'today')
 </pre>
@@ -563,6 +572,7 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
           [--color], [--no-color]  # Enable ANSI Text Coloring
                                    # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 
 Dump your configuration parameters (merge of defaults and overrides from /home/user/.calendar-assistant)
 </pre>
@@ -590,6 +600,7 @@ Options:
           [--debug], [--no-debug]  # how dare you suggest there are bugs
           [--color], [--no-color]  # Enable ANSI Text Coloring
                                    # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 
 interactive console for calendar assistant
 </pre>
