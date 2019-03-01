@@ -155,10 +155,10 @@ Usage:
   calendar-assistant setup
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
 
 Description:
   This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar API, and saving the
@@ -176,10 +176,10 @@ Usage:
   calendar-assistant authorize PROFILE_NAME
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
 
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your calendar.
@@ -210,10 +210,10 @@ Commands:
   calendar-assistant version                                      # Display the version of calendar-assistant
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
 </pre>
 
 
@@ -232,7 +232,7 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                    
           [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
+          [--color], [--no-color]                  # Enable ANSI Text Coloring
                                                    # Default: true
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
@@ -277,7 +277,7 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+          [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
 
 Show your availability for a date or range of dates (default 'today')
@@ -379,7 +379,7 @@ Options:
   -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+          [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
 
 Set your location to LOCATION for a date or range of dates (default 'today')
@@ -425,7 +425,7 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                    
           [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
+          [--color], [--no-color]                  # Enable ANSI Text Coloring
                                                    # Default: true
 
 Show your location for a date or range of dates (default 'today')
@@ -457,7 +457,7 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+          [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
 
 Show your events for a date or range of dates (default 'today')
@@ -527,7 +527,7 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+          [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
 
 Lint your events for a date or range of dates (default 'today')
@@ -559,10 +559,10 @@ Usage:
   calendar-assistant config
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
 
 Dump your configuration parameters (merge of defaults and overrides from /home/user/.calendar-assistant)
 </pre>
@@ -586,10 +586,10 @@ Usage:
   calendar-assistant interactive
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
 
 interactive console for calendar assistant
 </pre>
