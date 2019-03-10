@@ -42,5 +42,3 @@ class CalendarAssistant
   autoload :PredicateCollection, "calendar_assistant/predicate_collection"
   autoload :LocationConfigValidator, "calendar_assistant/location_config_validator"
 end
-
-require "calendar_assistant/cli"

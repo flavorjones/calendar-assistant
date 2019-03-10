@@ -20,7 +20,7 @@ class CalendarAssistant
                           FileUtils.chmod 0600, config_file_path
                           TOML.load_file config_file_path
                         rescue Exception => e
-                          raise TomlParseFailure, "could not parse #{config_file_path}: #{e}"
+                          raise TomlParseFailure, "could not parse TOML file '#{config_file_path}': #{e}"
                         end
                       else
                         Hash.new

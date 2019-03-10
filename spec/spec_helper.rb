@@ -1,10 +1,26 @@
 require "simplecov"
+require 'tmpdir'
 
 SimpleCov.start do
   add_filter "/spec/"
 end
 
 require_relative "../lib/calendar_assistant"
+
+def use_clean_config
+  temp_home_dir = Dir.mktmpdir
+  ENV["CA_HOME"] = temp_home_dir
+
+  yield
+
+  FileUtils.remove_entry temp_home_dir
+end
+
+# CLI::Commands reads local config to generate help and options
+use_clean_config do
+  require_relative "../lib/calendar_assistant/cli"
+end
+
 require_relative "./helpers/event_factory"
 require_relative "./shared_examples/a_configuration_class"
 require_relative "./shared_examples/an_object_that_has_duration"
