@@ -192,6 +192,10 @@ class CalendarAssistant
 
     def av_uri
       @av_uri ||= begin
+        if conference_data && conference_data.conference_solution.name == "Zoom Meeting"
+          return conference_data.entry_points.detect{|d| d.entry_point_type == "video" }.uri
+        end
+
         description_link = CalendarAssistant::StringHelpers.find_uri_for_domain(description, "zoom.us")
         return description_link if description_link
 
