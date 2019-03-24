@@ -1,5 +1,19 @@
 # Changelog for Calendar Assistant
 
+## unreleased
+
+Features:
+
+- Emit human-readable message upon TOML parsing failures. [#92]
+- `join` detects zoom links in conference metadata. [#119]
+
+
+Bug fixes:
+
+- Update thor_repl dependency so `interactive` will handle embedded whitespace. [#128]
+
+
+
 ## v0.10.0 / 2019-02-26
 
 Features:
