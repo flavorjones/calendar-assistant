@@ -88,7 +88,7 @@ jobs:
             - name: ci
             - name: calendar-assistant
           params:
-            CC_TEST_REPORTER_ID: {{code_climate_reporter_id}}
+            CC_TEST_REPORTER_ID: ((code_climate_reporter_id))
             GIT_BRANCH: master
           run:
             path: ci/concourse/tasks/rake-spec/run.sh
@@ -115,7 +115,7 @@ jobs:
             - name: calendar-assistant-pr
               path: calendar-assistant
           params:
-            CC_TEST_REPORTER_ID: {{code_climate_reporter_id}}
+            CC_TEST_REPORTER_ID: ((code_climate_reporter_id))
           run:
             path: ci/concourse/tasks/rake-spec/run.sh
         on_failure:
