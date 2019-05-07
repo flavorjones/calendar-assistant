@@ -106,7 +106,7 @@ describe CalendarAssistant::CLI::EventSetPresenter do
 
       it "prints the event description" do
         expect(event_presenter_class).to receive(:new).and_return(event_presenter)
-        expect(subject.to_s).to match /event-presenter-description/
+        expect(subject.to_s).to match(/event-presenter-description/)
       end
     end
 

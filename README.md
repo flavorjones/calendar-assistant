@@ -155,10 +155,11 @@ Usage:
   calendar-assistant setup
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 
 Description:
   This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar API, and saving the
@@ -176,10 +177,11 @@ Usage:
   calendar-assistant authorize PROFILE_NAME
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your calendar.
@@ -210,10 +212,11 @@ Commands:
   calendar-assistant version                                      # Display the version of calendar-assistant
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 </pre>
 
 
@@ -232,8 +235,9 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                    
           [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
+          [--color], [--no-color]                  # Enable ANSI Text Coloring
                                                    # Default: true
+  -F, [--format=FORMAT]                            # output format (e.g, 'csv')
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
 </pre>
@@ -277,8 +281,9 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+          [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
+  -F, [--format=FORMAT]                                       # output format (e.g, 'csv')
 
 Show your availability for a date or range of dates (default 'today')
 </pre>
@@ -379,8 +384,9 @@ Options:
   -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+          [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
+  -F, [--format=FORMAT]                                       # output format (e.g, 'csv')
 
 Set your location to LOCATION for a date or range of dates (default 'today')
 </pre>
@@ -425,8 +431,9 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                    
           [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
+          [--color], [--no-color]                  # Enable ANSI Text Coloring
                                                    # Default: true
+  -F, [--format=FORMAT]                            # output format (e.g, 'csv')
 
 Show your location for a date or range of dates (default 'today')
 </pre>
@@ -457,8 +464,9 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+          [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
+  -F, [--format=FORMAT]                                       # output format (e.g, 'csv')
 
 Show your events for a date or range of dates (default 'today')
 </pre>
@@ -527,8 +535,9 @@ Options:
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
+          [--color], [--no-color]                             # Enable ANSI Text Coloring
                                                               # Default: true
+  -F, [--format=FORMAT]                                       # output format (e.g, 'csv')
 
 Lint your events for a date or range of dates (default 'today')
 </pre>
@@ -559,10 +568,11 @@ Usage:
   calendar-assistant config
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 
 Dump your configuration parameters (merge of defaults and overrides from /home/user/.calendar-assistant)
 </pre>
@@ -586,10 +596,11 @@ Usage:
   calendar-assistant interactive
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help]    
+          [--debug], [--no-debug]  # how dare you suggest there are bugs
+          [--color], [--no-color]  # Enable ANSI Text Coloring
+                                   # Default: true
+  -F, [--format=FORMAT]            # output format (e.g, 'csv')
 
 interactive console for calendar assistant
 </pre>

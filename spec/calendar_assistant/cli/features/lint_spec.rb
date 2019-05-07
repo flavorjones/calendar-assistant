@@ -20,7 +20,7 @@ RSpec.describe "lint", :type => :aruba do
     end
   end
 
-  before(:each) { run_command("./bin/calendar-assistant lint 2018-01-01 --formatting=false --local-store=#{filename}") }
+  before(:each) { run_command("./bin/calendar-assistant lint 2018-01-01 --no-color --local-store=#{filename}") }
   before(:each) { stop_all_commands }
 
   subject { last_command_stopped }

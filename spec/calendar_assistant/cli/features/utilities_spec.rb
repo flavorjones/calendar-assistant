@@ -17,7 +17,7 @@ RSpec.describe "utility features", :type => :aruba do
   subject { last_command_stopped }
 
   describe "config" do
-    before(:each) { run_command("./bin/calendar-assistant config --formatting=false") }
+    before(:each) { run_command("./bin/calendar-assistant config --no-color") }
     before(:each) { stop_all_commands }
 
     it { is_expected.to be_successfully_executed }
@@ -28,7 +28,7 @@ RSpec.describe "utility features", :type => :aruba do
   end
 
   describe "version" do
-    before(:each) { run_command("./bin/calendar-assistant version --formatting=false") }
+    before(:each) { run_command("./bin/calendar-assistant version --no-color") }
     before(:each) { stop_all_commands }
 
     it { is_expected.to be_successfully_executed }
@@ -39,7 +39,7 @@ RSpec.describe "utility features", :type => :aruba do
   end
 
   describe "authorize" do
-    before(:each) { run_command("./bin/calendar-assistant authorize --formatting=false") }
+    before(:each) { run_command("./bin/calendar-assistant authorize --no-color") }
     before(:each) { stop_all_commands }
 
     it { is_expected.to be_successfully_executed }
@@ -50,7 +50,7 @@ RSpec.describe "utility features", :type => :aruba do
   end
 
   describe "help" do
-    before(:each) { run_command("./bin/calendar-assistant help --formatting=false") }
+    before(:each) { run_command("./bin/calendar-assistant help --no-color") }
     before(:each) { stop_all_commands }
 
     it { is_expected.to be_successfully_executed }
