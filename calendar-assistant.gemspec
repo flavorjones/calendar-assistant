@@ -40,7 +40,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "aruba", "~> 0.14.8"
   spec.add_development_dependency "bundler", "~> 2.0.1"
   spec.add_development_dependency "concourse"
-  spec.add_development_dependency "faker", "~> 1.9"
+  spec.add_development_dependency "faker", "~> 2.0"
   spec.add_development_dependency "license_finder", "~> 5.5"
   spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "rspec", "~> 3.0"
