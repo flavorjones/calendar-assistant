@@ -79,4 +79,8 @@ end
 #  default
 #
 desc "Run unit specs, feature specs, license finder, and check the README"
-task "default" => ["spec", "license_finder", "readme:check"]
+task "default" => [
+       "spec",
+       "readme:check",
+       "license_finder", # last because it modifies bundle env
+     ]
