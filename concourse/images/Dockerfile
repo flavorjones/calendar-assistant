@@ -1,4 +1,4 @@
-FROM ruby:latest
+FROM ruby:2.6
 LABEL maintainer=mike.dalessio@gmail.com
 
 RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
