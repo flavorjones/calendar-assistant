@@ -4,10 +4,11 @@ LABEL maintainer=mike.dalessio@gmail.com
 RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install --global ansi-to-html markdown-toc
-RUN gem install bundler
 
 COPY Gemfile                           calendar-assistant/
 COPY Gemfile.lock                      calendar-assistant/
+RUN gem install bundler
+
 COPY calendar-assistant.gemspec        calendar-assistant/
 COPY lib/calendar_assistant/version.rb calendar-assistant/lib/calendar_assistant/
 
