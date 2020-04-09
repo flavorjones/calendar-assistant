@@ -1,5 +1,12 @@
 # Changelog for Calendar Assistant
 
+## v0.12.0 / 2020-04-09
+
+Features:
+
+- Support password parameters for Zoom conferences. Survive the pandemic in security and style. [#154]
+
+
 ## v0.11.0 / 2019-03-24
 
 Features:
