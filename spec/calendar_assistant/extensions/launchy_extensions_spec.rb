@@ -23,6 +23,11 @@ describe CalendarAssistant::ZoomLaunchy do
         let(:url) { "https://schmoopie.zoom.us/j/999999999" }
         it { expect(described_class.handles?(url)).to be_truthy }
       end
+
+      context "that is a conference number link with cgi params" do
+        let(:url) { "https://schmoopie.zoom.us/j/999999999?pwd=asdf1234asdf1234&ug=ASDF1234" }
+        it { expect(described_class.handles?(url)).to be_truthy }
+      end
     end
   end
 
@@ -30,8 +35,8 @@ describe CalendarAssistant::ZoomLaunchy do
     context "given a zoom conference number link" do
       before { ENV["BROWSER"] = "mybrowser" } # used by parent class Launchy::Application::Browser
 
-      let(:url) { "https://schmoopie.zoom.us/j/999999999" }
-      let(:zoommtg) { "zoommtg://zoom.us/join?confno=999999999" }
+      let(:url) { "https://schmoopie.zoom.us/j/999999999?pwd=asdf1234asdf1234" }
+      let(:zoommtg) { "zoommtg://zoom.us/join?confno=999999999&pwd=asdf1234asdf1234" }
 
       [["darwin", "open"], ["linux", "xdg-open"]].each do |host_os, command|
         context "on host os '#{host_os}'" do
