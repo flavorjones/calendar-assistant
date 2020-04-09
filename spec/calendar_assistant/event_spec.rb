@@ -594,10 +594,10 @@ describe CalendarAssistant::Event do
     describe "av_uri" do
       context "there's conference data" do
         let(:entry_point) { double(:entry_point, entry_point_type: "video", uri: "https://company.zoom.us/j/123412341") }
-        let(:conference_data) { double(:conference_data, conference_solution: conference_solution , entry_points: [ entry_point ] ) }
+        let(:conference_data) { double(:conference_data, conference_solution: conference_solution, entry_points: [entry_point]) }
 
         let(:decorated_object) do
-          decorated_class.new( conference_data: conference_data)
+          decorated_class.new(conference_data: conference_data)
         end
 
         context "and it's for a zoom conference" do
@@ -635,6 +635,19 @@ describe CalendarAssistant::Event do
 
         it "returns the URI" do
           expect(subject.av_uri).to eq("https://company.zoom.us/j/123412341")
+        end
+
+        context "and the zoom link has a password argument" do
+          let(:decorated_object) do
+            decorated_class.new(
+              description: "zoom at https://company.zoom.us/j/123412341?pwd=b1JzSW1UejhJUmVvNXpwYld2blhidz09&sa=D&usg=AOvVaw37e4r3Q-am15Mp07mgoUE9 please",
+              hangout_link: nil,
+            )
+          end
+
+          it "returns the URI" do
+            expect(subject.av_uri).to eq("https://company.zoom.us/j/123412341?pwd=b1JzSW1UejhJUmVvNXpwYld2blhidz09&sa=D&usg=AOvVaw37e4r3Q-am15Mp07mgoUE9")
+          end
         end
       end
 

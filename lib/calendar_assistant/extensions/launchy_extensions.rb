@@ -12,7 +12,7 @@ require "launchy"
 #
 class CalendarAssistant
   class ZoomLaunchy < Launchy::Application::Browser
-    ZOOM_URI_REGEXP = %r(https?://\w+.zoom.us/j/(\d+))
+    ZOOM_URI_REGEXP = %r(https?://\w+.zoom.us/j/(\d+)(\?(.*))?)
 
     def self.handles?(uri)
       return true if ZOOM_URI_REGEXP.match(uri)
@@ -31,8 +31,11 @@ class CalendarAssistant
       if command.nil?
         super uri, options
       else
-        confno = ZOOM_URI_REGEXP.match(uri)[1]
+        matches = ZOOM_URI_REGEXP.match(uri)
+        confno = matches[1]
+        params = matches[3]
         url = "zoommtg://zoom.us/join?confno=#{confno}"
+        url += "&#{params}" if params
         run command, [url]
       end
     end
