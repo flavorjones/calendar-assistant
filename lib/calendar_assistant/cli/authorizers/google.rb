@@ -41,7 +41,7 @@ class CalendarAssistant
 
         def service
           if credentials.nil?
-            raise Authorizer::UnauthorizedError, "Not authorized. Please run `calendar-assistant authorize #{profile_name}`"
+            raise UnauthorizedError, "Not authorized. Please run `calendar-assistant authorize #{profile_name}`"
           end
 
           ::Google::Apis::CalendarV3::CalendarService.new.tap do |service|
@@ -75,7 +75,7 @@ class CalendarAssistant
         def authorizer
           @authorizer ||= begin
                             if !File.exists?(CREDENTIALS_PATH)
-                              raise Authorizer::NoCredentials, "No credentials found. Please run `calendar-assistant help setup` for instructions"
+                              raise NoCredentials, "No credentials found. Please run `calendar-assistant help setup` for instructions"
                             end
 
                             FileUtils.chmod 0600, CREDENTIALS_PATH

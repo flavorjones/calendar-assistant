@@ -37,10 +37,10 @@ describe CalendarAssistant::CLI::Commands do
 
   let(:service) { instance_double("CalendarService") }
   let(:token_store) { instance_double("CalendarAssistant::Config::TokenStore") }
-  let(:authorizer) { instance_double("Authorizer") }
+  let(:authorizer) { instance_double("CalendarAssistant::CLI::Authorizers::Google") }
 
   before do
-    allow(CalendarAssistant::CLI::Authorizer).to receive(:new).and_return(authorizer)
+    allow(CalendarAssistant::CLI::AuthorizerFactory).to receive(:get).and_return(authorizer)
     allow(config).to receive(:token_store).and_return(token_store)
     allow(config).to receive(:profile_name).and_return("profile-name")
     allow(authorizer).to receive(:service).and_return(service)
