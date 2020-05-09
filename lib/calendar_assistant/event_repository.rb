@@ -35,7 +35,7 @@ class CalendarAssistant
     end
 
     def new(event_attributes)
-      event = Google::Apis::CalendarV3::Event.new DateHelpers.cast_dates(event_attributes)
+      event = Google::Apis::CalendarV3::Event.new(**DateHelpers.cast_dates(event_attributes))
       event.visibility ||= config.event_visibility
       CalendarAssistant::Event.new(event, config: config)
     end
@@ -52,7 +52,7 @@ class CalendarAssistant
     end
 
     def update(event, attributes)
-      event.update! DateHelpers.cast_dates(attributes)
+      event.update!(**DateHelpers.cast_dates(attributes))
       updated_event = @service.update_event @calendar_id, event.id, event
       CalendarAssistant::Event.new(updated_event, config: config)
     end

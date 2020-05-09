@@ -22,18 +22,18 @@ describe EventFactory do
     describe "passing attributes as a block" do
       context "when no block is passed" do
         it "raises an ArgumentError" do
-          expect { event_factory.create_list(default_attributes) }.to raise_error(ArgumentError)
+          expect { event_factory.create_list(**default_attributes) }.to raise_error(ArgumentError)
         end
       end
 
       context "when a block is passed" do
         it "does not raise an ArgumentError" do
-          expect { event_factory.create_list(default_attributes) { [] } }.not_to raise_error
+          expect { event_factory.create_list(**default_attributes) { [] } }.not_to raise_error
         end
       end
     end
 
-    subject { event_factory.create_list(default_attributes) { [attributes] }.first }
+    subject { event_factory.create_list(**default_attributes) { [attributes] }.first }
     let(:attributes) { { start: "10:00", end: "15:00" } }
 
     describe "date parsing" do

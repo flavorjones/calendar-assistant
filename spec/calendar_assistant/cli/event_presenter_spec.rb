@@ -1,5 +1,5 @@
 describe CalendarAssistant::CLI::EventPresenter do
-  let(:decorated_object) { CalendarAssistant::Event.new(Google::Apis::CalendarV3::Event.new(attributes)) }
+  let(:decorated_object) { CalendarAssistant::Event.new(Google::Apis::CalendarV3::Event.new(**attributes)) }
   subject { described_class.new decorated_object }
 
   describe "#view_summary" do
