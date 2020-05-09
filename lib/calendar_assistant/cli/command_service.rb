@@ -19,8 +19,8 @@ class CalendarAssistant
         end
       end
 
-      def authorizer(profile_name: config.profile_name, token_store: config.token_store)
-        @authorizer[profile_name] ||= Authorizer.new(profile_name, token_store)
+      def authorizer(profile_name: config.profile_name, token_store: config.token_store, token_type_store: config.token_type_store)
+        @authorizer[profile_name] ||= Authorizer.new(profile_name, token_store, token_type_store)
       end
 
       def service

@@ -335,6 +335,53 @@ shared_examples_for "a configuration class" do
     end
   end
 
+  describe "#token_types" do
+    context "there are token types configured in user_config" do
+      let(:user_config) do
+        {
+          "token_types" => {
+            "arbeit" => "asdfasdf",
+          },
+        }
+      end
+
+      subject { described_class.new(**args) }
+
+      it "returns the token types hash" do
+        expect(subject.token_types).to eq("arbeit" => "asdfasdf")
+      end
+    end
+
+    context "there are no token types configured in user_config" do
+      let(:user_config) do
+        {
+          "things" => {
+            "thing1" => "asdfasdf",
+          },
+        }
+      end
+
+      subject { described_class.new(**args) }
+
+      it "returns the token types hash" do
+        expect(subject.tokens).to eq({})
+      end
+    end
+  end
+
+  describe "#token_type_store" do
+    it "returns an object" do
+      expect(subject.token_store).to respond_to(:delete)
+      expect(subject.token_store.method(:delete).arity).to eq(1)
+
+      expect(subject.token_store).to respond_to(:load)
+      expect(subject.token_store.method(:load).arity).to eq(1)
+
+      expect(subject.token_store).to respond_to(:store)
+      expect(subject.token_store.method(:store).arity).to eq(2)
+    end
+  end
+
   describe "#token_store" do
     it "returns an object suitable for use as a Google::Auth::TokenStore" do
       expect(subject.token_store).to respond_to(:delete)

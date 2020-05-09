@@ -29,9 +29,10 @@ class CalendarAssistant
 
         attr_reader :profile_name, :config_token_store
 
-        def initialize(profile_name, config_token_store)
+        def initialize(profile_name, config_token_store, config_token_type_store)
           @profile_name = profile_name
           @config_token_store = config_token_store
+          config_token_type_store.store(profile_name, "google") unless config_token_type_store.load(profile_name)
         end
 
         def authorize

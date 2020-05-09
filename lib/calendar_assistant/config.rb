@@ -11,6 +11,7 @@ class CalendarAssistant
 
     module Keys
       TOKENS = "tokens"
+      TOKEN_TYPES = "token_types"
       SETTINGS = "settings"
 
       #
@@ -139,6 +140,15 @@ class CalendarAssistant
     def tokens
       Config.find_in_hash(user_config, Keys::TOKENS) ||
         Config.set_in_hash(user_config, Keys::TOKENS, {})
+    end
+
+    def token_types
+      Config.find_in_hash(user_config, Keys::TOKEN_TYPES) ||
+        Config.set_in_hash(user_config, Keys::TOKEN_TYPES, {})
+    end
+
+    def token_type_store
+      CalendarAssistant::Config::TokenStore.new self, key: :token_types
     end
 
     def token_store
