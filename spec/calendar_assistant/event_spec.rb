@@ -3,7 +3,7 @@ require "date"
 describe CalendarAssistant::Event do
   it_behaves_like "an object that has duration" do
     let(:decorated_class) { Google::Apis::CalendarV3::Event }
-    let(:decorated_object) { decorated_class.new(params) }
+    let(:decorated_object) { decorated_class.new(**params) }
 
     let(:an_object) { described_class.new decorated_object }
   end
