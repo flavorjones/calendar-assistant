@@ -1,5 +1,12 @@
 # Changelog for Calendar Assistant
 
+## v0.13.0 / 2020-05-09
+
+Features:
+
+- Avoid Ruby 2.7 deprecation warnings. [#159]
+
+
 ## v0.12.0 / 2020-04-09
 
 Features:
