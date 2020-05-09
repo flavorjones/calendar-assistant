@@ -1,7 +1,7 @@
-FROM ruby:2.6
+FROM ruby
 LABEL maintainer=mike.dalessio@gmail.com
 
-RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install --global ansi-to-html markdown-toc
 
