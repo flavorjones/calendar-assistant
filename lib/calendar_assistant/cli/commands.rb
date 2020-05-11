@@ -84,32 +84,73 @@ class CalendarAssistant
       def setup
         # TODO ugh see #34 for advice on how to clean this up
         return if handle_help_args
-        if File.exist? CalendarAssistant::CLI::Authorizers::Google::CREDENTIALS_PATH
-          command_service.out.puts sprintf("Credentials already exist in %s",
-                                           CalendarAssistant::CLI::Authorizers::Google::CREDENTIALS_PATH)
-          return
-        end
 
-        command_service.out.launch "https://developers.google.com/calendar/quickstart/ruby"
-        sleep 1
         command_service.out.puts <<~EOT
-                                   Please click on "ENABLE THE GOOGLE CALENDAR API" and either create a new project or select an existing project.
-
-                                   (If you create a new project, name it something like "yourname-calendar-assistant" so you remember why it exists.)
-
-                                   Then click "DOWNLOAD CLIENT CONFIGURATION" to download the credentials to local disk.
-
-                                   Finally, paste the contents of the downloaded file here (it should be a complete JSON object):
+                                   Which service are you setting up?
+                                   1) Google Calendar
+                                   2) Outlook
                                  EOT
 
+        service_selection = command_service.out.prompt "Which service are you linking to?"
 
-        json = command_service.out.prompt "Paste JSON here"
-        File.open(CalendarAssistant::CLI::Authorizers::Google::CREDENTIALS_PATH, "w") do |f|
-          f.write json
+        case service_selection
+        when "1"
+          if File.exist? CalendarAssistant::CLI::Authorizers::Google::CREDENTIALS_PATH
+            command_service.out.puts sprintf("Credentials already exist in %s",
+                                             CalendarAssistant::CLI::Authorizers::Google::CREDENTIALS_PATH)
+            return
+          end
+
+          command_service.out.launch "https://developers.google.com/calendar/quickstart/ruby"
+          sleep 1
+          command_service.out.puts <<~EOT
+                                     Please click on "ENABLE THE GOOGLE CALENDAR API" and either create a new project or select an existing project.
+
+                                     (If you create a new project, name it something like "yourname-calendar-assistant" so you remember why it exists.)
+
+                                     Then click "DOWNLOAD CLIENT CONFIGURATION" to download the credentials to local disk.
+
+                                     Finally, paste the contents of the downloaded file here (it should be a complete JSON object):
+                                   EOT
+
+          json = command_service.out.prompt "Paste JSON here"
+          File.open(CalendarAssistant::CLI::Authorizers::Google::CREDENTIALS_PATH, "w") do |f|
+            f.write json
+          end
+          FileUtils.chmod 0600, CalendarAssistant::CLI::Authorizers::Google::CREDENTIALS_PATH
+
+          command_service.out.puts "\nOK! Your next step is to run `calendar-assistant authorize`."
+        when "2"
+          if File.exist? CalendarAssistant::CLI::Authorizers::Microsoft::CREDENTIALS_PATH
+            command_service.out.puts sprintf("Credentials already exist in %s",
+                                             CalendarAssistant::CLI::Authorizers::Microsoft::CREDENTIALS_PATH)
+            return
+          end
+
+          command_service.out.launch "https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps"
+          sleep 1
+          command_service.out.puts <<~EOT
+                                      Please use the following instructions...
+
+                                       1) Click on "New Registration"
+                                       2) Give it a name (ex. calendar-assistant)
+                                       3) Choose a scope
+                                       4) Redirect URL should be "https://login.microsoftonline.com/common/oauth2/nativeclient"
+                                       5) Click "Register"
+                                       6) Click on the new application
+                                   EOT
+          creds = {}
+          creds[:client_id] = command_service.out.prompt "Paste Application (Client) ID here"
+          creds[:tenant_id] = command_service.out.prompt "Paste Directory (Tenant) ID here"
+          creds[:object_id] = command_service.out.prompt "Paste Object ID here"
+
+          File.open(CalendarAssistant::CLI::Authorizers::Microsoft::CREDENTIALS_PATH, "w") do |f|
+            f.write JSON.generate(creds)
+          end
+          FileUtils.chmod 0600, CalendarAssistant::CLI::Authorizers::Microsoft::CREDENTIALS_PATH
+        else
+          command_service.out.puts "Invalid selection"
         end
-        FileUtils.chmod 0600, CalendarAssistant::CLI::Authorizers::Google::CREDENTIALS_PATH
-
-        command_service.out.puts "\nOK! Your next step is to run `calendar-assistant authorize`."
       end
 
       desc "authorize PROFILE_NAME",
