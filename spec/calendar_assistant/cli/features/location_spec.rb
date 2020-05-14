@@ -21,7 +21,7 @@ RSpec.describe "location", :type => :aruba do
   end
 
   it "sets and prints location for the first of January, 2018" do
-    run_command("./bin/calendar-assistant location 2018-01-01 --formatting=false --local-store=#{filename}")
+    run_command("calendar-assistant location 2018-01-01 --formatting=false --local-store=#{filename}")
     stop_all_commands
     expect(last_command_stopped).to be_successfully_executed
     expected = <<~OUT
@@ -32,7 +32,7 @@ RSpec.describe "location", :type => :aruba do
     OUT
     expect(last_command_stopped.output).to eq(expected)
 
-    run_command("./bin/calendar-assistant location-set Zanzibar 2018-01-01 --force --calendars=other_calendar@example.com --visibility=public --formatting=false --local-store=#{filename}")
+    run_command("calendar-assistant location-set Zanzibar 2018-01-01 --force --calendars=other_calendar@example.com --visibility=public --formatting=false --local-store=#{filename}")
     stop_all_commands
 
     expect(last_command_stopped).to be_successfully_executed
@@ -48,7 +48,7 @@ RSpec.describe "location", :type => :aruba do
 
     OUT
     expect(last_command_stopped.output).to eq(expected)
-    run_command("./bin/calendar-assistant location 2018-01-01 --formatting=false --local-store=#{filename}")
+    run_command("calendar-assistant location 2018-01-01 --formatting=false --local-store=#{filename}")
     stop_all_commands
 
     expect(last_command_stopped).to be_successfully_executed
