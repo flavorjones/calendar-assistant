@@ -2,12 +2,13 @@ resource_types:
 - name: pull-request
   type: docker-image
   source:
-    repository: jtarchie/pr
+    repository: teliaoss/github-pr-resource
 - name: webhook-notification
   type: docker-image
   source:
     repository: flavorjones/webhook-notification-resource
     tag: latest
+
 
 resources:
   - name: ci
@@ -16,6 +17,7 @@ resources:
       uri: https://github.com/flavorjones/calendar-assistant/
       branch: master
       disable_ci_skip: true # always get the latest pipeline configuration
+
   - name: calendar-assistant
     type: git
     source:
@@ -24,18 +26,26 @@ resources:
       ignore_paths:
         - concourse/**
         - doc/**
+
   - name: calendar-assistant-pr
     type: pull-request
+    check_every: 15m
+    # webhook docs: https://concourse-ci.org/resources.html#schema.resource.webhook_token
+    # configured at: https://github.com/flavorjones/calendar-assistant/settings/hooks
+    # > https://ci.nokogiri.org/api/v1/teams/calendar-assistants/pipelines/calendar-assistant/resources/calendar-assistant-pr/check/webhook?webhook_token=WEBHOOK_TOKEN
+    webhook_token: ((calendar-assistant-pr-webhook-token))
     source:
-      repo: flavorjones/calendar-assistant
+      repository: flavorjones/calendar-assistant
       access_token: ((github-repo-status-access-token))
       ignore_paths:
         - concourse/**
+        - doc/**
   - name: gitter
     type: webhook-notification
     source:
       adapter: GitterActivityFeedAdapter
       url: ((calendar-assistant-gitter-channel-webhook-url))
+
 
 anchors:
   notify_failure_to_gitter: &notify_failure_to_gitter
@@ -83,7 +93,7 @@ jobs:
         trigger: true
         version: every
       - put: calendar-assistant-pr
-        params: {path: calendar-assistant-pr, status: pending}
+        params: {path: calendar-assistant-pr, status: PENDING}
       - task: rake-spec
         config:
           platform: linux
@@ -102,9 +112,9 @@ jobs:
           in_parallel:
             - *notify_pr_failure_to_gitter
             - put: calendar-assistant-pr
-              params: {path: calendar-assistant-pr, status: failure}
+              params: {path: calendar-assistant-pr, status: FAILURE}
         on_success:
           in_parallel:
             - *notify_pr_success_to_gitter
             - put: calendar-assistant-pr
-              params: {path: calendar-assistant-pr, status: success}
+              params: {path: calendar-assistant-pr, status: SUCCESS}
