@@ -12,7 +12,7 @@
 [![Gem Version](https://badge.fury.io/rb/calendar-assistant.svg)](https://badge.fury.io/rb/calendar-assistant)
 [![Concourse CI](https://ci.nokogiri.org/api/v1/teams/calendar-assistants/pipelines/calendar-assistant/jobs/rake-spec/badge)](https://ci.nokogiri.org/teams/calendar-assistants/pipelines/calendar-assistant)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/maintainability)](https://codeclimate.com/github/flavorjones/calendar-assistant/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/test_coverage)](https://codeclimate.com/github/flavorjones/calendar-assistant/test_coverage)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3525792e1feeccfd8875/test_coverage)](https://codeclimate.com/github/flavorjones/calendar-assistant/test_coverage) [![Join the chat at https://gitter.im/flavorjones/calendar-assistant](https://badges.gitter.im/flavorjones/calendar-assistant.svg)](https://gitter.im/flavorjones/calendar-assistant?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Contents
 
@@ -36,6 +36,7 @@
   * [`show`: View your calendar events](#show-view-your-calendar-events)
   * [`lint`: Calendar events that require action](#lint-calendar-events-that-require-action)
   * [`config`: View your configuration parameters](#config-view-your-configuration-parameters)
+  * [`interactive`: Interactive Console](#interactive-interactive-console)
 - [Development](#development)
   * [Running Tests Locally](#running-tests-locally)
   * [Continuous Integration](#continuous-integration)
@@ -199,6 +200,7 @@ Commands:
   calendar-assistant availability [DATE | DATERANGE | TIMERANGE]  # Show your availability for a date or range of dat...
   calendar-assistant config                                       # Dump your configuration parameters (merge of defa...
   calendar-assistant help [COMMAND]                               # Describe available commands or one specific command
+  calendar-assistant interactive                                  # interactive console for calendar assistant
   calendar-assistant join [TIME]                                  # Open the URL for a video call attached to your me...
   calendar-assistant lint [DATE | DATERANGE | TIMERANGE]          # Lint your events for a date or range of dates (de...
   calendar-assistant location [DATE | DATERANGE]                  # Show your location for a date or range of dates (...
@@ -577,6 +579,27 @@ meeting-length = "30m"
 start-of-day = "9am"
 </pre>
 
+### `interactive`: Interactive Console
+
+<pre>
+Usage:
+  calendar-assistant interactive
+
+Options:
+  -h, -?, [--help], [--no-help]          
+          [--debug], [--no-debug]        # how dare you suggest there are bugs
+  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
+                                         # Default: true
+
+interactive console for calendar assistant
+</pre>
+
+For example, check the version of calendar assistant
+
+```
+calendar-assistant> version
+0.0.0
+```
 
 ## Development
 
