@@ -13,6 +13,7 @@ resource_types:
 resources:
   - name: ci
     type: git
+    icon: cog
     source:
       uri: https://github.com/flavorjones/calendar-assistant/
       branch: master
@@ -20,6 +21,7 @@ resources:
 
   - name: calendar-assistant
     type: git
+    icon: github
     source:
       uri: https://github.com/flavorjones/calendar-assistant/
       branch: master
@@ -29,6 +31,7 @@ resources:
 
   - name: calendar-assistant-pr
     type: pull-request
+    icon: github
     check_every: 15m
     # webhook docs: https://concourse-ci.org/resources.html#schema.resource.webhook_token
     # configured at: https://github.com/flavorjones/calendar-assistant/settings/hooks
@@ -42,6 +45,7 @@ resources:
         - doc/**
   - name: gitter
     type: webhook-notification
+    icon: bell
     source:
       adapter: GitterActivityFeedAdapter
       url: ((calendar-assistant-gitter-channel-webhook-url))
