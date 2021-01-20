@@ -42,3 +42,11 @@ class CalendarAssistant
   autoload :PredicateCollection, "calendar_assistant/predicate_collection"
   autoload :LocationConfigValidator, "calendar_assistant/location_config_validator"
 end
+
+require "microsoft_graph/microsoft_graph"
+
+class MicrosoftGraph
+  autoload :Authorizer, "microsoft_graph/authorizer"
+  autoload :Calendar, "microsoft_graph/api/calendar"
+  autoload :Calendar, "microsoft_graph/api/calendar"
+end

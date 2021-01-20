@@ -135,9 +135,11 @@ class CalendarAssistant
                                        1) Click on "New Registration"
                                        2) Give it a name (ex. calendar-assistant)
                                        3) Choose a scope
-                                       4) Redirect URL should be "https://login.microsoftonline.com/common/oauth2/nativeclient"
+                                       4) Set "Redirect URI" to "Public client/native" and "https://login.microsoftonline.com/common/oauth2/nativeclient"
                                        5) Click "Register"
-                                       6) Click on the new application
+                                       6) Click on the new application and go to "Authentication"
+                                       7) Under "Advanced Settings" set "Treat Application as a public client" to "Yes" and click "Save"
+                                       8) Click "Overview" and ...
                                    EOT
           creds = {}
           creds[:client_id] = command_service.out.prompt "Paste Application (Client) ID here"
