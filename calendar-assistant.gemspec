@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "google-api-client", ">= 0.24", "< 0.54"
   spec.add_dependency "launchy", "~> 2.4"
   spec.add_dependency "rainbow", "~> 3.0"
-  spec.add_dependency "thor", ">= 0.20", "< 1.1"
+  spec.add_dependency "thor", ">= 0.20", "< 1.2"
   spec.add_dependency "toml", "~> 0.2.0"
   spec.add_dependency "thor_repl", "~> 0.1.4"
 
