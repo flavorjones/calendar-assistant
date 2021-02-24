@@ -1,6 +1,6 @@
 # Changelog for Calendar Assistant
 
-## v0.14.0 / unreleased
+## v0.14.0 / 2021-02-24
 
 Dependencies:
 
