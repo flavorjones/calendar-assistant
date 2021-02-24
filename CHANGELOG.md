@@ -1,5 +1,15 @@
 # Changelog for Calendar Assistant
 
+## v0.14.0 / unreleased
+
+Dependencies:
+
+- Move from google-api-client to google-apis-calendar_v3
+- activesupport ~> 6.1
+- business_time ~> 0.10
+- thor ~> 1.1.0
+
+
 ## v0.13.0 / 2020-05-09
 
 Features:
