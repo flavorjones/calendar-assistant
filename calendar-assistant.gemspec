@@ -26,14 +26,14 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "activesupport", ">= 5.2.1", "< 6.1.0"
-  spec.add_dependency "business_time", ">= 0.9", "< 0.11"
+  spec.add_dependency "activesupport", "~> 6.1"
+  spec.add_dependency "business_time", "~> 0.10"
   spec.add_dependency "chronic", "~> 0.10.0"
   spec.add_dependency "chronic_duration", "~> 0.10.0"
-  spec.add_dependency "google-api-client", ">= 0.24", "< 0.54"
+  spec.add_dependency "google-apis-calendar_v3"
   spec.add_dependency "launchy", "~> 2.4"
   spec.add_dependency "rainbow", "~> 3.0"
-  spec.add_dependency "thor", ">= 0.20", "< 1.2"
+  spec.add_dependency "thor", "~> 1.1.0"
   spec.add_dependency "toml", "~> 0.2.0"
   spec.add_dependency "thor_repl", "~> 0.1.4"
 

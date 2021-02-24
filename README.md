@@ -162,8 +162,8 @@ Options:
                                          # Default: true
 
 Description:
-  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar API, and saving the
-  credentials necessary to access the API on behalf of users.
+  This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar API, and saving
+  the credentials necessary to access the API on behalf of users.
 
   If you already have downloaded client credentials, you don't need to run this command. Instead, rename the downloaded
   JSON file to `/home/user/.calendar-assistant.client`
@@ -185,11 +185,11 @@ Options:
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your calendar.
 
-  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and persist
-  an access token.
+  When setting up a profile, you'll be asked to visit a URL to authenticate, grant authorization, and generate and
+  persist an access token.
 
-  In order for this to work, you'll need to have set up your API client credentials. Run `calendar-assistant help setup`
-  for instructions.
+  In order for this to work, you'll need to have set up your API client credentials. Run `calendar-assistant help
+  setup` for instructions.
 </pre>
 
 
