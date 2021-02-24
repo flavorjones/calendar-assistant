@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "activesupport", ">= 5.2.1", "< 6.1.0"
-  spec.add_dependency "business_time", "~> 0.9.0"
+  spec.add_dependency "business_time", ">= 0.9", "< 0.11"
   spec.add_dependency "chronic", "~> 0.10.0"
   spec.add_dependency "chronic_duration", "~> 0.10.0"
   spec.add_dependency "google-api-client", ">= 0.24", "< 0.54"
