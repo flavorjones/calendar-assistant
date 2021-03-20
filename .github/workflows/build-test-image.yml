@@ -21,6 +21,6 @@ jobs:
         with:
           push: true
           tags: ghcr.io/flavorjones/calendar-assistant-test:latest
-          file: concourse/images/Dockerfile
+          file: ci/Dockerfile
       - name: Log the image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
