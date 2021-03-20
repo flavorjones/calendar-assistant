@@ -1,5 +1,4 @@
 Gemfile.lock
-concourse/private.yml
 coverage
 credentials.json
 node_modules

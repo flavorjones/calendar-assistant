@@ -1,14 +1,8 @@
 #require "bundler/gem_tasks"
 require "rspec/core/rake_task"
-require "concourse"
 require "license_finder"
 require "tempfile"
 require "rainbow"
-
-#
-#  concourse
-#
-Concourse.new("calendar-assistant", fly_target: "calendar-assistants").create_tasks!
 
 #
 #  spec tasks
