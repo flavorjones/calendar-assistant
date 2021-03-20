@@ -58,7 +58,7 @@ end
 CALENDAR_ASSISTANT_TEST_IMAGE = "ghcr.io/flavorjones/calendar-assistant-test"
 desc "Build a docker image for testing"
 task "docker:build" do
-  sh "docker build -t #{CALENDAR_ASSISTANT_TEST_IMAGE} -f concourse/images/Dockerfile ."
+  sh "docker build -t #{CALENDAR_ASSISTANT_TEST_IMAGE} -f ci/Dockerfile ."
 end
 
 desc "Push a docker image for testing"
