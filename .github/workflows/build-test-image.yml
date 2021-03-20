@@ -2,6 +2,7 @@
 name: Build Test Image
 
 on:
+  workflow_dispatch: {}
   schedule:
     - cron: "7 0 * * 5" # an hour before the test suite
 
