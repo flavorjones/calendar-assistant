@@ -28,8 +28,6 @@ function code-climate-setup {
     wget --no-verbose ${CC_CLI_URI}
     chmod +x ${CC_CLI}
 
-    export CI_NAME="concourse"
-
     ./${CC_CLI} env || true
     ./${CC_CLI} before-build || true
   fi
