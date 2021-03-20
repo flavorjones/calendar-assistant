@@ -53,15 +53,17 @@ end
 
 #
 # docker docker docker
+# keep in mind that we have a Github Action to generate this weekly
 #
+CALENDAR_ASSISTANT_TEST_IMAGE = "ghcr.io/flavorjones/calendar-assistant-test"
 desc "Build a docker image for testing"
 task "docker:build" do
-  sh "docker build -t flavorjones/calendar-assistant-test -f concourse/images/Dockerfile ."
+  sh "docker build -t #{CALENDAR_ASSISTANT_TEST_IMAGE} -f concourse/images/Dockerfile ."
 end
 
 desc "Push a docker image for testing"
 task "docker:push" do
-  sh "docker push flavorjones/calendar-assistant-test"
+  sh "docker push #{CALENDAR_ASSISTANT_TEST_IMAGE}"
 end
 
 desc "Build and push a docker image for testing"

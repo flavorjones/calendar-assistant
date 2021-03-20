@@ -1,0 +1,23 @@
+name: Test suite
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - master
+  schedule:
+    - cron: "8 0 * * 5" # an hour after the test image is generated
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: docker://ghcr.io/flavorjones/calendar-assistant-test:latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run test suite
+      run: bundle exec rake
