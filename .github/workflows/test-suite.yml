@@ -1,15 +1,14 @@
 name: Test suite
 
 on:
+  workflow_dispatch: {}
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
     types: [opened, synchronize]
-    branches:
-      - master
+    branches: [master]
   schedule:
-    - cron: "8 0 * * 5" # an hour after the test image is generated
+    - cron: "0 8 * * 5" # At 08:00 on Friday, an hour after the test image is generated. https://crontab.guru/#0_8_*_*_5
 
 jobs:
   test:
