@@ -65,13 +65,10 @@ describe CalendarAssistant::CLI::Commands do
     let(:command) { "config" }
     it_behaves_like "a command"
 
-    let(:generator) { instance_double(TOML::Generator) }
-
     it "prints out config settings" do
       expect(CalendarAssistant::Config).to receive(:new).with(no_args).and_return(config)
       expect(config).to receive(:settings).and_return({ "my" => "settings" })
-      allow(TOML::Generator).to receive(:new).with({ CalendarAssistant::Config::Keys::SETTINGS => { "my" => "settings" } }).and_return(generator)
-      expect(generator).to receive(:body).and_return("body")
+      allow(TomlRB).to receive(:dump).with({ CalendarAssistant::Config::Keys::SETTINGS => { "my" => "settings" } }).and_return("body")
       expect(out).to receive(:puts).with("body")
 
       described_class.start [command]

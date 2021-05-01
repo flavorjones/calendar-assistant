@@ -14,7 +14,7 @@ autoload :Chronic, "chronic"
 autoload :ChronicDuration, "chronic_duration"
 autoload :Google, "calendar_assistant/extensions/google_apis_extensions"
 autoload :Launchy, "calendar_assistant/extensions/launchy_extensions"
-autoload :TOML, "toml"
+autoload :TomlRB, "toml-rb"
 autoload :Thor, "thor"
 require "calendar_assistant/extensions/rainbow_extensions" # Rainbow() doesn't trigger autoload
 require "active_support/time" # Time doesn't trigger autoload

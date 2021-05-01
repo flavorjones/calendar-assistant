@@ -66,7 +66,7 @@ class CalendarAssistant
       def config
         return if handle_help_args
         settings = CalendarAssistant::CLI::Config.new.settings
-        command_service.out.puts TOML::Generator.new({ CalendarAssistant::Config::Keys::SETTINGS => settings }).body
+        command_service.out.puts TomlRB.dump({ CalendarAssistant::Config::Keys::SETTINGS => settings })
       end
 
       desc "setup",

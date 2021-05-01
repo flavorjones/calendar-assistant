@@ -18,7 +18,7 @@ class CalendarAssistant
         user_config = if File.exist? config_file_path
                         begin
                           FileUtils.chmod 0600, config_file_path
-                          TOML.load_file config_file_path
+                          TomlRB.load_file config_file_path
                         rescue Exception => e
                           raise TomlParseFailure, "could not parse TOML file '#{config_file_path}': #{e}"
                         end
@@ -39,7 +39,7 @@ class CalendarAssistant
           raise NoConfigFileToPersist, "Cannot persist config when there's no config file"
         end
 
-        content = TOML::Generator.new(user_config).body
+        content = TomlRB.dump(user_config)
 
         File.open(config_file_path, "w") do |f|
           f.write content
