@@ -65,6 +65,23 @@ shared_examples_for "a configuration class" do
           new_config = described_class.new(**args)
           expect(new_config.get([described_class::Keys::SETTINGS, described_class::Keys::Settings::PROFILE])).to eq("arbeit")
         end
+
+        context "with an embedded period" do
+          let(:user_config) do
+            {
+              "tokens" => {
+                "foo@bar.com" => "fake-token-1",
+              }
+            }
+          end
+
+          it { expect(subject.profile_name).to eq("foo@bar.com") }
+
+          context "a profile is specified via options" do
+            let(:options) { { "profile" => "foo@bar.com" } }
+            it { expect(subject.profile_name).to eq("foo@bar.com") }
+          end
+        end
       end
     end
 
