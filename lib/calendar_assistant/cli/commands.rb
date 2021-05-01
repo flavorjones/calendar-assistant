@@ -66,7 +66,8 @@ class CalendarAssistant
       def config
         return if handle_help_args
         settings = CalendarAssistant::CLI::Config.new.settings
-        command_service.out.puts TomlRB.dump({ CalendarAssistant::Config::Keys::SETTINGS => settings })
+        filtered_settings = settings.reject { |k, v| v.nil? }
+        command_service.out.puts TomlRB.dump({ CalendarAssistant::Config::Keys::SETTINGS => filtered_settings })
       end
 
       desc "setup",

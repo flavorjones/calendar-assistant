@@ -572,7 +572,6 @@ The output is TOML, which is suitable for dumping into `~/.calendar-assistant` a
 
 <pre>
 <b>$</b> calendar-assistant config
-
 [settings]
 end-of-day = "6pm"
 location-icon = "🌎"

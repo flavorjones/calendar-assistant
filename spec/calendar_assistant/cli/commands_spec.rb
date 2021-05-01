@@ -65,10 +65,10 @@ describe CalendarAssistant::CLI::Commands do
     let(:command) { "config" }
     it_behaves_like "a command"
 
-    it "prints out config settings" do
+    it "prints out config settings without unset settings" do
       expect(CalendarAssistant::Config).to receive(:new).with(no_args).and_return(config)
-      expect(config).to receive(:settings).and_return({ "my" => "settings" })
-      allow(TomlRB).to receive(:dump).with({ CalendarAssistant::Config::Keys::SETTINGS => { "my" => "settings" } }).and_return("body")
+      expect(config).to receive(:settings).and_return({ "configured" => "setting", "unconfigured" => nil })
+      allow(TomlRB).to receive(:dump).with({ CalendarAssistant::Config::Keys::SETTINGS => { "configured" => "setting" } }).and_return("body")
       expect(out).to receive(:puts).with("body")
 
       described_class.start [command]
