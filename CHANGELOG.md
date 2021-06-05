@@ -1,10 +1,15 @@
 # Changelog for Calendar Assistant
 
-## next / unreleased
+## v0.15.0 / 2021-05-01
+
+Fixes:
+
+- support profile names that are email addresses [#188]
+
 
 Dependencies:
 
-- move to `toml-rb` to support profile names that are email addresses [#188]
+- move to `toml-rb` to support non-bare TOML keys
 
 
 ## v0.14.0 / 2021-02-24
