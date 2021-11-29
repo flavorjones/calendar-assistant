@@ -42,6 +42,7 @@ class CalendarAssistant
         MUST_NOT_BE = "must-not-be" # array of event predicates (comma-delimited)
         CONTEXT = "context"         # symbol referring to command context
         FORCE = "force"             # bool
+        TIME_ZONES = "tz"           # array of time zone names (comma-delimited)
       end
     end
 
@@ -162,6 +163,10 @@ class CalendarAssistant
 
     def debug?
       setting(Keys::Options::DEBUG)
+    end
+
+    def time_zones
+      split_if_array(Keys::Options::TIME_ZONES)
     end
 
     def persist!
