@@ -6,7 +6,12 @@ class CalendarAssistant
     def initialize(file: nil, load_events: true)
       @file = file
       if (@file && File.exist?(@file) && load_events)
-        @store = YAML::load_file(@file)
+        payload = File.read(@file)
+        @store = if YAML.respond_to?(:unsafe_load)
+          YAML::unsafe_load(payload)
+        else
+          YAML::load(payload)
+        end
       else
         @store = {}
       end

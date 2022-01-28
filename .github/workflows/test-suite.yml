@@ -12,13 +12,30 @@ on:
 
 jobs:
   test:
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["2.6", "2.7", "3.0", "3.1"]
     runs-on: ubuntu-latest
-    container:
-      image: docker://ghcr.io/flavorjones/calendar-assistant-test:latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Run test suite
-      run: ./ci/run.sh
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+          bundler-cache: true
+        env:
+          BUNDLE_WITHOUT: optional
+      - run: bundle exec rake spec
+
+  meta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+          bundler-cache: true
+        env:
+          BUNDLE_WITHOUT: optional
+      - run: bundle exec rake readme:check
+#      - run: bundle exec rake license_finder # Psych::DisallowedClass: Tried to load unspecified class: Time
