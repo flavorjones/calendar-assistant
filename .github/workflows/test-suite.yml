@@ -10,6 +10,9 @@ on:
   schedule:
     - cron: "0 8 * * 5" # At 08:00 on Friday, an hour after the test image is generated. https://crontab.guru/#0_8_*_*_5
 
+env:
+  BUNDLE_WITHOUT: optional
+
 jobs:
   test:
     strategy:
@@ -23,8 +26,6 @@ jobs:
         with:
           ruby-version: ${{matrix.ruby}}
           bundler-cache: true
-        env:
-          BUNDLE_WITHOUT: optional
       - run: bundle exec rake spec
 
   meta:
@@ -35,7 +36,5 @@ jobs:
         with:
           ruby-version: 3.0
           bundler-cache: true
-        env:
-          BUNDLE_WITHOUT: optional
       - run: bundle exec rake readme:check
 #      - run: bundle exec rake license_finder # Psych::DisallowedClass: Tried to load unspecified class: Time
