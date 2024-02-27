@@ -27,6 +27,11 @@ class CalendarAssistant
                desc: "Event properties that must be false (see README)",
                banner: "PROPERTY1[,PROPERTY2[,...]]",
                aliases: ["-n"]
+        option CalendarAssistant::Config::Keys::Options::TIME_ZONES,
+               type: :string,
+               desc: "Force display of only these time zones, ignoring calendar settings",
+               banner: "TZNAME1[,TZNAME2[,...]]",
+               aliases: ["-z"]
       end
 
       def self.has_multiple_calendars

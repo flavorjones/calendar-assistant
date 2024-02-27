@@ -231,6 +231,7 @@ Options:
   -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
   -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
+  -z, [--tz=TZNAME1[,TZNAME2[,...]]]               # Force display of only these time zones, ignoring calendar settings
   -h, -?, [--help], [--no-help]                    
           [--debug], [--no-debug]                  # how dare you suggest there are bugs
   -f, [--formatting], [--no-formatting]            # Enable Text Formatting
@@ -276,6 +277,7 @@ Options:
   -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
   -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -z, [--tz=TZNAME1[,TZNAME2[,...]]]                          # Force display of only these time zones, ignoring calendar settings
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
   -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
@@ -377,6 +379,7 @@ Options:
   -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
   -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -z, [--tz=TZNAME1[,TZNAME2[,...]]]                          # Force display of only these time zones, ignoring calendar settings
   -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
@@ -424,6 +427,7 @@ Options:
   -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
   -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
+  -z, [--tz=TZNAME1[,TZNAME2[,...]]]               # Force display of only these time zones, ignoring calendar settings
   -h, -?, [--help], [--no-help]                    
           [--debug], [--no-debug]                  # how dare you suggest there are bugs
   -f, [--formatting], [--no-formatting]            # Enable Text Formatting
@@ -456,6 +460,7 @@ Options:
   -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
   -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -z, [--tz=TZNAME1[,TZNAME2[,...]]]                          # Force display of only these time zones, ignoring calendar settings
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
   -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
@@ -526,6 +531,7 @@ Options:
   -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
   -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
   -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -z, [--tz=TZNAME1[,TZNAME2[,...]]]                          # Force display of only these time zones, ignoring calendar settings
   -h, -?, [--help], [--no-help]                               
           [--debug], [--no-debug]                             # how dare you suggest there are bugs
   -f, [--formatting], [--no-formatting]                       # Enable Text Formatting

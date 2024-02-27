@@ -45,7 +45,7 @@ class CalendarAssistant
 
       def print_available_blocks(ca, event_set, omit_title: false)
         ers = ca.config.calendar_ids.map { |calendar_id| ca.event_repository calendar_id }
-        time_zones = ers.map { |er| er.calendar.time_zone }.uniq
+        time_zones = ca.config.time_zones || ers.map { |er| er.calendar.time_zone }.uniq
 
         unless omit_title
           puts Rainbow(ers.map { |er| er.calendar.id }.join(", ")).italic
