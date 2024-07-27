@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "activesupport", "~> 6.1"
+  spec.add_dependency "activesupport", "~> 7.1"
   spec.add_dependency "business_time", "~> 0.10"
   spec.add_dependency "chronic", "~> 0.10"
   spec.add_dependency "chronic_duration", "~> 0.10"
@@ -40,7 +40,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "aruba", "~> 1.0"
   spec.add_development_dependency "bundler", "~> 2.2"
   spec.add_development_dependency "faker", "~> 2.1"
-  spec.add_development_dependency "license_finder", "~> 6.0"
+  spec.add_development_dependency "license_finder"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "timecop", "~> 0.9"

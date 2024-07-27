@@ -156,10 +156,10 @@ Usage:
   calendar-assistant setup
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help], [--skip-help]                    
+          [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,     [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                  # Default: true
 
 Description:
   This command will walk you through setting up a Google Cloud Project, enabling the Google Calendar API, and saving
@@ -177,10 +177,10 @@ Usage:
   calendar-assistant authorize PROFILE_NAME
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help], [--skip-help]                    
+          [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,     [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                  # Default: true
 
 Description:
   Create and authorize a named profile (e.g., "work", "home", "flastname@company.tld") to access your calendar.
@@ -211,10 +211,10 @@ Commands:
   calendar-assistant version                                      # Display the version of calendar-assistant
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help], [--skip-help]                    
+          [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,     [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                  # Default: true
 </pre>
 
 
@@ -225,16 +225,16 @@ Usage:
   calendar-assistant join [TIME]
 
 Options:
-          [--join], [--no-join]                    # launch a browser to join the video call URL
-                                                   # Default: true
-  -p, [--profile=PROFILE]                          # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                    
-          [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
-                                                   # Default: true
+          [--join], [--no-join], [--skip-join]                    # launch a browser to join the video call URL
+                                                                  # Default: true
+  -p,     [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l,     [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -b,     [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n,     [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -h, -?, [--help], [--no-help], [--skip-help]                    
+          [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,     [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                  # Default: true
 
 Open the URL for a video call attached to your meeting at time TIME (default 'now')
 </pre>
@@ -268,18 +268,18 @@ Usage:
   calendar-assistant availability [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -l, [--meeting-length=LENGTH]                               # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
-  -s, [--start-of-day=TIME]                                   # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
-  -e, [--end-of-day=TIME]                                     # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
-  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
-  -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                               
-          [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
-                                                              # Default: true
+  -l,              [--meeting-length=LENGTH]                               # [default 30m] find chunks of available time at least as long as LENGTH (which is a ChronicDuration string like '30m' or '2h')
+  -s,              [--start-of-day=TIME]                                   # [default 9am] find chunks of available time after TIME (which is a BusinessTime string like '9am' or '14:30')
+  -e,              [--end-of-day=TIME]                                     # [default 6pm] find chunks of available time before TIME (which is a BusinessTime string like '9am' or '14:30')
+  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]               # [default 'me'] people (email IDs) to whom this command will be applied
+  -p,              [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l,              [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -b,              [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n,              [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -h, -?,          [--help], [--no-help], [--skip-help]                    
+                   [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,              [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                           # Default: true
 
 Show your availability for a date or range of dates (default 'today')
 </pre>
@@ -371,17 +371,17 @@ Usage:
   calendar-assistant location-set LOCATION [DATE | DATERANGE]
 
 Options:
-          [--force]                                           # will manage location across multiple calendars whether a nickname is set or not
-          [--visibility=VISIBILITY]                           # [default is 'default'] Set the visibility of the event. Values are 'public', 'private', 'default'.
-  -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
-  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
-  -h, -?, [--help], [--no-help]                               
-          [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
-                                                              # Default: true
+                   [--force]                                               # will manage location across multiple calendars whether a nickname is set or not
+                   [--visibility=VISIBILITY]                               # [default is 'default'] Set the visibility of the event. Values are 'public', 'private', 'default'.
+  -p,              [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l,              [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -b,              [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n,              [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]               # [default 'me'] people (email IDs) to whom this command will be applied
+  -h, -?,          [--help], [--no-help], [--skip-help]                    
+                   [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,              [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                           # Default: true
 
 Set your location to LOCATION for a date or range of dates (default 'today')
 </pre>
@@ -420,14 +420,14 @@ Usage:
   calendar-assistant location [DATE | DATERANGE]
 
 Options:
-  -p, [--profile=PROFILE]                          # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                     # Load events from a local file instead of Google Calendar
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]      # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]  # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                    
-          [--debug], [--no-debug]                  # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]            # Enable Text Formatting
-                                                   # Default: true
+  -p,     [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l,     [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -b,     [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n,     [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -h, -?, [--help], [--no-help], [--skip-help]                    
+          [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,     [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                  # Default: true
 
 Show your location for a date or range of dates (default 'today')
 </pre>
@@ -450,16 +450,16 @@ Usage:
   calendar-assistant show [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -c, [--commitments], [--no-commitments]                     # only show events that you've accepted with another person
-  -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
-  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                               
-          [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
-                                                              # Default: true
+  -c,              [--commitments], [--no-commitments], [--skip-commitments]  # only show events that you've accepted with another person
+  -p,              [--profile=PROFILE]                                        # the profile you'd like to use (if different from default)
+  -l,              [--local-store=FILENAME]                                   # Load events from a local file instead of Google Calendar
+  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]                  # [default 'me'] people (email IDs) to whom this command will be applied
+  -b,              [--must-be=PROPERTY1[,PROPERTY2[,...]]]                    # Event properties that must be true (see README)
+  -n,              [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]                # Event properties that must be false (see README)
+  -h, -?,          [--help], [--no-help], [--skip-help]                       
+                   [--debug], [--no-debug], [--skip-debug]                    # how dare you suggest there are bugs
+  -f,              [--formatting], [--no-formatting], [--skip-formatting]     # Enable Text Formatting
+                                                                              # Default: true
 
 Show your events for a date or range of dates (default 'today')
 </pre>
@@ -521,15 +521,15 @@ Usage:
   calendar-assistant lint [DATE | DATERANGE | TIMERANGE]
 
 Options:
-  -p, [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
-  -l, [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
-  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]  # [default 'me'] people (email IDs) to whom this command will be applied
-  -b, [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
-  -n, [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
-  -h, -?, [--help], [--no-help]                               
-          [--debug], [--no-debug]                             # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]                       # Enable Text Formatting
-                                                              # Default: true
+  -p,              [--profile=PROFILE]                                     # the profile you'd like to use (if different from default)
+  -l,              [--local-store=FILENAME]                                # Load events from a local file instead of Google Calendar
+  -a, --attendees, [--calendars=CALENDAR1[,CALENDAR2[,...]]]               # [default 'me'] people (email IDs) to whom this command will be applied
+  -b,              [--must-be=PROPERTY1[,PROPERTY2[,...]]]                 # Event properties that must be true (see README)
+  -n,              [--must-not-be=PROPERTY1[,PROPERTY2[,...]]]             # Event properties that must be false (see README)
+  -h, -?,          [--help], [--no-help], [--skip-help]                    
+                   [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,              [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                           # Default: true
 
 Lint your events for a date or range of dates (default 'today')
 </pre>
@@ -560,10 +560,10 @@ Usage:
   calendar-assistant config
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help], [--skip-help]                    
+          [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,     [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                  # Default: true
 
 Dump your configuration parameters (merge of defaults and overrides from /home/user/.calendar-assistant)
 </pre>
@@ -586,10 +586,10 @@ Usage:
   calendar-assistant interactive
 
 Options:
-  -h, -?, [--help], [--no-help]          
-          [--debug], [--no-debug]        # how dare you suggest there are bugs
-  -f, [--formatting], [--no-formatting]  # Enable Text Formatting
-                                         # Default: true
+  -h, -?, [--help], [--no-help], [--skip-help]                    
+          [--debug], [--no-debug], [--skip-debug]                 # how dare you suggest there are bugs
+  -f,     [--formatting], [--no-formatting], [--skip-formatting]  # Enable Text Formatting
+                                                                  # Default: true
 
 interactive console for calendar assistant
 </pre>
