@@ -74,7 +74,7 @@ class CalendarAssistant
 
       def authorizer
         @authorizer ||= begin
-          if !File.exists?(CREDENTIALS_PATH)
+          if !File.exist?(CREDENTIALS_PATH)
             raise NoCredentials, "No credentials found. Please run `calendar-assistant help setup` for instructions"
           end
 
