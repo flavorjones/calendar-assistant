@@ -1,5 +1,12 @@
 # Changelog for Calendar Assistant
 
+## v0.16.0 / 2024-07-27
+
+Fixes:
+
+- updated to support Ruby 3.2+ [#195] @paracycle
+
+
 ## v0.15.0 / 2021-05-01
 
 Fixes:
