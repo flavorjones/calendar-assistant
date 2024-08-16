@@ -6,6 +6,9 @@ require "calendar_assistant"
 
 Encoding.default_internal = Encoding::UTF_8
 Rainbow.enabled = true
+if ActiveSupport.respond_to?(:to_time_preserves_timezone)
+  ActiveSupport.to_time_preserves_timezone = true
+end
 
 begin
   require "calendar_assistant/cli"
